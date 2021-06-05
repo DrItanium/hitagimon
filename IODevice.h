@@ -6,6 +6,7 @@
 #define I960SXCHIPSET_IODEVICE_H
 #include <stdint.h>
 #include "ChipsetInteract.h"
+#include <string>
 
 class BuiltinIOBaseDevice {
 public:
@@ -21,7 +22,7 @@ protected:
  */
 class BuiltinLED : public BuiltinIOBaseDevice {
 public:
-    BuiltinLED(uint32_t offset);
+    BuiltinLED(uint32_t offset = 0);
     bool getValue();
     void setValue(bool value);
     void toggle();
@@ -29,32 +30,29 @@ private:
     volatile uint8_t& _memory;
 };
 
-class BuiltinPWM : public BuiltinIOBaseDevice {
-public:
-    BuiltinPWM(uint32_t offset);
-    uint16_t getValue();
-    void setValue(uint16_t value);
-private:
-    volatile uint16_t& _memory;
-};
-
-class BuiltinAnalogInput : public BuiltinIOBaseDevice {
-public:
-    BuiltinAnalogInput(uint32_t offset);
-    uint16_t getValue();
-};
-
 /**
- * @brief Interface with the i2c unit found in the chipset
+ * @brief The console on hitagi is very simple, it really only acts as a input/output channel
  */
-class BuiltinI2CUnit : public BuiltinIOBaseDevice {
+class BuiltinConsole : public BuiltinIOBaseDevice {
 public:
-    BuiltinI2CUnit(uint32_t offset);
-    void beginTransmission(uint8_t address);
-    void write(uint8_t value);
-    void write(uint8_t* bytes, uint8_t length);
-    uint8_t read();
-    bool available();
-    void endTransmission();
+    BuiltinConsole(uint32_t offset = 0x100);
+    void flush();
+    bool available() const;
+    bool availableForWrite() const;
+    uint16_t read();
+    void write(uint16_t value);
+    void write(char c);
+    void write(const std::string& str);
+    void writeLine(const std::string& str);
+private:
+    struct RawConsoleStructure {
+        uint16_t flushPort;
+        uint16_t isAvailable;
+        uint16_t isAvailableForWriting;
+        uint16_t ioPort;
+    };
+private:
+    volatile RawConsoleStructure& _memory;
 };
+
 #endif //I960SXCHIPSET_IODEVICE_H
