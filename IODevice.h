@@ -45,10 +45,10 @@ public:
     inline void writeLine(const char* ptr) { write(ptr, true); }
 private:
     struct RawConsoleStructure {
-        uint16_t flushPort;
-        uint16_t isAvailable;
-        uint16_t isAvailableForWriting;
-        uint16_t ioPort;
+        volatile uint16_t flushPort;
+        volatile uint16_t isAvailable;
+        volatile uint16_t isAvailableForWriting;
+        volatile uint16_t ioPort;
     } __attribute__ ((packed));
 private:
     volatile RawConsoleStructure& _memory;
