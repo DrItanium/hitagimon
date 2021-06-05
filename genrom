@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# generate the rom image
+
+i960-elf-objcopy --only-section=.text -O binary build/hitagimon boot.rom
