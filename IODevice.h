@@ -50,7 +50,7 @@ private:
         uint16_t isAvailable;
         uint16_t isAvailableForWriting;
         uint16_t ioPort;
-    };
+    } __attribute__ ((packed));
 private:
     volatile RawConsoleStructure& _memory;
 };
