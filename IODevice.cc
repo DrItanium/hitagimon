@@ -48,7 +48,7 @@ BuiltinConsole::write(uint16_t c) {
 
 void
 BuiltinConsole::write(char c) {
-    write(static_cast<uint16_t>(c));
+    _memory.ioPort = c;
 }
 void
 BuiltinConsole::flush() {
