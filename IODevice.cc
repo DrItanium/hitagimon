@@ -56,16 +56,11 @@ BuiltinConsole::flush() {
     _memory.flushPort = 1;
 }
 void
-BuiltinConsole::write(const std::string &str) {
-    for (int i = 0; i < str.length(); ++i) {
-        char c = str[i];
-        write(c);
+BuiltinConsole::write(const char* ptr, bool newline) {
+    for (const char* v = ptr; *v; ++v) {
+        write(*v);
     }
-    flush();
-}
-void
-BuiltinConsole::writeLine(const std::string &str) {
-    write(str);
-    write('\n');
-    flush();
+    if (newline) {
+        write('\n');
+    }
 }

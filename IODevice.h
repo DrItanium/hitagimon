@@ -6,7 +6,6 @@
 #define I960SXCHIPSET_IODEVICE_H
 #include <stdint.h>
 #include "ChipsetInteract.h"
-#include <string>
 
 class BuiltinIOBaseDevice {
 public:
@@ -42,8 +41,8 @@ public:
     uint16_t read();
     void write(uint16_t value);
     void write(char c);
-    void write(const std::string& str);
-    void writeLine(const std::string& str);
+    void write(const char* ptr, bool newLine = false);
+    inline void writeLine(const char* ptr) { write(ptr, true); }
 private:
     struct RawConsoleStructure {
         uint16_t flushPort;
