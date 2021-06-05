@@ -9,30 +9,12 @@ int wait(int count) {
     }
     return result;
 }
-volatile uint16_t& getConsoleReadWritePort() {
-    return memory<uint16_t>(getIOBase0Address(0x102));
-}
-void conPrint(const char* msg, bool addNewline = false) {
-    volatile uint16_t& con = getConsoleReadWritePort();
-    for (const char* ptr = msg; *ptr; ++ptr) {
-        con = *ptr;
-    }
-    if (addNewline) {
-        con = '\n';
-    }
-}
-void conPrint(char value) {
-    volatile uint16_t& con = getConsoleReadWritePort();
-    con = value;
-}
-void conPrintln(const char* ptr) {
-    conPrint(ptr, true);
-}
+BuiltinLED theLed(0);
+BuiltinConsole theConsole;
 int main() {
-    BuiltinLED theLed(0);
     volatile uint8_t pwmIndex = 127;
-    conPrint("hello, world\n");
-    conPrintln("donuts");
+    theConsole.write("hello, world\n");
+    theConsole.writeLine("donuts!");
     //printf("%s!\n", "Printf test");
     //std::cout << "std::cout test" << std::endl;
     //std::cout << "0x" << std::hex << 0xFDED << std::endl;
