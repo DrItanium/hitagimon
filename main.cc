@@ -9,15 +9,12 @@ int wait(int count) {
     }
     return result;
 }
-BuiltinLED theLed(0);
-BuiltinConsole theConsole;
 int main() {
+    BuiltinLED theLed(0);
+    BuiltinConsole theConsole;
     volatile uint8_t pwmIndex = 127;
     theConsole.write("hello, world\n");
     theConsole.writeLine("donuts!");
-    //printf("%s!\n", "Printf test");
-    //std::cout << "std::cout test" << std::endl;
-    //std::cout << "0x" << std::hex << 0xFDED << std::endl;
     while(true) {
         theLed.toggle();
         pwmIndex += wait(1000000);

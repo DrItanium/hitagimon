@@ -2,4 +2,4 @@
 
 # generate the rom image
 
-i960-elf-objcopy --only-section=.text -O binary build/hitagimon boot.rom
+i960-elf-objcopy --only-section=.text -O binary cmake-build-debug/hitagimon boot.rom

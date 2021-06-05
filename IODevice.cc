@@ -58,7 +58,8 @@ BuiltinConsole::flush() {
 void
 BuiltinConsole::write(const std::string &str) {
     for (int i = 0; i < str.length(); ++i) {
-        write(str[i]);
+        char c = str[i];
+        write(c);
     }
     flush();
 }
