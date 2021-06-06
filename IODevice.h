@@ -57,4 +57,60 @@ private:
     volatile RawConsoleStructure& _memory;
 };
 
+class BuiltinTFTDisplay : public BuiltinIOBaseDevice {
+public:
+    BuiltinTFTDisplay(uint32_t offset = 0x200);
+    uint16_t color565(uint8_t r, uint8_t g, uint8_t b);
+    inline uint16_t color565(uint32_t packedColor) {
+        return color565(packedColor & 0xFF,
+                        (packedColor >> 8) & 0xFF,
+                        (packedColor >> 16) & 0xFF);
+    }
+    void drawPixel(int16_t x, int16_t y, uint16_t color);
+    void fillScreen(uint16_t color);
+    inline void clearScreen() { fillScreen(color565(0,0,0)); }
+    inline void drawPixel(int16_t x, int16_t y, uint8_t r, uint8_t g, uint8_t b)  {
+        drawPixel(x, y, color565(r, g, b));
+    }
+    inline void drawPixel(int16_t x, int16_t y, uint32_t rgb) {
+        drawPixel(x, y, color565(rgb));
+    }
+private:
+    struct RawTFTCommand {
+#define X(type, name) volatile type name ## Port
+#define Z(name) X(uint16_t, name)
+#define Y(name) X(int16_t, name)
+        Y(flush);
+        Y(io);
+        Y(available);
+        Y(availableForWriting);
+        Y(command);
+        Y(x);
+        Y(y);
+        Y(w);
+        Y(h);
+        Y(radius);
+        Y(color);
+        Y(x0);
+        Y(y0);
+        Y(x1);
+        Y(y1);
+        Y(x2);
+        Y(y2);
+        Y(red);
+        Y(green);
+        Y(blue);
+        Y(doorbell);
+        Z(backlight);
+        Z(backlightFrequency);
+        X(uint32_t, buttons);
+        Z(buttonsQuery);
+#undef Y
+#undef Z
+#undef X
+    } __attribute__((packed));
+private:
+    volatile RawTFTCommand& _memory;
+};
+
 #endif //I960SXCHIPSET_IODEVICE_H

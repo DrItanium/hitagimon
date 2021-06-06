@@ -12,7 +12,8 @@ int wait(int count) {
 int main() {
     BuiltinLED theLed(0);
     BuiltinConsole theConsole;
-    volatile uint8_t pwmIndex = 127;
+    BuiltinTFTDisplay theDisplay;
+    volatile uint64_t counter = 0;
     std::string msg0("donuts!");
     theConsole.write("hello, world\n");
     theConsole.writeLine(msg0);
@@ -23,11 +24,23 @@ int main() {
     theConsole.write('t');
     theConsole.write('s');
     theConsole.write('\n');
+    theDisplay.clearScreen();
+    for (int r = 0; r < 256; ++r) {
+        for (int g = 0; g < 256; ++g) {
+            for (int b = 0; b < 256; ++b) {
+                for (int x = 0; x < 64; ++x) {
+                    for (int y = 0; y < 64; ++y) {
+                        theDisplay.drawPixel(x, y, r, g, b);
+                    }
+                }
+            }
+        }
+    }
     while(true) {
         theLed.toggle();
-        pwmIndex += wait(1000000);
+        counter += wait(1000000);
         theLed.toggle();
-        pwmIndex += wait(1000000);
+        counter += wait(1000000);
     }
     return 0;
 }

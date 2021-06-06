@@ -74,3 +74,57 @@ BuiltinConsole::write(const std::string &str, bool newLine) {
         write('\n') ;
     }
 }
+
+enum TFTOpcodes {
+    None = 0,
+    SetRotation,
+    InvertDisplay,
+    FillRect,
+    FillScreen,
+    DrawLine,
+    DrawRect,
+    DrawCircle,
+    FillCircle,
+    DrawTriangle,
+    FillTriangle,
+    SetTextSizeSquare,
+    SetTextSizeRectangle,
+    SetCursor,
+    SetTextColor0,
+    SetTextColor1,
+    SetTextWrap,
+    GetWidth,
+    GetHeight,
+    GetRotation,
+    GetCursorX,
+    GetCursorY,
+    DrawPixel,
+    Color565,
+    DrawRoundRect,
+    FillRoundRect,
+};
+BuiltinTFTDisplay::BuiltinTFTDisplay(uint32_t offset) : BuiltinIOBaseDevice(offset), _memory(memory<RawTFTCommand>(baseAddress_)) { }
+
+void
+BuiltinTFTDisplay::fillScreen(uint16_t color) {
+    _memory.commandPort = FillScreen;
+    _memory.colorPort = color;
+    _memory.doorbellPort = 1;
+}
+void
+BuiltinTFTDisplay::drawPixel(int16_t x, int16_t y, uint16_t color) {
+    _memory.commandPort = DrawPixel;
+    _memory.colorPort = color;
+    _memory.xPort = x;
+    _memory.yPort = y;
+    _memory.doorbellPort = 1;
+}
+
+uint16_t
+BuiltinTFTDisplay::color565(uint8_t r, uint8_t g, uint8_t b) {
+    _memory.commandPort = Color565;
+    _memory.redPort = r;
+    _memory.greenPort = g;
+    _memory.bluePort = b;
+    return _memory.doorbellPort;
+}
