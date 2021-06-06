@@ -64,3 +64,13 @@ BuiltinConsole::write(const char* ptr, bool newline) {
         write('\n');
     }
 }
+
+void
+BuiltinConsole::write(const std::string &str, bool newLine) {
+    for (size_t i = 0; i < str.length(); ++i) {
+        _memory.ioPort = str[i];
+    }
+    if (newLine) {
+        write('\n') ;
+    }
+}

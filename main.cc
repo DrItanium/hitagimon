@@ -13,8 +13,16 @@ int main() {
     BuiltinLED theLed(0);
     BuiltinConsole theConsole;
     volatile uint8_t pwmIndex = 127;
+    std::string msg0("donuts!");
     theConsole.write("hello, world\n");
-    theConsole.writeLine("donuts!");
+    theConsole.writeLine(msg0);
+    theConsole.write('d');
+    theConsole.write('o');
+    theConsole.write('n');
+    theConsole.write('u');
+    theConsole.write('t');
+    theConsole.write('s');
+    theConsole.write('\n');
     while(true) {
         theLed.toggle();
         pwmIndex += wait(1000000);
