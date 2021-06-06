@@ -31,5 +31,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @return The PRCB address
  */
 unsigned int get_prcb();
+extern char* stack_start;
+extern int end;
+inline char* getBSSEndAddress() { return reinterpret_cast<char*>(&end); }
+inline char* getStackStart() { return stack_start; }
 
 #endif //NINDYPP_IOROUTINES_H

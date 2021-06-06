@@ -9,10 +9,10 @@ int wait(int count) {
     }
     return result;
 }
+BuiltinLED theLed(0);
+BuiltinConsole theConsole;
+BuiltinTFTDisplay theDisplay;
 int main() {
-    BuiltinLED theLed(0);
-    BuiltinConsole theConsole;
-    BuiltinTFTDisplay theDisplay;
     volatile uint64_t counter = 0;
     std::string msg0("donuts!");
     theConsole.write("hello, world\n");
@@ -65,14 +65,12 @@ int atexit(void (*function)(void))
 {
      function();
 }
-#if 0
 // functions for back end testing
 extern "C"
 ssize_t write(int fildes, const void* buf, size_t nbyte) {
     const char* theBuf = (const char*)buf;
-    volatile uint16_t& con = getConsoleReadWritePort();
     for (size_t i = 0; i < nbyte; ++i) {
-        con = (uint16_t)theBuf[i];
+        theConsole.write(static_cast<uint16_t>(theBuf[i]));
     }
     return nbyte;
 }
@@ -80,9 +78,9 @@ ssize_t write(int fildes, const void* buf, size_t nbyte) {
 extern "C"
 ssize_t read(int fildes, void* buf, size_t nbyte) {
     char* theBuf = (char*)buf;
-    volatile uint16_t& con = getConsoleReadWritePort();
     for (int i = 0; i < nbyte; ++i) {
-        theBuf[i] = (char)con;
+        uint16_t value = static_cast<uint16_t>(theConsole.read());
+        theBuf[i] = static_cast<char>(value);
     }
     return nbyte;
 }
@@ -110,10 +108,6 @@ int fstat(int fildes, struct stat* buf) {
 }
 
 
-extern "C"
-void* sbrk(intptr_t increment) {
-    return 0;
-}
 
 extern "C"
 int close(int fildes) {
@@ -124,4 +118,3 @@ extern "C"
 int isatty(int fd) {
     return 0;
 }
-#endif

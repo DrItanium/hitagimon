@@ -215,7 +215,16 @@ fault_proc_table:
  *    call to main. No opens have been done for STDIN, STDOUT, or STDERR
  */
     mov 0, g14      # C compiler expects g14 = 0
+    callx _init_fp
     callx _main     # assume a main for startup
+
+_init_fp:
+    # initialize the floating point registers
+    cvtir   0, fp0
+    movre   fp0, fp1
+    movre   fp1, fp2
+    movre   fp2, fp3
+    ret
 
 reinitialize_iac:
     .align 4
