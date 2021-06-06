@@ -25,12 +25,16 @@ int main() {
     theConsole.write('s');
     theConsole.write('\n');
     theDisplay.clearScreen();
+    uint16_t previousColor = theDisplay.color565(0,0,0);
     for (int r = 0; r < 256; ++r) {
         for (int g = 0; g < 256; ++g) {
             for (int b = 0; b < 256; ++b) {
                 uint16_t color = theDisplay.color565(r,g, b);
-                theDisplay.fillScreen(color);
-                counter += wait(1000);
+                if (previousColor != color) {
+                    theDisplay.fillScreen(color);
+                    counter += wait(1000);
+                }
+                previousColor = color;
             }
         }
     }
