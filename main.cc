@@ -25,18 +25,18 @@ int main() {
     theConsole.write('s');
     theConsole.write('\n');
     theDisplay.clearScreen();
-    uint16_t previousColor = theDisplay.color565(0,0,0);
-    for (int r = 0; r < 256; ++r) {
-        for (int g = 0; g < 256; ++g) {
-            for (int b = 0; b < 256; ++b) {
-                uint16_t color = theDisplay.color565(r,g, b);
-                if (previousColor != color) {
-                    theDisplay.fillScreen(color);
-                    counter += wait(1000);
-                }
-                previousColor = color;
-            }
+    uint16_t* colorTable = new uint16_t[0x1000000]();
+    for (int i = 0; i < 0x1000000; ++i) {
+        colorTable[i] = theDisplay.color565(i);
+    }
+    uint16_t previousColor = colorTable[0];
+    for (int i = 0; i < 0x1000000; ++i) {
+        uint16_t color = colorTable[i];
+        if (previousColor != color) {
+            theDisplay.fillScreen(color);
+            counter += wait(1000);
         }
+        previousColor = color;
     }
     for (int r = 0; r < 256; ++r) {
         for (int g = 0; g < 256; ++g) {
@@ -56,6 +56,7 @@ int main() {
         theLed.toggle();
         counter += wait(1000000);
     }
+    delete [] colorTable;
     return 0;
 }
 
