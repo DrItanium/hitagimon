@@ -28,9 +28,19 @@ int main() {
     for (int r = 0; r < 256; ++r) {
         for (int g = 0; g < 256; ++g) {
             for (int b = 0; b < 256; ++b) {
-                for (int x = 0; x < 64; ++x) {
-                    for (int y = 0; y < 64; ++y) {
-                        theDisplay.drawPixel(x, y, r, g, b);
+                uint16_t color = theDisplay.color565(r,g, b);
+                theDisplay.fillScreen(color);
+                counter += wait(1000);
+            }
+        }
+    }
+    for (int r = 0; r < 256; ++r) {
+        for (int g = 0; g < 256; ++g) {
+            for (int b = 0; b < 256; ++b) {
+                uint16_t color = theDisplay.color565(r,g, b);
+                for (int x = 0; x < 16; ++x) {
+                    for (int y = 0; y < 16; ++y) {
+                        theDisplay.drawPixel(x,y, color);
                     }
                 }
             }
