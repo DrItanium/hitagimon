@@ -9,10 +9,10 @@ int wait(int count) {
     }
     return result;
 }
-BuiltinLED theLed(0);
-BuiltinConsole theConsole;
-BuiltinTFTDisplay theDisplay;
 int main() {
+    BuiltinLED theLed(0);
+    BuiltinConsole theConsole;
+    BuiltinTFTDisplay theDisplay;
     volatile uint64_t counter = 0;
     std::string msg0("donuts!");
     theConsole.write("hello, world\n");
@@ -25,16 +25,12 @@ int main() {
     theConsole.write('s');
     theConsole.write('\n');
     theDisplay.clearScreen();
-    uint16_t* colorTable = new uint16_t[0x1000000]();
+    uint16_t previousColor = theDisplay.color565(0);
     for (int i = 0; i < 0x1000000; ++i) {
-        colorTable[i] = theDisplay.color565(i);
-    }
-    uint16_t previousColor = colorTable[0];
-    for (int i = 0; i < 0x1000000; ++i) {
-        uint16_t color = colorTable[i];
+        uint16_t color = theDisplay.color565(i);
         if (previousColor != color) {
             theDisplay.fillScreen(color);
-            counter += wait(1000);
+            counter += wait(100);
         }
         previousColor = color;
     }
@@ -56,10 +52,9 @@ int main() {
         theLed.toggle();
         counter += wait(1000000);
     }
-    delete [] colorTable;
     return 0;
 }
-
+#if 0
 extern "C"
 int atexit(void (*function)(void))
 {
@@ -118,3 +113,4 @@ extern "C"
 int isatty(int fd) {
     return 0;
 }
+#endif
