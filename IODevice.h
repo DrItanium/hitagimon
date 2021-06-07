@@ -84,6 +84,12 @@ public:
         uint16_t color = color565(rgb);
         fillRect(x, y, w, h, color);
     }
+    void setCursor(int x, int y);
+    inline void resetCursor() {
+       setCursor(0, 0) ;
+    }
+    void print(char c);
+    void flush();
 
 private:
     struct RawTFTCommand {

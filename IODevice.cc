@@ -139,3 +139,22 @@ BuiltinTFTDisplay::fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t
     _memory.hPort = h;
     _memory.doorbellPort = 1;
 }
+
+
+void
+BuiltinTFTDisplay::setCursor(int x, int y) {
+    _memory.commandPort = SetCursor;
+    _memory.xPort = x;
+    _memory.yPort = y;
+    _memory.doorbellPort = 1;
+}
+
+void
+BuiltinTFTDisplay::flush() {
+    /// @todo implement
+}
+
+void
+BuiltinTFTDisplay::print(char c) {
+    /// @todo implement
+}
