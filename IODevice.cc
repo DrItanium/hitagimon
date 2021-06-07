@@ -128,3 +128,14 @@ BuiltinTFTDisplay::color565(uint8_t r, uint8_t g, uint8_t b) {
     _memory.bluePort = b;
     return _memory.doorbellPort;
 }
+
+void
+BuiltinTFTDisplay::fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) {
+    _memory.commandPort = FillRect;
+    _memory.xPort = x;
+    _memory.yPort = y;
+    _memory.colorPort = color;
+    _memory.wPort = w;
+    _memory.hPort = h;
+    _memory.doorbellPort = 1;
+}

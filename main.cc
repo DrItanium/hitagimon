@@ -26,25 +26,40 @@ int main() {
     theConsole.write('\n');
     theDisplay.clearScreen();
     uint16_t previousColor = theDisplay.color565(0);
-    for (int i = 0; i < 0x1000000; ++i) {
+    for (int i = 0x8000; i < 0x1000000; ++i) {
         uint16_t color = theDisplay.color565(i);
         if (previousColor != color) {
-            theDisplay.fillScreen(color);
-            counter += wait(100);
-        }
-        previousColor = color;
-    }
-    for (int r = 0; r < 256; ++r) {
-        for (int g = 0; g < 256; ++g) {
-            for (int b = 0; b < 256; ++b) {
-                uint16_t color = theDisplay.color565(r,g, b);
-                for (int x = 0; x < 16; ++x) {
-                    for (int y = 0; y < 16; ++y) {
-                        theDisplay.drawPixel(x,y, color);
+            for (int x = 0; x < 64; ++x) {
+                for (int y = 0; y < 64; ++y) {
+                    for (int w = 1; w < 32; ++w) {
+                       for (int h = 1; h < 32; ++h)  {
+                           theDisplay.fillRect(x+128, y+128, w+64, h+64, color) ;
+                           theDisplay.fillRect(x+64, y+64, w+32, h+32, color) ;
+                           theDisplay.fillRect(x, y, w, h, color) ;
+                       }
                     }
                 }
             }
         }
+        previousColor = color;
+    }
+    for (int i = 0x8000; i < 0x1000000; ++i) {
+        uint16_t color = theDisplay.color565(i);
+        if (previousColor != color) {
+            for (int x = 0; x < 64; ++x) {
+                for (int y = 0; y < 64; ++y) {
+                    theDisplay.drawPixel(x, y, color);
+                    theDisplay.drawPixel(x, y * 1, color);
+                    theDisplay.drawPixel(x, y * 2, color);
+                    theDisplay.drawPixel(x, y * 3, color);
+                    theDisplay.drawPixel(x, y * 4, color);
+                    theDisplay.drawPixel(x, y * 5, color);
+                    theDisplay.drawPixel(x, y * 6, color);
+                    theDisplay.drawPixel(x, y * 7, color);
+                }
+            }
+        }
+        previousColor = color;
     }
     while(true) {
         theLed.toggle();

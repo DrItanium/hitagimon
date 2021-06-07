@@ -75,6 +75,16 @@ public:
     inline void drawPixel(int16_t x, int16_t y, uint32_t rgb) {
         drawPixel(x, y, color565(rgb));
     }
+    void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
+    inline void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint8_t r, uint8_t g, uint8_t b) {
+        uint16_t color = color565(r, g, b);
+        fillRect(x, y, w, h, color);
+    }
+    inline void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint32_t rgb) {
+        uint16_t color = color565(rgb);
+        fillRect(x, y, w, h, color);
+    }
+
 private:
     struct RawTFTCommand {
 #define X(type, name) volatile type name ## Port
