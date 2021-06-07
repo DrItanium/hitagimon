@@ -214,8 +214,8 @@ fault_proc_table:
  *    If any IO needs to be set up, you should do it here before your
  *    call to main. No opens have been done for STDIN, STDOUT, or STDERR
  */
-    mov 0, g14      # C compiler expects g14 = 0
     callx _init_fp
+    mov 0, g14      # C compiler expects g14 = 0
     callx _main     # assume a main for startup
 
 _init_fp:
@@ -241,9 +241,9 @@ reinitialize_iac:
  /* -- define RAM area for stacks; size is only a suggestion your actual
   *    mileage may vary
   */
-    .bss _user_stack, 0x2000, 6
-    .bss _intr_stack, 0x2000, 6
-    .bss _sup_stack, 0x2000, 6
+    .bss _user_stack, 0x10000, 6
+    .bss _intr_stack, 0x10000, 6
+    .bss _sup_stack, 0x10000, 6
 
 /* -- Below is a software loop to move data */
 

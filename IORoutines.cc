@@ -23,12 +23,4 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef NINDYPP_IOROUTINES_H
-#define NINDYPP_IOROUTINES_H
-#include <stdint.h>
-extern char* stack_start;
-extern int end;
-inline char* getBSSEndAddress() { return reinterpret_cast<char*>(&end); }
-inline char* getStackStart() { return stack_start; }
-
-#endif //NINDYPP_IOROUTINES_H
+#include "IORoutines.h"
