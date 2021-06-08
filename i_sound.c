@@ -757,19 +757,19 @@ I_InitSound()
   if ( !access(buffer, X_OK) )
   {
     strcat(buffer, " -quiet");
+    /// @todo replace sndserver call with direct access to the
     sndserver = popen(buffer, "w");
   }
   else
     fprintf(stderr, "Could not start sound server [%s]\n", buffer);
 #else
-    
+#ifndef BARE_METAL
   int i;
   
 #ifdef SNDINTR
   fprintf( stderr, "I_SoundSetTimer: %d microsecs\n", SOUND_INTERVAL );
   I_SoundSetTimer( SOUND_INTERVAL );
 #endif
-    
   // Secure and configure sound device first.
   fprintf( stderr, "I_InitSound: ");
   
@@ -826,7 +826,7 @@ I_InitSound()
   
   // Finished initialization.
   fprintf(stderr, "I_InitSound: sound module ready\n");
-    
+#endif
 #endif
 }
 

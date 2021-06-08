@@ -39,3 +39,63 @@ int
 isatty (int file) {
     return file < 3;
 }
+
+extern "C"
+off_t
+lseek(int fd, off_t offset, int type) {
+    /// @todo implement this using an SD Card interface
+    return 0;
+}
+
+extern "C"
+int
+setitimer(int which, const struct itimerval* newValue, struct itimerval* oldValue) {
+    /// @todo use arduino timers to satisfy this, we use the interrupts to trigger timers
+    return 0;
+}
+
+extern "C"
+int access(const char* pathName, int mode) {
+    /// @todo check user's permissions for a file, this will be found on the SD Card. so this path needs to be passed to the 1284p
+    return 0;
+}
+
+extern "C"
+int getpid () {
+    return -1;
+}
+
+extern "C"
+int
+write (int fd, const void* buf, size_t sz) {
+    int numWritten = 0;
+    /// @todo Implement _sys_write equivalent
+#if 0
+    int r = _sys_write(fd, buf, sz, &numWritten);
+#else
+    int r = 0;
+#endif
+    if (r != 0) {
+        errno = r;
+        return -1;
+    }
+    return numWritten;
+}
+extern "C"
+int
+read (int fd, void* buf, size_t sz)
+{
+    int nread = 0;
+    int r = 0;
+#if 0
+    r = _sys_read (fd, buf, sz, &nread);
+#else
+    r = 0;
+#endif
+    if (r != 0)
+    {
+        errno = r;
+        return -1;
+    }
+    return nread;
+}
