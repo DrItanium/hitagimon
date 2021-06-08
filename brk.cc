@@ -10,6 +10,7 @@ const size_t RamSize = 0x20000000;
 const size_t RamStart = 0x80000000;
 const size_t RamEnd = RamStart + RamSize;
 static char* currentBreak = 0;
+#if 0
 extern "C"
 int brk(void* addr) {
 #if 0
@@ -47,3 +48,4 @@ void* sbrk(intptr_t increment) {
     return reinterpret_cast<void*>(-1);
 #endif
 }
+#endif
