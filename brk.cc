@@ -7,7 +7,6 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <stdlib.h>
-#include <signal.h>
 #include "IORoutines.h"
 
 const size_t RamSize = 0x20000000;
