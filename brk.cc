@@ -4,48 +4,38 @@
 #include <unistd.h>
 #include <errno.h>
 #include <stdint.h>
+#include <sys/stat.h>
 #include "IORoutines.h"
 
 const size_t RamSize = 0x20000000;
 const size_t RamStart = 0x80000000;
 const size_t RamEnd = RamStart + RamSize;
-static char* currentBreak = 0;
-#if 0
+static char* heapEnd = 0;
 extern "C"
-int brk(void* addr) {
-#if 0
-    if ((addr < reinterpret_cast<char*>(&end)) || (addr >= getStackStart())) {
-        // ERROR
-        return -1;
-    }
-    currentBreak = reinterpret_cast<char*>(addr);
-#else
-    return -1;
-#endif
+int brk(void* ptr) {
+    heapEnd = reinterpret_cast<char*>(ptr);
+    return 0;
 }
 extern "C"
-void* sbrk(intptr_t increment) {
-#if 0
-    char* newBreak = 0;
-    char* oldBreak = 0;
-    char* junk = 0;
-    if (currentBreak == 0) {
-        currentBreak = reinterpret_cast<char*>(&end);
+void*
+sbrk(intptr_t increment) {
+    if (heapEnd == 0) {
+        heapEnd = reinterpret_cast<char*>(&end);
     }
-    newBreak = currentBreak + increment;
-
-    if ((newBreak < reinterpret_cast<char*>(&end)) || (newBreak >= stack_start)) {
-        return reinterpret_cast<void*>(-1);
-    }
-
-    for (char* junk = currentBreak; junk < newBreak; ++junk) {
-        *junk = 0;
-    }
-    oldBreak = currentBreak;
-    currentBreak = newBreak;
-    return oldBreak;
-#else
-    return reinterpret_cast<void*>(-1);
-#endif
+    char* prevHeapEnd = heapEnd;
+    heapEnd += increment;
+    return prevHeapEnd;
 }
-#endif
+
+extern "C"
+int
+fstat (int file, struct stat* st) {
+    st->st_mode = S_IFCHR;
+    return 0;
+}
+
+extern "C"
+int
+isatty (int file) {
+    return file < 3;
+}
