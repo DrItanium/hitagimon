@@ -2,7 +2,7 @@
  * TODO: adapt for my purposes 
  *
  */
-
+GROUP(-lgcc -lm -lc -liberty -lc -lg2c)
 MEMORY
 {
     rom (rx)  : ORIGIN = 0, l = 512M

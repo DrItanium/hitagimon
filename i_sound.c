@@ -41,6 +41,9 @@ rcsid[] = "$Id: i_unix.c,v 1.5 1997/02/03 22:45:10 b1 Exp $";
 
 #include <fcntl.h>
 #include <unistd.h>
+#ifdef BARE_METAL
+#include <signal.h>
+#endif
 #ifdef LINUX 
 #include <sys/ioctl.h>
 
@@ -964,9 +967,9 @@ int I_SoundSetTimer( int duration_of_tick )
 #endif
 #ifndef BARE_METAL
   act.sa_flags = SA_RESTART;
-#endif
-  
+
   sigaction( sig, &act, &oact );
+#endif
 
   value.it_interval.tv_sec    = 0;
   value.it_interval.tv_usec   = duration_of_tick;

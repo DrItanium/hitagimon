@@ -161,12 +161,14 @@ add_executable(hitagimon
 #set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT})
 target_link_libraries(hitagimon
 		g
+		g2c
 		gcc
 		c
 		m
 		#nosys # stub library
 		stdc++
 		g
+		g2c
 		c
 		m
 		gcc)

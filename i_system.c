@@ -131,7 +131,11 @@ void I_WaitVBL(int count)
 #ifdef SUN
     sleep(0);
 #else
-    usleep (count * (1000000/70) );                                
+#ifndef BARE_METAL
+    usleep (count * (1000000/70) );
+#else
+    //sleep(0);
+#endif
 #endif
 #endif
 }

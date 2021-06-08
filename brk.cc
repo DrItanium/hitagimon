@@ -5,6 +5,9 @@
 #include <errno.h>
 #include <stdint.h>
 #include <sys/stat.h>
+#include <sys/time.h>
+#include <stdlib.h>
+#include <signal.h>
 #include "IORoutines.h"
 
 const size_t RamSize = 0x20000000;
@@ -98,4 +101,38 @@ read (int fd, void* buf, size_t sz)
         return -1;
     }
     return nread;
+}
+
+extern "C"
+int
+gettimeofday(struct timeval* tv, void* tz) {
+    return 0;
+}
+
+extern "C"
+int
+close(int fd) {
+    /// @todo implement closing files on the SD Card
+    return 0;
+}
+
+extern "C"
+void
+_exit(int status) {
+    while (true) {
+       // just hang here
+    }
+}
+
+extern "C"
+int
+kill (int pid, int signal) {
+    exit (signal);
+}
+
+extern "C"
+int
+open (char* file, int mode, int perms) {
+    /// @todo interface this function with the SDCard
+    return 0;
 }
