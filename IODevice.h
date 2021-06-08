@@ -107,6 +107,7 @@ private:
         Y(h);
         Y(radius);
         Y(color);
+        Y(bgColor);
         Y(x0);
         Y(y0);
         Y(x1);
