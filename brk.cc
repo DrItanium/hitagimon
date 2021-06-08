@@ -8,7 +8,25 @@
 #include <sys/time.h>
 #include <stdlib.h>
 #include "IORoutines.h"
+#include "IODevice.h"
 
+extern "C"
+int
+_sys_write(int fd, const void* buf, size_t sz, int* nwrite) {
+    switch (fd) {
+        case STDIN_FILENO:
+            break;
+        case STDOUT_FILENO:
+            break;
+        case STDERR_FILENO:
+            break;
+        default:
+            errno = EBADF;
+            return -1;
+    }
+    *nwrite = 0;
+    return 0;
+}
 const size_t RamSize = 0x20000000;
 const size_t RamStart = 0x80000000;
 const size_t RamEnd = RamStart + RamSize;
@@ -72,11 +90,7 @@ int
 write (int fd, const void* buf, size_t sz) {
     int numWritten = 0;
     /// @todo Implement _sys_write equivalent
-#if 0
     int r = _sys_write(fd, buf, sz, &numWritten);
-#else
-    int r = 0;
-#endif
     if (r != 0) {
         errno = r;
         return -1;

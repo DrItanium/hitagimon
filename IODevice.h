@@ -130,4 +130,8 @@ private:
     volatile RawTFTCommand& _memory;
 };
 
+extern BuiltinLED theLED;
+extern BuiltinTFTDisplay theDisplay;
+extern BuiltinConsole theConsole;
+
 #endif //I960SXCHIPSET_IODEVICE_H
