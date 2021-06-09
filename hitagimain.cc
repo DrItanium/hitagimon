@@ -16,6 +16,14 @@ int main() {
     BuiltinLED theLED;
     BuiltinTFTDisplay theDisplay;
     BuiltinConsole theConsole;
+    theConsole.write('d');
+    theConsole.write('o');
+    theConsole.write('n');
+    theConsole.write('u');
+    theConsole.write('t');
+    theConsole.write('s');
+    theConsole.write(' ');
+    theConsole.writeLine("are very tasty!");
     theDisplay.clearScreen();
     volatile uint64_t count = 0;
     theLED.toggle();
