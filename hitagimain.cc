@@ -26,9 +26,19 @@ int main() {
     theConsole.writeLine("are very tasty!");
     theDisplay.clearScreen();
     volatile uint64_t count = 0;
+    volatile uint16_t prevColor = 0xFFFF;
     theLED.toggle();
     while (true) {
-        theLED.toggle();
+        for (uint32_t color = 0; color <= 0xFFFFFFFF; ++color) {
+            uint16_t curr = theDisplay.color565(color);
+            if (curr != prevColor) {
+                if (color & 0x100) {
+                    theLED.toggle();
+                }
+                theDisplay.fillScreen(curr);
+                prevColor = curr;
+            }
+        }
         count += delay(1000);
     }
     //doommain(0, 0);
