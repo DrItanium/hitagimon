@@ -25,6 +25,11 @@ int main() {
     theConsole.write(' ');
     theConsole.writeLine("are very tasty!");
     theDisplay.clearScreen();
+    uint16_t* colors = new uint16_t[0x1000000];
+    for (uint32_t i = 0; i < 0x1000000; ++i) {
+        colors[i] = theDisplay.color565(i);
+    }
+#if 0
     volatile uint64_t count = 0;
     volatile uint16_t prevColor = 0xFFFF;
     theLED.toggle();
@@ -43,5 +48,8 @@ int main() {
     }
     //doommain(0, 0);
     return count;
+#else
+    return 0;
+#endif
 }
 
