@@ -31,11 +31,13 @@ const size_t RamSize = 0x20000000;
 const size_t RamStart = 0x80000000;
 const size_t RamEnd = RamStart + RamSize;
 static char* heapEnd = 0;
+#if 0
 extern "C"
 int brk(void* ptr) {
     heapEnd = reinterpret_cast<char*>(ptr);
     return 0;
 }
+#endif
 extern "C"
 void*
 sbrk(intptr_t increment) {
