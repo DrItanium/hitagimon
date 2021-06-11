@@ -17,6 +17,7 @@ SECTIONS
     {
         CREATE_OBJECT_SYMBOLS
         *(.text)
+        _etext = .;
 	    ___CTOR_LIST__ = .;
 	    LONG((___CTOR_END__ - ___CTOR_LIST__) / 4 - 2)
 	    *(.ctors)
@@ -30,14 +31,16 @@ SECTIONS
     } >rom
     .bss :
     {
-
+        *(.bss)
+        *(COMMON)
     } >ram
     .data :
     {
         __data_start__ = .;
         KEEP(*(.data))
-        CONSTRUCTORS;
+        CONSTRUCTORS
         __data_end__ = .;
+        _edata = .;
     } >ram
     .heap : {
         __heap_start__ = .;
