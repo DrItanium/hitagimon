@@ -38,7 +38,9 @@ SECTIONS
     } >ram
 }
 
-
+/* these two locations are _very_ important for getting the program to startup correctly */
+theDataSectionLength = (__data_end__ - __data_start__);
+theDataSectionROMLocation = 0x20000000;
 cs1 = -(system_address_table + prcb_ptr + start_ip) ;
 
 /* STARTUP ( CMakeFiles/hitagimon.dir/sx_init.s.o ) */

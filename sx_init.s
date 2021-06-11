@@ -172,6 +172,16 @@ fault_proc_table:
     lda _prcb_ram, g2 # load destination
     bal move_data # branch to move routine
 
+.global theDataSectionLength
+.global theDataSectionROMLocation
+.global __data_start__
+# copy DATA section to RAM space
+    lda theDataSectionLength, g0 # load length of data section in rom
+    lda 0, g4 # initialize offset to 0
+    lda theDataSectionROMLocation, g1 # load source
+    lda __data_start__, g2 # load destination
+    bal move_data # brach to move routine
+
  # fix up the PRCB to point to a new interrupt table
     lda intr_ram, g12 # load address
     st g12, 20(g2) # store into PRCB
