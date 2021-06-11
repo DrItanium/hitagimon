@@ -15,7 +15,18 @@ SECTIONS
 {
     .text :
     {
-
+        CREATE_OBJECT_SYMBOLS
+        *(.text)
+	    ___CTOR_LIST__ = .;
+	    LONG((___CTOR_END__ - ___CTOR_LIST__) / 4 - 2)
+	    *(.ctors)
+	    LONG(0)
+	    ___CTOR_END__ = .;
+	    ___DTOR_LIST__ = .;
+	    LONG((___DTOR_END__ - ___DTOR_LIST__) / 4 - 2)
+	    *(.dtors)
+	    LONG(0)
+	    ___DTOR_END__ = .;
     } >rom
     .bss :
     {
@@ -25,6 +36,7 @@ SECTIONS
     {
         __data_start__ = .;
         KEEP(*(.data))
+        CONSTRUCTORS;
         __data_end__ = .;
     } >ram
     .heap : {

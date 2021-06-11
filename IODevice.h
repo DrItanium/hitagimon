@@ -43,8 +43,8 @@ public:
     void write(uint16_t value);
     void write(char c);
     void write(const char* ptr, bool newLine = false);
-    inline void writeLine(const char* ptr) { write(ptr, true); }
-    inline void writeLine(const std::string& str) { write(str, true); }
+    void writeLine(const char* ptr);
+    void writeLine(const std::string& str);
     void write(const std::string& str, bool newLine = false);
 private:
     struct RawConsoleStructure {

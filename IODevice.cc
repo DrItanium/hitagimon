@@ -158,3 +158,5 @@ void
 BuiltinTFTDisplay::print(char c) {
     /// @todo implement
 }
+void BuiltinConsole::writeLine(const char* ptr) { write(ptr, true); }
+void BuiltinConsole::writeLine(const std::string& str) { write(str, true); }
