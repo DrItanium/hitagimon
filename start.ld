@@ -23,7 +23,9 @@ SECTIONS
     } >ram
     .data :
     {
-
+        __data_start__ = .;
+        KEEP(*(.data))
+        __data_end__ = .;
     } >ram
     .heap : {
         __heap_start__ = .;
