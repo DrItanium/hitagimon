@@ -5,6 +5,7 @@
 #include "IODevice.h"
 #include <string>
 
+BuiltinLED theLED;
 extern "C" int doommain (int argc, char** argv) ;
 uint64_t delay(uint64_t count) {
     uint64_t value = 0;
@@ -14,7 +15,6 @@ uint64_t delay(uint64_t count) {
     return value;
 }
 int main() {
-    BuiltinLED theLED;
     BuiltinTFTDisplay theDisplay;
     BuiltinConsole theConsole;
     BuiltinChipsetDebugInterface debugInterface;

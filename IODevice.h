@@ -157,5 +157,5 @@ public:
 private:
     BuiltinChipsetDebugInterface& iface_;
 };
-
+extern BuiltinLED theLED;
 #endif //I960SXCHIPSET_IODEVICE_H
