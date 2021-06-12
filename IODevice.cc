@@ -58,19 +58,8 @@ BuiltinConsole::flush() {
 }
 void
 BuiltinConsole::write(const char* ptr) {
-    // write this 128 byte chunks
-    size_t fullLength = strlen(ptr);
-    uint16_t bufSize = _memory.bufSize;
-    size_t currentLength = fullLength > bufSize ? bufSize : fullLength;
-    _memory.bufLength = currentLength;
-    for (size_t i = 0; i < currentLength; ++i) {
-        _memory.buf[i] = ptr[i];
-    }
-    // emit that to the console
-    _memory.bufDoorbell = 1;
-    if (fullLength > bufSize) {
-        // we have more to write so call write again!
-        write(ptr + currentLength);
+    for (const char* v = ptr; *v; ++v) {
+        write(*v);
     }
 }
 
@@ -157,9 +146,13 @@ void
 BuiltinTFTDisplay::print(char c) {
     /// @todo implement
 }
+void
+BuiltinConsole::writeLine() {
+    write('\n');
+}
 void BuiltinConsole::writeLine(const char* ptr) {
     write(ptr);
-    write('\n');
+    writeLine();
 }
 
 BuiltinChipsetDebugInterface::BuiltinChipsetDebugInterface() : BuiltinIOBaseDevice(0xFFFF00),

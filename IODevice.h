@@ -42,6 +42,7 @@ public:
     void write(uint16_t value);
     void write(char c);
     void write(const char* ptr);
+    void writeLine();
     void writeLine(const char* ptr);
 private:
     struct RawConsoleStructure {
