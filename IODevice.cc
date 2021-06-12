@@ -4,6 +4,7 @@
 
 #include "IODevice.h"
 #include "ChipsetInteract.h"
+#include <string.h>
 
 
 BuiltinIOBaseDevice::BuiltinIOBaseDevice(uint32_t offset) : offset_(offset), baseAddress_(getIOBase0Address(offset)) { }
@@ -56,12 +57,20 @@ BuiltinConsole::flush() {
     _memory.flushPort = 1;
 }
 void
-BuiltinConsole::write(const char* ptr, bool newline) {
-    for (char* v = const_cast<char*>(ptr); *v != 0; ++v) {
-        write(*v);
+BuiltinConsole::write(const char* ptr) {
+    // write this 128 byte chunks
+    size_t fullLength = strlen(ptr);
+    uint16_t bufSize = _memory.bufSize;
+    size_t currentLength = fullLength > bufSize ? bufSize : fullLength;
+    _memory.bufLength = currentLength;
+    for (size_t i = 0; i < currentLength; ++i) {
+        _memory.buf[i] = ptr[i];
     }
-    if (newline) {
-        write('\n');
+    // emit that to the console
+    _memory.bufDoorbell = 1;
+    if (fullLength > bufSize) {
+        // we have more to write so call write again!
+        write(ptr + currentLength);
     }
 }
 
@@ -148,7 +157,10 @@ void
 BuiltinTFTDisplay::print(char c) {
     /// @todo implement
 }
-void BuiltinConsole::writeLine(const char* ptr) { write(ptr, true); }
+void BuiltinConsole::writeLine(const char* ptr) {
+    write(ptr);
+    write('\n');
+}
 
 BuiltinChipsetDebugInterface::BuiltinChipsetDebugInterface() : BuiltinIOBaseDevice(0xFFFF00),
 _memory(memory<RawDebugRegisters>(getIOBase0Address(0xFFFF00))) {}
