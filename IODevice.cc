@@ -65,16 +65,6 @@ BuiltinConsole::write(const char* ptr, bool newline) {
     }
 }
 
-void
-BuiltinConsole::write(const std::string &str, bool newLine) {
-    for (size_t i = 0; i < str.length(); ++i) {
-        _memory.ioPort = str[i];
-    }
-    if (newLine) {
-        write('\n') ;
-    }
-}
-
 enum TFTOpcodes {
     None = 0,
     SetRotation,
@@ -159,4 +149,22 @@ BuiltinTFTDisplay::print(char c) {
     /// @todo implement
 }
 void BuiltinConsole::writeLine(const char* ptr) { write(ptr, true); }
-void BuiltinConsole::writeLine(const std::string& str) { write(str, true); }
+
+BuiltinChipsetDebugInterface::BuiltinChipsetDebugInterface() : BuiltinIOBaseDevice(0xFFFF00),
+_memory(memory<RawDebugRegisters>(getIOBase0Address(0xFFFF00))) {}
+
+void BuiltinChipsetDebugInterface::disableCacheLineActivityLogging() {
+    _memory.displayCacheLineActivity = false;
+}
+
+void BuiltinChipsetDebugInterface::enableCacheLineActivityLogging() {
+    _memory.displayCacheLineActivity = true;
+}
+
+void BuiltinChipsetDebugInterface::enableMemoryReadWriteLogging() {
+    _memory.displayMemoryReadWrites = true;
+}
+
+void BuiltinChipsetDebugInterface::disableMemoryReadWriteLogging() {
+    _memory.displayMemoryReadWrites = false;
+}

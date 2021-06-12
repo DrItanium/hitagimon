@@ -17,6 +17,7 @@ int main() {
     BuiltinLED theLED;
     BuiltinTFTDisplay theDisplay;
     BuiltinConsole theConsole;
+    BuiltinChipsetDebugInterface debugInterface;
     theConsole.write('d');
     theConsole.write('o');
     theConsole.write('n');
@@ -24,7 +25,10 @@ int main() {
     theConsole.write('t');
     theConsole.write('s');
     theConsole.write(' ');
+    debugInterface.enableMemoryReadWriteLogging();
     theConsole.writeLine("are very tasty!");
+    debugInterface.disableMemoryReadWriteLogging();
+    theConsole.flush();
     theDisplay.clearScreen();
     volatile uint64_t count = 0;
     volatile uint16_t prevColor = 0xFFFF;

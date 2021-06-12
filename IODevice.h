@@ -5,7 +5,6 @@
 #ifndef I960SXCHIPSET_IODEVICE_H
 #define I960SXCHIPSET_IODEVICE_H
 #include <stdint.h>
-#include <string>
 #include "ChipsetInteract.h"
 
 class BuiltinIOBaseDevice {
@@ -44,14 +43,16 @@ public:
     void write(char c);
     void write(const char* ptr, bool newLine = false);
     void writeLine(const char* ptr);
-    void writeLine(const std::string& str);
-    void write(const std::string& str, bool newLine = false);
 private:
     struct RawConsoleStructure {
-        volatile uint16_t flushPort;
-        volatile uint16_t isAvailable;
-        volatile uint16_t isAvailableForWriting;
-        volatile uint16_t ioPort;
+        uint16_t flushPort;
+        uint16_t isAvailable;
+        uint16_t isAvailableForWriting;
+        uint16_t ioPort;
+        uint16_t bufDoorbell;
+        uint16_t bufSize;
+        uint16_t bufLength;
+        char buf[128];
     } __attribute__ ((packed));
 private:
     volatile RawConsoleStructure& _memory;
@@ -130,8 +131,22 @@ private:
     volatile RawTFTCommand& _memory;
 };
 
-extern BuiltinLED theLED;
-extern BuiltinTFTDisplay theDisplay;
-extern BuiltinConsole theConsole;
+class BuiltinChipsetDebugInterface : public BuiltinIOBaseDevice {
+public:
+    BuiltinChipsetDebugInterface();
+    void enableMemoryReadWriteLogging();
+    void disableMemoryReadWriteLogging();
+    void enableCacheLineActivityLogging();
+    void disableCacheLineActivityLogging();
+    bool memoryReadWriteLoggingEnabled() const { return _memory.displayMemoryReadWrites; }
+    bool cacheLineActivityLoggingEnabled() const { return _memory.displayCacheLineActivity; }
+private:
+    struct RawDebugRegisters {
+        bool displayMemoryReadWrites;
+        bool displayCacheLineActivity;
+    } __attribute__((packed));
+private:
+    volatile RawDebugRegisters& _memory;
+};
 
 #endif //I960SXCHIPSET_IODEVICE_H
