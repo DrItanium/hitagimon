@@ -143,8 +143,8 @@ public:
     bool cacheLineActivityLoggingEnabled() const { return _memory.displayCacheLineActivity; }
 private:
     struct RawDebugRegisters {
-        bool displayMemoryReadWrites;
-        bool displayCacheLineActivity;
+        volatile bool displayMemoryReadWrites;
+        volatile bool displayCacheLineActivity;
     } __attribute__((packed));
 private:
     volatile RawDebugRegisters& _memory;
