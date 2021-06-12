@@ -5,9 +5,6 @@
 #include "IODevice.h"
 #include <string>
 
-BuiltinLED theLED;
-BuiltinTFTDisplay theDisplay;
-BuiltinConsole theConsole;
 extern "C" int doommain (int argc, char** argv) ;
 uint64_t delay(uint64_t count) {
     volatile uint64_t value = 0;
@@ -17,6 +14,9 @@ uint64_t delay(uint64_t count) {
     return value;
 }
 int main() {
+    BuiltinLED theLED;
+    BuiltinTFTDisplay theDisplay;
+    BuiltinConsole theConsole;
     std::string msg2("are very tasty!");
     theConsole.write('d');
     theConsole.write('o');
