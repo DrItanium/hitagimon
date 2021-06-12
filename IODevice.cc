@@ -173,3 +173,22 @@ void BuiltinChipsetDebugInterface::enableMemoryReadWriteLogging() {
 void BuiltinChipsetDebugInterface::disableMemoryReadWriteLogging() {
     _memory.displayMemoryReadWrites = false;
 }
+
+BuiltinLED&
+getBuiltinLed() {
+    static BuiltinLED theLed;
+    return theLed;
+}
+
+BuiltinConsole& getConsole() {
+    static BuiltinConsole theConsole;
+    return theConsole;
+}
+BuiltinTFTDisplay& getDisplay() {
+    static BuiltinTFTDisplay theDisplay;
+    return theDisplay;
+}
+BuiltinChipsetDebugInterface& getChipsetDebugInterface() {
+    static BuiltinChipsetDebugInterface theDebug;
+    return theDebug;
+}
