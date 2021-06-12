@@ -18,15 +18,7 @@ int main() {
     BuiltinTFTDisplay& theDisplay = getDisplay();
     BuiltinConsole& theConsole = getConsole();
     BuiltinChipsetDebugInterface& debugInterface = getChipsetDebugInterface();
-    theConsole.write('d');
-    theConsole.write('o');
-    theConsole.write('n');
-    theConsole.write('u');
-    theConsole.write('t');
-    theConsole.write('s');
-    theConsole.write(' ');
-    theConsole.writeLine("are very tasty!");
-    theConsole.flush();
+    theConsole.writeLine("donuts are very tasty!");
     theDisplay.clearScreen();
     volatile uint64_t count = 0;
     volatile uint16_t prevColor = 0xFFFF;
