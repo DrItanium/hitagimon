@@ -225,6 +225,9 @@ fault_proc_table:
  *    call to main. No opens have been done for STDIN, STDOUT, or STDERR
  */
     callx _init_fp
+    ldconst 0xFEFFFF00, g1
+    ldconst 0xFFFFFFFF, g0
+    stob g0, 0(g1) # enable read write chipset logging
     mov 0, g14      # C compiler expects g14 = 0
     callx _main     # assume a main for startup
 
