@@ -18,6 +18,7 @@ int main() {
     BuiltinTFTDisplay theDisplay;
     BuiltinConsole theConsole;
     BuiltinChipsetDebugInterface debugInterface;
+    debugInterface.enableMemoryReadWriteLogging();
     theConsole.write('d');
     theConsole.write('o');
     theConsole.write('n');
@@ -25,7 +26,6 @@ int main() {
     theConsole.write('t');
     theConsole.write('s');
     theConsole.write(' ');
-    debugInterface.enableMemoryReadWriteLogging();
     theConsole.writeLine("are very tasty!");
     debugInterface.disableMemoryReadWriteLogging();
     theConsole.flush();

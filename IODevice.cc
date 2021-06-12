@@ -4,7 +4,6 @@
 
 #include "IODevice.h"
 #include "ChipsetInteract.h"
-#include <string.h>
 
 
 BuiltinIOBaseDevice::BuiltinIOBaseDevice(uint32_t offset) : offset_(offset), baseAddress_(getIOBase0Address(offset)) { }
@@ -58,9 +57,8 @@ BuiltinConsole::flush() {
 }
 void
 BuiltinConsole::write(const char* ptr, bool newline) {
-    size_t len = strlen(ptr);
-    for (size_t i = 0; i < len; ++i) {
-        write(ptr[i]);
+    for (char* v = const_cast<char*>(ptr); *v != 0; ++v) {
+        write(*v);
     }
     if (newline) {
         write('\n');
