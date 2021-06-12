@@ -18,7 +18,6 @@ int main() {
     BuiltinTFTDisplay theDisplay;
     BuiltinConsole theConsole;
     BuiltinChipsetDebugInterface debugInterface;
-    debugInterface.enableMemoryReadWriteLogging();
     theConsole.write('d');
     theConsole.write('o');
     theConsole.write('n');
@@ -27,7 +26,6 @@ int main() {
     theConsole.write('s');
     theConsole.write(' ');
     theConsole.writeLine("are very tasty!");
-    debugInterface.disableMemoryReadWriteLogging();
     theConsole.flush();
     theDisplay.clearScreen();
     volatile uint64_t count = 0;

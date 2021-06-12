@@ -150,4 +150,12 @@ private:
     volatile RawDebugRegisters& _memory;
 };
 
+class TemporaryReadWriteLoggingEnable {
+public:
+    TemporaryReadWriteLoggingEnable(BuiltinChipsetDebugInterface& iface) : iface_(iface) { iface_.enableMemoryReadWriteLogging(); }
+    ~TemporaryReadWriteLoggingEnable() { iface_.disableMemoryReadWriteLogging(); }
+private:
+    BuiltinChipsetDebugInterface& iface_;
+};
+
 #endif //I960SXCHIPSET_IODEVICE_H
