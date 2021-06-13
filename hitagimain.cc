@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include "IODevice.h"
 #include <string>
+#include <iostream>
 
 extern "C" int doommain (int argc, char** argv) ;
 uint64_t delay(uint64_t count) {
@@ -14,13 +15,19 @@ uint64_t delay(uint64_t count) {
     return value;
 }
 int main() {
+    std::string str("the string states \"donuts are very tasty!\"");
+    std::cout << "HITAGIMON" << std::endl;
+    std::cout << "Built on " << __DATE__ << " at " << __TIME__ << std::endl;
+    std::cout << "--------------------------------------------" << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
     BuiltinLED& theLED = getBuiltinLed();
     BuiltinTFTDisplay& theDisplay = getDisplay();
     BuiltinChipsetDebugInterface& debugInterface = getChipsetDebugInterface();
     BuiltinConsole& theConsole = getConsole();
     theConsole.writeLine("donuts are very tasty!");
-    std::string str("the string states \"donuts are very tasty!\"");
-    theConsole.writeLine(str.c_str());
+    std::cout << str << std::endl;
     theDisplay.clearScreen();
     volatile uint64_t count = 0;
     volatile uint16_t prevColor = 0xFFFF;
