@@ -156,10 +156,14 @@ public:
     void disableCacheLineActivityLogging();
     bool memoryReadWriteLoggingEnabled() const { return _memory.displayMemoryReadWrites; }
     bool cacheLineActivityLoggingEnabled() const { return _memory.displayCacheLineActivity; }
+    bool sdCardActivityLoggingEnabled() const { return _memory.displaySDCardActivity; }
+    void enableSDCardActivityLogging();
+    void disableSDCardActivityLogging();
 private:
     struct RawDebugRegisters {
         volatile bool displayMemoryReadWrites;
         volatile bool displayCacheLineActivity;
+        volatile bool displaySDCardActivity;
     } __attribute__((packed));
 private:
     volatile RawDebugRegisters& _memory;

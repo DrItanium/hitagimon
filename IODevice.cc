@@ -174,6 +174,14 @@ void BuiltinChipsetDebugInterface::disableMemoryReadWriteLogging() {
     _memory.displayMemoryReadWrites = false;
 }
 
+void BuiltinChipsetDebugInterface::disableSDCardActivityLogging() {
+    _memory.displaySDCardActivity = false;
+}
+
+void BuiltinChipsetDebugInterface::enableSDCardActivityLogging() {
+    _memory.displaySDCardActivity = true;
+}
+
 BuiltinLED&
 getBuiltinLed() {
     static BuiltinLED theLed;
