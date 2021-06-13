@@ -177,6 +177,23 @@ private:
     BuiltinChipsetDebugInterface& iface_;
 };
 
+class TemporaryRWLoggingDisabler {
+public:
+    TemporaryRWLoggingDisabler(BuiltinChipsetDebugInterface& iface) : iface_(iface), shouldToggle_(iface.memoryReadWriteLoggingEnabled())  {
+        if (shouldToggle_) {
+            iface_.disableMemoryReadWriteLogging();
+        }
+    }
+    ~TemporaryRWLoggingDisabler() {
+        if (shouldToggle_) {
+            iface_.enableMemoryReadWriteLogging();
+        }
+    }
+private:
+    BuiltinChipsetDebugInterface& iface_;
+    bool shouldToggle_;
+};
+
 class SDCardInterface : public BuiltinIOBaseDevice {
 public:
     SDCardInterface();
