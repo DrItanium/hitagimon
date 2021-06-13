@@ -177,8 +177,6 @@ class SDCardInterface : public BuiltinIOBaseDevice {
 public:
     SDCardInterface();
 private:
-    void triggerAction();
-private:
     union ResultPack {
         uint8_t bytes[16];
         uint16_t halves[16 / sizeof(uint16_t)];

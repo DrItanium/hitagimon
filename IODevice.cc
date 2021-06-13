@@ -216,7 +216,7 @@ BuiltinConsole::read(char *buffer, size_t nbyte) const {
 }
 namespace SDCard {
     enum Operations {
-        None = 0,
+        NoneOperation = 0,
         OpenFile,
         CloseFile,
         FileExists,
@@ -239,9 +239,22 @@ namespace SDCard {
         GetFileSize,
         GetFileCoordinates,
     };
+
+    enum ErrorCodes {
+        NoError = 0,
+        NoCommandProvided,
+        UndefinedCommandProvided,
+        BadFileId,
+        FileIsNotValid,
+        CriticalFileSideChannelAttempt,
+        UnimplementedCommand,
+    };
 } // end namespace SDCard
 
-SDCardInterface::SDCardInterface() : BuiltinIOBaseDevice(0x300), _memory(memory<RawSDCardInterface>(getIOBase0Address(0x300))) {}
+SDCardInterface::SDCardInterface() : BuiltinIOBaseDevice(0x300), _memory(memory<RawSDCardInterface>(getIOBase0Address(0x300))) {
+    // clear out any operations
+    _memory.command = SDCard::NoneOperation;
+}
 
 
 SDCardInterface& getSDCardInterface() {
