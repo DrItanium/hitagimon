@@ -26,69 +26,73 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * Fault handler routines
  */
 #include "IODevice.h"
-extern "C" void user_reserved(void);
-extern "C" void user_trace(void);
-extern "C" void user_operation(void);
-extern "C" void user_arithmetic(void);
-extern "C" void user_real_arithmetic(void);
-extern "C" void user_constraint(void);
-extern "C" void user_protection(void);
-extern "C" void user_machine(void);
-extern "C" void user_type(void);
+struct fault_data {
+    volatile unsigned reserved;
+    volatile unsigned override[3];
+    volatile unsigned fdata[3];
+    volatile unsigned override_data;
+    volatile unsigned pc;
+    volatile unsigned ac;
+    volatile unsigned int	fsubtype:8,
+            freserved:8,
+            ftype:8,
+            fflags:8;
+    volatile unsigned int *faddress;
+};
 extern "C"
 void
-user_reserved(void) {
+user_reserved(fault_data* record) {
     TemporaryRWLoggingDisabler disable(getChipsetDebugInterface());
     getConsole().writeLine("USER RESERVED FAULT RAISED!");
 }
 
 extern "C"
 void
-user_trace(void) {
+user_trace(fault_data* record) {
     TemporaryRWLoggingDisabler disable(getChipsetDebugInterface());
     getConsole().writeLine("USER TRACE FAULT RAISED!");
 }
 
 extern "C"
 void
-user_operation(void) {
+user_operation(fault_data* record) {
     TemporaryRWLoggingDisabler disable(getChipsetDebugInterface());
     getConsole().writeLine("USER OPERATION FAULT RAISED!");
 }
 extern "C"
 void
-user_arithmetic(void) {
+user_arithmetic(fault_data* record) {
     TemporaryRWLoggingDisabler disable(getChipsetDebugInterface());
     getConsole().writeLine("USER ARITHMETIC FAULT RAISED!");
 }
 extern "C"
 void
-user_real_arithmetic(void) {
+user_real_arithmetic(fault_data* record) {
     TemporaryRWLoggingDisabler disable(getChipsetDebugInterface());
     getConsole().writeLine("USER REAL ARITHMETIC FAULT RAISED!");
 }
 extern "C"
 void
-user_constraint(void) {
+user_constraint(fault_data* record) {
     TemporaryRWLoggingDisabler disable(getChipsetDebugInterface());
     getConsole().writeLine("USER CONSTRAINT FAULT RAISED!");
 }
 extern "C"
 void
-user_protection(void) {
+user_protection(fault_data* record) {
     TemporaryRWLoggingDisabler disable(getChipsetDebugInterface());
     getConsole().writeLine("USER PROTECTION FAULT RAISED!");
 }
 extern "C"
 void
-user_machine(void) {
+user_machine(fault_data* record) {
     TemporaryRWLoggingDisabler disable(getChipsetDebugInterface());
 
     getConsole().writeLine("USER MACHINE FAULT RAISED!");
 }
 extern "C"
 void
-user_type(void) {
+user_type(fault_data* record) {
     TemporaryRWLoggingDisabler disable(getChipsetDebugInterface());
     getConsole().writeLine("USER TYPE FAULT RAISED!");
 }
