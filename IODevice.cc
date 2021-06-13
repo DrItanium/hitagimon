@@ -214,3 +214,37 @@ BuiltinConsole::read(char *buffer, size_t nbyte) const {
     }
     return numRead;
 }
+namespace SDCard {
+    enum Operations {
+        None = 0,
+        OpenFile,
+        CloseFile,
+        FileExists,
+        MakeDirectory,
+        RemoveDirectory,
+        GetNumberOfOpenFiles,
+        GetMaximumNumberOfOpenFiles,
+        GetFixedPathMaximum,
+        // File specific operations
+        IsValidFileId = 0x8000,
+        FileRead,
+        FileWrite,
+        FileFlush,
+        FileSeek,
+        FileIsOpen,
+        GetFileName,
+        GetFileBytesAvailable,
+        GetFilePosition,
+        GetFilePermissions,
+        GetFileSize,
+        GetFileCoordinates,
+    };
+} // end namespace SDCard
+
+SDCardInterface::SDCardInterface() : BuiltinIOBaseDevice(0x300), _memory(memory<RawSDCardInterface>(getIOBase0Address(0x300))) {}
+
+
+SDCardInterface& getSDCardInterface() {
+    static SDCardInterface theSDCard;
+    return theSDCard;
+}

@@ -173,9 +173,37 @@ private:
     BuiltinChipsetDebugInterface& iface_;
 };
 
+class SDCardInterface : public BuiltinIOBaseDevice {
+public:
+    SDCardInterface();
+private:
+    void triggerAction();
+private:
+    union ResultPack {
+        uint8_t bytes[16];
+        uint16_t halves[16 / sizeof(uint16_t)];
+        uint32_t words[16 / sizeof(uint32_t)];
+        uint64_t quads[16 / sizeof(uint64_t)];
+    };
+    struct RawSDCardInterface {
+        volatile uint16_t doorbell;
+        volatile uint16_t command;
+        volatile uint16_t fileId;
+        volatile uint16_t modeBits;
+        volatile uint32_t seekPosition;
+        volatile uint16_t whence;
+        volatile ResultPack result;
+        volatile uint16_t errorCode;
+        volatile char path[80];
+    } __attribute__((packed));
+private:
+    volatile RawSDCardInterface& _memory;
+};
+
 BuiltinLED& getBuiltinLed();
 BuiltinConsole& getConsole();
 BuiltinTFTDisplay& getDisplay();
 BuiltinChipsetDebugInterface& getChipsetDebugInterface();
+SDCardInterface& getSDCardInterface();
 
 #endif //I960SXCHIPSET_IODEVICE_H
