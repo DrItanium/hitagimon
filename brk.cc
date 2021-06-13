@@ -10,36 +10,38 @@
 #include "IORoutines.h"
 #include "IODevice.h"
 
-int
-_sys_write(int fd, const void* buf, size_t sz, int& nwrite) {
-    nwrite = 0;
-    switch (fd) {
-        case STDIN_FILENO:
-            break;
-        case STDOUT_FILENO:
-            break;
-        case STDERR_FILENO:
-            break;
-        default:
-            errno = EBADF;
-            return -1;
+namespace
+{
+    int
+    sys_write(int fd, const void *buf, size_t sz, int &nwrite) {
+        nwrite = 0;
+        switch (fd) {
+            case STDOUT_FILENO:
+            case STDERR_FILENO:
+                nwrite = getConsole().write(reinterpret_cast<char *>(const_cast<void *>(buf)), sz);
+                break;
+            case STDIN_FILENO:
+            default:
+                errno = EBADF;
+                return -1;
+        }
+        return 0;
     }
-    return 0;
-}
-int
-_sys_read (int fd, void* buf, size_t sz, int& nread) {
-    //char* theBuf = reinterpret_cast<char*>(buf);
-    nread = 0;
-    switch (fd) {
-        case STDIN_FILENO:
-            break;
-        default:
-            errno = EBADF;
-            return -1;
+    int
+    sys_read(int fd, void *buf, size_t sz, int &nread) {
+        //char* theBuf = reinterpret_cast<char*>(buf);
+        nread = 0;
+        switch (fd) {
+            case STDIN_FILENO:
+                nread = getConsole().read(reinterpret_cast<char *>(buf), sz);
+                break;
+            default:
+                errno = EBADF;
+                return -1;
+        }
+        return 0;
     }
-    return 0;
 }
-
 const size_t RamSize = 0x20000000;
 const size_t RamStart = 0x80000000;
 const size_t RamEnd = RamStart + RamSize;
@@ -105,7 +107,7 @@ int
 write (int fd, const void* buf, size_t sz) {
     int numWritten = 0;
     /// @todo Implement _sys_write equivalent
-    int r = _sys_write(fd, buf, sz, numWritten);
+    int r = sys_write(fd, buf, sz, numWritten);
     if (r != 0) {
         errno = r;
         return -1;
@@ -117,7 +119,7 @@ int
 read (int fd, void* buf, size_t sz)
 {
     int nread = 0;
-    int r = _sys_read (fd, buf, sz, nread);
+    int r = sys_read (fd, buf, sz, nread);
     if (r != 0)
     {
         errno = r;
@@ -150,12 +152,20 @@ _exit(int status) {
 extern "C"
 int
 kill (int pid, int signal) {
+    getConsole().writeLine("KILLING PROCESS!!!!");
     exit (signal);
 }
-
+namespace {
+   int
+   sys_open(char* filePath, int mode, int perms) {
+       errno = EBADF;
+       return -1;
+   }
+}
 extern "C"
 int
 open (char* file, int mode, int perms) {
     /// @todo interface this function with the SDCard
-    return 0;
+    /// @todo write the _sys_open function
+    return sys_open(file, mode, perms);
 }

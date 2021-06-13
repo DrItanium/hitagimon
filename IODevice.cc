@@ -38,7 +38,7 @@ BuiltinConsole::availableForWrite() const {
 }
 
 uint16_t
-BuiltinConsole::read() {
+BuiltinConsole::read() const {
     return _memory.ioPort ;
 }
 
@@ -202,7 +202,7 @@ BuiltinConsole::write(char *buffer, size_t nbyte) {
 }
 
 ssize_t
-BuiltinConsole::read(char *buffer, size_t nbyte) {
+BuiltinConsole::read(char *buffer, size_t nbyte) const {
     ssize_t numRead = 0;
     for (size_t i = 0; i < nbyte; ++i) {
         int16_t curr = static_cast<int16_t>(_memory.ioPort);
