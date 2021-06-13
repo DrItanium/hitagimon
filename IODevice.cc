@@ -192,3 +192,25 @@ BuiltinChipsetDebugInterface& getChipsetDebugInterface() {
     static BuiltinChipsetDebugInterface theDebug;
     return theDebug;
 }
+
+ssize_t
+BuiltinConsole::write(char *buffer, size_t nbyte) {
+    for (size_t i = 0; i < nbyte; ++i) {
+        _memory.ioPort = buffer[i];
+    }
+    return nbyte;
+}
+
+ssize_t
+BuiltinConsole::read(char *buffer, size_t nbyte) {
+    ssize_t numRead = 0;
+    for (size_t i = 0; i < nbyte; ++i) {
+        int16_t curr = static_cast<int16_t>(_memory.ioPort);
+        if (curr == -1) {
+            return numRead;
+        }
+        buffer[i] = static_cast<char>(curr);
+        ++numRead;
+    }
+    return numRead;
+}

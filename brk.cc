@@ -10,9 +10,9 @@
 #include "IORoutines.h"
 #include "IODevice.h"
 
-extern "C"
 int
-_sys_write(int fd, const void* buf, size_t sz, int* nwrite) {
+_sys_write(int fd, const void* buf, size_t sz, int& nwrite) {
+    nwrite = 0;
     switch (fd) {
         case STDIN_FILENO:
             break;
@@ -24,9 +24,22 @@ _sys_write(int fd, const void* buf, size_t sz, int* nwrite) {
             errno = EBADF;
             return -1;
     }
-    *nwrite = 0;
     return 0;
 }
+int
+_sys_read (int fd, void* buf, size_t sz, int& nread) {
+    //char* theBuf = reinterpret_cast<char*>(buf);
+    nread = 0;
+    switch (fd) {
+        case STDIN_FILENO:
+            break;
+        default:
+            errno = EBADF;
+            return -1;
+    }
+    return 0;
+}
+
 const size_t RamSize = 0x20000000;
 const size_t RamStart = 0x80000000;
 const size_t RamEnd = RamStart + RamSize;
@@ -92,7 +105,7 @@ int
 write (int fd, const void* buf, size_t sz) {
     int numWritten = 0;
     /// @todo Implement _sys_write equivalent
-    int r = _sys_write(fd, buf, sz, &numWritten);
+    int r = _sys_write(fd, buf, sz, numWritten);
     if (r != 0) {
         errno = r;
         return -1;
@@ -104,12 +117,7 @@ int
 read (int fd, void* buf, size_t sz)
 {
     int nread = 0;
-    int r = 0;
-#if 0
-    r = _sys_read (fd, buf, sz, &nread);
-#else
-    r = 0;
-#endif
+    int r = _sys_read (fd, buf, sz, nread);
     if (r != 0)
     {
         errno = r;

@@ -5,6 +5,7 @@
 #ifndef I960SXCHIPSET_IODEVICE_H
 #define I960SXCHIPSET_IODEVICE_H
 #include <stdint.h>
+#include <unistd.h>
 #include "ChipsetInteract.h"
 
 class BuiltinIOBaseDevice {
@@ -39,11 +40,26 @@ public:
     bool available() const;
     bool availableForWrite() const;
     uint16_t read();
+
     void write(uint16_t value);
     void write(char c);
     void write(const char* ptr);
     void writeLine();
     void writeLine(const char* ptr);
+    /**
+     * @brief sequential read from the console into the provided buffer
+     * @param buffer the buffer to save to
+     * @param nbyte the maximum number of bytes to read
+     * @return number of bytes read
+     */
+    ssize_t read(char* buffer, size_t nbyte);
+    /**
+     * @brief Sequential write to the console into the provided buffer
+     * @param buffer the buffer to write into
+     * @param nbyte the maximum number of bytes to write
+     * @return the number of bytes written
+     */
+    ssize_t write(char* buffer, size_t nbyte);
 private:
     struct RawConsoleStructure {
         volatile uint16_t flushPort;
