@@ -15,17 +15,21 @@ uint64_t delay(uint64_t count) {
     return value;
 }
 int main() {
-    std::string str("the string states \"donuts are very tasty!\"");
-    std::cout << "HITAGIMON" << std::endl;
-    std::cout << "Built on " << __DATE__ << " at " << __TIME__ << std::endl;
-    std::cout << "--------------------------------------------" << std::endl;
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << std::endl;
-    BuiltinLED& theLED = getBuiltinLed();
-    BuiltinTFTDisplay& theDisplay = getDisplay();
     BuiltinChipsetDebugInterface& debugInterface = getChipsetDebugInterface();
     BuiltinConsole& theConsole = getConsole();
+    theConsole.writeLine("Entered main!");
+    std::string str("the string states \"donuts are very tasty!\"");
+    {
+        TemporaryReadWriteLoggingEnable wrlogging(debugInterface);
+        std::cout << "HITAGIMON" << std::endl;
+        std::cout << "Built on " << __DATE__ << " at " << __TIME__ << std::endl;
+        std::cout << "--------------------------------------------" << std::endl;
+        std::cout << std::endl;
+        std::cout << std::endl;
+        std::cout << std::endl;
+    }
+    BuiltinLED& theLED = getBuiltinLed();
+    BuiltinTFTDisplay& theDisplay = getDisplay();
     theConsole.writeLine("donuts are very tasty!");
     std::cout << str << std::endl;
     theDisplay.clearScreen();
