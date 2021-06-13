@@ -22,8 +22,7 @@ namespace
                 break;
             case STDIN_FILENO:
             default:
-                errno = EBADF;
-                return -1;
+                return EBADF;
         }
         return 0;
     }
@@ -36,8 +35,7 @@ namespace
                 nread = getConsole().read(reinterpret_cast<char *>(buf), sz);
                 break;
             default:
-                errno = EBADF;
-                return -1;
+                return EBADF;
         }
         return 0;
     }
@@ -77,6 +75,12 @@ isatty (int file) {
     return file < 3;
 }
 
+namespace {
+    off_t
+    sys_lseek(int fd, off_t offset, int type) {
+        return 0;
+    }
+}
 extern "C"
 off_t
 lseek(int fd, off_t offset, int type) {
