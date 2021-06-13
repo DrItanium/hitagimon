@@ -19,8 +19,11 @@ int main() {
     BuiltinChipsetDebugInterface& debugInterface = getChipsetDebugInterface();
     BuiltinConsole& theConsole = getConsole();
     theConsole.writeLine("donuts are very tasty!");
-    std::string str("the string states \"donuts are very tasty!\"");
-    theConsole.writeLine(str.c_str());
+    {
+        TemporaryReadWriteLoggingEnable thing(debugInterface);
+        std::string str("the string states \"donuts are very tasty!\"");
+        theConsole.writeLine(str.c_str());
+    }
     theDisplay.clearScreen();
     volatile uint64_t count = 0;
     volatile uint16_t prevColor = 0xFFFF;

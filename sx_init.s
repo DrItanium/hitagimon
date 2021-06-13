@@ -175,12 +175,22 @@ fault_proc_table:
 .global theDataSectionLength
 .global theDataSectionROMLocation
 .global __data_start__
+.global __bss_start__
+.global theBSSSectionLength
+# zero out bss first as we may spill over into data
+# we need to do this to make sure that bss starts cleared out
+# the hitgai board uses a file on an sd card as ram. This persistence is a curse because bss is not zero because of it.
+    lda theDataSectionLength, g0 # load length of data section in rom
+    lda 0, g4 # initialize offset to 0
+    lda __bss_start__, g1 # load destination
+    bal zero_data # brach to move routine
 # copy DATA section to RAM space
     lda theDataSectionLength, g0 # load length of data section in rom
     lda 0, g4 # initialize offset to 0
     lda theDataSectionROMLocation, g1 # load source
     lda __data_start__, g2 # load destination
     bal move_data # brach to move routine
+
 
  # fix up the PRCB to point to a new interrupt table
     lda intr_ram, g12 # load address
@@ -264,11 +274,21 @@ reinitialize_iac:
 /* -- Below is a software loop to move data */
 
 move_data:
-    ldq (g1)[g4*1], g8  # load 4 workds into g8
+    ldq (g1)[g4*1], g8  # load 4 words into g8
     stq g8, (g2)[g4*1]  # store to RAM block
     addi g4,16, g4      # increment index
     cmpibg  g0,g4, move_data # loop until done
     bx (g14)
+
+zero_data:
+    ldconst 0, g8  #load zero into g8 and g9
+    ldconst 0, g9
+zero_data_loop:
+    stq g8, (g1)[g4*1]            # store to RAM block
+    addi g4,16, g4                # increment index
+    cmpibg  g0,g4, zero_data_loop # loop until done
+    bx (g14)
+
 
 /* The routine below fixes up the stack for a flase interrupt return.
  * We have reserved area on the stack before the call to this
