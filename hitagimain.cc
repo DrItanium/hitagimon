@@ -19,19 +19,13 @@ int main() {
     BuiltinConsole& theConsole = getConsole();
     theConsole.writeLine("Entered main!");
     std::string str("the string states \"donuts are very tasty!\"");
-    {
-        TemporaryReadWriteLoggingEnable wrlogging(debugInterface);
-        std::cout << "HITAGIMON" << std::endl;
-        std::cout << "Built on " << __DATE__ << " at " << __TIME__ << std::endl;
-        std::cout << "--------------------------------------------" << std::endl;
-        std::cout << std::endl;
-        std::cout << std::endl;
-        std::cout << std::endl;
-    }
+    theConsole.writeLine("HITAGIMON");
+    printf("Built on %s at %s\n", __DATE__, __TIME__);
+    printf("--------------------------------------------\n\n\n\n");
     BuiltinLED& theLED = getBuiltinLed();
     BuiltinTFTDisplay& theDisplay = getDisplay();
     theConsole.writeLine("donuts are very tasty!");
-    std::cout << str << std::endl;
+    theConsole.writeLine(str.c_str());
     theDisplay.clearScreen();
     volatile uint64_t count = 0;
     volatile uint16_t prevColor = 0xFFFF;

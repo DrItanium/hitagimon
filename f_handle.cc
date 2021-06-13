@@ -26,6 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * Fault handler routines
  */
 #include "IODevice.h"
+#include <stdio.h>
 struct fault_data {
     volatile unsigned reserved;
     volatile unsigned override[3];
@@ -39,11 +40,16 @@ struct fault_data {
             fflags:8;
     volatile unsigned int *faddress;
 };
+void
+displayFaultData(fault_data* record) {
+    printf("PC: %x\n", record->pc);
+}
 extern "C"
 void
 user_reserved(fault_data* record) {
     TemporaryRWLoggingDisabler disable(getChipsetDebugInterface());
     getConsole().writeLine("USER RESERVED FAULT RAISED!");
+    displayFaultData(record);
 }
 
 extern "C"
@@ -51,6 +57,7 @@ void
 user_trace(fault_data* record) {
     TemporaryRWLoggingDisabler disable(getChipsetDebugInterface());
     getConsole().writeLine("USER TRACE FAULT RAISED!");
+    displayFaultData(record);
 }
 
 extern "C"
@@ -58,41 +65,47 @@ void
 user_operation(fault_data* record) {
     TemporaryRWLoggingDisabler disable(getChipsetDebugInterface());
     getConsole().writeLine("USER OPERATION FAULT RAISED!");
+    displayFaultData(record);
 }
 extern "C"
 void
 user_arithmetic(fault_data* record) {
     TemporaryRWLoggingDisabler disable(getChipsetDebugInterface());
     getConsole().writeLine("USER ARITHMETIC FAULT RAISED!");
+    displayFaultData(record);
 }
 extern "C"
 void
 user_real_arithmetic(fault_data* record) {
     TemporaryRWLoggingDisabler disable(getChipsetDebugInterface());
     getConsole().writeLine("USER REAL ARITHMETIC FAULT RAISED!");
+    displayFaultData(record);
 }
 extern "C"
 void
 user_constraint(fault_data* record) {
     TemporaryRWLoggingDisabler disable(getChipsetDebugInterface());
     getConsole().writeLine("USER CONSTRAINT FAULT RAISED!");
+    displayFaultData(record);
 }
 extern "C"
 void
 user_protection(fault_data* record) {
     TemporaryRWLoggingDisabler disable(getChipsetDebugInterface());
     getConsole().writeLine("USER PROTECTION FAULT RAISED!");
+    displayFaultData(record);
 }
 extern "C"
 void
 user_machine(fault_data* record) {
     TemporaryRWLoggingDisabler disable(getChipsetDebugInterface());
-
     getConsole().writeLine("USER MACHINE FAULT RAISED!");
+    displayFaultData(record);
 }
 extern "C"
 void
 user_type(fault_data* record) {
     TemporaryRWLoggingDisabler disable(getChipsetDebugInterface());
     getConsole().writeLine("USER TYPE FAULT RAISED!");
+    displayFaultData(record);
 }
