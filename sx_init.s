@@ -224,13 +224,13 @@ _user_type_core:
 .global __data_start__
 .global __bss_start__
 .global theBSSSectionLength
-    bal _preinit_activate_read_write_transactions
+    #bal _preinit_activate_read_write_transactions
 # clear the bss section in ram
     lda theBSSSectionLength, g0 # load length of data section in rom
     lda 0, g4 # initialize offset to 0
     lda __bss_start__, g1 # load destination
     bal zero_data # brach to move routine
-    bal _preinit_deactivate_read_write_transactions
+    #bal _preinit_deactivate_read_write_transactions
 # copy DATA section to RAM space
     lda theDataSectionLength, g0 # load length of data section in rom
     lda 0, g4 # initialize offset to 0
