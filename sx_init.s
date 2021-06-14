@@ -320,11 +320,13 @@ move_data:
     bx (g14)
 
 
-# setup the bss section
+# setup the bss section so do giant blocks of writes
 zero_data:
     ldconst 0, g8
     ldconst 0, g9
 zero_data_loop:
+    stq g8, (g1)[g4*1]            # store to RAM block
+    addi g4,16, g4                # increment index
     stq g8, (g1)[g4*1]            # store to RAM block
     addi g4,16, g4                # increment index
     cmpibg  g0,g4, zero_data_loop # loop until done
