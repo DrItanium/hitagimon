@@ -43,7 +43,7 @@ int main() {
         }
         count += delay(1000);
     }
-    //doommain(0, 0);
+    doommain(0, 0);
     return count;
 }
 
