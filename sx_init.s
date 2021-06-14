@@ -325,6 +325,8 @@ move_data:
 zero_data:
     ldconst 0, g8
     ldconst 0, g9
+	ldconst 0, g10
+	ldconst 0, g11
 zero_data_loop:
     stq g8, (g1)[g4*1]            # store to RAM block
     addi g4,16, g4                # increment index
