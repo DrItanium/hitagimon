@@ -9,6 +9,16 @@ MEMORY /* describe the partitioning of the memory space for the application */
 	 * the 32-bit address space and be 512 megs in size */ 
 	ram (!rx) : o = 0x80000000, l = 512M 
 
+	/* NOTE: do not uncomment these lines, this is here as a reference to the
+	 * design of the hitagi board */
+	/* primary io space starts at 0xFE00'0000 and is memory mapped io*/
+	/* io0 (!rx) : o = 0xFE000000, l = 16M  */
+	/* cpu_internal (!rwxail) : o = 0xFF000000, l = 16M - 1 */
+	/* NOTE: the chipset will catch any unmapped reads and writes, report them,
+	 * and either do nothing (on a write) or return zero (on a read)
+	 */
+
+
 	/* the format of a memory entry is: name (permissions) : <flags> 
 	ORIGIN or o is the starting location LENGTH or l is the length of the
 	memory section 
