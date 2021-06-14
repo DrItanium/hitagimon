@@ -201,6 +201,18 @@ _user_type_core:
  start_ip:
     mov 0, g14 # C compiler expects g14 = 0
 
+.global theDataSectionLength
+.global theDataSectionROMLocation
+.global __data_start__
+.global __bss_start__
+.global theBSSSectionLength
+    #bal _preinit_activate_read_write_transactions
+	# clear the bss section in ram first before we do anything else!
+    lda theBSSSectionLength, g0 # load length of data section in rom
+    lda 0, g4 # initialize offset to 0
+    lda __bss_start__, g1 # load destination
+    bal zero_data # brach to move routine
+    #bal _preinit_deactivate_read_write_transactions
 # copy the interrupt table to RAM space
     lda 1024, g0 # load length of the interrupt table
     lda 0, g4 # initialize offset to 0
@@ -219,19 +231,8 @@ _user_type_core:
     lda intr_ram, g12 # load address
     st g12, 20(g2) # store into PRCB
 
-.global theDataSectionLength
-.global theDataSectionROMLocation
-.global __data_start__
-.global __bss_start__
-.global theBSSSectionLength
-    #bal _preinit_activate_read_write_transactions
-# clear the bss section in ram
-    lda theBSSSectionLength, g0 # load length of data section in rom
-    lda 0, g4 # initialize offset to 0
-    lda __bss_start__, g1 # load destination
-    bal zero_data # brach to move routine
-    #bal _preinit_deactivate_read_write_transactions
 # copy DATA section to RAM space
+# then transfer the data section over to ram
     lda theDataSectionLength, g0 # load length of data section in rom
     lda 0, g4 # initialize offset to 0
     lda theDataSectionROMLocation, g1 # load source
