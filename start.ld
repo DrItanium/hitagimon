@@ -31,8 +31,10 @@ SECTIONS
     } >rom
     .bss :
     {
+        __bss_start__ = .;
         *(.bss)
         *(COMMON)
+        __bss_end__ = .;
     } >ram
     .data :
     {
@@ -57,6 +59,7 @@ SECTIONS
 theDataSectionLength = (__data_end__ - __data_start__);
 theDataSectionROMLocation = 0x20000000;
 cs1 = -(system_address_table + prcb_ptr + start_ip) ;
+theBSSSectionLength = (__bss_end__ - __bss_start__);
 
 /* STARTUP ( CMakeFiles/hitagimon.dir/sx_init.s.o ) */
 /*

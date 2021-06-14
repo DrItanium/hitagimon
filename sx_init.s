@@ -215,10 +215,22 @@ _user_type_core:
     lda prcb_ptr, g1 # load source
     lda _prcb_ram, g2 # load destination
     bal move_data # branch to move routine
+ # fix up the PRCB to point to a new interrupt table
+    lda intr_ram, g12 # load address
+    st g12, 20(g2) # store into PRCB
 
 .global theDataSectionLength
 .global theDataSectionROMLocation
 .global __data_start__
+.global __bss_start__
+.global theBSSSectionLength
+    bal _preinit_activate_read_write_transactions
+# clear the bss section in ram
+    lda theBSSSectionLength, g0 # load length of data section in rom
+    lda 0, g4 # initialize offset to 0
+    lda __bss_start__, g1 # load destination
+    bal zero_data # brach to move routine
+    bal _preinit_deactivate_read_write_transactions
 # copy DATA section to RAM space
     lda theDataSectionLength, g0 # load length of data section in rom
     lda 0, g4 # initialize offset to 0
@@ -227,9 +239,6 @@ _user_type_core:
     bal move_data # brach to move routine
 
 
- # fix up the PRCB to point to a new interrupt table
-    lda intr_ram, g12 # load address
-    st g12, 20(g2) # store into PRCB
 
  /*
   * -- At this point, the PRCB, and interrupt table have been moved to RAM.
@@ -281,11 +290,6 @@ _init_fp:
     movre   fp1, fp2
     movre   fp2, fp3
     ret
-_activate_read_write_transactions:
-    ldconst 0xFEFFFF00, g1
-    ldconst 0xFFFFFFFF, g0
-    stob g0, 0(g1) # enable read write chipset logging
-    ret
 
 reinitialize_iac:
     .align 4
@@ -315,6 +319,28 @@ move_data:
     cmpibg  g0,g4, move_data # loop until done
     bx (g14)
 
+
+# setup the bss section
+zero_data:
+    ldconst 0, g8
+    ldconst 0, g9
+zero_data_loop:
+    stq g8, (g1)[g4*1]            # store to RAM block
+    addi g4,16, g4                # increment index
+    cmpibg  g0,g4, zero_data_loop # loop until done
+    bx (g14)
+
+_preinit_activate_read_write_transactions:
+    ldconst 0xFEFFFF00, g1
+    ldconst 0xFFFFFFFF, g0
+    stob g0, 0(g1) # enable read write chipset logging
+    bx (g14)
+
+_preinit_deactivate_read_write_transactions:
+    ldconst 0xFEFFFF00, g1
+    ldconst 0, g0
+    stob g0, 0(g1) # enable read write chipset logging
+    bx (g14)
 /* The routine below fixes up the stack for a flase interrupt return.
  * We have reserved area on the stack before the call to this
  * routine. We need to build a phony interrupt record here
