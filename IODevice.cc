@@ -8,22 +8,69 @@
 
 
 BuiltinIOBaseDevice::BuiltinIOBaseDevice(uint32_t offset) : offset_(offset), baseAddress_(getIOBase0Address(offset)) { }
-BuiltinLED::BuiltinLED(uint32_t offset) : BuiltinIOBaseDevice(offset), _memory(memory<uint8_t>(baseAddress_)) {
+ChipsetBasicFunctions::ChipsetBasicFunctions(uint32_t offset) : BuiltinIOBaseDevice(offset), _memory(memory<ChipsetRegistersRaw>(baseAddress_)) {
 
 }
-void
-BuiltinLED::toggle() {
-    _memory = (_memory != 0) ? 0 : 0xFF;
-}
-
 bool
-BuiltinLED::getValue() {
-    return _memory != 0;
+ChipsetBasicFunctions::getLEDValue() {
+    return _memory.led != 0;
 }
-
 void
-BuiltinLED::setValue(bool value) {
-    _memory = (value ? 0xFF : 0x00);
+ChipsetBasicFunctions::setLEDValue(bool value) {
+    _memory.led = (value ? 0xFF : 0x00);
+}
+void
+ChipsetBasicFunctions::toggleLED() {
+    _memory.led = (_memory.led != 0) ? 0 : 0xFF;
+
+}
+uint8_t
+ChipsetBasicFunctions::readPortZGPIO() {
+    return _memory.portzGPIO;
+}
+void
+ChipsetBasicFunctions::setPortZGPIO(uint8_t value) {
+    _memory.portzGPIO = value;
+
+}
+uint8_t
+ChipsetBasicFunctions::readPortZGPIOPullup() {
+    return _memory.portzGPIOPullup;
+}
+void
+ChipsetBasicFunctions::setPortZGPIOPullup(uint8_t value) {
+    _memory.portzGPIOPullup = value;
+
+}
+uint8_t
+ChipsetBasicFunctions::readPortZGPIOPolarity() {
+    return _memory.portzGPIOPolarity;
+}
+void
+ChipsetBasicFunctions::setPortZGPIOPolarity(uint8_t value) {
+    _memory.portzGPIOPolarity = value;
+
+}
+uint8_t
+ChipsetBasicFunctions::readPortZGPIODirection() {
+    return _memory.portzGPIODirection;
+}
+void
+ChipsetBasicFunctions::setPortZGPIODirection(uint8_t value) {
+    _memory.portzGPIODirection = value;
+
+}
+void
+ChipsetBasicFunctions::digitalWrite(PortZPins pin, bool value) {
+
+}
+void
+ChipsetBasicFunctions::pinMode(PortZPins pin, PinModes mode) {
+
+}
+bool
+ChipsetBasicFunctions::digitalRead(PortZPins pin) {
+    return false;
 }
 
 BuiltinConsole::BuiltinConsole(uint32_t offset) : BuiltinIOBaseDevice(offset), _memory(memory<RawConsoleStructure>(baseAddress_)) { }
@@ -182,9 +229,9 @@ void BuiltinChipsetDebugInterface::enableSDCardActivityLogging() {
     _memory.displaySDCardActivity = true;
 }
 
-BuiltinLED&
-getBuiltinLed() {
-    static BuiltinLED theLed;
+ChipsetBasicFunctions&
+getBasicChipsetInterface() {
+    static ChipsetBasicFunctions theLed;
     return theLed;
 }
 
@@ -269,3 +316,5 @@ SDCardInterface& getSDCardInterface() {
     static SDCardInterface theSDCard;
     return theSDCard;
 }
+
+

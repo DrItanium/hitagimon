@@ -17,17 +17,52 @@ protected:
     uint32_t offset_;
     uint32_t baseAddress_;
 };
+enum PortZPins {
+    PZ0 = 0,
+    PZ1,
+    PZ2,
+    PZ3,
+    PZ4,
+    PZ5,
+    PZ6,
+    PZ7,
+};
+
+enum PinModes {
+    INPUT,
+    OUTPUT,
+    INPUT_PULLUP,
+};
 /**
  * @brief Manages the builtin led provided by the chipset
  */
-class BuiltinLED : public BuiltinIOBaseDevice {
+class ChipsetBasicFunctions : public BuiltinIOBaseDevice {
 public:
-    BuiltinLED(uint32_t offset = 0);
-    bool getValue();
-    void setValue(bool value);
-    void toggle();
+    ChipsetBasicFunctions(uint32_t offset = 0);
+    bool getLEDValue();
+    void setLEDValue(bool value);
+    void toggleLED();
+    uint8_t readPortZGPIO();
+    void setPortZGPIO(uint8_t value);
+    uint8_t readPortZGPIOPullup();
+    void setPortZGPIOPullup(uint8_t value);
+    uint8_t readPortZGPIOPolarity();
+    void setPortZGPIOPolarity(uint8_t value);
+    uint8_t readPortZGPIODirection();
+    void setPortZGPIODirection(uint8_t value);
+    void digitalWrite(PortZPins pin, bool value);
+    void pinMode(PortZPins pin, PinModes mode);
+    bool digitalRead(PortZPins pin);
 private:
-    volatile uint8_t& _memory;
+    struct ChipsetRegistersRaw {
+       volatile uint8_t led;
+       volatile uint8_t portzGPIO;
+       volatile uint8_t portzGPIOPullup;
+       volatile uint8_t portzGPIOPolarity;
+       volatile uint8_t portzGPIODirection;
+    } __attribute__((packed));
+private:
+    volatile ChipsetRegistersRaw& _memory;
 };
 
 /**
@@ -219,7 +254,7 @@ private:
     volatile RawSDCardInterface& _memory;
 };
 
-BuiltinLED& getBuiltinLed();
+ChipsetBasicFunctions& getBasicChipsetInterface();
 BuiltinConsole& getConsole();
 BuiltinTFTDisplay& getDisplay();
 BuiltinChipsetDebugInterface& getChipsetDebugInterface();

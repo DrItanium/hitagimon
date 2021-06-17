@@ -22,20 +22,20 @@ int main() {
     theConsole.writeLine("HITAGIMON");
     printf("Built on %s at %s\n", __DATE__, __TIME__);
     printf("--------------------------------------------\n\n\n\n");
-    BuiltinLED& theLED = getBuiltinLed();
+    ChipsetBasicFunctions& theChipset = getBasicChipsetInterface();
     BuiltinTFTDisplay& theDisplay = getDisplay();
     theConsole.writeLine("donuts are very tasty!");
     theConsole.writeLine(str.c_str());
     theDisplay.clearScreen();
     volatile uint64_t count = 0;
     volatile uint16_t prevColor = 0xFFFF;
-    theLED.toggle();
+    theChipset.toggleLED();
     while (true) {
         for (uint32_t color = 0; color <= 0x1000000; ++color) {
             uint16_t curr = theDisplay.color565(color);
             if (curr != prevColor) {
                 if (color & 0x100) {
-                    theLED.toggle();
+                    theChipset.toggleLED();
                 }
                 theDisplay.fillScreen(curr);
                 prevColor = curr;
