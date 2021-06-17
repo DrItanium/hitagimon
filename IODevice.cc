@@ -237,20 +237,13 @@ BuiltinTFTDisplay& getDisplay() {
 ssize_t
 ChipsetBasicFunctions::write(char *buffer, size_t nbyte) {
     // unlike reading, we must be sequential in writing
-    ssize_t numRead = 0;
-    // we may have a considerable number of things to write which are a multiple of 256
-    if (nbyte > 128) {
-        _memory.consoleBufferAddressPort = reinterpret_cast<uint32_t>(buffer);
-        _memory.consoleBufferLengthPort = static_cast<uint8_t>(128);
-        _memory.consoleBufferDoorbell = 1;
-        numRead = 128 + write(buffer + 128, nbyte - 128);
-    } else {
-        _memory.consoleBufferAddressPort = reinterpret_cast<uint32_t>(buffer);
-        _memory.consoleBufferLengthPort = static_cast<uint8_t>(nbyte);
-        _memory.consoleBufferDoorbell = 1;
-        numRead = static_cast<ssize_t>(nbyte);
+    ssize_t numWritten = 0;
+    for (size_t i = 0; i < nbyte; ++i) {
+        _memory.consoleIOPort = buffer[i];
+        ++numWritten;
     }
-    return numRead;
+    flush();
+    return numWritten;
 }
 
 ssize_t
