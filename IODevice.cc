@@ -204,32 +204,23 @@ void BuiltinConsole::writeLine(const char* ptr) {
     writeLine();
 }
 
-BuiltinChipsetDebugInterface::BuiltinChipsetDebugInterface() : BuiltinIOBaseDevice(0xFFFF00),
-_memory(memory<RawDebugRegisters>(getIOBase0Address(0xFFFF00))) {}
 
-void BuiltinChipsetDebugInterface::disableCacheLineActivityLogging() {
-    _memory.displayCacheLineActivity = false;
+void ChipsetBasicFunctions::disableCacheLineActivityLogging() {
+    _memory.showCacheLineUpdatesPort = false;
 }
 
-void BuiltinChipsetDebugInterface::enableCacheLineActivityLogging() {
-    _memory.displayCacheLineActivity = true;
+void ChipsetBasicFunctions::enableCacheLineActivityLogging() {
+    _memory.showCacheLineUpdatesPort = true;
 }
 
-void BuiltinChipsetDebugInterface::enableMemoryReadWriteLogging() {
-    _memory.displayMemoryReadWrites = true;
+void ChipsetBasicFunctions::enableMemoryReadWriteLogging() {
+    _memory.showReadsAndWritesPort = true;
 }
 
-void BuiltinChipsetDebugInterface::disableMemoryReadWriteLogging() {
-    _memory.displayMemoryReadWrites = false;
+void ChipsetBasicFunctions::disableMemoryReadWriteLogging() {
+    _memory.showReadsAndWritesPort = false;
 }
 
-void BuiltinChipsetDebugInterface::disableSDCardActivityLogging() {
-    _memory.displaySDCardActivity = false;
-}
-
-void BuiltinChipsetDebugInterface::enableSDCardActivityLogging() {
-    _memory.displaySDCardActivity = true;
-}
 
 ChipsetBasicFunctions&
 getBasicChipsetInterface() {
@@ -244,10 +235,6 @@ BuiltinConsole& getConsole() {
 BuiltinTFTDisplay& getDisplay() {
     static BuiltinTFTDisplay theDisplay;
     return theDisplay;
-}
-BuiltinChipsetDebugInterface& getChipsetDebugInterface() {
-    static BuiltinChipsetDebugInterface theDebug;
-    return theDebug;
 }
 
 ssize_t

@@ -15,15 +15,14 @@ uint64_t delay(uint64_t count) {
     return value;
 }
 int main() {
-    BuiltinChipsetDebugInterface& debugInterface = getChipsetDebugInterface();
+    ChipsetBasicFunctions& theChipset = getBasicChipsetInterface();
+    BuiltinTFTDisplay& theDisplay = getDisplay();
     BuiltinConsole& theConsole = getConsole();
     theConsole.writeLine("Entered main!");
     std::string str("the string states \"donuts are very tasty!\"");
     theConsole.writeLine("HITAGIMON");
     printf("Built on %s at %s\n", __DATE__, __TIME__);
     printf("--------------------------------------------\n\n\n\n");
-    ChipsetBasicFunctions& theChipset = getBasicChipsetInterface();
-    BuiltinTFTDisplay& theDisplay = getDisplay();
     theConsole.writeLine("donuts are very tasty!");
     theConsole.writeLine(str.c_str());
     theDisplay.clearScreen();

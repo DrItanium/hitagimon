@@ -53,9 +53,17 @@ public:
     void digitalWrite(PortZPins pin, bool value);
     void pinMode(PortZPins pin, PinModes mode);
     bool digitalRead(PortZPins pin);
+    void enableMemoryReadWriteLogging();
+    void disableMemoryReadWriteLogging();
+    void enableCacheLineActivityLogging();
+    void disableCacheLineActivityLogging();
+    bool memoryReadWriteLoggingEnabled() const { return _memory.showReadsAndWritesPort; }
+    bool cacheLineActivityLoggingEnabled() const { return _memory.showCacheLineUpdatesPort; }
 private:
     struct ChipsetRegistersRaw {
        volatile uint8_t led;
+       volatile uint8_t showReadsAndWritesPort;
+       volatile uint8_t showCacheLineUpdatesPort;
        volatile uint8_t portzGPIO;
        volatile uint8_t portzGPIOPullup;
        volatile uint8_t portzGPIOPolarity;
@@ -183,39 +191,18 @@ private:
     volatile RawTFTCommand& _memory;
 };
 
-class BuiltinChipsetDebugInterface : public BuiltinIOBaseDevice {
-public:
-    BuiltinChipsetDebugInterface();
-    void enableMemoryReadWriteLogging();
-    void disableMemoryReadWriteLogging();
-    void enableCacheLineActivityLogging();
-    void disableCacheLineActivityLogging();
-    bool memoryReadWriteLoggingEnabled() const { return _memory.displayMemoryReadWrites; }
-    bool cacheLineActivityLoggingEnabled() const { return _memory.displayCacheLineActivity; }
-    bool sdCardActivityLoggingEnabled() const { return _memory.displaySDCardActivity; }
-    void enableSDCardActivityLogging();
-    void disableSDCardActivityLogging();
-private:
-    struct RawDebugRegisters {
-        volatile bool displayMemoryReadWrites;
-        volatile bool displayCacheLineActivity;
-        volatile bool displaySDCardActivity;
-    } __attribute__((packed));
-private:
-    volatile RawDebugRegisters& _memory;
-};
 
 class TemporaryReadWriteLoggingEnable {
 public:
-    TemporaryReadWriteLoggingEnable(BuiltinChipsetDebugInterface& iface) : iface_(iface) { iface_.enableMemoryReadWriteLogging(); }
+    TemporaryReadWriteLoggingEnable(ChipsetBasicFunctions& iface) : iface_(iface) { iface_.enableMemoryReadWriteLogging(); }
     ~TemporaryReadWriteLoggingEnable() { iface_.disableMemoryReadWriteLogging(); }
 private:
-    BuiltinChipsetDebugInterface& iface_;
+    ChipsetBasicFunctions& iface_;
 };
 
 class TemporaryRWLoggingDisabler {
 public:
-    TemporaryRWLoggingDisabler(BuiltinChipsetDebugInterface& iface) : iface_(iface), shouldToggle_(iface.memoryReadWriteLoggingEnabled())  {
+    TemporaryRWLoggingDisabler(ChipsetBasicFunctions& iface) : iface_(iface), shouldToggle_(iface.memoryReadWriteLoggingEnabled())  {
         if (shouldToggle_) {
             iface_.disableMemoryReadWriteLogging();
         }
@@ -226,7 +213,7 @@ public:
         }
     }
 private:
-    BuiltinChipsetDebugInterface& iface_;
+    ChipsetBasicFunctions& iface_;
     bool shouldToggle_;
 };
 
@@ -258,7 +245,6 @@ private:
 ChipsetBasicFunctions& getBasicChipsetInterface();
 BuiltinConsole& getConsole();
 BuiltinTFTDisplay& getDisplay();
-BuiltinChipsetDebugInterface& getChipsetDebugInterface();
 SDCardInterface& getSDCardInterface();
 
 #endif //I960SXCHIPSET_IODEVICE_H
