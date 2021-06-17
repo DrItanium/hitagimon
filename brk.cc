@@ -18,7 +18,7 @@ namespace
         switch (fd) {
             case STDOUT_FILENO:
             case STDERR_FILENO:
-                nwrite = getConsole().write(reinterpret_cast<char *>(const_cast<void *>(buf)), sz);
+                nwrite = getBasicChipsetInterface().write(reinterpret_cast<char *>(const_cast<void *>(buf)), sz);
                 break;
             case STDIN_FILENO:
             default:
@@ -32,7 +32,7 @@ namespace
         nread = 0;
         switch (fd) {
             case STDIN_FILENO:
-                nread = getConsole().read(reinterpret_cast<char *>(buf), sz);
+                nread = getBasicChipsetInterface().read(reinterpret_cast<char *>(buf), sz);
                 break;
             default:
                 return EBADF;
@@ -156,7 +156,7 @@ _exit(int status) {
 extern "C"
 int
 kill (int pid, int signal) {
-    getConsole().writeLine("KILLING PROCESS!!!!");
+    getBasicChipsetInterface().writeLine("KILLING PROCESS!!!!");
     exit (signal);
 }
 namespace {

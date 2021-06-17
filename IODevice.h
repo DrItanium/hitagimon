@@ -59,28 +59,6 @@ public:
     void disableCacheLineActivityLogging();
     bool memoryReadWriteLoggingEnabled() const { return _memory.showReadsAndWritesPort; }
     bool cacheLineActivityLoggingEnabled() const { return _memory.showCacheLineUpdatesPort; }
-private:
-    struct ChipsetRegistersRaw {
-       volatile uint8_t led;
-       volatile uint8_t showReadsAndWritesPort;
-       volatile uint8_t showCacheLineUpdatesPort;
-       volatile uint8_t unused[13];
-       volatile uint8_t portzGPIO; // this must be at 0x10
-       volatile uint8_t portzGPIOPullup;
-       volatile uint8_t portzGPIOPolarity;
-       volatile uint8_t portzGPIODirection;
-    } __attribute__((packed));
-private:
-    volatile ChipsetRegistersRaw& _memory;
-    bool ledValue_;
-};
-
-/**
- * @brief The console on hitagi is very simple, it really only acts as a input/output channel
- */
-class BuiltinConsole : public BuiltinIOBaseDevice {
-public:
-    BuiltinConsole(uint32_t offset = 0x100);
     void flush();
     bool available() const;
     bool availableForWrite() const;
@@ -104,6 +82,36 @@ public:
      * @return the number of bytes written
      */
     ssize_t write(char* buffer, size_t nbyte);
+private:
+    struct ChipsetRegistersRaw {
+       volatile uint8_t led;
+       volatile uint8_t showReadsAndWritesPort;
+       volatile uint8_t showCacheLineUpdatesPort;
+       volatile uint8_t unusedGeneric[13];
+       volatile uint8_t portzGPIO; // this must be at 0x10
+       volatile uint8_t portzGPIOPullup;
+       volatile uint8_t portzGPIOPolarity;
+       volatile uint8_t portzGPIODirection;
+       volatile uint8_t unusedPortZ[12];
+       volatile uint16_t consoleFlushPort;
+       volatile uint16_t consoleAvailablePort;
+       volatile uint16_t consoleAvailableForWritePort;
+       volatile uint16_t consoleIOPort;
+       volatile uint32_t consoleBufferAddressPort;
+       volatile uint8_t consoleBufferLengthPort;
+       volatile uint8_t consoleBufferDoorbell;
+    } __attribute__((packed));
+private:
+    volatile ChipsetRegistersRaw& _memory;
+    bool ledValue_;
+};
+
+/**
+ * @brief The console on hitagi is very simple, it really only acts as a input/output channel
+ */
+class BuiltinConsole : public BuiltinIOBaseDevice {
+public:
+    BuiltinConsole(uint32_t offset = 0x100);
 private:
     struct RawConsoleStructure {
         volatile uint16_t flushPort;

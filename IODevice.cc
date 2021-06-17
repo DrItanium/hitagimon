@@ -75,38 +75,36 @@ ChipsetBasicFunctions::digitalRead(PortZPins pin) {
     return false;
 }
 
-BuiltinConsole::BuiltinConsole(uint32_t offset) : BuiltinIOBaseDevice(offset), _memory(memory<RawConsoleStructure>(baseAddress_)) { }
-
 bool
-BuiltinConsole::available() const {
-    return static_cast<bool>(_memory.isAvailable);
+ChipsetBasicFunctions::available() const {
+    return static_cast<bool>(_memory.consoleAvailablePort);
 }
 bool
-BuiltinConsole::availableForWrite() const {
-    return static_cast<bool>(_memory.isAvailableForWriting);
+ChipsetBasicFunctions::availableForWrite() const {
+    return static_cast<bool>(_memory.consoleAvailableForWritePort);
 }
 
 uint16_t
-BuiltinConsole::read() const {
-    return _memory.ioPort ;
+ChipsetBasicFunctions::read() const {
+    return _memory.consoleIOPort;
 }
 
 void
-BuiltinConsole::write(uint16_t c) {
-    _memory.ioPort = c;
+ChipsetBasicFunctions::write(uint16_t c) {
+    _memory.consoleIOPort = c;
 }
 
 void
-BuiltinConsole::write(char c) {
-    _memory.ioPort = c;
+ChipsetBasicFunctions::write(char c) {
+    write(static_cast<uint16_t>(c));
 }
 void
-BuiltinConsole::flush() {
+ChipsetBasicFunctions::flush() {
     // doesn't matter what you write as long as you write it
-    _memory.flushPort = 1;
+    _memory.consoleFlushPort = 1;
 }
 void
-BuiltinConsole::write(const char* ptr) {
+ChipsetBasicFunctions::write(const char* ptr) {
     for (const char* v = ptr; *v; ++v) {
         write(*v);
     }
@@ -196,10 +194,11 @@ BuiltinTFTDisplay::print(char c) {
     /// @todo implement
 }
 void
-BuiltinConsole::writeLine() {
+ChipsetBasicFunctions::writeLine() {
     write('\n');
 }
-void BuiltinConsole::writeLine(const char* ptr) {
+void
+ChipsetBasicFunctions::writeLine(const char* ptr) {
     write(ptr);
     writeLine();
 }
