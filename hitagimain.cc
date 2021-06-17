@@ -17,14 +17,13 @@ uint64_t delay(uint64_t count) {
 int main() {
     ChipsetBasicFunctions& theChipset = getBasicChipsetInterface();
     BuiltinTFTDisplay& theDisplay = getDisplay();
-    BuiltinConsole& theConsole = getConsole();
-    theConsole.writeLine("Entered main!");
+    theChipset.writeLine("Entered main!");
     std::string str("the string states \"donuts are very tasty!\"");
-    theConsole.writeLine("HITAGIMON");
+    theChipset.writeLine("HITAGIMON");
     printf("Built on %s at %s\n", __DATE__, __TIME__);
     printf("--------------------------------------------\n\n\n\n");
-    theConsole.writeLine("donuts are very tasty!");
-    theConsole.writeLine(str.c_str());
+    theChipset.writeLine("donuts are very tasty!");
+    theChipset.writeLine(str.c_str());
     theDisplay.clearScreen();
     volatile uint64_t count = 0;
     volatile uint16_t prevColor = 0xFFFF;

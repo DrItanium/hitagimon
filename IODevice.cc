@@ -204,19 +204,23 @@ ChipsetBasicFunctions::writeLine(const char* ptr) {
 }
 
 
-void ChipsetBasicFunctions::disableCacheLineActivityLogging() {
+void
+ChipsetBasicFunctions::disableCacheLineActivityLogging() {
     _memory.showCacheLineUpdatesPort = false;
 }
 
-void ChipsetBasicFunctions::enableCacheLineActivityLogging() {
+void
+ChipsetBasicFunctions::enableCacheLineActivityLogging() {
     _memory.showCacheLineUpdatesPort = true;
 }
 
-void ChipsetBasicFunctions::enableMemoryReadWriteLogging() {
+void
+ChipsetBasicFunctions::enableMemoryReadWriteLogging() {
     _memory.showReadsAndWritesPort = true;
 }
 
-void ChipsetBasicFunctions::disableMemoryReadWriteLogging() {
+void
+ChipsetBasicFunctions::disableMemoryReadWriteLogging() {
     _memory.showReadsAndWritesPort = false;
 }
 
@@ -227,35 +231,38 @@ getBasicChipsetInterface() {
     return theLed;
 }
 
-BuiltinConsole& getConsole() {
-    static BuiltinConsole theConsole;
-    return theConsole;
-}
 BuiltinTFTDisplay& getDisplay() {
     static BuiltinTFTDisplay theDisplay;
     return theDisplay;
 }
 
 ssize_t
-BuiltinConsole::write(char *buffer, size_t nbyte) {
-    for (size_t i = 0; i < nbyte; ++i) {
-        _memory.ioPort = buffer[i];
+ChipsetBasicFunctions::write(char *buffer, size_t nbyte) {
+    // we may have a considerable number of things to write which are a multiple of 256
+    _memory.consoleBufferAddressPort = reinterpret_cast<uint32_t>(buffer);
+    if (nbyte > 128) {
+        _memory.consoleBufferLengthPort = static_cast<uint8_t>(128);
+        _memory.consoleBufferDoorbell = 1;
+        return 128 + write(buffer + 128, nbyte - 128);
+    } else {
+        _memory.consoleBufferLengthPort = static_cast<uint8_t>(nbyte);
+        _memory.consoleBufferDoorbell = 1;
+        return static_cast<ssize_t>(nbyte);
     }
-    return nbyte;
 }
 
 ssize_t
-BuiltinConsole::read(char *buffer, size_t nbyte) const {
-    ssize_t numRead = 0;
-    for (size_t i = 0; i < nbyte; ++i) {
-        int16_t curr = static_cast<int16_t>(_memory.ioPort);
-        if (curr == -1) {
-            return numRead;
-        }
-        buffer[i] = static_cast<char>(curr);
-        ++numRead;
+ChipsetBasicFunctions::read(char *buffer, size_t nbyte) const {
+    _memory.consoleBufferAddressPort = reinterpret_cast<uint32_t>(buffer);
+    if (nbyte >= 128) {
+        _memory.consoleBufferLengthPort = static_cast<uint8_t>(128);
+        uint8_t count = _memory.consoleBufferDoorbell;
+        return count + read(buffer + 128, nbyte - 128);
+    } else {
+        _memory.consoleBufferLengthPort = static_cast<uint8_t>(nbyte);
+        uint8_t count = _memory.consoleBufferDoorbell;
+        return static_cast<ssize_t>(count);
     }
-    return numRead;
 }
 namespace SDCard {
     enum Operations {
