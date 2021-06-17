@@ -243,10 +243,12 @@ ChipsetBasicFunctions::write(char *buffer, size_t nbyte) {
     if (nbyte > 128) {
         _memory.consoleBufferLengthPort = static_cast<uint8_t>(128);
         _memory.consoleBufferDoorbell = 1;
+        _memory.consoleFlushPort = 1;
         return 128 + write(buffer + 128, nbyte - 128);
     } else {
         _memory.consoleBufferLengthPort = static_cast<uint8_t>(nbyte);
         _memory.consoleBufferDoorbell = 1;
+        _memory.consoleFlushPort = 1;
         return static_cast<ssize_t>(nbyte);
     }
 }
