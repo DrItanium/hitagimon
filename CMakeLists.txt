@@ -33,6 +33,7 @@ add_executable(hitagimon
 		console.h
 		brk.cc
 		hitagimain.cc
+		# doom source code
 		am_map.h
 		d_englsh.h
 		d_event.h
