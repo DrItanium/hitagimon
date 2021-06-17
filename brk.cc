@@ -19,6 +19,7 @@ namespace
             case STDOUT_FILENO:
             case STDERR_FILENO:
                 nwrite = getBasicChipsetInterface().write(reinterpret_cast<char *>(const_cast<void *>(buf)), sz);
+                getBasicChipsetInterface().flush();
                 break;
             case STDIN_FILENO:
             default:
