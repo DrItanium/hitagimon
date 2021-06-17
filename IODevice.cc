@@ -106,7 +106,6 @@ ChipsetBasicFunctions::flush() {
 void
 ChipsetBasicFunctions::write(const char* ptr) {
     write(const_cast<char*>(ptr), strlen(ptr));
-    flush();
 }
 
 enum TFTOpcodes {
@@ -237,22 +236,14 @@ BuiltinTFTDisplay& getDisplay() {
 
 ssize_t
 ChipsetBasicFunctions::write(char *buffer, size_t nbyte) {
-    ssize_t numRead = 0;
-    // we may have a considerable number of things to write which are a multiple of 256
-    if (nbyte > 128) {
-        _memory.consoleBufferAddressPort = reinterpret_cast<uint32_t>(buffer);
-        _memory.consoleBufferLengthPort = static_cast<uint8_t>(128);
-        _memory.consoleBufferDoorbell = 1;
-        flush();
-        numRead = 128 + write(buffer + 128, nbyte - 128);
-    } else {
-        _memory.consoleBufferAddressPort = reinterpret_cast<uint32_t>(buffer);
-        _memory.consoleBufferLengthPort = static_cast<uint8_t>(nbyte);
-        _memory.consoleBufferDoorbell = 1;
-        flush();
-        numRead = static_cast<ssize_t>(nbyte);
+    // unlike reading, we must be sequential in writing
+    ssize_t numWrite = 0;
+    for (int i = 0; i < nbyte; ++i) {
+        write(buffer[i]);
+        ++numWrite;
     }
-    return numRead;
+    flush();
+    return numWrite;
 }
 
 ssize_t
