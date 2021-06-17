@@ -8,21 +8,23 @@
 
 
 BuiltinIOBaseDevice::BuiltinIOBaseDevice(uint32_t offset) : offset_(offset), baseAddress_(getIOBase0Address(offset)) { }
-ChipsetBasicFunctions::ChipsetBasicFunctions(uint32_t offset) : BuiltinIOBaseDevice(offset), _memory(memory<ChipsetRegistersRaw>(baseAddress_)) {
-
+ChipsetBasicFunctions::ChipsetBasicFunctions(uint32_t offset) : BuiltinIOBaseDevice(offset), _memory(memory<ChipsetRegistersRaw>(baseAddress_)), ledValue_(false) {
+    _memory.led = 0;
 }
 bool
 ChipsetBasicFunctions::getLEDValue() {
-    return _memory.led != 0;
+    return ledValue_;
 }
 void
 ChipsetBasicFunctions::setLEDValue(bool value) {
-    _memory.led = (value ? 0xFF : 0x00);
+    if (value != ledValue_) {
+        ledValue_ = value;
+        _memory.led = (ledValue_ ? 0xFF : 0x00);
+    }
 }
 void
 ChipsetBasicFunctions::toggleLED() {
-    _memory.led = (_memory.led != 0) ? 0 : 0xFF;
-
+    setLEDValue(!ledValue_);
 }
 uint8_t
 ChipsetBasicFunctions::readPortZGPIO() {

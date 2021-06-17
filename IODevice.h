@@ -63,6 +63,7 @@ private:
     } __attribute__((packed));
 private:
     volatile ChipsetRegistersRaw& _memory;
+    bool ledValue_;
 };
 
 /**
