@@ -64,7 +64,8 @@ private:
        volatile uint8_t led;
        volatile uint8_t showReadsAndWritesPort;
        volatile uint8_t showCacheLineUpdatesPort;
-       volatile uint8_t portzGPIO;
+       volatile uint8_t unused[13];
+       volatile uint8_t portzGPIO; // this must be at 0x10
        volatile uint8_t portzGPIOPullup;
        volatile uint8_t portzGPIOPolarity;
        volatile uint8_t portzGPIODirection;
