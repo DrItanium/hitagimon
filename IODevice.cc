@@ -408,7 +408,7 @@ SDCardInterface::openFile(const std::string& path, int flags) {
     _memory.permissionBits = flags;
     _memory.openReadWrite = (flags & O_RDWR) || (flags & O_WRONLY) ;
     uint16_t outcome = _memory.doorbell;
-    if (outcome == -1) {
+    if (outcome == 0xFFFF) {
         uint16_t errorCode = _memory.errorCode;
         switch (errorCode) {
             case SDCard::AllFileSlotsInUse:
