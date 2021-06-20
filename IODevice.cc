@@ -321,6 +321,9 @@ SDCardInterface::fileExists(const char *path) {
         for (int i = 0; i < length; ++i) {
             _memory.path[i] = path[i];
         }
+        if (length < 80) {
+            _memory.path[length] = 0;
+        }
         _memory.command = SDCard::FileExists;
         _memory.doorbell = 1;
         return _memory.result.bytes[0] != 0;
@@ -405,6 +408,10 @@ SDCardInterface::openFile(const std::string& path, int flags) {
     for (std::string::const_iterator it = path.begin(); it != path.end(); ++it, ++ptr) {
        *ptr = *it;
     }
+    if (path.length() < 80) {
+        _memory.path[path.length()] = 0;
+    }
+
     _memory.permissionBits = flags;
     _memory.openReadWrite = (flags & O_RDWR) || (flags & O_WRONLY) ;
     uint16_t outcome = _memory.doorbell;
