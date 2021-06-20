@@ -97,6 +97,7 @@ setitimer(int which, const struct itimerval* newValue, struct itimerval* oldValu
 
 extern "C"
 int access(const char* pathName, int mode) {
+    printf("access(\"%s\", %d)\n", pathName, mode);
     // the sd card interface does not have the concept of permission bits but we can easily do
     if (mode == R_OK) {
         if (getSDCardInterface().fileExists(pathName)) {
@@ -175,6 +176,7 @@ namespace {
 extern "C"
 int
 open (char* file, int flags) {
+    printf("open(\"%s\", %d)\n", file, flags);
     /// @todo interface this function with the SDCard
     /// @todo write the _sys_open function
     int result = getSDCardInterface().openFile(file, flags);

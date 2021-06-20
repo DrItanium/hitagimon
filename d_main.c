@@ -571,7 +571,7 @@ void IdentifyVersion (void)
     char*	doom2fwad;
     char*	plutoniawad;
     char*	tntwad;
-
+    /// @todo fixup normalunix
 #ifdef NORMALUNIX
     char *home;
     char *doomwaddir;

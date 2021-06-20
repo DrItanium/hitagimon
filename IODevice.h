@@ -107,26 +107,6 @@ private:
     bool ledValue_;
 };
 
-/**
- * @brief The console on hitagi is very simple, it really only acts as a input/output channel
- */
-class BuiltinConsole : public BuiltinIOBaseDevice {
-public:
-    BuiltinConsole(uint32_t offset = 0x100);
-private:
-    struct RawConsoleStructure {
-        volatile uint16_t flushPort;
-        volatile uint16_t isAvailable;
-        volatile uint16_t isAvailableForWriting;
-        volatile uint16_t ioPort;
-        volatile uint16_t bufDoorbell;
-        volatile uint16_t bufSize;
-        volatile uint16_t bufLength;
-        volatile char buf[128];
-    } __attribute__ ((packed));
-private:
-    volatile RawConsoleStructure& _memory;
-};
 class BuiltinTFTDisplay : public BuiltinIOBaseDevice {
 public:
     BuiltinTFTDisplay(uint32_t offset = 0x200);
@@ -302,7 +282,6 @@ private:
 };
 
 ChipsetBasicFunctions& getBasicChipsetInterface();
-BuiltinConsole& getConsole();
 BuiltinTFTDisplay& getDisplay();
 SDCardInterface& getSDCardInterface();
 
