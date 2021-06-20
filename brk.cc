@@ -15,7 +15,7 @@ namespace
     int
     sys_write(int fd, const void *buf, size_t sz, int &nwrite) {
         nwrite = 0;
-        if (fd >= 3 && fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3) ) {
+        if (fd >= 3) {
             if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
                 nwrite = getSDCardInterface().writeFile(fd - 3, buf, sz);
                 return 0;
@@ -39,7 +39,7 @@ namespace
     sys_read(int fd, void *buf, size_t sz, int &nread) {
         //char* theBuf = reinterpret_cast<char*>(buf);
         nread = 0;
-        if (fd >= 3 && fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3) ) {
+        if (fd >= 3) {
             if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
                 nread = getSDCardInterface().readFile(fd - 3, buf, sz);
                 return 0;
@@ -171,8 +171,12 @@ gettimeofday(struct timeval* tv, void* tz) {
 extern "C"
 int
 close(int fd) {
-    /// @todo implement closing files on the SD Card
-    return 0;
+    if (fd >= 3) {
+        return getSDCardInterface().closeFile(fd - 3);
+    } else {
+        errno = EBADF;
+        return -1;
+    }
 }
 
 extern "C"

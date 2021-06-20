@@ -260,6 +260,7 @@ public:
     int openFile(const std::string& path, int flags);
     int readFile(int fileId, void* buf, size_t count);
     int writeFile(int fileId, const void* buf, size_t count);
+    int closeFile(int fileId);
 private:
     union ResultPack {
         uint8_t bytes[16];

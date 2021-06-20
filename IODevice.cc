@@ -455,5 +455,18 @@ SDCardInterface::readFile(int fileId, void *buf, size_t count) {
     _memory.count = count;
     _memory.doorbell = 0;
     return _memory.result.words[0];
+}
+
+int
+SDCardInterface::closeFile(int fileId) {
+    _memory.command = SDCard::CloseFile;
+    _memory.fileId = fileId;
+    uint16_t executionResult = _memory.doorbell;
+    if (executionResult == 0xFFFF) {
+        errno = EBADF;
+        return -1;
+    } else {
+        return 0;
+    }
 
 }
