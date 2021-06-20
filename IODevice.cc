@@ -443,6 +443,7 @@ SDCardInterface::writeFile(int fileId, const void *buf, size_t count) {
     _memory.fileId = fileId;
     _memory.address = reinterpret_cast<uint32_t>(buf);
     _memory.count = count;
+    /// @todo read the doorbell instead of writing it to do error detection
     _memory.doorbell = 0;
     return _memory.result.words[0];
 }
@@ -453,6 +454,7 @@ SDCardInterface::readFile(int fileId, void *buf, size_t count) {
     _memory.fileId = fileId;
     _memory.address = reinterpret_cast<uint32_t>(buf);
     _memory.count = count;
+    /// @todo read the doorbell instead of writing it to do error detection
     _memory.doorbell = 0;
     return _memory.result.words[0];
 }
