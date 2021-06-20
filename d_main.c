@@ -572,7 +572,6 @@ void IdentifyVersion (void)
     char*	plutoniawad;
     char*	tntwad;
     /// @todo fixup normalunix
-#ifdef NORMALUNIX
     char *home;
     char *doomwaddir;
     doomwaddir = getenv("DOOMWADDIR");
@@ -612,7 +611,6 @@ void IdentifyVersion (void)
     if (!home)
       I_Error("Please set $HOME to your home directory");
     sprintf(basedefault, "%s/.doomrc", home);
-#endif
 
     if (M_CheckParm ("-shdev"))
     {
