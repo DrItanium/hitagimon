@@ -95,10 +95,26 @@ isatty (int file) {
 
 extern "C"
 off_t
-lseek(int fd, off_t offset, int type) {
-    printf("lseek(%d, %ld, %d)\n", fd, offset, type);
+lseek(int fd, off_t offset, int whence) {
+    printf("lseek(%d, %ld, %d)\n", fd, offset, whence);
     /// @todo implement this using an SD Card interface
-    return 0;
+    if (fd >= 3) {
+        if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
+            return getSDCardInterface().seek(fd - 3, offset, whence);
+        } else {
+            errno = EBADF;
+            return -1;
+        }
+    } else {
+        // builtin files
+        switch (fd) {
+            case STDIN_FILENO:
+                return 0;
+            default:
+                errno = EBADF;
+                return -1;
+        }
+    }
 }
 
 extern "C"
