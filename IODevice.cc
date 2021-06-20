@@ -5,6 +5,8 @@
 #include "IODevice.h"
 #include "ChipsetInteract.h"
 #include <string.h>
+#include <errno.h>
+#include <fcntl.h>
 
 
 BuiltinIOBaseDevice::BuiltinIOBaseDevice(uint32_t offset) : offset_(offset), baseAddress_(getIOBase0Address(offset)) { }
@@ -287,13 +289,17 @@ namespace SDCard {
     };
 
     enum ErrorCodes {
-        NoError = 0,
+        None = 0,
         NoCommandProvided,
         UndefinedCommandProvided,
         BadFileId,
         FileIsNotValid,
+        /**
+         * @brief Attempts to open ram.bin, boot.rom, or boot.data will trigger this fault
+         */
         CriticalFileSideChannelAttempt,
         UnimplementedCommand,
+        AllFileSlotsInUse,
     };
 } // end namespace SDCard
 
@@ -387,4 +393,36 @@ uint16_t
 BuiltinTFTDisplay::getRotation() const {
     _memory.commandPort = GetRotation;
     return _memory.doorbellPort;
+}
+int
+SDCardInterface::openFile(const std::string& path, int flags) {
+    if (path.length() > 80) {
+        errno = ENAMETOOLONG;
+        return -1;
+    }
+    _memory.command = SDCard::OpenFile;
+    volatile char* ptr = _memory.path;
+    for (std::string::const_iterator it = path.begin(); it != path.end(); ++it, ++ptr) {
+       *ptr = *it;
+    }
+    _memory.permissionBits = flags;
+    _memory.openReadWrite = (flags & O_RDWR) || (flags & O_WRONLY) ;
+    uint16_t outcome = _memory.doorbell;
+    if (outcome == -1) {
+        uint16_t errorCode = _memory.errorCode;
+        switch (errorCode) {
+            case SDCard::AllFileSlotsInUse:
+                errno = ENFILE;
+                break;
+            case SDCard::FileIsNotValid:
+                errno = EBADF;
+                break;
+            default:
+                errno = EBADF;
+                break;
+        }
+        return -1;
+    } else {
+        return static_cast<int>(_memory.result.words[0]);
+    }
 }

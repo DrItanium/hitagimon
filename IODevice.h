@@ -276,6 +276,7 @@ class SDCardInterface : public BuiltinIOBaseDevice {
 public:
     SDCardInterface();
     bool fileExists(const char* path);
+    int openFile(const std::string& path, int flags);
 private:
     union ResultPack {
         uint8_t bytes[16];
@@ -290,8 +291,10 @@ private:
         volatile uint16_t modeBits;
         volatile uint32_t seekPosition;
         volatile uint16_t whence;
-        volatile ResultPack result;
+        volatile uint32_t permissionBits;
+        volatile uint16_t openReadWrite;
         volatile uint16_t errorCode;
+        volatile ResultPack result;
         volatile char path[80];
     } __attribute__((packed));
 private:

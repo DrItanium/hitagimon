@@ -171,16 +171,11 @@ kill (int pid, int signal) {
     exit (signal);
 }
 namespace {
-   int
-   sys_open(char* filePath, int mode, int perms) {
-       errno = EBADF;
-       return -1;
-   }
 }
 extern "C"
 int
-open (char* file, int mode, int perms) {
+open (char* file, int flags) {
     /// @todo interface this function with the SDCard
     /// @todo write the _sys_open function
-    return sys_open(file, mode, perms);
+    return getSDCardInterface().openFile(file, flags);
 }
