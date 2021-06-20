@@ -14,6 +14,10 @@ uint64_t delay(uint64_t count) {
     }
     return value;
 }
+
+char* args[] = {
+    "@DOOMARGS.TXT"
+};
 int main() {
     ChipsetBasicFunctions& theChipset = getBasicChipsetInterface();
     BuiltinTFTDisplay& theDisplay = getDisplay();
@@ -25,23 +29,23 @@ int main() {
     theChipset.writeLine("donuts are very tasty!");
     theChipset.writeLine(str.c_str());
     theDisplay.clearScreen();
-    volatile uint64_t count = 0;
-    volatile uint16_t prevColor = 0xFFFF;
+    //volatile uint64_t count = 0;
+    //volatile uint16_t prevColor = 0xFFFF;
     theChipset.toggleLED();
-    while (true) {
-        for (uint32_t color = 0; color <= 0x1000000; ++color) {
-            uint16_t curr = theDisplay.color565(color);
-            if (curr != prevColor) {
-                if (color & 0x100) {
-                    theChipset.toggleLED();
-                }
-                theDisplay.fillScreen(curr);
-                prevColor = curr;
-            }
-        }
-        count += delay(1000);
-    }
-    doommain(0, 0);
-    return count;
+    //while (true) {
+    //    for (uint32_t color = 0; color <= 0x1000000; ++color) {
+    //        uint16_t curr = theDisplay.color565(color);
+    //        if (curr != prevColor) {
+    //            if (color & 0x100) {
+    //                theChipset.toggleLED();
+    //            }
+    //            theDisplay.fillScreen(curr);
+    //            prevColor = curr;
+    //        }
+    //    }
+    //    count += delay(1000);
+    //}
+    doommain(1, args);
+    return 0;
 }
 
