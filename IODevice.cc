@@ -323,4 +323,68 @@ SDCardInterface::fileExists(const char *path) {
     }
 }
 
+void
+BuiltinTFTDisplay::print(const char *c) {
+    size_t length = strlen(c);
+    for (size_t i = 0; i < length; ++i) {
+        print(c[i]);
+    }
+}
 
+void
+BuiltinTFTDisplay::println(const char *c) {
+    print(c);
+    print('\n');
+}
+
+void
+BuiltinTFTDisplay::print(const std::string &line) {
+    for (std::string::const_iterator it = line.begin(); it != line.end(); ++it) {
+        print(*it);
+    }
+}
+void
+BuiltinTFTDisplay::println(const std::string &line) {
+    print(line);
+    print('\n');
+}
+void
+BuiltinTFTDisplay::setRotation(int16_t value) {
+    _memory.commandPort = SetRotation;
+    _memory.xPort = value;
+    _memory.doorbellPort = 0;
+}
+void
+BuiltinTFTDisplay::invertDisplay(bool value) {
+    _memory.commandPort = InvertDisplay;
+    _memory.xPort = value ? 1 : 0;
+    _memory.doorbellPort = 0;
+}
+void
+BuiltinTFTDisplay::setTextSize(int16_t x) {
+    _memory.commandPort = SetTextSizeSquare;
+    _memory.xPort = x;
+    _memory.doorbellPort = 0;
+}
+void
+BuiltinTFTDisplay::setTextSize(int16_t x, int16_t y) {
+    _memory.commandPort = SetTextSizeRectangle;
+    _memory.xPort = x;
+    _memory.yPort = y;
+    _memory.doorbellPort = 0;
+}
+uint16_t
+BuiltinTFTDisplay::getCursorX() const {
+    _memory.commandPort = GetCursorX;
+    return _memory.doorbellPort;
+}
+uint16_t
+BuiltinTFTDisplay::getCursorY() const {
+   _memory.commandPort = GetCursorY;
+   return _memory.doorbellPort;
+}
+uint16_t
+BuiltinTFTDisplay::getRotation() const {
+    _memory.commandPort = GetRotation;
+    return _memory.doorbellPort;
+}

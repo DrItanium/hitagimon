@@ -6,6 +6,7 @@
 #define I960SXCHIPSET_IODEVICE_H
 #include <stdint.h>
 #include <unistd.h>
+#include <string>
 #include "ChipsetInteract.h"
 
 class BuiltinIOBaseDevice {
@@ -126,7 +127,6 @@ private:
 private:
     volatile RawConsoleStructure& _memory;
 };
-
 class BuiltinTFTDisplay : public BuiltinIOBaseDevice {
 public:
     BuiltinTFTDisplay(uint32_t offset = 0x200);
@@ -159,7 +159,53 @@ public:
        setCursor(0, 0) ;
     }
     void print(char c);
+    void println(const char* c);
+    void print(const char* c);
+    void print(const std::string& line);
+    void println(const std::string& line);
     void flush();
+
+    uint16_t getX() const { return _memory.xPort; }
+    void setX(uint16_t value) {_memory.xPort = value; };
+    uint16_t getY() const { return _memory.yPort; }
+    void setY(uint16_t value) {_memory.yPort = value; };
+
+    uint16_t getX0() const { return _memory.x0Port; }
+    void setX0(uint16_t value) {_memory.x0Port = value; };
+    uint16_t getY0() const { return _memory.y0Port; }
+    void setY0(uint16_t value) {_memory.y0Port = value; };
+
+    uint16_t getX1() const { return _memory.x1Port; }
+    void setX1(uint16_t value) {_memory.x1Port = value; };
+    uint16_t getY1() const { return _memory.y1Port; }
+    void setY1(uint16_t value) {_memory.y1Port = value; };
+    uint16_t getX2() const { return _memory.x2Port; }
+    void setX2(uint16_t value) {_memory.x2Port = value; };
+    uint16_t getY2() const { return _memory.y2Port; }
+    void setY2(uint16_t value) {_memory.y2Port = value; };
+
+    uint16_t getRed() const { return _memory.redPort; }
+    void setRed(uint16_t value) {_memory.redPort = value; };
+    uint16_t getGreen() const { return _memory.greenPort; }
+    void setGreen(uint16_t value) {_memory.greenPort = value; };
+    uint16_t getBlue() const { return _memory.bluePort; }
+    void setBlue(uint16_t value) {_memory.bluePort = value; };
+
+    uint16_t getRadius() const { return _memory.radiusPort; }
+    void setRadius(uint16_t value) {_memory.radiusPort= value; };
+    uint16_t getForegroundColor() const { return _memory.colorPort; }
+    void setForegroundColor(uint16_t value) {_memory.colorPort = value; };
+    uint16_t getBackgroundColor() const { return _memory.bgColorPort; }
+    void setBackgrounColor(uint16_t value) {_memory.bgColorPort = value; };
+
+    void setRotation(int16_t rot);
+    void invertDisplay(bool value);
+    void setTextSize(int16_t width);
+    void setTextSize(int16_t width, int16_t length);
+    uint16_t getCursorX() const;
+    uint16_t getCursorY() const;
+    uint16_t getRotation() const;
+
 
 private:
     struct RawTFTCommand {
