@@ -436,3 +436,24 @@ SDCardInterface::openFile(const std::string& path, int flags) {
         return static_cast<int>(_memory.result.words[0]);
     }
 }
+
+int
+SDCardInterface::writeFile(int fileId, const void *buf, size_t count) {
+    _memory.command = SDCard::FileWrite;
+    _memory.fileId = fileId;
+    _memory.address = reinterpret_cast<uint32_t>(buf);
+    _memory.count = count;
+    _memory.doorbell = 0;
+    return _memory.result.words[0];
+}
+
+int
+SDCardInterface::readFile(int fileId, void *buf, size_t count) {
+    _memory.command = SDCard::FileRead;
+    _memory.fileId = fileId;
+    _memory.address = reinterpret_cast<uint32_t>(buf);
+    _memory.count = count;
+    _memory.doorbell = 0;
+    return _memory.result.words[0];
+
+}

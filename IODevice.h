@@ -281,6 +281,7 @@ private:
         volatile char path[80];
         volatile uint16_t reserved0_;
         volatile uint32_t address;
+        volatile uint32_t count;
     } __attribute__((packed));
 private:
     volatile RawSDCardInterface& _memory;
