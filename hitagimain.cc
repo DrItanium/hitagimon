@@ -15,11 +15,10 @@ uint64_t delay(uint64_t count) {
     return value;
 }
 
-char* args[] = {
-    "@DOOMARGS.TXT"
-};
+char* args[] = { };
 void setupEnvironmentVariables() {
-    EnvironmentInterface::set("HOME", "/");
+    EnvironmentInterface::set("HOME", "/home");
+    EnvironmentInterface::set("DOOMWADDIR", "/home/wads");
 }
 int main() {
     ChipsetBasicFunctions& theChipset = getBasicChipsetInterface();
@@ -33,7 +32,7 @@ int main() {
     printf("STARTING UP DOOM!!!\n");
     theDisplay.clearScreen();
     theChipset.toggleLED();
-    doommain(1, args);
+    doommain(0, args);
     return 0;
 }
 
