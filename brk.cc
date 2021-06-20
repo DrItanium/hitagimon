@@ -177,5 +177,9 @@ int
 open (char* file, int flags) {
     /// @todo interface this function with the SDCard
     /// @todo write the _sys_open function
-    return getSDCardInterface().openFile(file, flags);
+    int result = getSDCardInterface().openFile(file, flags);
+    if (result != -1) {
+        result =+ 3; // skip past the stdin/stderr/stdout ids
+    }
+    return result;
 }
