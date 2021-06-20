@@ -98,7 +98,8 @@ setitimer(int which, const struct itimerval* newValue, struct itimerval* oldValu
 extern "C"
 int access(const char* pathName, int mode) {
     /// @todo check user's permissions for a file, this will be found on the SD Card. so this path needs to be passed to the 1284p
-    return 0;
+    errno = EACCES;
+    return -1;
 }
 
 extern "C"
