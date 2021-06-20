@@ -93,15 +93,10 @@ isatty (int file) {
     return file < 3;
 }
 
-namespace {
-    off_t
-    sys_lseek(int fd, off_t offset, int type) {
-        return 0;
-    }
-}
 extern "C"
 off_t
 lseek(int fd, off_t offset, int type) {
+    printf("lseek(%d, %ld, %d)\n", fd, offset, type);
     /// @todo implement this using an SD Card interface
     return 0;
 }
@@ -109,6 +104,7 @@ lseek(int fd, off_t offset, int type) {
 extern "C"
 int
 setitimer(int which, const struct itimerval* newValue, struct itimerval* oldValue) {
+    printf("setitimer(%d, %x, %x)\n", which, newValue, oldValue);
     /// @todo use arduino timers to satisfy this, we use the interrupts to trigger timers
     return 0;
 }
@@ -140,7 +136,6 @@ extern "C"
 int
 write (int fd, const void* buf, size_t sz) {
     int numWritten = 0;
-    /// @todo Implement _sys_write equivalent
     int r = sys_write(fd, buf, sz, numWritten);
     if (r != 0) {
         errno = r;
@@ -171,6 +166,7 @@ gettimeofday(struct timeval* tv, void* tz) {
 extern "C"
 int
 close(int fd) {
+    printf("close(%d);\n", fd);
     if (fd >= 3) {
         return getSDCardInterface().closeFile(fd - 3);
     } else {
@@ -182,6 +178,7 @@ close(int fd) {
 extern "C"
 void
 _exit(int status) {
+    printf("exit(%d)\n", status);
     while (true) {
        // just hang here
     }
@@ -190,7 +187,7 @@ _exit(int status) {
 extern "C"
 int
 kill (int pid, int signal) {
-    getBasicChipsetInterface().writeLine("KILLING PROCESS!!!!");
+    printf("KILLING PROCESS!\n");
     exit (signal);
 }
 namespace {
@@ -199,8 +196,6 @@ extern "C"
 int
 open (char* file, int flags) {
     printf("open(\"%s\", %d)\n", file, flags);
-    /// @todo interface this function with the SDCard
-    /// @todo write the _sys_open function
     int result = getSDCardInterface().openFile(file, flags);
     if (result != -1) {
         result =+ 3; // skip past the stdin/stderr/stdout ids
