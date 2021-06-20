@@ -5,13 +5,13 @@
 #ifndef HITAGIMON_ENVIRONMENTINTERFACE_H
 #define HITAGIMON_ENVIRONMENTINTERFACE_H
 #include <string>
-#include <pair.h>
+#include <utility>
 class EnvironmentInterface
 {
 public:
     static bool unset(const std::string& name);
     static std::pair<bool, std::string> get(const std::string& name);
-    static bool set(const std::string& name, const std::string& value, bool overwrite);
+    static bool set(const std::string& name, const std::string& value, bool overwrite = false);
 private:
     EnvironmentInterface();
     ~EnvironmentInterface();

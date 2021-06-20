@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include "IODevice.h"
 #include <string>
-#include <iostream>
+#include "EnvironmentInterface.h"
 
 extern "C" int doommain (int argc, char** argv) ;
 uint64_t delay(uint64_t count) {
@@ -18,6 +18,9 @@ uint64_t delay(uint64_t count) {
 char* args[] = {
     "@DOOMARGS.TXT"
 };
+void setupEnvironmentVariables() {
+    EnvironmentInterface::set("HOME", "/");
+}
 int main() {
     ChipsetBasicFunctions& theChipset = getBasicChipsetInterface();
     BuiltinTFTDisplay& theDisplay = getDisplay();
