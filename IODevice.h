@@ -276,7 +276,7 @@ class SDCardInterface : public BuiltinIOBaseDevice {
 public:
     SDCardInterface();
     bool fileExists(const char* path);
-    int openFile(const std::string& path, int flags);
+    int openFile(char* path, int flags);
 private:
     union ResultPack {
         uint8_t bytes[16];
