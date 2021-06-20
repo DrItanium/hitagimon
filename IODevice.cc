@@ -303,6 +303,7 @@ namespace SDCard {
         AllFileSlotsInUse,
         AttemptToReadFromUnmappedMemory,
         AttemptToWriteToUnmappedMemory,
+        UnableToSeekToRequestedDestination,
     };
 } // end namespace SDCard
 
@@ -534,7 +535,14 @@ SDCardInterface::seek(int fileId, off_t offset, int whence) {
     }
     uint16_t result = _memory.doorbell;
     if (result == 0xFFFF) {
-        errno = EBADF;
+        switch (static_cast<SDCard::ErrorCodes>(result)) {
+            case SDCard::UnableToSeekToRequestedDestination:
+                errno = EOVERFLOW;
+                break;
+            default:
+                errno = EBADF;
+                break;
+        }
         return -1;
     } else {
         return _memory.result.swords[0];
