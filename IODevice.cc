@@ -305,6 +305,9 @@ namespace SDCard {
 
 SDCardInterface::SDCardInterface() : BuiltinIOBaseDevice(0x300), _memory(memory<RawSDCardInterface>(getIOBase0Address(0x300))) {
     // clear out any operations
+    _memory.command = SDCard::GetMaximumNumberOfOpenFiles;
+    _memory.doorbell = 0;
+    maxFileCount_ = _memory.result.words[0];
     _memory.command = SDCard::NoneOperation;
 }
 

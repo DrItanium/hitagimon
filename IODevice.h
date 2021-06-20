@@ -256,7 +256,10 @@ class SDCardInterface : public BuiltinIOBaseDevice {
 public:
     SDCardInterface();
     bool fileExists(const char* path);
+    uint32_t getMaximumNumberOfOpenFiles() const { return maxFileCount_; }
     int openFile(const std::string& path, int flags);
+    int readFile(int fileId, void* buf, size_t count);
+    int writeFile(int fileId, const void* buf, size_t count);
 private:
     union ResultPack {
         uint8_t bytes[16];
@@ -276,9 +279,12 @@ private:
         volatile uint16_t errorCode;
         volatile ResultPack result;
         volatile char path[80];
+        volatile uint16_t reserved0_;
+        volatile uint32_t address;
     } __attribute__((packed));
 private:
     volatile RawSDCardInterface& _memory;
+    uint32_t maxFileCount_;
 };
 
 ChipsetBasicFunctions& getBasicChipsetInterface();
