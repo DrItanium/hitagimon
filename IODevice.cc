@@ -398,18 +398,18 @@ BuiltinTFTDisplay::getRotation() const {
     return _memory.doorbellPort;
 }
 int
-SDCardInterface::openFile(char* path, int flags) {
-    size_t length = strlen(path);
-    if (length > 80) {
+SDCardInterface::openFile(const std::string& path, int flags) {
+    if (path.length() > 80) {
         errno = ENAMETOOLONG;
         return -1;
     }
     _memory.command = SDCard::OpenFile;
-    for (size_t i = 0; i < length; ++i) {
-        _memory.path[i] = path[i];
+    volatile char* ptr = _memory.path;
+    for (std::string::const_iterator it = path.begin(); it != path.end(); ++it, ++ptr) {
+       *ptr = *it;
     }
-    if (length < 80) {
-        _memory.path[length] = 0;
+    if (path.length() < 80) {
+        _memory.path[path.length()] = 0;
     }
 
     _memory.permissionBits = flags;
