@@ -229,6 +229,7 @@ private:
 class SDCardInterface : public BuiltinIOBaseDevice {
 public:
     SDCardInterface();
+    bool fileExists(const char* path);
 private:
     union ResultPack {
         uint8_t bytes[16];

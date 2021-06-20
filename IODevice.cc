@@ -308,4 +308,19 @@ SDCardInterface& getSDCardInterface() {
     return theSDCard;
 }
 
+bool
+SDCardInterface::fileExists(const char *path) {
+    size_t length = strlen(path);
+    if ((length <= 80) && (length > 0)) {
+        for (int i = 0; i < length; ++i) {
+            _memory.path[i] = path[i];
+        }
+        _memory.command = SDCard::FileExists;
+        _memory.doorbell = 1;
+        return _memory.result.bytes[0] != 0;
+    } else {
+        return false;
+    }
+}
+
 

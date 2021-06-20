@@ -97,9 +97,19 @@ setitimer(int which, const struct itimerval* newValue, struct itimerval* oldValu
 
 extern "C"
 int access(const char* pathName, int mode) {
-    /// @todo check user's permissions for a file, this will be found on the SD Card. so this path needs to be passed to the 1284p
-    errno = EACCES;
-    return -1;
+    // the sd card interface does not have the concept of permission bits but we can easily do
+    if (mode == R_OK) {
+        if (getSDCardInterface().fileExists(pathName)) {
+            return 0;
+        } else {
+            errno = EACCES;
+            return -1;
+        }
+    } else {
+        /// @todo check user's permissions for a file, this will be found on the SD Card. so this path needs to be passed to the 1284p
+        errno = EACCES;
+        return -1;
+    }
 }
 
 extern "C"
