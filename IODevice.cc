@@ -273,7 +273,6 @@ namespace SDCard {
         GetNumberOfOpenFiles,
         GetMaximumNumberOfOpenFiles,
         GetFixedPathMaximum,
-        GetOpenFlags,
         // File specific operations
         IsValidFileId = 0x8000,
         FileRead,
@@ -312,19 +311,6 @@ SDCardInterface::SDCardInterface() : BuiltinIOBaseDevice(0x300), _memory(memory<
     _memory.command = SDCard::GetMaximumNumberOfOpenFiles;
     _memory.doorbell = 0;
     maxFileCount_ = _memory.result.words[0];
-    _memory.command = SDCard::GetOpenFlags;
-    _memory.doorbell = 0;
-    nativeReadFlag_ = _memory.result.bytes[0];
-    nativeReadOnlyFlag_ = _memory.result.bytes[1];
-    nativeWriteFlag_ = _memory.result.bytes[2];
-    nativeWriteOnlyFlag_= _memory.result.bytes[3];
-    nativeReadWriteFlag_ = _memory.result.bytes[4];
-    nativeAccessModeMask_ = _memory.result.bytes[5];
-    nativeAppendFlag_ = _memory.result.bytes[6];
-    nativeSyncFlag_ = _memory.result.bytes[7];
-    nativeCreateFlag_ = _memory.result.bytes[8];
-    nativeExclFlag_ = _memory.result.bytes[9];
-    nativeTruncFlag_ = _memory.result.bytes[10] ;
     _memory.command = SDCard::NoneOperation;
 }
 
@@ -433,7 +419,8 @@ SDCardInterface::openFile(const std::string& path, int flags) {
     }
 
     _memory.permissionBits = flags;
-    _memory.nativePermissions = translatePermissionsToNative(flags);
+    // cannot open write only at this point
+    _memory.openReadWrite = ((flags & O_RDWR) || (flags & O_WRONLY));
     uint16_t outcome = _memory.doorbell;
     if (outcome == 0xFFFF) {
         uint16_t errorCode = _memory.errorCode;
@@ -547,34 +534,4 @@ SDCardInterface::seek(int fileId, off_t offset, int whence) {
     } else {
         return _memory.result.swords[0];
     }
-}
-
-uint16_t
-SDCardInterface::translatePermissionsToNative(int flags) const {
-    uint16_t outcome = 0;
-    if (flags & O_RDONLY) {
-        outcome |= nativeReadOnlyFlag_;
-    }
-    if (flags & O_WRONLY) {
-        outcome |= nativeWriteOnlyFlag_;
-    }
-    if (flags & O_RDWR) {
-        outcome |= nativeReadWriteFlag_;
-    }
-    if (flags & O_APPEND) {
-        outcome |= nativeAppendFlag_;
-    }
-    if (flags & O_SYNC) {
-        outcome |= nativeSyncFlag_;
-    }
-    if (flags & O_CREAT) {
-        outcome |= nativeCreateFlag_;
-    }
-    if (flags & O_EXCL) {
-        outcome |= nativeExclFlag_;
-    }
-    if (flags & O_TRUNC) {
-        outcome |= nativeTruncFlag_;
-    }
-    return outcome;
 }

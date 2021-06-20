@@ -263,8 +263,6 @@ public:
     int closeFile(int fileId);
     off_t seek(int fileId, off_t offset, int whence);
 private:
-    uint16_t translatePermissionsToNative(int flags) const;
-private:
     union ResultPack {
         uint8_t bytes[16];
         uint16_t halves[16 / sizeof(uint16_t)];
@@ -280,7 +278,7 @@ private:
         volatile uint32_t seekPosition;
         volatile uint16_t whence;
         volatile uint32_t permissionBits;
-        volatile uint16_t nativePermissions;
+        volatile uint16_t openReadWrite;
         volatile uint16_t errorCode;
         volatile ResultPack result;
         volatile char path[80];
@@ -291,17 +289,6 @@ private:
 private:
     volatile RawSDCardInterface& _memory;
     uint32_t maxFileCount_;
-    uint8_t nativeReadFlag_;
-    uint8_t nativeReadOnlyFlag_;
-    uint8_t nativeWriteFlag_;
-    uint8_t nativeWriteOnlyFlag_;
-    uint8_t nativeReadWriteFlag_;
-    uint8_t nativeAccessModeMask_;
-    uint8_t nativeAppendFlag_;
-    uint8_t nativeSyncFlag_;
-    uint8_t nativeCreateFlag_;
-    uint8_t nativeExclFlag_;
-    uint8_t nativeTruncFlag_;
 };
 
 ChipsetBasicFunctions& getBasicChipsetInterface();
