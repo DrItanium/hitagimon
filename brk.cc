@@ -58,17 +58,8 @@ namespace
         }
     }
 }
-const size_t RamSize = 0x20000000;
-const size_t RamStart = 0x80000000;
-const size_t RamEnd = RamStart + RamSize;
 static char* heapEnd = 0;
-#if 0
-extern "C"
-int brk(void* ptr) {
-    heapEnd = reinterpret_cast<char*>(ptr);
-    return 0;
-}
-#endif
+
 extern "C"
 void*
 sbrk(intptr_t increment) {
@@ -96,7 +87,7 @@ isatty (int file) {
 extern "C"
 off_t
 lseek(int fd, off_t offset, int whence) {
-    printf("lseek(%d, %ld, %d)\n", fd, offset, whence);
+    //printf("lseek(%d, %ld, %d)\n", fd, offset, whence);
     /// @todo implement this using an SD Card interface
     if (fd >= 3) {
         if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
@@ -127,7 +118,7 @@ setitimer(int which, const struct itimerval* newValue, struct itimerval* oldValu
 
 extern "C"
 int access(const char* pathName, int mode) {
-    printf("access(\"%s\", %d)\n", pathName, mode);
+    //printf("access(\"%s\", %d)\n", pathName, mode);
     // the sd card interface does not have the concept of permission bits but we can easily do
     if (mode == R_OK) {
         if (getSDCardInterface().fileExists(pathName)) {
@@ -162,7 +153,7 @@ write (int fd, const void* buf, size_t sz) {
 extern "C"
 int
 read (int fd, void* buf, size_t sz) {
-    printf("read(%d, 0x%x, %ld)\n", fd, buf, sz);
+    //printf("read(%d, 0x%x, %ld)\n", fd, buf, sz);
     int nread = 0;
     int r = sys_read (fd, buf, sz, nread);
     if (r != 0)
@@ -176,13 +167,14 @@ read (int fd, void* buf, size_t sz) {
 extern "C"
 int
 gettimeofday(struct timeval* tv, void* tz) {
+    printf("gettimeofday(%x, %x);\n", tv, tz);
     return 0;
 }
 
 extern "C"
 int
 close(int fd) {
-    printf("close(%d);\n", fd);
+    //printf("close(%d);\n", fd);
     if (fd >= 3) {
         return getSDCardInterface().closeFile(fd - 3);
     } else {
@@ -211,7 +203,7 @@ namespace {
 extern "C"
 int
 open (char* file, int flags) {
-    printf("open(\"%s\", %d)\n", file, flags);
+    //printf("open(\"%s\", %d)\n", file, flags);
     int result = getSDCardInterface().openFile(file, flags);
     if (result != -1) {
         result =+ 3; // skip past the stdin/stderr/stdout ids
