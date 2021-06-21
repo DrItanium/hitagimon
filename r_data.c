@@ -322,54 +322,55 @@ void R_GenerateLookup (int texnum)
     patchcount = (byte *)alloca (texture->width);
     memset (patchcount, 0, texture->width);
     patch = texture->patches;
-		
-    for (i=0 , patch = texture->patches;
-	 i<texture->patchcount;
-	 i++, patch++)
-    {
-	realpatch = W_CacheLumpNum (patch->patch, PU_CACHE);
-	x1 = patch->originx;
-	x2 = x1 + SHORT(realpatch->width);
-	
-	if (x1 < 0)
-	    x = 0;
-	else
-	    x = x1;
 
-	if (x2 > texture->width)
-	    x2 = texture->width;
-	for ( ; x<x2 ; x++)
-	{
-	    patchcount[x]++;
-	    collump[x] = patch->patch;
-	    colofs[x] = LONG(realpatch->columnofs[x-x1])+3;
-	}
+    for (i=0 , patch = texture->patches;
+         i<texture->patchcount;
+         i++, patch++)
+    {
+        realpatch = W_CacheLumpNum (patch->patch, PU_CACHE);
+        x1 = patch->originx;
+        x2 = x1 + SHORT(realpatch->width);
+
+        if (x1 < 0) {
+            x = 0;
+        } else {
+            x = x1;
+        }
+
+        if (x2 > texture->width) {
+            x2 = texture->width;
+        }
+        for ( ; x<x2 ; x++) {
+            patchcount[x]++;
+            collump[x] = patch->patch;
+            colofs[x] = LONG(realpatch->columnofs[x-x1])+3;
+        }
     }
-	
+
     for (x=0 ; x<texture->width ; x++)
     {
-	if (!patchcount[x])
-	{
-	    printf ("R_GenerateLookup: column without a patch (%s)\n",
-		    texture->name);
-	    return;
-	}
-	// I_Error ("R_GenerateLookup: column without a patch");
-	
-	if (patchcount[x] > 1)
-	{
-	    // Use the cached block.
-	    collump[x] = -1;	
-	    colofs[x] = texturecompositesize[texnum];
-	    
-	    if (texturecompositesize[texnum] > 0x10000-texture->height)
-	    {
-		I_Error ("R_GenerateLookup: texture %i is >64k",
-			 texnum);
-	    }
-	    
-	    texturecompositesize[texnum] += texture->height;
-	}
+        if (!patchcount[x])
+        {
+            printf ("R_GenerateLookup: column without a patch (%s)\n",
+                    texture->name);
+            return;
+        }
+        // I_Error ("R_GenerateLookup: column without a patch");
+
+        if (patchcount[x] > 1)
+        {
+            // Use the cached block.
+            collump[x] = -1;
+            colofs[x] = texturecompositesize[texnum];
+
+            if (texturecompositesize[texnum] > 0x10000-texture->height)
+            {
+                I_Error ("R_GenerateLookup: texture %i is >64k",
+                         texnum);
+            }
+
+            texturecompositesize[texnum] += texture->height;
+        }
     }	
 }
 
