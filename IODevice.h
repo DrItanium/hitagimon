@@ -258,14 +258,18 @@ public:
     bool fileExists(const char* path);
     uint32_t getMaximumNumberOfOpenFiles() const { return maxFileCount_; }
     int openFile(const std::string& path, int flags);
-    int readFile(int fileId, void* buf, size_t count);
-    int writeFile(int fileId, const void* buf, size_t count);
+    ssize_t readFile(int fileId, void* buf, size_t count);
+    ssize_t writeFile(int fileId, const void* buf, size_t count);
     int closeFile(int fileId);
     off_t seek(int fileId, off_t offset, int whence);
 private:
     union ResultPack {
         uint8_t bytes[16];
         uint16_t halves[16 / sizeof(uint16_t)];
+        int ints[16/sizeof(int)];
+        unsigned int uints[16/sizeof(unsigned int)];
+        size_t sizets[16/sizeof(size_t)];
+        ssize_t ssizets[16/sizeof(ssize_t)];
         uint32_t words[16 / sizeof(uint32_t)];
         int32_t swords[16/sizeof(int32_t)];
         uint64_t quads[16 / sizeof(uint64_t)];

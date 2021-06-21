@@ -441,7 +441,7 @@ SDCardInterface::openFile(const std::string& path, int flags) {
     }
 }
 
-int
+ssize_t
 SDCardInterface::writeFile(int fileId, const void *buf, size_t count) {
     _memory.command = SDCard::FileWrite;
     _memory.fileId = fileId;
@@ -465,7 +465,7 @@ SDCardInterface::writeFile(int fileId, const void *buf, size_t count) {
     return static_cast<int>(_memory.result.words[0]);
 }
 
-int
+ssize_t
 SDCardInterface::readFile(int fileId, void *buf, size_t count) {
     _memory.command = SDCard::FileRead;
     _memory.fileId = fileId;
@@ -486,7 +486,16 @@ SDCardInterface::readFile(int fileId, void *buf, size_t count) {
         }
         return -1;
     }
-    return static_cast<int>(_memory.result.words[0]);
+    ssize_t theResult = _memory.result.ssizets[0];
+    printf("bytes read = 0x%x, 0x%x, 0x%x, 0x%x => 0x%x, 0x%x => 0x%x\n",
+           _memory.result.bytes[0],
+           _memory.result.bytes[1],
+           _memory.result.bytes[2],
+           _memory.result.bytes[3],
+           _memory.result.halves[0],
+           _memory.result.halves[1],
+           _memory.result.uints[0]);
+    return theResult;
 }
 
 int
