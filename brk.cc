@@ -13,7 +13,7 @@
 namespace
 {
     int
-    sys_write(int fd, const void *buf, size_t sz, ssize_t &nwrite) {
+    sys_write(int fd, const void *buf, size_t sz, int &nwrite) {
         nwrite = 0;
         if (fd >= 3) {
             if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
@@ -36,7 +36,7 @@ namespace
         }
     }
     int
-    sys_read(int fd, void *buf, size_t sz, ssize_t &nread) {
+    sys_read(int fd, void *buf, size_t sz, int &nread) {
         //char* theBuf = reinterpret_cast<char*>(buf);
         nread = 0;
         if (fd >= 3) {
@@ -151,7 +151,7 @@ int getpid () {
 extern "C"
 int
 write (int fd, const void* buf, size_t sz) {
-    ssize_t numWritten = 0;
+    int numWritten = 0;
     int r = sys_write(fd, buf, sz, numWritten);
     if (r != 0) {
         errno = r;
@@ -163,7 +163,7 @@ extern "C"
 int
 read (int fd, void* buf, size_t sz) {
     printf("read(%d, 0x%x, %ld)\n", fd, buf, sz);
-    ssize_t nread = 0;
+    int nread = 0;
     int r = sys_read (fd, buf, sz, nread);
     if (r != 0)
     {
