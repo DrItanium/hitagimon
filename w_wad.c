@@ -384,6 +384,7 @@ int W_CheckNumForName (char* name)
 	if ( *(int *)lump_p->name == v1
 	     && *(int *)&lump_p->name[4] == v2)
 	{
+	    //printf("W_CheckNumForName: lump_p - lumpinfo => %x - %x => %d\n", lump_p, lumpinfo, (lump_p - lumpinfo));
 	    return lump_p - lumpinfo;
 	}
     }
@@ -481,7 +482,7 @@ W_CacheLumpNum
   int		tag )
 {
     byte*	ptr;
-
+    printf("W_CacheLumpNum(%x, %x)\n", lump, tag);
     if ((unsigned)lump >= numlumps)
 	I_Error ("W_CacheLumpNum: %i >= numlumps",lump);
 		
