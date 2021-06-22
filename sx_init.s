@@ -320,20 +320,26 @@ move_data:
     cmpibg  g0,g4, move_data # loop until done
     bx (g14)
 
-
+.set PATTERN_BASE, 0xFE000015
+.set PATTERN_LENGTH_BASE, 0xFE000029
+.set PATTERN_ADDRESS_BASE, 0xFE000025
+.set PATTERN_DOORBELL_BASE, 0xFE00002D
 # setup the bss section so do giant blocks of writes
 zero_data:
+    ldconst PATTERN_BASE, g2 # pattern itself
+    ldconst PATTERN_LENGTH_BASE, g3 # pattern length
+    ldconst PATTERN_ADDRESS_BASE, g5 # pattern address
+    ldconst PATTERN_DOORBELL_BASE, g6 # pattern doorbell
     ldconst 0, g8
     ldconst 0, g9
 	ldconst 0, g10
 	ldconst 0, g11
-zero_data_loop:
-    stq g8, (g1)[g4*1]            # store to RAM block
-    addi g4,16, g4                # increment index
-    stq g8, (g1)[g4*1]            # store to RAM block
-    addi g4,16, g4                # increment index
-    cmpibg  g0,g4, zero_data_loop # loop until done
-    bx (g14)
+	stq g8, 0(g2) # store pattern
+	st g1, 0(g5) # store address
+	st g0, 0(g3) # store length
+	stos g8, 0(g6)
+	bx (g14)
+
 
 _preinit_activate_read_write_transactions:
     ldconst 0xFEFFFF00, g1
