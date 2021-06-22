@@ -94,9 +94,6 @@ private:
         volatile uint16_t consoleAvailablePort;
         volatile uint16_t consoleAvailableForWritePort;
         volatile uint16_t consoleIOPort;
-        volatile uint32_t consoleBufferAddressPort;
-        volatile uint8_t consoleBufferLengthPort;
-        volatile uint8_t consoleBufferDoorbell;
 
         volatile uint8_t led;
         volatile uint8_t showReadsAndWritesPort;

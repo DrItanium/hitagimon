@@ -250,17 +250,12 @@ ChipsetBasicFunctions::write(char *buffer, size_t nbyte) {
 
 ssize_t
 ChipsetBasicFunctions::read(char *buffer, size_t nbyte) const {
-    if (nbyte > 128) {
-        _memory.consoleBufferAddressPort = reinterpret_cast<uint32_t>(buffer);
-        _memory.consoleBufferLengthPort = static_cast<uint8_t>(128);
-        uint8_t count = _memory.consoleBufferDoorbell;
-        return count + read(buffer + 128, nbyte - 128);
-    } else {
-        _memory.consoleBufferAddressPort = reinterpret_cast<uint32_t>(buffer);
-        _memory.consoleBufferLengthPort = static_cast<uint8_t>(nbyte);
-        uint8_t count = _memory.consoleBufferDoorbell;
-        return static_cast<ssize_t>(count);
+    ssize_t numRead = 0;
+    for (size_t i = 0; i < nbyte; ++i) {
+        buffer[i] = _memory.consoleIOPort;
+        ++numRead;
     }
+    return numRead;
 }
 namespace SDCard {
     enum Operations {
