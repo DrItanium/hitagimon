@@ -340,18 +340,6 @@ zero_data:
 	stos g8, 0(g6)
 	bx (g14)
 
-
-_preinit_activate_read_write_transactions:
-    ldconst 0xFEFFFF00, g1
-    ldconst 0xFFFFFFFF, g0
-    stob g0, 0(g1) # enable read write chipset logging
-    bx (g14)
-
-_preinit_deactivate_read_write_transactions:
-    ldconst 0xFEFFFF00, g1
-    ldconst 0, g0
-    stob g0, 0(g1) # enable read write chipset logging
-    bx (g14)
 /* The routine below fixes up the stack for a flase interrupt return.
  * We have reserved area on the stack before the call to this
  * routine. We need to build a phony interrupt record here
