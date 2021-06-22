@@ -513,7 +513,10 @@ W_CacheLumpName
 ( char*		name,
   int		tag )
 {
-    return W_CacheLumpNum (W_GetNumForName(name), tag);
+    printf("W_CacheLumpName(%s, %d)\n", name, tag);
+    int theNum = W_GetNumForName(name);
+    printf("\tW_GetNumForName(%s) => %x\n", name, tag, name, theNum);
+    return W_CacheLumpNum (theNum, tag);
 }
 
 

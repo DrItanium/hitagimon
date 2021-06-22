@@ -328,6 +328,7 @@ void R_GenerateLookup (int texnum)
          i++, patch++)
     {
         realpatch = W_CacheLumpNum (patch->patch, PU_CACHE);
+        printf("R_GenerateLookup: W_CacheLumpNum(%x, %x) => %x\n", patch->patch, PU_CACHE, realpatch);
         x1 = patch->originx;
         x2 = x1 + SHORT(realpatch->width);
 
