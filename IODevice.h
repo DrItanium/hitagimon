@@ -85,6 +85,15 @@ public:
     ssize_t write(char* buffer, size_t nbyte);
 private:
     struct ChipsetRegistersRaw {
+        volatile union {
+            volatile uint8_t bytes[16];
+            volatile uint16_t shorts[16/sizeof(uint16_t)];
+            volatile uint32_t words[16/sizeof(uint32_t)];
+            volatile uint64_t longWords[16/sizeof(uint64_t)];
+        } patternEngine_PatternPort;
+        volatile uint32_t patternEngine_StartAddressPort;
+        volatile uint32_t patternEngine_LengthPort;
+        volatile uint16_t patternEngine_DoorbellPort;
        volatile uint8_t led;
        volatile uint8_t showReadsAndWritesPort;
        volatile uint8_t showCacheLineUpdatesPort;

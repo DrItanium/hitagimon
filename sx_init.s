@@ -320,20 +320,20 @@ move_data:
     cmpibg  g0,g4, move_data # loop until done
     bx (g14)
 
-.set PATTERN_BASE, 0xFE000015
-.set PATTERN_LENGTH_BASE, 0xFE000029
-.set PATTERN_ADDRESS_BASE, 0xFE000025
-.set PATTERN_DOORBELL_BASE, 0xFE00002D
+.set PATTERN_BASE, 0xFE000000
+.set PATTERN_ADDRESS_BASE, 0xFE000010
+.set PATTERN_LENGTH_BASE, 0xFE000014
+.set PATTERN_DOORBELL_BASE, 0xFE000018
 # setup the bss section so do giant blocks of writes
 zero_data:
-    ldconst PATTERN_BASE, g2 # pattern itself
-    ldconst PATTERN_LENGTH_BASE, g3 # pattern length
-    ldconst PATTERN_ADDRESS_BASE, g5 # pattern address
-    ldconst PATTERN_DOORBELL_BASE, g6 # pattern doorbell
-    ldconst 0, g8
-    ldconst 0, g9
-	ldconst 0, g10
-	ldconst 0, g11
+    lda PATTERN_BASE, g2 # pattern itself
+    lda PATTERN_LENGTH_BASE, g3 # pattern length
+    lda PATTERN_ADDRESS_BASE, g5 # pattern address
+    lda PATTERN_DOORBELL_BASE, g6 # pattern doorbell
+    lda 0, g8
+    lda 0, g9
+	lda 0, g10
+	lda 0, g11
 	stq g8, 0(g2) # store pattern
 	st g1, 0(g5) # store address
 	st g0, 0(g3) # store length
