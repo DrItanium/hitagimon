@@ -85,29 +85,25 @@ public:
     ssize_t write(char* buffer, size_t nbyte);
 private:
     struct ChipsetRegistersRaw {
-        volatile union {
-            volatile uint8_t bytes[16];
-            volatile uint16_t shorts[16/sizeof(uint16_t)];
-            volatile uint32_t words[16/sizeof(uint32_t)];
-            volatile uint64_t longWords[16/sizeof(uint64_t)];
-        } patternEngine_PatternPort;
+        volatile uint64_t patternEngine_PatternLower;
+        volatile uint64_t patternEngine_PatternUpper;
         volatile uint32_t patternEngine_StartAddressPort;
         volatile uint32_t patternEngine_LengthPort;
         volatile uint16_t patternEngine_DoorbellPort;
-       volatile uint8_t led;
-       volatile uint8_t showReadsAndWritesPort;
-       volatile uint8_t showCacheLineUpdatesPort;
-       volatile uint8_t portzGPIO; // this must be at 0x10
-       volatile uint8_t portzGPIOPullup;
-       volatile uint8_t portzGPIOPolarity;
-       volatile uint8_t portzGPIODirection;
-       volatile uint16_t consoleFlushPort;
-       volatile uint16_t consoleAvailablePort;
-       volatile uint16_t consoleAvailableForWritePort;
-       volatile uint16_t consoleIOPort;
-       volatile uint32_t consoleBufferAddressPort;
-       volatile uint8_t consoleBufferLengthPort;
-       volatile uint8_t consoleBufferDoorbell;
+        volatile uint8_t led;
+        volatile uint8_t showReadsAndWritesPort;
+        volatile uint8_t showCacheLineUpdatesPort;
+        volatile uint8_t portzGPIO; // this must be at 0x10
+        volatile uint8_t portzGPIOPullup;
+        volatile uint8_t portzGPIOPolarity;
+        volatile uint8_t portzGPIODirection;
+        volatile uint16_t consoleFlushPort;
+        volatile uint16_t consoleAvailablePort;
+        volatile uint16_t consoleAvailableForWritePort;
+        volatile uint16_t consoleIOPort;
+        volatile uint32_t consoleBufferAddressPort;
+        volatile uint8_t consoleBufferLengthPort;
+        volatile uint8_t consoleBufferDoorbell;
     } __attribute__((packed));
 private:
     volatile ChipsetRegistersRaw& _memory;
