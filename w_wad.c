@@ -482,7 +482,7 @@ W_CacheLumpNum
   int		tag )
 {
     byte*	ptr;
-    printf("W_CacheLumpNum(%x, %x)\n", lump, tag);
+    //printf("W_CacheLumpNum(%x, %x)\n", lump, tag);
     if ((unsigned)lump >= numlumps)
 	I_Error ("W_CacheLumpNum: %i >= numlumps",lump);
 		
@@ -513,9 +513,9 @@ W_CacheLumpName
 ( char*		name,
   int		tag )
 {
-    printf("W_CacheLumpName(%s, %d)\n", name, tag);
+    //printf("W_CacheLumpName(%s, %d)\n", name, tag);
     int theNum = W_GetNumForName(name);
-    printf("\tW_GetNumForName(%s) => %x\n", name, tag, name, theNum);
+    //printf("\tW_GetNumForName(%s) => %x\n", name, tag, name, theNum);
     return W_CacheLumpNum (theNum, tag);
 }
 
