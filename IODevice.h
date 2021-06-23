@@ -90,11 +90,14 @@ private:
         volatile uint32_t patternEngine_StartAddressPort;
         volatile uint32_t patternEngine_LengthPort;
         volatile uint16_t patternEngine_DoorbellPort;
+        volatile uint32_t copyEngine_sourceAddressPort;
+        volatile uint32_t copyEngine_destinationAddressPort;
+        volatile uint32_t copyEngine_lengthPort;
+        volatile uint16_t copyEngine_doorbellPort;
         volatile uint16_t consoleFlushPort;
         volatile uint16_t consoleAvailablePort;
         volatile uint16_t consoleAvailableForWritePort;
         volatile uint16_t consoleIOPort;
-
         volatile uint8_t led;
         volatile uint8_t showReadsAndWritesPort;
         volatile uint8_t showCacheLineUpdatesPort;

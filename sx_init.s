@@ -209,7 +209,6 @@ _user_type_core:
     #bal _preinit_activate_read_write_transactions
 	# clear the bss section in ram first before we do anything else!
     lda theBSSSectionLength, g0 # load length of data section in rom
-    lda 0, g4 # initialize offset to 0
     lda __bss_start__, g1 # load destination
     bal zero_data # brach to move routine
     #bal _preinit_deactivate_read_write_transactions
@@ -233,13 +232,10 @@ _user_type_core:
 
 # copy DATA section to RAM space
 # then transfer the data section over to ram
-    lda theDataSectionLength, g0 # load length of data section in rom
-    lda 0, g4 # initialize offset to 0
-    lda theDataSectionROMLocation, g1 # load source
-    lda __data_start__, g2 # load destination
-    bal move_data # brach to move routine
-
-
+    lda theDataSectionROMLocation, g0 # load source
+    lda __data_start__, g1 # load destination
+    lda theDataSectionLength, g2 # load length of data section in rom
+    bal invoke_copy_engine # brach to move routine
 
  /*
   * -- At this point, the PRCB, and interrupt table have been moved to RAM.
@@ -312,12 +308,31 @@ reinitialize_iac:
     .bss _sup_stack, 0x10000, 6
 
 /* -- Below is a software loop to move data */
+.set COPY_ENGINE_SOURCE_REG, 0xFE00001A
+.set COPY_ENGINE_DEST_REG, 0xFE00001E
+.set COPY_ENGINE_LENGTH, 0xFE000022
+.set COPY_ENGINE_DOORBELL, 0xFE000026
 
 move_data:
     ldq (g1)[g4*1], g8  # load 4 words into g8
     stq g8, (g2)[g4*1]  # store to RAM block
     addi g4,16, g4      # increment index
     cmpibg  g0,g4, move_data # loop until done
+    bx (g14)
+
+ invoke_copy_engine:
+    # g0 - Source Address
+    # g1 - Destination Address
+    # g2 - Length
+    lda COPY_ENGINE_SOURCE_REG, g3
+    lda COPY_ENGINE_DEST_REG, g4
+    lda COPY_ENGINE_LENGTH, g5
+    lda COPY_ENGINE_DOORBELL, g6
+    lda 0, g7
+    st g0, 0(g3) # store the source address
+    st g1, 0(g4) # store the destination address
+    st g2, 0(g5) # store the copy length in bytes
+    stos g7, 0(g6) # trigger the copy, and wait for the store to complete
     bx (g14)
 
 .set PATTERN_BASE, 0xFE000000
@@ -328,16 +343,16 @@ move_data:
 zero_data:
     lda PATTERN_BASE, g2 # pattern itself
     lda PATTERN_LENGTH_BASE, g3 # pattern length
-    lda PATTERN_ADDRESS_BASE, g5 # pattern address
-    lda PATTERN_DOORBELL_BASE, g6 # pattern doorbell
+    lda PATTERN_ADDRESS_BASE, g4 # pattern address
+    lda PATTERN_DOORBELL_BASE, g5 # pattern doorbell
     lda 0, g8
     lda 0, g9
 	lda 0, g10
 	lda 0, g11
 	stq g8, 0(g2) # store pattern
-	st g1, 0(g5) # store address
+	st g1, 0(g4) # store address
 	st g0, 0(g3) # store length
-	stos g8, 0(g6)
+	stos g8, 0(g5)
 	bx (g14)
 
 /* The routine below fixes up the stack for a flase interrupt return.
