@@ -442,7 +442,6 @@ SDCardInterface::writeFile(int fileId, const void *buf, size_t count) {
     _memory.fileId = fileId;
     _memory.address = reinterpret_cast<uint32_t>(buf);
     _memory.count = count;
-    /// @todo read the doorbell instead of writing it to do error detection
     uint16_t result = _memory.doorbell;
     if (result != 0) {
         switch (static_cast<SDCard::ErrorCodes>(result)) {
@@ -459,29 +458,50 @@ SDCardInterface::writeFile(int fileId, const void *buf, size_t count) {
     }
     return static_cast<int>(_memory.result.words[0]);
 }
-
+namespace {
+    bool checkSDCardReadError(uint16_t value) {
+        if (value != 0) {
+            switch (static_cast<SDCard::ErrorCodes>(value)) {
+                case SDCard::AttemptToReadFromUnmappedMemory:
+                    errno = EIO;
+                    break;
+                case SDCard::FileIsNotValid:
+                case SDCard::BadFileId:
+                default:
+                    errno = EBADF;
+                    break;
+            }
+            return false;
+        }
+        return true;
+    }
+}
 int
 SDCardInterface::readFile(int fileId, void *buf, size_t count) {
     _memory.command = SDCard::FileRead;
     _memory.fileId = fileId;
     _memory.address = reinterpret_cast<uint32_t>(buf);
-    _memory.count = count;
-    /// @todo read the doorbell instead of writing it to do error detection
-    uint16_t result = _memory.doorbell;
-    if (result != 0) {
-        switch (static_cast<SDCard::ErrorCodes>(result)) {
-            case SDCard::AttemptToReadFromUnmappedMemory:
-                errno = EIO;
-                break;
-            case SDCard::FileIsNotValid:
-            case SDCard::BadFileId:
-            default:
-                errno = EBADF;
-                break;
+    uint32_t times = count / 16;
+    uint32_t slop = count % 16;
+    uint32_t numRead = 0;
+    _memory.count = 16;
+    for (uint32_t i = 0; i < times; ++i) {
+        if (!checkSDCardReadError(_memory.doorbell)) {
+            return -1;
+        } else {
+            numRead += _memory.result.words[0];
+            _memory.address += 16;
         }
-        return -1;
     }
-    return static_cast<int>(_memory.result.words[0]);
+    if (slop > 0) {
+        _memory.count = slop;
+        if (!checkSDCardReadError(_memory.doorbell)) {
+            return -1;
+        } else {
+            numRead += _memory.result.words[0];
+        }
+    }
+    return static_cast<int>(numRead);
 }
 
 int
