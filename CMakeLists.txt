@@ -16,6 +16,29 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+add_library(hitagichipset
+		IODevice.cc
+		IODevice.h
+		ChipsetInteract.cc
+		ChipsetInteract.h
+		IORoutines.h
+		)
+add_library(hitagisys
+		brk.cc
+		fstat.cc
+		isatty.cc
+		lseek.cc
+		write.cc
+		read.cc
+		open.cc
+		kill.cc
+		setitimer.cc
+		close.cc
+		gettimeofday.cc
+		access.cc
+		getpid.cc
+		_exit.cc)
+
 add_executable(hitagimon
 		sx_init.s # this must ALWAYS be first!
 		f_table.s
@@ -24,14 +47,8 @@ add_executable(hitagimon
 		f_handle.cc
 		ISR.cc
 		# interface libraries
-		IODevice.cc
-		IODevice.h
-		ChipsetInteract.cc
-		ChipsetInteract.h
-		IORoutines.h
 		console.cc
 		console.h
-		brk.cc
 		hitagimain.cc
 		# doom source code
 		am_map.h
@@ -158,7 +175,8 @@ add_executable(hitagimon
 		wi_stuff.c
 		w_wad.c
 		z_zone.c
-		EnvironmentInterface.cc EnvironmentInterface.h fstat.cc isatty.cc lseek.cc write.cc read.cc open.cc kill.cc setitimer.cc close.cc gettimeofday.cc access.cc getpid.cc _exit.cc)
+		EnvironmentInterface.cc
+		EnvironmentInterface.h)
 
 #set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT})
 target_link_libraries(hitagimon
@@ -168,6 +186,8 @@ target_link_libraries(hitagimon
 		c
 		m
 		#nosys # stub library
+		hitagisys
+		hitagichipset
 		stdc++
 		g
 		g2c
