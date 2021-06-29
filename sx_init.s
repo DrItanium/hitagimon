@@ -129,8 +129,8 @@ sys_proc_table:
 	.word   (_performLedToggle + 0x2) # Calls 6
 	.word   (_performSysAccess + 0x2) # Calls 7
 	defsysproc _performSysSetITimer # Calls 8
-	defsysproc _performSysGetTimeOfDay
-	.word 0
+	defsysproc _performSysGetTimeOfDay # Calls 9
+	defsysproc _performSysPortZInteract # Calls 10
 	.word 0
 	.word 0
 	.word 0

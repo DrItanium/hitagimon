@@ -156,3 +156,8 @@ int
 performSysGetTimeOfDay(struct timeval *tv, void *tz) {
     return 0;
 }
+
+uint8_t
+performSysPortZInteract(uint8_t opcode, uint8_t value) {
+    return 0;
+}

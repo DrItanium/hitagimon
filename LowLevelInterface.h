@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <stdint.h>
 extern "C" int sys_write(int fd, const void *buf, size_t sz, int &nwrite);
 extern "C" int sys_read(int fd, void *buf, size_t sz, int &nread);
 extern "C" int sys_lseek(int fd, off_t offset, int whence);
@@ -41,6 +42,6 @@ extern "C" int sys_toggle_led();
 extern "C" int sys_access(const char* pathName, int mode);
 extern "C" int sys_setitimer(int which, const struct itimerval* newValue, struct itimerval* oldValue);
 extern "C" int sys_gettimeofday(struct timeval* tv, void* tz);
-
+extern "C" uint8_t sys_portz_interact(uint8_t opcode, uint8_t value);
 #endif //HITAGIMON_LOWLEVELINTERFACE_H
 

@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef HITAGIMON_CHIPSETDRIVERS_H
 #define HITAGIMON_CHIPSETDRIVERS_H
 #include <sys/stat.h>
+#include <stdint.h>
 extern "C" int performSysWrite(int fd, const void *buf, size_t sz, int &nwrite);
 extern "C" int performSysRead(int fd, void *buf, size_t sz, int &nread);
 extern "C" int performSysLseek(int fd, off_t offset, int whence);
@@ -39,4 +40,5 @@ extern "C" void performLedToggle();
 extern "C" int performSysAccess(const char* pathName, int mode);
 extern "C" int performSysSetITimer(int which, const struct itimerval* newValue, struct itimerval* oldValue);
 extern "C" int performSysGetTimeOfDay(struct timeval* tv, void* tz);
+extern "C" uint8_t performSysPortZInteract(uint8_t opcode, uint8_t value);
 #endif //HITAGIMON_CHIPSETDRIVERS_H

@@ -64,3 +64,7 @@ defentry _sys_setitimer
 defentry _sys_gettimeofday
     calls 9
     ret
+
+ defentry _sys_portz_interact
+    calls 10
+    ret
