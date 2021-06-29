@@ -17,8 +17,8 @@ uint64_t delay(uint64_t count) {
 
 char* args[] = { };
 void setupEnvironmentVariables() {
-    EnvironmentInterface::set("HOME", "/home");
-    EnvironmentInterface::set("DOOMWADDIR", "/home/wads");
+    cortex::EnvironmentInterface::set("HOME", "/home");
+    cortex::EnvironmentInterface::set("DOOMWADDIR", "/home/wads");
 }
 int main() {
     ChipsetBasicFunctions& theChipset = getBasicChipsetInterface();
