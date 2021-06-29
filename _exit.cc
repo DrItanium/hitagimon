@@ -23,33 +23,14 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 //
-// Created by jwscoggins on 5/2/21.
+// Created by jwscoggins on 6/29/21.
 //
-#include <unistd.h>
-#include <stdint.h>
-#include "IORoutines.h"
-#include "IODevice.h"
-
-static char* heapEnd = 0;
-
+#include <stdio.h>
 extern "C"
-void*
-sbrk(intptr_t increment) {
-    if (heapEnd == 0) {
-        heapEnd = reinterpret_cast<char*>(&end);
+void
+_exit(int status) {
+    printf("exit(%d)\n", status);
+    while (true) {
+        // just hang here
     }
-    char* prevHeapEnd = heapEnd;
-    heapEnd += increment;
-    return prevHeapEnd;
 }
-
-
-
-
-
-
-
-
-
-
-
