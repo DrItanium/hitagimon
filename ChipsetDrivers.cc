@@ -29,12 +29,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ChipsetDrivers.h"
 #include "IODevice.h"
 #include <errno.h>
+
 int
 performSysWrite(int fd, const void *buf, size_t sz, int &nwrite) {
     nwrite = 0;
     if (fd >= 3) {
-        if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
-            nwrite = getSDCardInterface().writeFile(fd - 3, buf, sz);
+        if (fd < (hitagi::getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
+            nwrite = hitagi::getSDCardInterface().writeFile(fd - 3, buf, sz);
             return 0;
         } else {
             return EBADF;
@@ -44,7 +45,7 @@ performSysWrite(int fd, const void *buf, size_t sz, int &nwrite) {
         switch (fd) {
             case STDOUT_FILENO:
             case STDERR_FILENO:
-                nwrite = getBasicChipsetInterface().write(reinterpret_cast<char *>(const_cast<void *>(buf)), sz);
+                nwrite = hitagi::getBasicChipsetInterface().write(reinterpret_cast<char *>(const_cast<void *>(buf)), sz);
                 break;
             default:
                 return EBADF;
@@ -57,8 +58,8 @@ performSysRead(int fd, void *buf, size_t sz, int &nread) {
     //char* theBuf = reinterpret_cast<char*>(buf);
     nread = 0;
     if (fd >= 3) {
-        if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
-            nread = getSDCardInterface().readFile(fd - 3, buf, sz);
+        if (fd < (hitagi::getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
+            nread = hitagi::getSDCardInterface().readFile(fd - 3, buf, sz);
             return 0;
         } else {
             return EBADF;
@@ -67,7 +68,7 @@ performSysRead(int fd, void *buf, size_t sz, int &nread) {
         // builtin files
         switch (fd) {
             case STDIN_FILENO:
-                nread = getBasicChipsetInterface().read(reinterpret_cast<char *>(buf), sz);
+                nread = hitagi::getBasicChipsetInterface().read(reinterpret_cast<char *>(buf), sz);
                 break;
             default:
                 return EBADF;
@@ -79,8 +80,8 @@ performSysLseek(int fd, off_t offset, int whence) {
     //printf("lseek(%d, %ld, %d)\n", fd, offset, whence);
     /// @todo implement this using an SD Card interface
     if (fd >= 3) {
-        if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
-            return getSDCardInterface().seek(fd - 3, offset, whence);
+        if (fd < (hitagi::getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
+            return hitagi::getSDCardInterface().seek(fd - 3, offset, whence);
         } else {
             errno = EBADF;
             return -1;
@@ -106,7 +107,7 @@ int
 performSysClose(int fd) {
     //printf("close(%d);\n", fd);
     if (fd >= 3) {
-        return getSDCardInterface().closeFile(fd - 3);
+        return hitagi::getSDCardInterface().closeFile(fd - 3);
     } else {
         errno = EBADF;
         return -1;
@@ -114,7 +115,7 @@ performSysClose(int fd) {
 }
 int
 performSysOpen(const char *file, int flags, int mode) {
-    int result = getSDCardInterface().openFile(file, flags);
+    int result = hitagi::getSDCardInterface().openFile(file, flags);
     if (result != -1) {
         result =+ 3; // skip past the stdin/stderr/stdout ids
     }
@@ -123,7 +124,7 @@ performSysOpen(const char *file, int flags, int mode) {
 
 void
 performLedToggle() {
-    getBasicChipsetInterface().toggleLED();
+    hitagi::getBasicChipsetInterface().toggleLED();
 }
 
 int
@@ -131,7 +132,7 @@ performSysAccess(const char *pathName, int mode) {
     //printf("access(\"%s\", %d)\n", pathName, mode);
     // the sd card interface does not have the concept of permission bits but we can easily do
     if (mode == R_OK) {
-        if (getSDCardInterface().fileExists(pathName)) {
+        if (hitagi::getSDCardInterface().fileExists(pathName)) {
             return 0;
         } else {
             errno = EACCES;

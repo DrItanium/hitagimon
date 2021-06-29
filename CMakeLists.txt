@@ -19,7 +19,6 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 add_library(hitagirt
 		ChipsetDrivers.h
 		ChipsetDrivers.cc
-		ChipsetInteract.cc
 		ChipsetInteract.h
 		IORoutines.h
 		IODevice.h

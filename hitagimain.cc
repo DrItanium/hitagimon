@@ -28,7 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdint.h>
 #include "IODevice.h"
 #include <string>
-#include "EnvironmentInterface.h"
 #include "LowLevelInterface.h"
 
 uint64_t delay(uint64_t count) {
@@ -40,11 +39,11 @@ uint64_t delay(uint64_t count) {
 }
 
 int main() {
-    ChipsetBasicFunctions& theChipset = getBasicChipsetInterface();
+    hitagi::ChipsetBasicFunctions& theChipset = hitagi::getBasicChipsetInterface();
     theChipset.writeLine("HITAGIMON");
     printf("Built on %s at %s\n", __DATE__, __TIME__);
     printf("--------------------------------------------\n\n\n\n");
-    getDisplay().clearScreen();
+    hitagi::getDisplay().clearScreen();
     while (true) {
         sys_toggle_led();
         delay(100000);
