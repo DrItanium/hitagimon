@@ -186,7 +186,3 @@ kill (int pid, int signal) {
     printf("KILLING PROCESS!\n");
     exit (signal);
 }
-namespace {
-}
-#if 0
-#endif
