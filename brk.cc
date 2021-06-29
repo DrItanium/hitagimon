@@ -10,51 +10,50 @@
 #include "IORoutines.h"
 #include "IODevice.h"
 
-namespace
-{
-    int
-    sys_write(int fd, const void *buf, size_t sz, int &nwrite) {
-        nwrite = 0;
-        if (fd >= 3) {
-            if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
-                nwrite = getSDCardInterface().writeFile(fd - 3, buf, sz);
-                return 0;
-            } else {
-                return EBADF;
-            }
-        } else {
-            // builtin files
-            switch (fd) {
-                case STDOUT_FILENO:
-                case STDERR_FILENO:
-                    nwrite = getBasicChipsetInterface().write(reinterpret_cast<char *>(const_cast<void *>(buf)), sz);
-                    break;
-                default:
-                    return EBADF;
-            }
+extern "C"
+int
+sys_write(int fd, const void *buf, size_t sz, int &nwrite) {
+    nwrite = 0;
+    if (fd >= 3) {
+        if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
+            nwrite = getSDCardInterface().writeFile(fd - 3, buf, sz);
             return 0;
-        }
-    }
-    int
-    sys_read(int fd, void *buf, size_t sz, int &nread) {
-        //char* theBuf = reinterpret_cast<char*>(buf);
-        nread = 0;
-        if (fd >= 3) {
-            if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
-                nread = getSDCardInterface().readFile(fd - 3, buf, sz);
-                return 0;
-            } else {
-                return EBADF;
-            }
         } else {
-            // builtin files
-            switch (fd) {
-                case STDIN_FILENO:
-                    nread = getBasicChipsetInterface().read(reinterpret_cast<char *>(buf), sz);
-                    break;
-                default:
-                    return EBADF;
-            }
+            return EBADF;
+        }
+    } else {
+        // builtin files
+        switch (fd) {
+            case STDOUT_FILENO:
+            case STDERR_FILENO:
+                nwrite = getBasicChipsetInterface().write(reinterpret_cast<char *>(const_cast<void *>(buf)), sz);
+                break;
+            default:
+                return EBADF;
+        }
+        return 0;
+    }
+}
+extern "C"
+int
+sys_read(int fd, void *buf, size_t sz, int &nread) {
+    //char* theBuf = reinterpret_cast<char*>(buf);
+    nread = 0;
+    if (fd >= 3) {
+        if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
+            nread = getSDCardInterface().readFile(fd - 3, buf, sz);
+            return 0;
+        } else {
+            return EBADF;
+        }
+    } else {
+        // builtin files
+        switch (fd) {
+            case STDIN_FILENO:
+                nread = getBasicChipsetInterface().read(reinterpret_cast<char *>(buf), sz);
+                break;
+            default:
+                return EBADF;
         }
     }
 }
@@ -188,7 +187,7 @@ void
 _exit(int status) {
     printf("exit(%d)\n", status);
     while (true) {
-       // just hang here
+        // just hang here
     }
 }
 

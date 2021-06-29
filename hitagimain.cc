@@ -14,11 +14,6 @@ uint64_t delay(uint64_t count) {
     return value;
 }
 
-char* args[] = { };
-void setupEnvironmentVariables() {
-    EnvironmentInterface::set("HOME", "/home");
-    EnvironmentInterface::set("DOOMWADDIR", "/home/wads");
-}
 int main() {
     ChipsetBasicFunctions& theChipset = getBasicChipsetInterface();
     BuiltinTFTDisplay& theDisplay = getDisplay();
@@ -27,7 +22,6 @@ int main() {
     printf("--------------------------------------------\n\n\n\n");
     printf("Sizeof(int) = %d\n", sizeof(int));
     printf("Setting up Environment Variables....{\n");
-    setupEnvironmentVariables();
     printf("}...Done\n");
     printf("STARTING UP DOOM!!!\n");
     theDisplay.clearScreen();
