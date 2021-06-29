@@ -25,7 +25,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef NINDYPP_IOROUTINES_H
 #define NINDYPP_IOROUTINES_H
-#include <stdint.h>
 extern char* stack_start;
 extern int end;
 inline char* getBSSEndAddress() { return reinterpret_cast<char*>(&end); }

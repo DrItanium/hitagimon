@@ -121,6 +121,8 @@ extern "C"
 void
 _exit(int status) {
     sys_exit(status);
+    // make sure that this function does not return
+    while (true);
 }
 
 extern "C"
