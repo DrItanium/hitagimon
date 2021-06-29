@@ -42,7 +42,7 @@ struct fault_data {
 };
 void
 displayFaultData(fault_data* record) {
-    printf("PC: %x\n", record->pc);
+    printf("\tPC: %x\n", record->pc);
 }
 extern "C"
 void
