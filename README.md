@@ -27,3 +27,11 @@ This project requires access to the i960-elf-gcc 3.4.6 cross compiler to build.
 
 The reference directory contains the source code and documentation for NINDY which is where this application started
 and then forked off in a better direction.
+
+## WHAT IS HITAGI?
+
+Hitagi is the code name for my first generation i960Sx custom development board that I have spent the last two years 
+designing and bringing up from near scratch. The board uses an Atmega1284p to act as the "chipset" for the i960Sx. 
+The 1284p services all memory requests and exposes peripherals through the memory space of the i960. 
+
+
