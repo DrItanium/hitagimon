@@ -19,12 +19,12 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 add_library(hitagichipset
 		IODevice.cc
 		IODevice.h
-		ChipsetInteract.cc
-		ChipsetInteract.h
+        chipset/ChipsetInteract.cc
+        chipset/ChipsetInteract.h
 		IORoutines.h
 		)
 add_library(hitagisys
-		brk.cc
+		sys/brk.cc
 		fstat.cc
 		isatty.cc
 		lseek.cc
@@ -33,11 +33,14 @@ add_library(hitagisys
 		open.cc
 		kill.cc
 		setitimer.cc
-		close.cc
-		gettimeofday.cc
-		access.cc
-		getpid.cc
-		_exit.cc)
+		sys/close.cc
+		sys/gettimeofday.cc
+		sys/access.cc
+		sys/getpid.cc
+		sys/_exit.cc)
+add_library(hitagicortex
+		cortex/EnvironmentInterface.cc
+		cortex/EnvironmentInterface.h)
 
 add_executable(hitagimon
 		sx_init.s # this must ALWAYS be first!
@@ -174,9 +177,7 @@ add_executable(hitagimon
 		v_video.c
 		wi_stuff.c
 		w_wad.c
-		z_zone.c
-		EnvironmentInterface.cc
-		EnvironmentInterface.h)
+		z_zone.c)
 
 #set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT})
 target_link_libraries(hitagimon
@@ -186,6 +187,7 @@ target_link_libraries(hitagimon
 		c
 		m
 		#nosys # stub library
+		hitagicortex
 		hitagisys
 		hitagichipset
 		stdc++

@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include "IODevice.h"
 #include <string>
-#include "EnvironmentInterface.h"
+#include "cortex/EnvironmentInterface.h"
 
 extern "C" int doommain (int argc, char** argv) ;
 uint64_t delay(uint64_t count) {

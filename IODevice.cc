@@ -3,7 +3,7 @@
 //
 
 #include "IODevice.h"
-#include "ChipsetInteract.h"
+#include "chipset/ChipsetInteract.h"
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>

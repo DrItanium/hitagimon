@@ -23,27 +23,33 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 //
-// Created by jwscoggins on 6/29/21.
+// Created by jwscoggins on 5/2/21.
 //
-
 #include <unistd.h>
-#include <errno.h>
-#include "IODevice.h"
+#include <stdint.h>
+#include "../IORoutines.h"
+#include "../IODevice.h"
+
+static char* heapEnd = 0;
 
 extern "C"
-int access(const char* pathName, int mode) {
-    //printf("access(\"%s\", %d)\n", pathName, mode);
-    // the sd card interface does not have the concept of permission bits but we can easily do
-    if (mode == R_OK) {
-        if (getSDCardInterface().fileExists(pathName)) {
-            return 0;
-        } else {
-            errno = EACCES;
-            return -1;
-        }
-    } else {
-        /// @todo check user's permissions for a file, this will be found on the SD Card. so this path needs to be passed to the 1284p
-        errno = EACCES;
-        return -1;
+void*
+sbrk(intptr_t increment) {
+    if (heapEnd == 0) {
+        heapEnd = reinterpret_cast<char*>(&end);
     }
+    char* prevHeapEnd = heapEnd;
+    heapEnd += increment;
+    return prevHeapEnd;
 }
+
+
+
+
+
+
+
+
+
+
+

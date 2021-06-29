@@ -23,10 +23,21 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 //
-// Created by jwscoggins on 5/2/21.
+// Created by jwscoggins on 6/29/21.
 //
 
-#include "ChipsetInteract.h"
-#include "IORoutines.h"
+#include <unistd.h>
+#include <errno.h>
+#include "../IODevice.h"
 
-
+extern "C"
+int
+close(int fd) {
+    //printf("close(%d);\n", fd);
+    if (fd >= 3) {
+        return getSDCardInterface().closeFile(fd - 3);
+    } else {
+        errno = EBADF;
+        return -1;
+    }
+}

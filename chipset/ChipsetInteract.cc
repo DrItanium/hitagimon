@@ -25,31 +25,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 // Created by jwscoggins on 5/2/21.
 //
-#include <unistd.h>
-#include <stdint.h>
-#include "IORoutines.h"
-#include "IODevice.h"
 
-static char* heapEnd = 0;
-
-extern "C"
-void*
-sbrk(intptr_t increment) {
-    if (heapEnd == 0) {
-        heapEnd = reinterpret_cast<char*>(&end);
-    }
-    char* prevHeapEnd = heapEnd;
-    heapEnd += increment;
-    return prevHeapEnd;
-}
-
-
-
-
-
-
-
-
-
+#include "ChipsetInteract.h"
+#include "../IORoutines.h"
 
 

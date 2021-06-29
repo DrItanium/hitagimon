@@ -28,16 +28,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <unistd.h>
 #include <errno.h>
-#include "IODevice.h"
+#include "../IODevice.h"
 
 extern "C"
-int
-close(int fd) {
-    //printf("close(%d);\n", fd);
-    if (fd >= 3) {
-        return getSDCardInterface().closeFile(fd - 3);
+int access(const char* pathName, int mode) {
+    //printf("access(\"%s\", %d)\n", pathName, mode);
+    // the sd card interface does not have the concept of permission bits but we can easily do
+    if (mode == R_OK) {
+        if (getSDCardInterface().fileExists(pathName)) {
+            return 0;
+        } else {
+            errno = EACCES;
+            return -1;
+        }
     } else {
-        errno = EBADF;
+        /// @todo check user's permissions for a file, this will be found on the SD Card. so this path needs to be passed to the 1284p
+        errno = EACCES;
         return -1;
     }
 }
