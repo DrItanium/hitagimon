@@ -50,7 +50,8 @@ add_executable(hitagimon
 		f_handle.cc
 		ISR.cc
 		# interface libraries
-		hitagimain.cc
+		hitagimain.cc)
+add_library(hitagidoom
 		# doom source code
 		am_map.h
 		d_englsh.h
@@ -185,6 +186,7 @@ target_link_libraries(hitagimon
 		c
 		m
 		#nosys # stub library
+		hitagidoom
 		hitagicortex
 		hitagisys
 		hitagichipset
