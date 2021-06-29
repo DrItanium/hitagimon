@@ -51,7 +51,12 @@ _sys_close:
 _sys_open:
     calls 5
     ret
-.global _dummy_call
-_dummy_call:
+.global _sys_toggle_led
+_sys_toggle_led:
     calls 6
+    ret
+
+.global _sys_access
+_sys_access:
+    calls 7
     ret

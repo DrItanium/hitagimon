@@ -28,33 +28,112 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ChipsetDrivers.h"
 #include "IODevice.h"
+#include <errno.h>
 int
 performSysWrite(int fd, const void *buf, size_t sz, int &nwrite) {
-    return 0;
+    nwrite = 0;
+    if (fd >= 3) {
+        if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
+            nwrite = getSDCardInterface().writeFile(fd - 3, buf, sz);
+            return 0;
+        } else {
+            return EBADF;
+        }
+    } else {
+        // builtin files
+        switch (fd) {
+            case STDOUT_FILENO:
+            case STDERR_FILENO:
+                nwrite = getBasicChipsetInterface().write(reinterpret_cast<char *>(const_cast<void *>(buf)), sz);
+                break;
+            default:
+                return EBADF;
+        }
+        return 0;
+    }
 }
 int
 performSysRead(int fd, void *buf, size_t sz, int &nread) {
-    return 0;
+    //char* theBuf = reinterpret_cast<char*>(buf);
+    nread = 0;
+    if (fd >= 3) {
+        if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
+            nread = getSDCardInterface().readFile(fd - 3, buf, sz);
+            return 0;
+        } else {
+            return EBADF;
+        }
+    } else {
+        // builtin files
+        switch (fd) {
+            case STDIN_FILENO:
+                nread = getBasicChipsetInterface().read(reinterpret_cast<char *>(buf), sz);
+                break;
+            default:
+                return EBADF;
+        }
+    }
 }
 int
 performSysLseek(int fd, off_t offset, int whence) {
-    return 0;
+    //printf("lseek(%d, %ld, %d)\n", fd, offset, whence);
+    /// @todo implement this using an SD Card interface
+    if (fd >= 3) {
+        if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
+            return getSDCardInterface().seek(fd - 3, offset, whence);
+        } else {
+            errno = EBADF;
+            return -1;
+        }
+    } else {
+        // builtin files
+        switch (fd) {
+            case STDIN_FILENO:
+                return 0;
+            default:
+                errno = EBADF;
+                return -1;
+        }
+    }
 }
 void
 performSysExit(int signal) {
-
+    while (true) {
+        // just hang here
+    }
 }
 int
 performSysClose(int fd) {
     return 0;
 }
 int
-performSysOpen(const char *file, int mode, int perms) {
-    return 0;
+performSysOpen(const char *file, int flags, int mode) {
+    int result = getSDCardInterface().openFile(file, flags);
+    if (result != -1) {
+        result =+ 3; // skip past the stdin/stderr/stdout ids
+    }
+    return result;
+}
+
+void
+performLedToggle() {
+    getBasicChipsetInterface().toggleLED();
 }
 
 int
-performDummyCall() {
-    getBasicChipsetInterface().toggleLED();
-    return 0;
+performSysAccess(const char *pathName, int mode) {
+    //printf("access(\"%s\", %d)\n", pathName, mode);
+    // the sd card interface does not have the concept of permission bits but we can easily do
+    if (mode == R_OK) {
+        if (getSDCardInterface().fileExists(pathName)) {
+            return 0;
+        } else {
+            errno = EACCES;
+            return -1;
+        }
+    } else {
+        /// @todo check user's permissions for a file, this will be found on the SD Card. so this path needs to be passed to the 1284p
+        errno = EACCES;
+        return -1;
+    }
 }

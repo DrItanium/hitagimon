@@ -36,7 +36,7 @@ add_executable(hitagimon
 		LowLevelInterface.h
 		ChipsetDrivers.cc
 		ChipsetDrivers.h
-		LowLevelInterface.s)
+		LowLevelInterface.s open.cc)
 
 #set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT})
 target_link_libraries(hitagimon

@@ -122,8 +122,8 @@ sys_proc_table:
 	.word	(_performSysExit + 0x2) # Calls 3 - ??
     .word   (_performSysClose + 0x2)  # Calls 4 - ??
 	.word   (_performSysOpen + 0x2)  # Calls 5 - ??
-	.word   (_performDummyCall + 0x2) # Calls 6
-	.word 0
+	.word   (_performLedToggle + 0x2) # Calls 6
+	.word   (_performSysAccess + 0x2) # Calls 7
 	.word 0
 	.word 0
 	.word 0

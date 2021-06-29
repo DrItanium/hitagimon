@@ -115,25 +115,7 @@ isatty (int file) {
 extern "C"
 off_t
 lseek(int fd, off_t offset, int whence) {
-    //printf("lseek(%d, %ld, %d)\n", fd, offset, whence);
-    /// @todo implement this using an SD Card interface
-    if (fd >= 3) {
-        if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
-            return getSDCardInterface().seek(fd - 3, offset, whence);
-        } else {
-            errno = EBADF;
-            return -1;
-        }
-    } else {
-        // builtin files
-        switch (fd) {
-            case STDIN_FILENO:
-                return 0;
-            default:
-                errno = EBADF;
-                return -1;
-        }
-    }
+    return sys_lseek(fd, offset, whence);
 }
 
 extern "C"
@@ -146,20 +128,7 @@ setitimer(int which, const struct itimerval* newValue, struct itimerval* oldValu
 
 extern "C"
 int access(const char* pathName, int mode) {
-    //printf("access(\"%s\", %d)\n", pathName, mode);
-    // the sd card interface does not have the concept of permission bits but we can easily do
-    if (mode == R_OK) {
-        if (getSDCardInterface().fileExists(pathName)) {
-            return 0;
-        } else {
-            errno = EACCES;
-            return -1;
-        }
-    } else {
-        /// @todo check user's permissions for a file, this will be found on the SD Card. so this path needs to be passed to the 1284p
-        errno = EACCES;
-        return -1;
-    }
+    return sys_access(pathName, mode);
 }
 
 extern "C"
@@ -214,10 +183,7 @@ close(int fd) {
 extern "C"
 void
 _exit(int status) {
-    printf("exit(%d)\n", status);
-    while (true) {
-        // just hang here
-    }
+    sys_exit(status);
 }
 
 extern "C"
@@ -228,13 +194,5 @@ kill (int pid, int signal) {
 }
 namespace {
 }
-extern "C"
-int
-open (char* file, int flags) {
-    //printf("open(\"%s\", %d)\n", file, flags);
-    int result = getSDCardInterface().openFile(file, flags);
-    if (result != -1) {
-        result =+ 3; // skip past the stdin/stderr/stdout ids
-    }
-    return result;
-}
+#if 0
+#endif

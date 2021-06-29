@@ -51,7 +51,7 @@ int main() {
     printf("STARTING UP DOOM!!!\n");
     theDisplay.clearScreen();
     while (true) {
-        dummy_call();
+        sys_toggle_led();
     }
     return 0;
 }

@@ -34,6 +34,7 @@ extern "C" int performSysRead(int fd, void *buf, size_t sz, int &nread);
 extern "C" int performSysLseek(int fd, off_t offset, int whence);
 extern "C" void performSysExit(int signal);
 extern "C" int performSysClose(int fd);
-extern "C" int performSysOpen(const char* file, int mode, int perms);
-extern "C" int performDummyCall();
+extern "C" int performSysOpen(const char* file, int flags, int mode);
+extern "C" void performLedToggle();
+extern "C" int performSysAccess(const char* pathName, int mode);
 #endif //HITAGIMON_CHIPSETDRIVERS_H

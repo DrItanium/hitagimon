@@ -23,21 +23,19 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 //
-// Created by jwscoggins on 6/28/21.
+// Created by jwscoggins on 5/2/21.
 //
-
-#ifndef HITAGIMON_LOWLEVELINTERFACE_H
-#define HITAGIMON_LOWLEVELINTERFACE_H
-
-#include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
+#include <stdint.h>
 #include <sys/stat.h>
-extern "C" int sys_write(int fd, const void *buf, size_t sz, int &nwrite);
-extern "C" int sys_read(int fd, void *buf, size_t sz, int &nread);
-extern "C" int sys_lseek(int fd, off_t offset, int whence);
-extern "C" void sys_exit(int signal);
-extern "C" int sys_close(int fd);
-extern "C" int sys_open(const char* file, int mode, int perms);
-extern "C" int sys_toggle_led();
-extern "C" int sys_access(const char* pathName, int mode);
-#endif //HITAGIMON_LOWLEVELINTERFACE_H
+#include <sys/time.h>
+#include <stdlib.h>
 
+#include "LowLevelInterface.h"
+
+extern "C"
+int
+open (char* file, int flags, int mode) {
+    return sys_open(file, flags, mode);
+}
