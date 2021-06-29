@@ -115,15 +115,3 @@ kill (int pid, int signal) {
     printf("KILLING PROCESS!\n");
     exit (signal);
 }
-namespace {
-}
-extern "C"
-int
-open (char* file, int flags) {
-    //printf("open(\"%s\", %d)\n", file, flags);
-    int result = getSDCardInterface().openFile(file, flags);
-    if (result != -1) {
-        result =+ 3; // skip past the stdin/stderr/stdout ids
-    }
-    return result;
-}
