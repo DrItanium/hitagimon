@@ -49,13 +49,6 @@ sbrk(intptr_t increment) {
 
 
 
-extern "C"
-int
-setitimer(int which, const struct itimerval* newValue, struct itimerval* oldValue) {
-    printf("setitimer(%d, %x, %x)\n", which, newValue, oldValue);
-    /// @todo use arduino timers to satisfy this, we use the interrupts to trigger timers
-    return 0;
-}
 
 extern "C"
 int access(const char* pathName, int mode) {
@@ -109,9 +102,3 @@ _exit(int status) {
     }
 }
 
-extern "C"
-int
-kill (int pid, int signal) {
-    printf("KILLING PROCESS!\n");
-    exit (signal);
-}
