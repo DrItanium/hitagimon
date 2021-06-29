@@ -116,7 +116,9 @@ sys_proc_table:
     .word 0 # Preserved
     .word 0 # Preserved
 # up to 260 entries!
-	.word	(_console_io + 0x2)	# Calls 0 - console I/O routines
+    # example entry
+	#.word	(_console_io + 0x2)	# Calls 0 - console I/O routines
+	.word	0 	# Calls 0 - ??
 	.word	0 	# Calls 1 - ??
 	.word	0 # Calls 2 - ??
     .word   0 # Calls 3 - ??

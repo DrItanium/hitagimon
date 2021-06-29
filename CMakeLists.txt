@@ -50,8 +50,6 @@ add_executable(hitagimon
 		f_handle.cc
 		ISR.cc
 		# interface libraries
-		console.cc
-		console.h
 		hitagimain.cc
 		# doom source code
 		am_map.h
