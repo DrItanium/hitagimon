@@ -43,12 +43,12 @@ add_library(hitagicortex
 		cortex/EnvironmentInterface.h)
 
 add_executable(hitagimon
-		sx_init.s # this must ALWAYS be first!
-		f_table.s
-		i_handle.s
-		i_table.s
-		f_handle.cc
-		ISR.cc
+		boot/sx_init.s # this must ALWAYS be first!
+		boot/f_table.s
+		boot/i_handle.s
+		boot/i_table.s
+		boot/f_handle.cc
+		boot/ISR.cc
 		# interface libraries
 		hitagimain.cc)
 add_library(hitagidoom

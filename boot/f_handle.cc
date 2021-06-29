@@ -25,7 +25,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*
  * Fault handler routines
  */
-#include "chipset/IODevice.h"
+#include "../chipset/IODevice.h"
 #include <stdio.h>
 struct fault_data {
     volatile unsigned reserved;
