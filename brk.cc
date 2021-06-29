@@ -32,60 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/time.h>
 #include <stdlib.h>
 #include "IORoutines.h"
-#include "IODevice.h"
 #include "LowLevelInterface.h"
-#if 0
-namespace
-{
-    extern "C"
-    int
-    sys_write(int fd, const void *buf, size_t sz, int &nwrite) {
-        nwrite = 0;
-        if (fd >= 3) {
-            if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
-                nwrite = getSDCardInterface().writeFile(fd - 3, buf, sz);
-                return 0;
-            } else {
-                return EBADF;
-            }
-        } else {
-            // builtin files
-            switch (fd) {
-                case STDOUT_FILENO:
-                case STDERR_FILENO:
-                    nwrite = getBasicChipsetInterface().write(reinterpret_cast<char *>(const_cast<void *>(buf)), sz);
-                    break;
-                default:
-                    return EBADF;
-            }
-            return 0;
-        }
-    }
-    extern "C"
-    int
-    sys_read(int fd, void *buf, size_t sz, int &nread) {
-        //char* theBuf = reinterpret_cast<char*>(buf);
-        nread = 0;
-        if (fd >= 3) {
-            if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
-                nread = getSDCardInterface().readFile(fd - 3, buf, sz);
-                return 0;
-            } else {
-                return EBADF;
-            }
-        } else {
-            // builtin files
-            switch (fd) {
-                case STDIN_FILENO:
-                    nread = getBasicChipsetInterface().read(reinterpret_cast<char *>(buf), sz);
-                    break;
-                default:
-                    return EBADF;
-            }
-        }
-    }
-}
-#endif
 static char* heapEnd = 0;
 
 extern "C"
@@ -121,9 +68,7 @@ lseek(int fd, off_t offset, int whence) {
 extern "C"
 int
 setitimer(int which, const struct itimerval* newValue, struct itimerval* oldValue) {
-    printf("setitimer(%d, %x, %x)\n", which, newValue, oldValue);
-    /// @todo use arduino timers to satisfy this, we use the interrupts to trigger timers
-    return 0;
+    return sys_setitimer(which, newValue, oldValue);
 }
 
 extern "C"
@@ -150,7 +95,6 @@ write (int fd, const void* buf, size_t sz) {
 extern "C"
 int
 read (int fd, void* buf, size_t sz) {
-    //printf("read(%d, 0x%x, %ld)\n", fd, buf, sz);
     int nread = 0;
     int r = sys_read (fd, buf, sz, nread);
     if (r != 0)
@@ -164,8 +108,7 @@ read (int fd, void* buf, size_t sz) {
 extern "C"
 int
 gettimeofday(struct timeval* tv, void* tz) {
-    printf("gettimeofday(%x, %x);\n", tv, tz);
-    return 0;
+    return sys_gettimeofday(tv, tz);
 }
 
 extern "C"
@@ -183,6 +126,5 @@ _exit(int status) {
 extern "C"
 int
 kill (int pid, int signal) {
-    printf("KILLING PROCESS!\n");
     exit (signal);
 }

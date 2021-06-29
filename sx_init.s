@@ -116,6 +116,9 @@ sys_proc_table:
     .word 0 # Preserved
     .word 0 # Preserved
 # up to 260 entries!
+.macro defsysproc title
+.word ( \title\() + 0x2)
+.endm
 	.word	(_performSysWrite + 0x2)	# Calls 0 - console I/O routines
 	.word   (_performSysRead + 0x2) # Calls 1
 	.word   (_performSysLseek + 0x2) # Calls 2
@@ -124,8 +127,8 @@ sys_proc_table:
 	.word   (_performSysOpen + 0x2)  # Calls 5 - ??
 	.word   (_performLedToggle + 0x2) # Calls 6
 	.word   (_performSysAccess + 0x2) # Calls 7
-	.word 0
-	.word 0
+	defsysproc _performSysSetITimer # Calls 8
+	defsysproc _performSysGetTimeOfDay
 	.word 0
 	.word 0
 	.word 0

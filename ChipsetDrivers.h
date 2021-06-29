@@ -37,4 +37,6 @@ extern "C" int performSysClose(int fd);
 extern "C" int performSysOpen(const char* file, int flags, int mode);
 extern "C" void performLedToggle();
 extern "C" int performSysAccess(const char* pathName, int mode);
+extern "C" int performSysSetITimer(int which, const struct itimerval* newValue, struct itimerval* oldValue);
+extern "C" int performSysGetTimeOfDay(struct timeval* tv, void* tz);
 #endif //HITAGIMON_CHIPSETDRIVERS_H

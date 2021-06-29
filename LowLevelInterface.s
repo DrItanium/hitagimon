@@ -22,41 +22,45 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
+.macro defentry name
 .text
 .align 4
-.global _sys_write
-_sys_write:
+.globl \name
+\name\() :
+.endm
+
+defentry _sys_write
     calls 0
     ret
-.global _sys_read
-_sys_read:
+defentry _sys_read
     calls 1
     ret
-.global _sys_lseek
-_sys_lseek:
+defentry _sys_lseek
     calls 2
     ret
-.global _sys_exit
-_sys_exit:
+defentry _sys_exit
     calls 3
     ret
 
-.global _sys_close
-_sys_close:
+defentry _sys_close
     calls 4
     ret
 
-.global _sys_open
-_sys_open:
+defentry _sys_open
     calls 5
     ret
-.global _sys_toggle_led
-_sys_toggle_led:
+defentry _sys_toggle_led
     calls 6
     ret
 
-.global _sys_access
-_sys_access:
+defentry _sys_access
     calls 7
+    ret
+
+defentry _sys_setitimer
+    calls 8
+    ret
+
+defentry _sys_gettimeofday
+    calls 9
     ret

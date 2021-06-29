@@ -39,5 +39,8 @@ extern "C" int sys_close(int fd);
 extern "C" int sys_open(const char* file, int mode, int perms);
 extern "C" int sys_toggle_led();
 extern "C" int sys_access(const char* pathName, int mode);
+extern "C" int sys_setitimer(int which, const struct itimerval* newValue, struct itimerval* oldValue);
+extern "C" int sys_gettimeofday(struct timeval* tv, void* tz);
+
 #endif //HITAGIMON_LOWLEVELINTERFACE_H
 

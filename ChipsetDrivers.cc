@@ -143,3 +143,15 @@ performSysAccess(const char *pathName, int mode) {
         return -1;
     }
 }
+
+int
+performSysSetITimer(int which, const struct itimerval *newValue, struct itimerval *oldValue) {
+    /// @todo use arduino timers to satisfy this, we use the interrupts to trigger timers
+    // do nothing at this point
+    return 0;
+}
+
+int
+performSysGetTimeOfDay(struct timeval *tv, void *tz) {
+    return 0;
+}
