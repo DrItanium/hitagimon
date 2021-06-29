@@ -104,7 +104,13 @@ performSysExit(int signal) {
 }
 int
 performSysClose(int fd) {
-    return 0;
+    //printf("close(%d);\n", fd);
+    if (fd >= 3) {
+        return getSDCardInterface().closeFile(fd - 3);
+    } else {
+        errno = EBADF;
+        return -1;
+    }
 }
 int
 performSysOpen(const char *file, int flags, int mode) {
