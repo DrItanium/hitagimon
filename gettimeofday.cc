@@ -22,66 +22,15 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 //
-// Created by jwscoggins on 5/2/21.
+// Created by jwscoggins on 6/29/21.
 //
-#include <unistd.h>
-#include <errno.h>
-#include <stdint.h>
+#include <stdio.h>
 #include <sys/time.h>
-#include <stdlib.h>
-#include "IORoutines.h"
-#include "IODevice.h"
-
-static char* heapEnd = 0;
-
 extern "C"
-void*
-sbrk(intptr_t increment) {
-    if (heapEnd == 0) {
-        heapEnd = reinterpret_cast<char*>(&end);
-    }
-    char* prevHeapEnd = heapEnd;
-    heapEnd += increment;
-    return prevHeapEnd;
+int
+gettimeofday(struct timeval* tv, void* tz) {
+    printf("gettimeofday(%x, %x);\n", tv, tz);
+    return 0;
 }
-
-
-
-
-
-extern "C"
-int access(const char* pathName, int mode) {
-    //printf("access(\"%s\", %d)\n", pathName, mode);
-    // the sd card interface does not have the concept of permission bits but we can easily do
-    if (mode == R_OK) {
-        if (getSDCardInterface().fileExists(pathName)) {
-            return 0;
-        } else {
-            errno = EACCES;
-            return -1;
-        }
-    } else {
-        /// @todo check user's permissions for a file, this will be found on the SD Card. so this path needs to be passed to the 1284p
-        errno = EACCES;
-        return -1;
-    }
-}
-
-extern "C"
-int getpid () {
-    return -1;
-}
-
-
-
-
-extern "C"
-void
-_exit(int status) {
-    printf("exit(%d)\n", status);
-    while (true) {
-       // just hang here
-    }
-}
-
