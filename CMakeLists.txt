@@ -158,7 +158,7 @@ add_executable(hitagimon
 		wi_stuff.c
 		w_wad.c
 		z_zone.c
-		EnvironmentInterface.cc EnvironmentInterface.h fstat.cc isatty.cc lseek.cc write.cc read.cc open.cc kill.cc setitimer.cc close.cc gettimeofday.cc)
+		EnvironmentInterface.cc EnvironmentInterface.h fstat.cc isatty.cc lseek.cc write.cc read.cc open.cc kill.cc setitimer.cc close.cc gettimeofday.cc access.cc getpid.cc)
 
 #set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT})
 target_link_libraries(hitagimon
