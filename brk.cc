@@ -96,11 +96,6 @@ sbrk(intptr_t increment) {
 }
 
 
-extern "C"
-int
-isatty (int file) {
-    return file < 3;
-}
 
 extern "C"
 off_t
