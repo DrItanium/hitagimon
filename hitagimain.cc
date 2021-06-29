@@ -2,7 +2,7 @@
 // Created by jwscoggins on 6/7/21.
 //
 #include <stdint.h>
-#include "IODevice.h"
+#include "chipset/IODevice.h"
 #include <string>
 #include "cortex/EnvironmentInterface.h"
 

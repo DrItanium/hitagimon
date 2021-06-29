@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdint.h>
 #include <unistd.h>
 #include <string>
-#include "chipset/ChipsetInteract.h"
+#include "ChipsetInteract.h"
 
 class BuiltinIOBaseDevice {
 public:

@@ -27,8 +27,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 #include <unistd.h>
 #include <stdint.h>
-#include "../IORoutines.h"
-#include "../IODevice.h"
+#include "../chipset/IORoutines.h"
+#include "../chipset/IODevice.h"
 
 static char* heapEnd = 0;
 

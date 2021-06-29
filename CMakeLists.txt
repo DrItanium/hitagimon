@@ -17,22 +17,22 @@ set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 add_library(hitagichipset
-		IODevice.cc
-		IODevice.h
+		chipset/IODevice.cc
+		chipset/IODevice.h
         chipset/ChipsetInteract.cc
         chipset/ChipsetInteract.h
-		IORoutines.h
+		chipset/IORoutines.h
 		)
 add_library(hitagisys
 		sys/brk.cc
-		fstat.cc
-		isatty.cc
-		lseek.cc
-		write.cc
-		read.cc
-		open.cc
-		kill.cc
-		setitimer.cc
+		sys/fstat.cc
+		sys/isatty.cc
+		sys/lseek.cc
+		sys/write.cc
+		sys/read.cc
+		sys/open.cc
+		sys/kill.cc
+		sys/setitimer.cc
 		sys/close.cc
 		sys/gettimeofday.cc
 		sys/access.cc

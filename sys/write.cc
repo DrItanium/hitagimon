@@ -25,20 +25,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 // Created by jwscoggins on 6/29/21.
 //
-
 #include <unistd.h>
 #include <errno.h>
-#include "IODevice.h"
-
+#include "../chipset/IODevice.h"
 namespace
 {
     int
-    sys_read(int fd, void *buf, size_t sz, int &nread) {
-        //char* theBuf = reinterpret_cast<char*>(buf);
-        nread = 0;
+    sys_write(int fd, const void *buf, size_t sz, int &nwrite) {
+        nwrite = 0;
         if (fd >= 3) {
             if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
-                nread = getSDCardInterface().readFile(fd - 3, buf, sz);
+                nwrite = getSDCardInterface().writeFile(fd - 3, buf, sz);
                 return 0;
             } else {
                 return EBADF;
@@ -46,26 +43,25 @@ namespace
         } else {
             // builtin files
             switch (fd) {
-                case STDIN_FILENO:
-                    nread = getBasicChipsetInterface().read(reinterpret_cast<char *>(buf), sz);
+                case STDOUT_FILENO:
+                case STDERR_FILENO:
+                    nwrite = getBasicChipsetInterface().write(reinterpret_cast<char *>(const_cast<void *>(buf)), sz);
                     break;
                 default:
                     return EBADF;
             }
+            return 0;
         }
     }
 }
-
 extern "C"
 int
-read (int fd, void* buf, size_t sz) {
-    //printf("read(%d, 0x%x, %ld)\n", fd, buf, sz);
-    int nread = 0;
-    int r = sys_read (fd, buf, sz, nread);
-    if (r != 0)
-    {
+write (int fd, const void* buf, size_t sz) {
+    int numWritten = 0;
+    int r = sys_write(fd, buf, sz, numWritten);
+    if (r != 0) {
         errno = r;
         return -1;
     }
-    return nread;
+    return numWritten;
 }
