@@ -1,5 +1,5 @@
 /*
-hitagimon
+i960SxChipset
 Copyright (c) 2020-2021, Joshua Scoggins
 All rights reserved.
 
@@ -23,14 +23,13 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 //
-// Created by jwscoggins on 5/2/21.
+// Created by jwscoggins on 6/29/21.
 //
-
-#include "console.h"
+#include <sys/stat.h>
 
 extern "C"
 int
-console_io(int type, int chr)
-{
+fstat (int file, struct stat* st) {
+    st->st_mode = S_IFCHR;
     return 0;
 }
