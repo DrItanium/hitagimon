@@ -25,32 +25,43 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 // Created by jwscoggins on 6/29/21.
 //
-
 #include <unistd.h>
 #include <errno.h>
-#include <sys/time.h>
 #include "IODevice.h"
-
-extern "C"
-off_t
-lseek(int fd, off_t offset, int whence) {
-    //printf("lseek(%d, %ld, %d)\n", fd, offset, whence);
-    /// @todo implement this using an SD Card interface
-    if (fd >= 3) {
-        if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
-            return getSDCardInterface().seek(fd - 3, offset, whence);
-        } else {
-            errno = EBADF;
-            return -1;
-        }
-    } else {
-        // builtin files
-        switch (fd) {
-            case STDIN_FILENO:
+namespace
+{
+    int
+    sys_write(int fd, const void *buf, size_t sz, int &nwrite) {
+        nwrite = 0;
+        if (fd >= 3) {
+            if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
+                nwrite = getSDCardInterface().writeFile(fd - 3, buf, sz);
                 return 0;
-            default:
-                errno = EBADF;
-                return -1;
+            } else {
+                return EBADF;
+            }
+        } else {
+            // builtin files
+            switch (fd) {
+                case STDOUT_FILENO:
+                case STDERR_FILENO:
+                    nwrite = getBasicChipsetInterface().write(reinterpret_cast<char *>(const_cast<void *>(buf)), sz);
+                    break;
+                default:
+                    return EBADF;
+            }
+            return 0;
         }
     }
+}
+extern "C"
+int
+write (int fd, const void* buf, size_t sz) {
+    int numWritten = 0;
+    int r = sys_write(fd, buf, sz, numWritten);
+    if (r != 0) {
+        errno = r;
+        return -1;
+    }
+    return numWritten;
 }

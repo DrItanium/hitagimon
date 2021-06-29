@@ -1,5 +1,5 @@
 /*
-i960SxChipset
+hitagimon
 Copyright (c) 2020-2021, Joshua Scoggins
 All rights reserved.
 
@@ -128,17 +128,6 @@ int getpid () {
     return -1;
 }
 
-extern "C"
-int
-write (int fd, const void* buf, size_t sz) {
-    int numWritten = 0;
-    int r = sys_write(fd, buf, sz, numWritten);
-    if (r != 0) {
-        errno = r;
-        return -1;
-    }
-    return numWritten;
-}
 extern "C"
 int
 read (int fd, void* buf, size_t sz) {

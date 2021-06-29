@@ -1,5 +1,5 @@
 /*
-i960SxChipset
+hitagimon
 Copyright (c) 2020-2021, Joshua Scoggins
 All rights reserved.
 
