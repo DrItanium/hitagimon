@@ -19,9 +19,7 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 add_library(hitagichipset
 		chipset/IODevice.cc
 		chipset/IODevice.h
-        chipset/ChipsetInteract.cc
-        chipset/ChipsetInteract.h
-		chipset/IORoutines.h
+		chipset/ChipsetInteract.h
 		)
 add_library(hitagisys
 		sys/brk.cc
