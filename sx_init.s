@@ -116,8 +116,9 @@ sys_proc_table:
     .word 0 # Preserved
     .word 0 # Preserved
 # up to 260 entries!
-	.word	(_console_io + 0x2)	# Calls 0 - console I/O routines
-	.word	0 	# Calls 1 - ??
+	.word	(_doConsoleIO + 0x2)	# Calls 0 - console I/O routines
+	.word   (_doLEDIO + 0x2) # Calls 1
+	.word   (_doGPIOCommand + 0x2) # Calls 2
 	.word	0 # Calls 2 - ??
     .word   0 # Calls 3 - ??
 	.word   0 # Calls 4 - ??
@@ -198,6 +199,7 @@ _user_type_core:
 	callx _user_type
 	flushreg
 	ret
+
  start_ip:
     mov 0, g14 # C compiler expects g14 = 0
 
@@ -372,5 +374,4 @@ fix_stack:
     ldconst 0x3b001000, g0  # setup arithmetic controls
     st  g0, -12(fp)     # store contrived AC
     ret
-
 
