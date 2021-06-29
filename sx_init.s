@@ -34,6 +34,7 @@ fault, and system procedure tables, and then vectors to a user defined routine. 
 
 # declare ahead of time
 
+.global sys_proc_table
 .global system_address_table
 .global prcb_ptr
 .global _prcb_ram

@@ -17,12 +17,6 @@ set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 add_library(hitagirt
-		LowLevelInterface.s
-		LowLevelInterface.h
-		open.cc
-		brk.cc
-		EnvironmentInterface.cc
-		EnvironmentInterface.h
 		ChipsetDrivers.h
 		ChipsetDrivers.cc
 		ChipsetInteract.cc
@@ -30,6 +24,17 @@ add_library(hitagirt
 		IORoutines.h
 		IODevice.h
 		IODevice.cc)
+
+add_library(hitagicrt
+		LowLevelInterface.s
+		LowLevelInterface.h
+		open.cc
+		brk.cc
+		)
+
+add_library(hitagiext
+		EnvironmentInterface.cc
+		EnvironmentInterface.h)
 
 
 add_executable(hitagimon
@@ -50,6 +55,8 @@ target_link_libraries(hitagimon
 		c
 		m
 		hitagirt
+		hitagicrt
+		#hitagiext
 		stdc++
 		g
 		g2c
