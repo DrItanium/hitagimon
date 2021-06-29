@@ -51,13 +51,3 @@ _sys_close:
 _sys_open:
     calls 5
     ret
-
-_doUART:
-    calls 0
-    ret
-_doLED:
-    calls 1
-    ret
-_doGPIO:
-    calls 2
-    ret
