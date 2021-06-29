@@ -23,6 +23,35 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+.text
+.align 4
+.global _sys_write
+_sys_write:
+    calls 0
+    ret
+.global _sys_read
+_sys_read:
+    calls 1
+    ret
+.global _sys_lseek
+_sys_lseek:
+    calls 2
+    ret
+.global _sys_exit
+_sys_exit:
+    calls 3
+    ret
+
+.global _sys_close
+_sys_close:
+    calls 4
+    ret
+
+.global _sys_open
+_sys_open:
+    calls 5
+    ret
+
 _doUART:
     calls 0
     ret

@@ -31,7 +31,7 @@ add_executable(hitagimon
 		IORoutines.h
 		brk.cc
 		hitagimain.cc
-		EnvironmentInterface.cc EnvironmentInterface.h LowLevelInterface.cc LowLevelInterface.h)
+		EnvironmentInterface.cc EnvironmentInterface.h LowLevelInterface.h ChipsetDrivers.cc ChipsetDrivers.h)
 
 #set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT})
 target_link_libraries(hitagimon
