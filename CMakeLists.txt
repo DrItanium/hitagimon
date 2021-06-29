@@ -16,6 +16,22 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+add_library(hitagirt
+		LowLevelInterface.s
+		LowLevelInterface.h
+		open.cc
+		brk.cc
+		EnvironmentInterface.cc
+		EnvironmentInterface.h
+		ChipsetDrivers.h
+		ChipsetDrivers.cc
+		ChipsetInteract.cc
+		ChipsetInteract.h
+		IORoutines.h
+		IODevice.h
+		IODevice.cc)
+
+
 add_executable(hitagimon
 		sx_init.s # this must ALWAYS be first!
 		f_table.s
@@ -24,19 +40,7 @@ add_executable(hitagimon
 		f_handle.cc
 		ISR.cc
 		# interface libraries
-		IODevice.cc
-		IODevice.h
-		ChipsetInteract.cc
-		ChipsetInteract.h
-		IORoutines.h
-		brk.cc
-		hitagimain.cc
-		EnvironmentInterface.cc
-		EnvironmentInterface.h
-		LowLevelInterface.h
-		ChipsetDrivers.cc
-		ChipsetDrivers.h
-		LowLevelInterface.s open.cc)
+		hitagimain.cc)
 
 #set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT})
 target_link_libraries(hitagimon
@@ -45,7 +49,7 @@ target_link_libraries(hitagimon
 		gcc
 		c
 		m
-		#nosys # stub library
+		hitagirt
 		stdc++
 		g
 		g2c
