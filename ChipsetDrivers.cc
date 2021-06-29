@@ -27,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
 #include "ChipsetDrivers.h"
+#include "IODevice.h"
 int
 performSysWrite(int fd, const void *buf, size_t sz, int &nwrite) {
     return 0;
@@ -49,5 +50,11 @@ performSysClose(int fd) {
 }
 int
 performSysOpen(const char *file, int mode, int perms) {
+    return 0;
+}
+
+int
+performDummyCall() {
+    getBasicChipsetInterface().toggleLED();
     return 0;
 }

@@ -37,5 +37,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  extern "C" void sys_exit(int signal);
  extern "C" int sys_close(int fd);
  extern "C" int sys_open(const char* file, int mode, int perms);
+ extern "C" int dummy_call();
 #endif //HITAGIMON_LOWLEVELINTERFACE_H
 

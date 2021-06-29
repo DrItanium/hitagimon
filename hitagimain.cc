@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "IODevice.h"
 #include <string>
 #include "EnvironmentInterface.h"
+#include "LowLevelInterface.h"
 
 uint64_t delay(uint64_t count) {
     uint64_t value = 0;
@@ -49,7 +50,9 @@ int main() {
     printf("}...Done\n");
     printf("STARTING UP DOOM!!!\n");
     theDisplay.clearScreen();
-    theChipset.toggleLED();
+    while (true) {
+        dummy_call();
+    }
     return 0;
 }
 

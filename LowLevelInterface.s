@@ -51,3 +51,7 @@ _sys_close:
 _sys_open:
     calls 5
     ret
+.global _dummy_call
+_dummy_call:
+    calls 6
+    ret
