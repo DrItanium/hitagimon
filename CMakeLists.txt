@@ -35,7 +35,7 @@ add_library(hitagisys
 		sys/gettimeofday.cc
 		sys/access.cc
 		sys/getpid.cc
-		sys/_exit.cc)
+		sys/_exit.cc sys/link.cc)
 add_library(hitagicortex
 		cortex/EnvironmentInterface.cc
 		cortex/EnvironmentInterface.h)
