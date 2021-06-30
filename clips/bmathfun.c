@@ -51,6 +51,7 @@
 /*************************************************************/
 
 #include <stdio.h>
+#include <limits.h>
 
 #include "setup.h"
 

@@ -156,6 +156,7 @@ struct clipsExternalAddress
 /**************/
 /* clipsValue */
 /**************/
+
 struct clipsValue
   {
    union
