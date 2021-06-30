@@ -6,7 +6,7 @@
 #include <string>
 #include "cortex/EnvironmentInterface.h"
 
-extern "C" int doommain (int argc, char** argv) ;
+//extern "C" int doommain (int argc, char** argv) ;
 uint64_t delay(uint64_t count) {
     uint64_t value = 0;
     for (uint64_t i = 0; i < count; ++i) {
@@ -30,10 +30,10 @@ int main() {
     printf("Setting up Environment Variables....{\n");
     setupEnvironmentVariables();
     printf("}...Done\n");
-    printf("STARTING UP DOOM!!!\n");
     theDisplay.clearScreen();
     theChipset.toggleLED();
-    doommain(0, args);
+    //printf("STARTING UP DOOM!!!\n");
+    //doommain(0, args);
     return 0;
 }
 
