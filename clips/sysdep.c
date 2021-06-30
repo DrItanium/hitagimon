@@ -285,8 +285,12 @@ void genexit(
   Environment *theEnv,
   int num)
   {
+#if 0
    if (SystemDependentData(theEnv)->jmpBuffer != NULL)
-     { longjmp(*SystemDependentData(theEnv)->jmpBuffer,1); }
+     {
+       longjmp(*SystemDependentData(theEnv)->jmpBuffer,1);
+     }
+#endif
 
    exit(num);
   }
@@ -298,7 +302,9 @@ void SetJmpBuffer(
   Environment *theEnv,
   jmp_buf *theJmpBuffer)
   {
+#if 0
    SystemDependentData(theEnv)->jmpBuffer = theJmpBuffer;
+#endif
   }
 
 /******************************************/
