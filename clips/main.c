@@ -70,7 +70,7 @@
 /* main: Starts execution of the expert */
 /*   system development environment.    */
 /****************************************/
-int main(
+int clipsMain(
   int argc,
   char *argv[])
   {

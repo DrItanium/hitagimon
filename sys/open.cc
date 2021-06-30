@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 extern "C"
 int
-open (char* file, int flags) {
+open (char* file, int flags, int mode) {
     // ignore the mode flags for now
     int result = getSDCardInterface().openFile(file, flags);
     if (result != -1) {
