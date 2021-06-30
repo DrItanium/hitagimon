@@ -25,10 +25,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 // Created by jwscoggins on 6/29/21.
 //
+
 #include <errno.h>
+
 extern "C"
 int
-link (const char* path1, const char* path2) {
+unlink(const char* path) {
     errno = ENOSYS;
     return -1;
 }
