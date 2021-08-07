@@ -211,9 +211,16 @@ _user_type_core:
     #bal _preinit_activate_read_write_transactions
 	# clear the bss section in ram first before we do anything else!
     lda theBSSSectionLength, g0 # load length of data section in rom
-    lda __bss_start__, g1 # load destination
-    bal zero_data # brach to move routine
-    #bal _preinit_deactivate_read_write_transactions
+    lda 0, g1 # load offset
+    lda __bss_start__, g2 # load destination
+    lda 0, g8
+    lda 0, g9
+	lda 0, g10
+	lda 0, g11
+zero_data_loop:
+    stq g8, (g2)[g1*1]  # store to RAM block
+    addi g1,16, g1      # increment index
+    cmpibg  g0,g1, zero_data_loop # loop until done
 # copy the interrupt table to RAM space
     lda 1024, g0 # load length of the interrupt table
     lda 0, g4 # initialize offset to 0
@@ -234,10 +241,10 @@ _user_type_core:
 
 # copy DATA section to RAM space
 # then transfer the data section over to ram
-    lda theDataSectionROMLocation, g0 # load source
-    lda __data_start__, g1 # load destination
-    lda theDataSectionLength, g2 # load length of data section in rom
-    bal invoke_copy_engine # brach to move routine
+    lda theDataSectionROMLocation, g1 # load source
+    lda __data_start__, g2 # load destination
+    lda theDataSectionLength, g0 # load length of data section in rom
+    bal move_data # brach to move routine
 
  /*
   * -- At this point, the PRCB, and interrupt table have been moved to RAM.
@@ -342,20 +349,6 @@ move_data:
 .set PATTERN_LENGTH_BASE, 0xFE000014
 .set PATTERN_DOORBELL_BASE, 0xFE000018
 # setup the bss section so do giant blocks of writes
-zero_data:
-    lda PATTERN_BASE, g2 # pattern itself
-    lda PATTERN_LENGTH_BASE, g3 # pattern length
-    lda PATTERN_ADDRESS_BASE, g4 # pattern address
-    lda PATTERN_DOORBELL_BASE, g5 # pattern doorbell
-    lda 0, g8
-    lda 0, g9
-	lda 0, g10
-	lda 0, g11
-	stq g8, 0(g2) # store pattern
-	st g1, 0(g4) # store address
-	st g0, 0(g3) # store length
-	stos g8, 0(g5)
-	bx (g14)
 
 /* The routine below fixes up the stack for a flase interrupt return.
  * We have reserved area on the stack before the call to this
