@@ -28,54 +28,6 @@ void
 ChipsetBasicFunctions::toggleLED() {
     setLEDValue(!ledValue_);
 }
-uint8_t
-ChipsetBasicFunctions::readPortZGPIO() {
-    return _memory.portzGPIO;
-}
-void
-ChipsetBasicFunctions::setPortZGPIO(uint8_t value) {
-    _memory.portzGPIO = value;
-
-}
-uint8_t
-ChipsetBasicFunctions::readPortZGPIOPullup() {
-    return _memory.portzGPIOPullup;
-}
-void
-ChipsetBasicFunctions::setPortZGPIOPullup(uint8_t value) {
-    _memory.portzGPIOPullup = value;
-
-}
-uint8_t
-ChipsetBasicFunctions::readPortZGPIOPolarity() {
-    return _memory.portzGPIOPolarity;
-}
-void
-ChipsetBasicFunctions::setPortZGPIOPolarity(uint8_t value) {
-    _memory.portzGPIOPolarity = value;
-
-}
-uint8_t
-ChipsetBasicFunctions::readPortZGPIODirection() {
-    return _memory.portzGPIODirection;
-}
-void
-ChipsetBasicFunctions::setPortZGPIODirection(uint8_t value) {
-    _memory.portzGPIODirection = value;
-
-}
-void
-ChipsetBasicFunctions::digitalWrite(PortZPins pin, bool value) {
-
-}
-void
-ChipsetBasicFunctions::pinMode(PortZPins pin, PinModes mode) {
-
-}
-bool
-ChipsetBasicFunctions::digitalRead(PortZPins pin) {
-    return false;
-}
 
 bool
 ChipsetBasicFunctions::available() const {

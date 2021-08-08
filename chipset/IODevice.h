@@ -42,22 +42,6 @@ protected:
     uint32_t offset_;
     uint32_t baseAddress_;
 };
-enum PortZPins {
-    PZ0 = 0,
-    PZ1,
-    PZ2,
-    PZ3,
-    PZ4,
-    PZ5,
-    PZ6,
-    PZ7,
-};
-
-enum PinModes {
-    INPUT,
-    OUTPUT,
-    INPUT_PULLUP,
-};
 /**
  * @brief Manages the builtin led provided by the chipset
  */
@@ -67,17 +51,6 @@ public:
     bool getLEDValue();
     void setLEDValue(bool value);
     void toggleLED();
-    uint8_t readPortZGPIO();
-    void setPortZGPIO(uint8_t value);
-    uint8_t readPortZGPIOPullup();
-    void setPortZGPIOPullup(uint8_t value);
-    uint8_t readPortZGPIOPolarity();
-    void setPortZGPIOPolarity(uint8_t value);
-    uint8_t readPortZGPIODirection();
-    void setPortZGPIODirection(uint8_t value);
-    void digitalWrite(PortZPins pin, bool value);
-    void pinMode(PortZPins pin, PinModes mode);
-    bool digitalRead(PortZPins pin);
     void enableMemoryReadWriteLogging();
     void disableMemoryReadWriteLogging();
     void enableCacheLineActivityLogging();
@@ -109,15 +82,6 @@ public:
     ssize_t write(char* buffer, size_t nbyte);
 private:
     struct ChipsetRegistersRaw {
-        volatile uint64_t patternEngine_PatternLower;
-        volatile uint64_t patternEngine_PatternUpper;
-        volatile uint32_t patternEngine_StartAddressPort;
-        volatile uint32_t patternEngine_LengthPort;
-        volatile uint16_t patternEngine_DoorbellPort;
-        volatile uint32_t copyEngine_sourceAddressPort;
-        volatile uint32_t copyEngine_destinationAddressPort;
-        volatile uint32_t copyEngine_lengthPort;
-        volatile uint16_t copyEngine_doorbellPort;
         volatile uint16_t consoleFlushPort;
         volatile uint16_t consoleAvailablePort;
         volatile uint16_t consoleAvailableForWritePort;
@@ -125,10 +89,6 @@ private:
         volatile uint8_t led;
         volatile uint8_t showReadsAndWritesPort;
         volatile uint8_t showCacheLineUpdatesPort;
-        volatile uint8_t portzGPIO; // this must be at 0x10
-        volatile uint8_t portzGPIOPullup;
-        volatile uint8_t portzGPIOPolarity;
-        volatile uint8_t portzGPIODirection;
     } __attribute__((packed));
 private:
     volatile ChipsetRegistersRaw& _memory;

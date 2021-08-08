@@ -33,8 +33,6 @@ int main() {
     printf("}...Done\n");
     theDisplay.clearScreen();
     theChipset.toggleLED();
-    //printf("STARTING UP DOOM!!!\n");
-    //doommain(0, args);
     clipsMain(0, args);
     return 0;
 }
