@@ -48,7 +48,7 @@ namespace
             switch (fd) {
                 case STDIN_FILENO:
                     nread = getBasicChipsetInterface().read(reinterpret_cast<char *>(buf), sz);
-                    break;
+                    return 0;
                 default:
                     return EBADF;
             }
