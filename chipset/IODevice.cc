@@ -179,11 +179,11 @@ BuiltinTFTDisplay& getDisplay() {
     return theDisplay;
 }
 void
-ChipsetBasicFunctions::waitForCharactersToRead() const {
+ChipsetBasicFunctions::waitForCharactersToRead() {
     while (_memory.consoleAvailablePort == 0);
 }
 void
-ChipsetBasicFunctions::waitForSpaceToWrite() const {
+ChipsetBasicFunctions::waitForSpaceToWrite() {
     while (_memory.consoleAvailableForWritePort == 0) ;
 }
 ssize_t
@@ -200,14 +200,21 @@ ChipsetBasicFunctions::write(char *buffer, size_t nbyte) {
 }
 
 ssize_t
-ChipsetBasicFunctions::read(char *buffer, size_t nbyte) const {
+ChipsetBasicFunctions::read(char *buffer, size_t nbyte) {
+    writeLine(__FUNCTION__);
     ssize_t numRead = 0;
     bool newLineFound = false;
     bool carriageReturnFound = false;
-    for (size_t i = 0; i < nbyte; ++i) {
-        waitForCharactersToRead();
-        buffer[i] = static_cast<char>(_memory.consoleIOPort);
+    for (size_t i = 0; i < nbyte;) {
+        //waitForCharactersToRead();
+        uint16_t result = _memory.consoleIOPort;
+        if (result == 0xFFFF) {
+            continue;
+        }
+        printf("\tbuffer[%d] = %d\n", i, result);
+        buffer[i] = static_cast<char>(result);
         ++numRead;
+        ++i;
         if (!newLineFound) {
             newLineFound = (buffer[i] == '\n');
         }

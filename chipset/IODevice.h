@@ -70,7 +70,7 @@ public:
      * @param nbyte the maximum number of bytes to read
      * @return number of bytes read
      */
-    ssize_t read(char* buffer, size_t nbyte) const;
+    ssize_t read(char* buffer, size_t nbyte) ;
     /**
      * @brief Sequential write to the console into the provided buffer
      * @param buffer the buffer to write into
@@ -79,8 +79,8 @@ public:
      */
     ssize_t write(char* buffer, size_t nbyte);
 private:
-    void waitForCharactersToRead() const;
-    void waitForSpaceToWrite() const;
+    void waitForCharactersToRead() ;
+    void waitForSpaceToWrite() ;
 private:
     struct ChipsetRegistersRaw {
         volatile uint16_t consoleFlushPort;
