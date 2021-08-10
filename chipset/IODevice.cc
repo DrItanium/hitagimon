@@ -193,6 +193,7 @@ ChipsetBasicFunctions::write(char *buffer, size_t nbyte) {
     // unlike reading, we must be sequential in writing
     ssize_t numWritten = 0;
     for (size_t i = 0; i < nbyte; ++i) {
+        while (_memory.consoleAvailableForWritePort == 0); // keep waiting until we get some space to write to the console
         _memory.consoleIOPort = buffer[i];
         ++numWritten;
     }
@@ -204,11 +205,13 @@ ssize_t
 ChipsetBasicFunctions::read(char *buffer, size_t nbyte) const {
     ssize_t numRead = 0;
     for (size_t i = 0; i < nbyte; ++i) {
+        while (_memory.consoleAvailablePort == 0); // keep sitting and spinning until we get more data to read in
         buffer[i] = _memory.consoleIOPort;
         ++numRead;
     }
     return numRead;
 }
+
 namespace SDCard {
     enum Operations {
         NoneOperation = 0,
