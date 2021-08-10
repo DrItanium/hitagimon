@@ -201,28 +201,16 @@ ChipsetBasicFunctions::write(char *buffer, size_t nbyte) {
 
 ssize_t
 ChipsetBasicFunctions::read(char *buffer, size_t nbyte) {
-    writeLine(__FUNCTION__);
     ssize_t numRead = 0;
-    bool newLineFound = false;
-    bool carriageReturnFound = false;
-    for (size_t i = 0; i < nbyte;) {
-        //waitForCharactersToRead();
+    for (size_t i = 0; i < nbyte; ++i) {
+        waitForCharactersToRead();
         uint16_t result = _memory.consoleIOPort;
-        if (result == 0xFFFF) {
-            continue;
-        }
-        printf("\tbuffer[%d] = %d\n", i, result);
-        buffer[i] = static_cast<char>(result);
+        char curr = static_cast<char>(result);
+        bool isDone = (curr == '\n') || (curr == '\r');
+        printf("\tbuffer[%d] = %d('%c') => 0x%x\n", i, result, curr, curr);
+        buffer[i] = curr;
         ++numRead;
-        ++i;
-        if (!newLineFound) {
-            newLineFound = (buffer[i] == '\n');
-        }
-        if (!carriageReturnFound) {
-            carriageReturnFound = (buffer[i] == '\r');
-        }
-        if (newLineFound || carriageReturnFound) {
-            // kick out early if we encounter newlines or carriage returns
+        if (isDone) {
             break;
         }
     }
