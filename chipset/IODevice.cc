@@ -202,10 +202,22 @@ ChipsetBasicFunctions::write(char *buffer, size_t nbyte) {
 ssize_t
 ChipsetBasicFunctions::read(char *buffer, size_t nbyte) const {
     ssize_t numRead = 0;
+    bool newLineFound = false;
+    bool carriageReturnFound = false;
     for (size_t i = 0; i < nbyte; ++i) {
         waitForCharactersToRead();
         buffer[i] = static_cast<char>(_memory.consoleIOPort);
         ++numRead;
+        if (!newLineFound) {
+            newLineFound = (buffer[i] == '\n');
+        }
+        if (!carriageReturnFound) {
+            carriageReturnFound = (buffer[i] == '\r');
+        }
+        if (newLineFound || carriageReturnFound) {
+            // kick out early if we encounter newlines or carriage returns
+            break;
+        }
     }
     return numRead;
 }
