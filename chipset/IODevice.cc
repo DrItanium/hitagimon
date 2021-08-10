@@ -192,7 +192,7 @@ ChipsetBasicFunctions::write(char *buffer, size_t nbyte) {
     ssize_t numWritten = 0;
     for (size_t i = 0; i < nbyte; ++i) {
         waitForSpaceToWrite();
-        _memory.consoleIOPort = buffer[i];
+        _memory.consoleIOPort = static_cast<uint16_t>(static_cast<unsigned char>(buffer[i]));
         ++numWritten;
     }
     flush();
