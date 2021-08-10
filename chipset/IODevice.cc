@@ -204,13 +204,9 @@ ChipsetBasicFunctions::read(char *buffer, size_t nbyte) {
     ssize_t numRead = 0;
     for (size_t i = 0; i < nbyte; ++i) {
         waitForCharactersToRead();
-        uint16_t result = _memory.consoleIOPort;
-        char curr = static_cast<char>(result);
-        bool isDone = (curr == '\n') || (curr == '\r');
-        printf("\tbuffer[%d] = %d('%c') => 0x%x\n", i, result, curr, curr);
-        buffer[i] = curr;
+        buffer[i] = static_cast<char>(_memory.consoleIOPort);
         ++numRead;
-        if (isDone) {
+        if ((buffer[i] == '\n') || (buffer[i] == '\r')) {
             break;
         }
     }
