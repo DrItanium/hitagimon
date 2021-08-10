@@ -58,8 +58,6 @@ public:
     bool memoryReadWriteLoggingEnabled() const { return _memory.showReadsAndWritesPort; }
     bool cacheLineActivityLoggingEnabled() const { return _memory.showCacheLineUpdatesPort; }
     void flush();
-    bool available() const;
-    bool availableForWrite() const;
     uint16_t read() const;
     void write(uint16_t value);
     void write(char c);
@@ -80,6 +78,9 @@ public:
      * @return the number of bytes written
      */
     ssize_t write(char* buffer, size_t nbyte);
+private:
+    void waitForCharactersToRead() const;
+    void waitForSpaceToWrite() const;
 private:
     struct ChipsetRegistersRaw {
         volatile uint16_t consoleFlushPort;
