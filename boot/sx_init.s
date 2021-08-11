@@ -317,10 +317,6 @@ reinitialize_iac:
     .bss _sup_stack, 0x10000, 6
 
 /* -- Below is a software loop to move data */
-.set COPY_ENGINE_SOURCE_REG, 0xFE00001A
-.set COPY_ENGINE_DEST_REG, 0xFE00001E
-.set COPY_ENGINE_LENGTH, 0xFE000022
-.set COPY_ENGINE_DOORBELL, 0xFE000026
 
 move_data:
     ldq (g1)[g4*1], g8  # load 4 words into g8
@@ -329,25 +325,6 @@ move_data:
     cmpibg  g0,g4, move_data # loop until done
     bx (g14)
 
- invoke_copy_engine:
-    # g0 - Source Address
-    # g1 - Destination Address
-    # g2 - Length
-    lda COPY_ENGINE_SOURCE_REG, g3
-    lda COPY_ENGINE_DEST_REG, g4
-    lda COPY_ENGINE_LENGTH, g5
-    lda COPY_ENGINE_DOORBELL, g6
-    lda 0, g7
-    st g0, 0(g3) # store the source address
-    st g1, 0(g4) # store the destination address
-    st g2, 0(g5) # store the copy length in bytes
-    stos g7, 0(g6) # trigger the copy, and wait for the store to complete
-    bx (g14)
-
-.set PATTERN_BASE, 0xFE000000
-.set PATTERN_ADDRESS_BASE, 0xFE000010
-.set PATTERN_LENGTH_BASE, 0xFE000014
-.set PATTERN_DOORBELL_BASE, 0xFE000018
 # setup the bss section so do giant blocks of writes
 
 /* The routine below fixes up the stack for a flase interrupt return.

@@ -39,6 +39,13 @@ sbrk(intptr_t increment) {
     }
     char* prevHeapEnd = heapEnd;
     heapEnd += increment;
+    // zero out memory block by block as we increase the break point,
+    // this is the one place where it is safe to do this, if you provide an increment of zero then this
+    // loop will never fire
+    for (char* curr = prevHeapEnd; curr != heapEnd; ++curr) {
+        *curr = 0;
+    }
+    // make sure that the memory
     return prevHeapEnd;
 }
 
