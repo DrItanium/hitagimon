@@ -208,12 +208,11 @@ _user_type_core:
 .global __data_start__
 .global __bss_start__
 .global theBSSSectionLength
-.set RAMStart, 0x80000000
-.set RAMSize, 0x4000000
-	# Clear all of ram to start with as I run into problems otherwise
-    lda RAMSize, g0 # load length of data section in rom
+    #bal _preinit_activate_read_write_transactions
+	# clear the bss section in ram first before we do anything else!
+    lda theBSSSectionLength, g0 # load length of data section in rom
     lda 0, g1 # load offset
-    lda RAMStart, g2 # load destination (start of ram)
+    lda __bss_start__, g2 # load destination
     lda 0, g8
     lda 0, g9
 	lda 0, g10
