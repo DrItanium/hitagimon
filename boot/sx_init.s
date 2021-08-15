@@ -203,24 +203,6 @@ _user_type_core:
  start_ip:
     mov 0, g14 # C compiler expects g14 = 0
 
-.global theDataSectionLength
-.global theDataSectionROMLocation
-.global __data_start__
-.global __bss_start__
-.global theBSSSectionLength
-    #bal _preinit_activate_read_write_transactions
-	# clear the bss section in ram first before we do anything else!
-    lda theBSSSectionLength, g0 # load length of data section in rom
-    lda 0, g1 # load offset
-    lda __bss_start__, g2 # load destination
-    lda 0, g8
-    lda 0, g9
-	lda 0, g10
-	lda 0, g11
-zero_data_loop:
-    stq g8, (g2)[g1*1]  # store to RAM block
-    addi g1,16, g1      # increment index
-    cmpibg  g0,g1, zero_data_loop # loop until done
 # copy the interrupt table to RAM space
     lda 1024, g0 # load length of the interrupt table
     lda 0, g4 # initialize offset to 0
@@ -238,11 +220,6 @@ zero_data_loop:
  # fix up the PRCB to point to a new interrupt table
     lda intr_ram, g12 # load address
     st g12, 20(g2) # store into PRCB
-
-    #lda theDataSectionROMLocation, g1 # load source
-    #lda __data_start__, g2 # load destination
-    #lda theDataSectionLength, g0 # load length of data section in rom
-    #bal move_data # brach to move routine
 
  /*
   * -- At this point, the PRCB, and interrupt table have been moved to RAM.
