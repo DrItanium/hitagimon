@@ -6,4 +6,4 @@
 #i960-elf-objcopy --only-section=.text -O binary cmake-build-debug/hitagimon boot.rom
 #i960-elf-objcopy --only-section=.data -O binary cmake-build-debug/hitagimon boot.dat
 # just make a new image that will be loaded into psram on boot up
-i960-elf-objcopy --only-section=.text --only-section=.data --only-section=.bss -O binary cmake-build-debug/hitagimon boot.rom
+i960-elf-objcopy --only-section=.text --only-section=.data --only-section=.bss -O binary cmake-build-debug/hitagimon boot.sys
