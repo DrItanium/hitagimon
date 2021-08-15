@@ -2,12 +2,12 @@ GROUP(-lgcc -lm -lc -liberty -lc -lg2c) /* libraries to link in */
 
 MEMORY /* describe the partitioning of the memory space for the application */ 
 {
-	/* the rom section will start at address 0 and be up to 32 megs in
+	/* the rom section will start at address 0 and be up to 8 megs in
 	 * length*/ 
-	rom (rx)  : ORIGIN = 0, l = 32M
-	/* the "ram" section will start at 0x8000'0000 which is in the middle of
-	 * the 32-bit address space and be 64 megs in size */
-	ram (!rx) : o = 0x80000000, l = 64M
+	rom (rx)  : ORIGIN = 0, l = 8M
+	/* the "ram" section will start at 0x0080'0000 which comes imediately after the rom space
+	 * the 32-bit address space and be 56 megs in size */
+	ram (!rx) : o = 0x00800000, l = 32M
 
 	/* NOTE: do not uncomment these lines, this is here as a reference to the
 	 * design of the hitagi board */
