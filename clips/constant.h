@@ -109,7 +109,7 @@ typedef enum
 #endif
 
 #ifndef COMMAND_PROMPT
-#define COMMAND_PROMPT "CLIPS> "
+#define COMMAND_PROMPT "HITAGIMON> "
 #endif
 
 #ifndef VERSION_STRING
@@ -121,7 +121,7 @@ typedef enum
 #endif
 
 #ifndef BANNER_STRING
-#define BANNER_STRING "         CLIPS (6.4 2/9/21)\n"
+#define BANNER_STRING "         HITAGIMON (BASED OFF OF CLIPS 6.4 2/9/21)\n"
 #endif
 
 /*************************/
