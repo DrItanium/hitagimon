@@ -32,7 +32,6 @@ int main() {
     setupEnvironmentVariables();
     printf("}...Done\n");
     theDisplay.clearScreen();
-    theChipset.toggleLED();
     clipsMain(0, args);
     return 0;
 }

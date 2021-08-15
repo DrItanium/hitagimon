@@ -47,7 +47,6 @@ displayFaultData(fault_data* record) {
 extern "C"
 void
 user_reserved(fault_data* record) {
-    TemporaryRWLoggingDisabler disable(getBasicChipsetInterface());
     getBasicChipsetInterface().writeLine("USER RESERVED FAULT RAISED!");
     displayFaultData(record);
 }
@@ -55,7 +54,6 @@ user_reserved(fault_data* record) {
 extern "C"
 void
 user_trace(fault_data* record) {
-    TemporaryRWLoggingDisabler disable(getBasicChipsetInterface());
     getBasicChipsetInterface().writeLine("USER TRACE FAULT RAISED!");
     displayFaultData(record);
 }
@@ -63,49 +61,42 @@ user_trace(fault_data* record) {
 extern "C"
 void
 user_operation(fault_data* record) {
-    TemporaryRWLoggingDisabler disable(getBasicChipsetInterface());
     getBasicChipsetInterface().writeLine("USER OPERATION FAULT RAISED!");
     displayFaultData(record);
 }
 extern "C"
 void
 user_arithmetic(fault_data* record) {
-    TemporaryRWLoggingDisabler disable(getBasicChipsetInterface());
     getBasicChipsetInterface().writeLine("USER ARITHMETIC FAULT RAISED!");
     displayFaultData(record);
 }
 extern "C"
 void
 user_real_arithmetic(fault_data* record) {
-    TemporaryRWLoggingDisabler disable(getBasicChipsetInterface());
     getBasicChipsetInterface().writeLine("USER REAL ARITHMETIC FAULT RAISED!");
     displayFaultData(record);
 }
 extern "C"
 void
 user_constraint(fault_data* record) {
-    TemporaryRWLoggingDisabler disable(getBasicChipsetInterface());
     getBasicChipsetInterface().writeLine("USER CONSTRAINT FAULT RAISED!");
     displayFaultData(record);
 }
 extern "C"
 void
 user_protection(fault_data* record) {
-    TemporaryRWLoggingDisabler disable(getBasicChipsetInterface());
     getBasicChipsetInterface().writeLine("USER PROTECTION FAULT RAISED!");
     displayFaultData(record);
 }
 extern "C"
 void
 user_machine(fault_data* record) {
-    TemporaryRWLoggingDisabler disable(getBasicChipsetInterface());
     getBasicChipsetInterface().writeLine("USER MACHINE FAULT RAISED!");
     displayFaultData(record);
 }
 extern "C"
 void
 user_type(fault_data* record) {
-    TemporaryRWLoggingDisabler disable(getBasicChipsetInterface());
     getBasicChipsetInterface().writeLine("USER TYPE FAULT RAISED!");
     displayFaultData(record);
 }

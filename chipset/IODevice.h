@@ -48,15 +48,6 @@ protected:
 class ChipsetBasicFunctions : public BuiltinIOBaseDevice {
 public:
     ChipsetBasicFunctions(uint32_t offset = 0);
-    bool getLEDValue();
-    void setLEDValue(bool value);
-    void toggleLED();
-    void enableMemoryReadWriteLogging();
-    void disableMemoryReadWriteLogging();
-    void enableCacheLineActivityLogging();
-    void disableCacheLineActivityLogging();
-    bool memoryReadWriteLoggingEnabled() const { return _memory.showReadsAndWritesPort; }
-    bool cacheLineActivityLoggingEnabled() const { return _memory.showCacheLineUpdatesPort; }
     void flush();
     uint16_t read() const;
     void write(uint16_t value);
@@ -87,13 +78,9 @@ private:
         volatile uint16_t consoleAvailablePort;
         volatile uint16_t consoleAvailableForWritePort;
         volatile uint16_t consoleIOPort;
-        volatile uint8_t led;
-        volatile uint8_t showReadsAndWritesPort;
-        volatile uint8_t showCacheLineUpdatesPort;
     } __attribute__((packed));
 private:
     volatile ChipsetRegistersRaw& _memory;
-    bool ledValue_;
 };
 
 class BuiltinTFTDisplay : public BuiltinIOBaseDevice {
@@ -216,30 +203,6 @@ private:
 };
 
 
-class TemporaryReadWriteLoggingEnable {
-public:
-    TemporaryReadWriteLoggingEnable(ChipsetBasicFunctions& iface) : iface_(iface) { iface_.enableMemoryReadWriteLogging(); }
-    ~TemporaryReadWriteLoggingEnable() { iface_.disableMemoryReadWriteLogging(); }
-private:
-    ChipsetBasicFunctions& iface_;
-};
-
-class TemporaryRWLoggingDisabler {
-public:
-    TemporaryRWLoggingDisabler(ChipsetBasicFunctions& iface) : iface_(iface), shouldToggle_(iface.memoryReadWriteLoggingEnabled())  {
-        if (shouldToggle_) {
-            iface_.disableMemoryReadWriteLogging();
-        }
-    }
-    ~TemporaryRWLoggingDisabler() {
-        if (shouldToggle_) {
-            iface_.enableMemoryReadWriteLogging();
-        }
-    }
-private:
-    ChipsetBasicFunctions& iface_;
-    bool shouldToggle_;
-};
 
 class SDCardInterface : public BuiltinIOBaseDevice {
 public:
