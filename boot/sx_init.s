@@ -239,12 +239,10 @@ zero_data_loop:
     lda intr_ram, g12 # load address
     st g12, 20(g2) # store into PRCB
 
-# copy DATA section to RAM space
-# then transfer the data section over to ram
-    lda theDataSectionROMLocation, g1 # load source
-    lda __data_start__, g2 # load destination
-    lda theDataSectionLength, g0 # load length of data section in rom
-    bal move_data # brach to move routine
+    #lda theDataSectionROMLocation, g1 # load source
+    #lda __data_start__, g2 # load destination
+    #lda theDataSectionLength, g0 # load length of data section in rom
+    #bal move_data # brach to move routine
 
  /*
   * -- At this point, the PRCB, and interrupt table have been moved to RAM.
