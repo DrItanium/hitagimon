@@ -20,6 +20,7 @@ X(BinaryNot);
 X(BinaryNor);
 X(BinaryNand);
 X(BinaryXor);
+X(BinaryXnor);
 X(BinaryAndNot);
 X(BinaryNotAnd);
 X(BinaryOrNot);
@@ -42,6 +43,7 @@ InstallMonitorExtensions(Environment* env) {
     AddUDF(env, "binary-or", "l", 2, 2, "l", BinaryOr, "BinaryOr", NULL);
     AddUDF(env, "binary-xor", "l", 2, 2, "l", BinaryXor, "BinaryXor", NULL);
     AddUDF(env, "binary-nor", "l", 2, 2, "l", BinaryNor, "BinaryNor", NULL);
+    AddUDF(env, "binary-xnor", "l", 2, 2, "l", BinaryXnor, "BinaryXnor", NULL);
     AddUDF(env, "binary-nand", "l", 2, 2, "l", BinaryNand, "BinaryNand", NULL);
     AddUDF(env, "binary-and-not", "l", 2, 2, "l", BinaryAndNot, "BinaryAndNot", NULL);
     AddUDF(env, "binary-not-and", "l", 2, 2, "l", BinaryNotAnd, "BinaryNotAnd", NULL);
@@ -138,6 +140,23 @@ DefClipsFunction(BinaryNor) {
     DecomposedType c;
     c.halves[0] = ~(a.halves[0] | b.halves[0]);
     c.halves[1] = ~(a.halves[1] | b.halves[1]);
+    retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>(c.total));
+}
+DefClipsFunction(BinaryXnor) {
+    UDFValue first, second;
+    if (! UDFNthArgument(context,1,NUMBER_BITS,&first)) {
+        return;
+    }
+    DecomposedType a;
+    a.total = CVCoerceToInteger(&first);
+    if (!UDFNthArgument(context, 2, NUMBER_BITS, &second)) {
+        return;
+    }
+    DecomposedType b;
+    b.total = CVCoerceToInteger(&second);
+    DecomposedType c;
+    c.halves[0] = ~(a.halves[0] ^ b.halves[0]);
+    c.halves[1] = ~(a.halves[1] ^ b.halves[1]);
     retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>(c.total));
 }
 DefClipsFunction(BinaryNand) {
