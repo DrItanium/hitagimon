@@ -7,7 +7,7 @@
 /// @todo fix this
 #include "../chipset/ChipsetInteract.h"
 
-#define X(title) void title (Environment*, UDFContext*, UDFValue*)
+#define X(title) extern "C++" void title (Environment*, UDFContext*, UDFValue*)
 X(ExamineByte);
 X(ExamineShort);
 X(ExamineWord);
@@ -24,6 +24,9 @@ X(BinaryAndNot);
 X(BinaryNotAnd);
 X(BinaryOrNot);
 X(BinaryNotOr);
+X(CallCos960);
+X(CallSin960);
+X(CallTan960);
 #undef X
 
 extern "C"
@@ -45,6 +48,9 @@ InstallMonitorExtensions(Environment* env) {
     AddUDF(env, "binary-not", "l", 1, 1, "l", BinaryNot, "BinaryNot", NULL);
     AddUDF(env, "binary-or-not", "l", 2, 2, "l", BinaryOrNot, "BinaryOrNot", NULL);
     AddUDF(env, "binary-not-or", "l", 2, 2, "l", BinaryNotOr, "BinaryNotOr", NULL);
+    AddUDF(env, "cos960","d",1,1,"ld",CallCos960,"CallCos960",NULL);
+    AddUDF(env, "sin960","d",1,1,"ld",CallSin960,"CallSin960",NULL);
+    AddUDF(env, "tan960","d",1,1,"ld",CallTan960,"CallTan960",NULL);
 }
 #define DefClipsFunction(name) void name (Environment* theEnv, UDFContext* context, UDFValue* retVal)
 
@@ -228,6 +234,43 @@ DefClipsFunction(BinaryNotOr) {
     }
     uint64_t b = CVCoerceToInteger(&second);
     retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>((~a) | (b)));
+}
+
+DefClipsFunction(CallCos960) {
+    if (! UDFNthArgument(context,1,NUMBER_BITS,retVal)) {
+        retVal->floatValue = CreateFloat(context->environment,0.0);
+        return;
+    }
+
+    double floatValue = CVCoerceToFloat(retVal);
+    double result = 0.0;
+    __asm__("cosrl %1, %0" : "=r" (result) : "r" (floatValue));
+    // okay now we need to force the assembler to call the builtin cosine function
+    retVal->floatValue = CreateFloat(theEnv,result);
+}
+DefClipsFunction(CallSin960) {
+    if (! UDFNthArgument(context,1,NUMBER_BITS,retVal)) {
+        retVal->floatValue = CreateFloat(context->environment,0.0);
+        return;
+    }
+
+    double floatValue = CVCoerceToFloat(retVal);
+    double result = 0.0;
+    __asm__("sinrl %1, %0" : "=r" (result) : "r" (floatValue));
+    // okay now we need to force the assembler to call the builtin cosine function
+    retVal->floatValue = CreateFloat(theEnv,result);
+}
+DefClipsFunction(CallTan960) {
+    if (! UDFNthArgument(context,1,NUMBER_BITS,retVal)) {
+        retVal->floatValue = CreateFloat(context->environment,0.0);
+        return;
+    }
+
+    double floatValue = CVCoerceToFloat(retVal);
+    double result = 0.0;
+    __asm__("tanrl %1, %0" : "=r" (result) : "r" (floatValue));
+    // okay now we need to force the assembler to call the builtin cosine function
+    retVal->floatValue = CreateFloat(theEnv,result);
 }
 
 #undef DefClipsFunction
