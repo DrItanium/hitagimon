@@ -49,6 +49,7 @@
 /***************************************************************************/
 
 #include "clips.h"
+#include "MonitorExtensions.h"
 
 void UserFunctions(Environment *);
 
@@ -64,7 +65,7 @@ void UserFunctions(Environment *);
 void UserFunctions(
   Environment *env)
   {
-#if MAC_XCD
-#pragma unused(env)
-#endif
+    InstallMonitorExtensions(env);
   }
+
+

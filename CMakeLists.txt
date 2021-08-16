@@ -391,7 +391,7 @@ clips/utility.c
 clips/utility.h
 clips/watch.c
 clips/watch.h
-		)
+		clips/MonitorExtensions.cc clips/MonitorExtensions.h)
 
 #(add_library(doom
 #		# doom source code
