@@ -5,5 +5,11 @@
 #ifndef HITAGIMON_MONITOREXTENSIONS_H
 #define HITAGIMON_MONITOREXTENSIONS_H
 #include "clips.h"
-extern "C" void InstallMonitorExtensions(Environment* env);
+#ifdef __cplusplus
+extern "C" {
+#endif
+void InstallMonitorExtensions(Environment* env);
+#ifdef __cplusplus
+}
+#endif
 #endif //HITAGIMON_MONITOREXTENSIONS_H

@@ -31,7 +31,9 @@
 #pragma once
 
 #define _H_CLIPS_API
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 #include <stdio.h>
 
 #include "setup.h"
@@ -130,4 +132,7 @@
 #include "objrtmch.h"
 #endif
 
+#ifdef __cplusplus
+}
+#endif
 #endif /* _H_CLIPS_API */
