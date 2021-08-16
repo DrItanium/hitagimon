@@ -268,7 +268,7 @@
 /*****************************************************************/
 
 #ifndef OBJECT_SYSTEM
-#define OBJECT_SYSTEM 1
+#define OBJECT_SYSTEM 0
 #endif
 
 /*****************************************************************/
@@ -383,7 +383,7 @@
 /********************************************************************/
 
 #ifndef CONSTRUCT_COMPILER
-#define  CONSTRUCT_COMPILER 1
+#define  CONSTRUCT_COMPILER 0
 #endif
 
 #if CONSTRUCT_COMPILER
