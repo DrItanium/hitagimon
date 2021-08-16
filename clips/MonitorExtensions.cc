@@ -11,7 +11,7 @@ extern "C" void ExamineLongWord(Environment*, UDFContext*, UDFValue*);
 extern "C"
 void
 InstallMonitorExtensions(Environment* env) {
-    AddUDF(env, "examine-byte", 1, 1, "ld", ExamineByte, "ExamineByte",NULL);
+    AddUDF(env, "examine-byte", "ld", 1, 1, "ld", ExamineByte, "ExamineByte",NULL);
 }
 
 extern "C"
