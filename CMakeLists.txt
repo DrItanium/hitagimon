@@ -522,8 +522,6 @@ clips/watch.h
 
 #set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT})
 target_link_libraries(hitagimon
-		g
-		g2c
 		gcc
 		c
 		m
@@ -532,8 +530,7 @@ target_link_libraries(hitagimon
 		hitagisys
 		hitagichipset
 		stdc++
-		g
-		g2c
 		c
 		m
-		gcc)
+		gcc # necessary for soft float support, will need to provide my own custom routines ahead of this point to access the fpu
+		)

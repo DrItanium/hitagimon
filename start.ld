@@ -1,4 +1,4 @@
-GROUP(-lgcc -lm -lc -liberty -lc -lg2c) /* libraries to link in */ 
+GROUP(-lgcc -lm -lc -liberty -lc ) /* libraries to link in */
 
 MEMORY /* describe the partitioning of the memory space for the application */ 
 {
