@@ -25,9 +25,11 @@ X(BinaryAndNot);
 X(BinaryNotAnd);
 X(BinaryOrNot);
 X(BinaryNotOr);
+#ifdef __i960SB__
 X(CallCos960);
 X(CallSin960);
 X(CallTan960);
+#endif
 #undef X
 
 extern "C"
@@ -50,9 +52,11 @@ InstallMonitorExtensions(Environment* env) {
     AddUDF(env, "binary-not", "l", 1, 1, "l", BinaryNot, "BinaryNot", NULL);
     AddUDF(env, "binary-or-not", "l", 2, 2, "l", BinaryOrNot, "BinaryOrNot", NULL);
     AddUDF(env, "binary-not-or", "l", 2, 2, "l", BinaryNotOr, "BinaryNotOr", NULL);
+#ifdef __i960SB__
     AddUDF(env, "cos960","d",1,1,"ld",CallCos960,"CallCos960",NULL);
     AddUDF(env, "sin960","d",1,1,"ld",CallSin960,"CallSin960",NULL);
     AddUDF(env, "tan960","d",1,1,"ld",CallTan960,"CallTan960",NULL);
+#endif
 }
 #define DefClipsFunction(name) void name (Environment* theEnv, UDFContext* context, UDFValue* retVal)
 
@@ -270,7 +274,7 @@ DefClipsFunction(BinaryNotOr) {
     uint64_t b = CVCoerceToInteger(&second);
     retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>((~a) | (b)));
 }
-
+#ifdef __i960SB__
 DefClipsFunction(CallCos960) {
     if (! UDFNthArgument(context,1,NUMBER_BITS,retVal)) {
         retVal->floatValue = CreateFloat(context->environment,0.0);
@@ -307,5 +311,6 @@ DefClipsFunction(CallTan960) {
     // okay now we need to force the assembler to call the builtin cosine function
     retVal->floatValue = CreateFloat(theEnv,result);
 }
+#endif
 
 #undef DefClipsFunction
