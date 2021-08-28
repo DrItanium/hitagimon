@@ -62,9 +62,9 @@ InstallMonitorExtensions(Environment* env) {
     AddUDF(env, "examine-tc", "l", 0, 0, NULL, ExamineTC, "ExamineTC", NULL);
     AddUDF(env, "shrdi960", "l", 2, 2, "l", shrdi960, "shrdi960", NULL);
 #ifdef __i960SB__
-    AddUDF(env, "cos960","d",1,1,"ld",CallCos960,"CallCos960",NULL);
-    AddUDF(env, "sin960","d",1,1,"ld",CallSin960,"CallSin960",NULL);
-    AddUDF(env, "tan960","d",1,1,"ld",CallTan960,"CallTan960",NULL);
+    AddUDF(env, "cos","d",1,1,"ld",CallCos960,"CallCos960",NULL);
+    AddUDF(env, "sin","d",1,1,"ld",CallSin960,"CallSin960",NULL);
+    AddUDF(env, "tan","d",1,1,"ld",CallTan960,"CallTan960",NULL);
 #endif
 }
 #define DefClipsFunction(name) void name (Environment* theEnv, UDFContext* context, UDFValue* retVal)
