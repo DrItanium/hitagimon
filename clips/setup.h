@@ -268,7 +268,7 @@
 /*****************************************************************/
 
 #ifndef OBJECT_SYSTEM
-#define OBJECT_SYSTEM 0
+#define OBJECT_SYSTEM 1
 #endif
 
 /*****************************************************************/
@@ -363,7 +363,7 @@
 #define BLOAD 0
 #endif
 #ifndef BLOAD_AND_BSAVE
-#define BLOAD_AND_BSAVE 1
+#define BLOAD_AND_BSAVE 0
 #endif
 
 #if RUN_TIME
