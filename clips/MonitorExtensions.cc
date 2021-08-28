@@ -6,6 +6,7 @@
 #include "clips.h"
 /// @todo fix this
 #include "../chipset/ChipsetInteract.h"
+#include "../cortex/EnvironmentInterface.h"
 
 #define X(title) extern "C++" void title (Environment*, UDFContext*, UDFValue*)
 X(ExamineByte);
