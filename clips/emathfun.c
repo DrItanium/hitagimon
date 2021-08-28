@@ -266,11 +266,11 @@ void CosFunction(
    if (! SingleNumberCheck(context,returnValue))
      { return; }
 #ifdef __i960SB__
-   double floatValue = CVCoerceToFloat(retVal);
+   double floatValue = CVCoerceToFloat(returnValue);
     double result = 0.0;
     __asm__("cosrl %1, %0" : "=r" (result) : "r" (floatValue));
     // okay now we need to force the assembler to call the builtin cosine function
-    retVal->floatValue = CreateFloat(theEnv,result);
+    returnValue->floatValue = CreateFloat(theEnv,result);
 #else
    returnValue->floatValue = CreateFloat(theEnv,cos(CVCoerceToFloat(returnValue)));
 #endif
@@ -289,11 +289,11 @@ void SinFunction(
      { return; }
 
 #ifdef __i960SB__
-       double floatValue = CVCoerceToFloat(retVal);
+       double floatValue = CVCoerceToFloat(returnValue);
     double result = 0.0;
     __asm__("sinrl %1, %0" : "=r" (result) : "r" (floatValue));
     // okay now we need to force the assembler to call the builtin cosine function
-    retVal->floatValue = CreateFloat(theEnv,result);
+    returnValue->floatValue = CreateFloat(theEnv,result);
 #else
    returnValue->floatValue = CreateFloat(theEnv,sin(CVCoerceToFloat(returnValue)));
 #endif
