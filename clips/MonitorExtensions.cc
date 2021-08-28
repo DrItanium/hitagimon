@@ -7,6 +7,7 @@
 /// @todo fix this
 #include "../chipset/ChipsetInteract.h"
 #include "../cortex/EnvironmentInterface.h"
+#include "../cortex/SysExamine.h"
 
 #define X(title) extern "C++" void title (Environment*, UDFContext*, UDFValue*)
 X(ExamineByte);
@@ -26,13 +27,16 @@ X(BinaryAndNot);
 X(BinaryNotAnd);
 X(BinaryOrNot);
 X(BinaryNotOr);
+X(ExaminePC);
+X(ExamineAC);
+X(ExamineTC);
+X(shrdi960);
 #ifdef __i960SB__
 X(CallCos960);
 X(CallSin960);
 X(CallTan960);
 #endif
 #undef X
-
 extern "C"
 void
 InstallMonitorExtensions(Environment* env) {
@@ -53,6 +57,10 @@ InstallMonitorExtensions(Environment* env) {
     AddUDF(env, "binary-not", "l", 1, 1, "l", BinaryNot, "BinaryNot", NULL);
     AddUDF(env, "binary-or-not", "l", 2, 2, "l", BinaryOrNot, "BinaryOrNot", NULL);
     AddUDF(env, "binary-not-or", "l", 2, 2, "l", BinaryNotOr, "BinaryNotOr", NULL);
+    AddUDF(env, "examine-pc", "l", 0, 0, NULL, ExaminePC, "ExaminePC", NULL);
+    AddUDF(env, "examine-ac", "l", 0, 0, NULL, ExamineAC, "ExamineAC", NULL);
+    AddUDF(env, "examine-tc", "l", 0, 0, NULL, ExamineTC, "ExamineTC", NULL);
+    AddUDF(env, "shrdi960", "l", 2, 2, "l", shrdi960, "shrdi960", NULL);
 #ifdef __i960SB__
     AddUDF(env, "cos960","d",1,1,"ld",CallCos960,"CallCos960",NULL);
     AddUDF(env, "sin960","d",1,1,"ld",CallSin960,"CallSin960",NULL);
@@ -274,6 +282,37 @@ DefClipsFunction(BinaryNotOr) {
     }
     uint64_t b = CVCoerceToInteger(&second);
     retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>((~a) | (b)));
+}
+
+DefClipsFunction(ExaminePC) {
+    uint32_t result = 0;
+    __asm__("modpc 0, 0, %0" : "=r" (result));
+    retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>(result));
+}
+DefClipsFunction(ExamineAC) {
+    uint32_t result = 0;
+    __asm__("modac 0, 0, %0" : "=r" (result));
+    retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>(result));
+}
+
+DefClipsFunction(ExamineTC) {
+    uint32_t result = 0;
+    __asm__("modtc 0, 0, %0" : "=r" (result));
+    retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>(result));
+}
+DefClipsFunction(shrdi960) {
+    UDFValue lenA, srcA;
+    if (! UDFNthArgument(context,1,NUMBER_BITS,&srcA)) {
+        return;
+    }
+    int32_t a = CVCoerceToInteger(&srcA);
+    if (!UDFNthArgument(context, 2, NUMBER_BITS, &lenA)) {
+        return;
+    }
+    int32_t b = CVCoerceToInteger(&lenA);
+    int32_t result = 0;
+    __asm__("shrdi %1, %2, %0" : "=r" (result) : "r" (b),  "r" (a));
+    retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>(result));
 }
 #ifdef __i960SB__
 DefClipsFunction(CallCos960) {
