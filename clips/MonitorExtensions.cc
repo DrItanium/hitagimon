@@ -62,9 +62,7 @@ InstallMonitorExtensions(Environment* env) {
     AddUDF(env, "examine-tc", "l", 0, 0, NULL, ExamineTC, "ExamineTC", NULL);
     AddUDF(env, "shrdi960", "l", 2, 2, "l", shrdi960, "shrdi960", NULL);
 #ifdef __i960SB__
-    AddUDF(env, "cos","d",1,1,"ld",CallCos960,"CallCos960",NULL);
-    AddUDF(env, "sin","d",1,1,"ld",CallSin960,"CallSin960",NULL);
-    AddUDF(env, "tan","d",1,1,"ld",CallTan960,"CallTan960",NULL);
+    AddUDF(env, "tan960","d",1,1,"ld",CallTan960,"CallTan960",NULL);
 #endif
 }
 #define DefClipsFunction(name) void name (Environment* theEnv, UDFContext* context, UDFValue* retVal)
@@ -315,30 +313,6 @@ DefClipsFunction(shrdi960) {
     retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>(result));
 }
 #ifdef __i960SB__
-DefClipsFunction(CallCos960) {
-    if (! UDFNthArgument(context,1,NUMBER_BITS,retVal)) {
-        retVal->floatValue = CreateFloat(context->environment,0.0);
-        return;
-    }
-
-    double floatValue = CVCoerceToFloat(retVal);
-    double result = 0.0;
-    __asm__("cosrl %1, %0" : "=r" (result) : "r" (floatValue));
-    // okay now we need to force the assembler to call the builtin cosine function
-    retVal->floatValue = CreateFloat(theEnv,result);
-}
-DefClipsFunction(CallSin960) {
-    if (! UDFNthArgument(context,1,NUMBER_BITS,retVal)) {
-        retVal->floatValue = CreateFloat(context->environment,0.0);
-        return;
-    }
-
-    double floatValue = CVCoerceToFloat(retVal);
-    double result = 0.0;
-    __asm__("sinrl %1, %0" : "=r" (result) : "r" (floatValue));
-    // okay now we need to force the assembler to call the builtin cosine function
-    retVal->floatValue = CreateFloat(theEnv,result);
-}
 DefClipsFunction(CallTan960) {
     if (! UDFNthArgument(context,1,NUMBER_BITS,retVal)) {
         retVal->floatValue = CreateFloat(context->environment,0.0);
