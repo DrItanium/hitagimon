@@ -259,18 +259,22 @@ _user_type_core:
  *    If any IO needs to be set up, you should do it here before your
  *    call to main. No opens have been done for STDIN, STDOUT, or STDERR
  */
-    #callx _init_fp
+.ifdef __i960SB__
+    callx _init_fp
+.endif
     #callx _activate_read_write_transactions
     mov 0, g14      # C compiler expects g14 = 0
     callx _main     # assume a main for startup
 
-#_init_fp:
-#    # initialize the floating point registers
-#    cvtir   0, fp0
-#    movre   fp0, fp1
-#    movre   fp1, fp2
-#    movre   fp2, fp3
-#    ret
+.ifdef __i960SB__
+_init_fp:
+    # initialize the floating point registers
+    cvtir   0, fp0
+    movre   fp0, fp1
+    movre   fp1, fp2
+    movre   fp2, fp3
+    ret
+.endif
 
 reinitialize_iac:
     .align 4
