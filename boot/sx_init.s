@@ -276,8 +276,8 @@ _init_fp:
     ret
 .endif
 
+    .align 4 # Align BEFORE the label...holy crap
 reinitialize_iac:
-    .align 4
     .word 0x93000000    # reinitialize IAC message
     .word system_address_table
     .word _prcb_ram     # use newly copied PRCB
