@@ -41,6 +41,8 @@ add_library(hitagisys
 		sys/getpid.cc
 		sys/_exit.cc sys/link.cc sys/unlink.cc)
 add_library(hitagicortex
+		cortex/Interrupts.cc
+		cortex/Interrupts.h
 		cortex/EnvironmentInterface.cc
 		cortex/EnvironmentInterface.h)
 
