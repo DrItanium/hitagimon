@@ -44,7 +44,7 @@ add_library(hitagicortex
 		cortex/Interrupts.cc
 		cortex/Interrupts.h
 		cortex/EnvironmentInterface.cc
-		cortex/EnvironmentInterface.h)
+		cortex/EnvironmentInterface.h cortex/Faults.cc cortex/Faults.h)
 
 add_executable(hitagimon
 		boot/sx_init.s # this must ALWAYS be first!
