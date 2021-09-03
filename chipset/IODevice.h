@@ -72,7 +72,6 @@ public:
 private:
     void waitForCharactersToRead() ;
     void waitForSpaceToWrite() ;
-    char blockUntilCharacterToRead();
 private:
     struct ChipsetRegistersRaw {
         volatile uint16_t consoleFlushPort;
