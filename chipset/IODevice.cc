@@ -148,6 +148,16 @@ void
 ChipsetBasicFunctions::waitForSpaceToWrite() {
     while (_memory.consoleAvailableForWritePort == 0) ;
 }
+char
+ChipsetBasicFunctions::blockUntilCharacterToRead() {
+    char result = 0;
+    do {
+       result = static_cast<char>(_memory.consoleIOPort);
+       if (result != -1) {
+           return result;
+       }
+    } while (true);
+}
 ssize_t
 ChipsetBasicFunctions::write(char *buffer, size_t nbyte) {
     // unlike reading, we must be sequential in writing
@@ -165,8 +175,9 @@ ssize_t
 ChipsetBasicFunctions::read(char *buffer, size_t nbyte) {
     ssize_t numRead = 0;
     for (size_t i = 0; i < nbyte; ++i) {
-        waitForCharactersToRead();
-        buffer[i] = static_cast<char>(_memory.consoleIOPort);
+        //waitForCharactersToRead();
+        buffer[i] = blockUntilCharacterToRead();
+        //buffer[i] = static_cast<char>(_memory.consoleIOPort);
         ++numRead;
         if ((buffer[i] == '\n') || (buffer[i] == '\r')) {
             break;
