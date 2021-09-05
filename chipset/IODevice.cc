@@ -155,7 +155,7 @@ ChipsetBasicFunctions::write(char *buffer, size_t nbyte) {
 ssize_t
 ChipsetBasicFunctions::read(char *buffer, size_t nbyte) {
     ssize_t numRead = 0;
-    for (size_t i = 0; i < nbyte; ) {
+    for (size_t i = 0; i < nbyte; ++i) {
         // okay so we got here so there are characters available for reading
         // wait until we get more results
         uint16_t rawConsoleValue = _memory.consoleIOPort;
@@ -167,8 +167,6 @@ ChipsetBasicFunctions::read(char *buffer, size_t nbyte) {
         if ((buffer[i] == '\n') || (buffer[i] == '\r')) {
             return numRead;
         }
-        // only increment when we actually hit a legal value
-        ++i;
     }
     return numRead;
 }
