@@ -70,8 +70,7 @@ public:
      */
     ssize_t write(char* buffer, size_t nbyte);
 private:
-    void waitForCharactersToRead() ;
-    void waitForSpaceToWrite() ;
+    uint16_t waitForLegalCharacter();
 private:
     struct ChipsetRegistersRaw {
         volatile uint16_t consoleIOPort;

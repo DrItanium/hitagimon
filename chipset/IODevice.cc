@@ -151,18 +151,21 @@ ChipsetBasicFunctions::write(char *buffer, size_t nbyte) {
     flush();
     return numWritten;
 }
-
+uint16_t
+ChipsetBasicFunctions::waitForLegalCharacter() {
+    while (true) {
+        uint16_t rawConsoleValue = _memory.consoleIOPort;
+        if (rawConsoleValue != 0xFFFF) {
+            return rawConsoleValue;
+        }
+    }
+    return 0;
+}
 ssize_t
 ChipsetBasicFunctions::read(char *buffer, size_t nbyte) {
     ssize_t numRead = 0;
     for (size_t i = 0; i < nbyte; ++i) {
-        // okay so we got here so there are characters available for reading
-        // wait until we get more results
-        uint16_t rawConsoleValue = _memory.consoleIOPort;
-        while (rawConsoleValue == 0xFFFF) {
-            rawConsoleValue = _memory.consoleIOPort;
-        }
-        buffer[i] = static_cast<char>(rawConsoleValue);
+        buffer[i] = static_cast<char>(waitForLegalCharacter());
         ++numRead;
         if ((buffer[i] == '\n') || (buffer[i] == '\r')) {
             return numRead;
