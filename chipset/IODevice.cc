@@ -153,13 +153,11 @@ ChipsetBasicFunctions::write(char *buffer, size_t nbyte) {
 }
 uint16_t
 ChipsetBasicFunctions::waitForLegalCharacter() {
-    while (true) {
-        uint16_t rawConsoleValue = _memory.consoleIOPort;
-        if (rawConsoleValue != 0xFFFF) {
-            return rawConsoleValue;
-        }
+    uint16_t rawConsoleValue = _memory.consoleIOPort;
+    while (rawConsoleValue == 0xFFFF) {
+        rawConsoleValue = _memory.consoleIOPort;
     }
-    return 0;
+    return rawConsoleValue;
 }
 ssize_t
 ChipsetBasicFunctions::read(char *buffer, size_t nbyte) {
