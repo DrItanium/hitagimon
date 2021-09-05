@@ -140,20 +140,11 @@ BuiltinTFTDisplay& getDisplay() {
     static BuiltinTFTDisplay theDisplay;
     return theDisplay;
 }
-void
-ChipsetBasicFunctions::waitForCharactersToRead() {
-    while (_memory.consoleAvailablePort == 0);
-}
-void
-ChipsetBasicFunctions::waitForSpaceToWrite() {
-    while (_memory.consoleAvailableForWritePort == 0) ;
-}
 ssize_t
 ChipsetBasicFunctions::write(char *buffer, size_t nbyte) {
     // unlike reading, we must be sequential in writing
     ssize_t numWritten = 0;
     for (size_t i = 0; i < nbyte; ++i) {
-        waitForSpaceToWrite();
         _memory.consoleIOPort = static_cast<uint16_t>(static_cast<unsigned char>(buffer[i]));
         ++numWritten;
     }

@@ -74,10 +74,8 @@ private:
     void waitForSpaceToWrite() ;
 private:
     struct ChipsetRegistersRaw {
-        volatile uint16_t consoleFlushPort;
-        volatile uint16_t consoleAvailablePort;
-        volatile uint16_t consoleAvailableForWritePort;
         volatile uint16_t consoleIOPort;
+        volatile uint16_t consoleFlushPort;
     } __attribute__((packed));
 private:
     volatile ChipsetRegistersRaw& _memory;
