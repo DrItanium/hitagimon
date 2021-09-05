@@ -159,15 +159,16 @@ ChipsetBasicFunctions::read(char *buffer, size_t nbyte) {
         // okay so we got here so there are characters available for reading
         // wait until we get more results
         uint16_t rawConsoleValue = _memory.consoleIOPort;
-        if (rawConsoleValue != 0xFFFF) {
-            buffer[i] = static_cast<char>(rawConsoleValue);
-            ++numRead;
-            if ((buffer[i] == '\n') || (buffer[i] == '\r')) {
-                return numRead;
-            }
-            // only increment when we actually hit a legal value
-            ++i;
+        while (rawConsoleValue == 0xFFFF) {
+            rawConsoleValue = _memory.consoleIOPort;
         }
+        buffer[i] = static_cast<char>(rawConsoleValue);
+        ++numRead;
+        if ((buffer[i] == '\n') || (buffer[i] == '\r')) {
+            return numRead;
+        }
+        // only increment when we actually hit a legal value
+        ++i;
     }
     return numRead;
 }
