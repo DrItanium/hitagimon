@@ -15,7 +15,14 @@ uint64_t delay(uint64_t count) {
     }
     return value;
 }
-
+union TestStorage {
+    uint32_t value;
+    struct {
+        uint8_t low;
+        uint16_t mid;
+        uint8_t high;
+    }__attribute__((packed));
+} __attribute__((packed));
 char* args[] = { };
 void setupEnvironmentVariables() {
     cortex::EnvironmentInterface::set("HOME", "/home");
@@ -31,6 +38,12 @@ int main() {
     printf("Setting up Environment Variables....{\n");
     setupEnvironmentVariables();
     printf("}...Done\n");
+    printf("Testing out unaligned accesses!\n");
+    volatile TestStorage tu;
+    tu.value = 0xFDED1234;
+    printf("tu.value = 0x%x\n", tu.value);
+    tu.mid = 0xFDED;
+    printf("tu.value = 0x%x\n", tu.value);
     theDisplay.clearScreen();
     clipsMain(0, args);
     return 0;
