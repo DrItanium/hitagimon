@@ -51,6 +51,12 @@ int main() {
     printf("tu.mid = 0x%x\n", tu.mid);
     printf("tu.high = 0x%x\n", tu.high);
     printf("tu.low = 0x%x\n", tu.low);
+    printf("-----\n");
+    volatile uint64_t theValue64 = 0xABCDEF0123456789ull;
+    printf("Testing out 64-bit reads and writes!\n");
+    printf("theValue64 = 0x%llux but expecting 0xABCD'EF01'2345'6789\n", theValue64);
+    theValue64 = 0x9876543210ABCDEFull;
+    printf("theValue64 = 0x%llux but expecting 0x9876'5432'10AB'CDEF\n", theValue64);
     theDisplay.clearScreen();
     clipsMain(0, args);
     return 0;
