@@ -42,8 +42,15 @@ int main() {
     volatile TestStorage tu;
     tu.value = 0xFDED1234;
     printf("tu.value = 0x%x\n", tu.value);
+    printf("tu.mid = 0x%x\n", tu.mid);
+    printf("tu.high = 0x%x\n", tu.high);
+    printf("tu.low = 0x%x\n", tu.low);
+    printf("------\n") ;
     tu.mid = 0xFDED;
     printf("tu.value = 0x%x\n", tu.value);
+    printf("tu.mid = 0x%x\n", tu.mid);
+    printf("tu.high = 0x%x\n", tu.high);
+    printf("tu.low = 0x%x\n", tu.low);
     theDisplay.clearScreen();
     clipsMain(0, args);
     return 0;
