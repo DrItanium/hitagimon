@@ -294,20 +294,20 @@ DefClipsFunction(BinaryNotOr) {
 }
 
 DefClipsFunction(ExaminePC) {
-    uint32_t result = 0;
-    __asm__("modpc 0, 0, %0" : "=r" (result));
-    retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>(result));
+    cortex::ProcessControls pc;
+    GetProcessControls(pc);
+    retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>(pc.raw));
 }
 DefClipsFunction(ExamineAC) {
-    uint32_t result = 0;
-    __asm__("modac 0, 0, %0" : "=r" (result));
-    retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>(result));
+    cortex::ArithmeticControls ac;
+    GetArithmeticControls(ac);
+    retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>(ac.raw));
 }
 
 DefClipsFunction(ExamineTC) {
-    uint32_t result = 0;
-    __asm__("modtc 0, 0, %0" : "=r" (result));
-    retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>(result));
+    cortex::TraceControls tc;
+    GetTraceControls(tc);
+    retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>(tc.raw));
 }
 DefClipsFunction(shrdi960) {
     UDFValue lenA, srcA;
@@ -373,11 +373,10 @@ DefClipsFunction(DoSYNLD) {
     if (CVIsType(retVal, INTEGER_BIT)) {
         uint32_t value = static_cast<uint32_t>(retVal->integerValue->contents);
         uint32_t result = 0;
-        uint32_t conditionCode = 0;
+        cortex::ArithmeticControls ac;
         asm volatile ("synld %1, %0" : "=r" (result) : "r" (value));
-        asm volatile ("modac 0, 0, %0" : "=r" (conditionCode));
-        conditionCode &= 0x7;
-        printf("Condition Code: 0x%x\n", static_cast<int>(conditionCode));
+        GetArithmeticControls(ac);
+        printf("Condition Code: 0x%x\n", static_cast<int>(ac.cc));
         retVal->integerValue = CreateInteger(theEnv, static_cast<int>(result));
     }
 }
