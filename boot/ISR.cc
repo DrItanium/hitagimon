@@ -10,7 +10,6 @@ extern "C"
 void
 ISR0(void) {
     InterruptFunction fn = getISR0Function();
-    getBasicChipsetInterface().writeLine("ISR0!");
     if (fn) {
         fn();
     }
