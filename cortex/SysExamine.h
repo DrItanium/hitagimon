@@ -43,5 +43,24 @@ namespace cortex {
 #endif
         };
     };
+    union ProcessControls
+    {
+        uint32_t raw;
+        struct {
+            uint32_t traceEnable: 1;
+            uint32_t executionMode: 1;
+            uint32_t unused0: 7;
+            uint32_t resume: 1;
+            uint32_t traceFaultPending: 1;
+            uint32_t unused1: 2;
+            uint32_t state: 1;
+            uint32_t unused2: 2;
+            uint32_t priority: 5;
+            uint32_t internalState: 10;
+        };
+    } __attribute__((packed));
+#define GetProcessControls(pc) asm volatile ("modpc 0, 0, %0" : "=r" (pc.raw))
+#define GetArithmeticControls(ac) asm volatile ("modac 0, 0, %0" : "=r" (ac.raw))
+
 }
 #endif //HITAGIMON_SYSEXAMINE_H
