@@ -244,7 +244,6 @@ _user_type_core:
    *    In order to do this, we will execute a call statement, then "fix up" the stack frame
    *    to cause an interrupt return to be executed.
    */
-
     ldconst 64, g0 # bump up stack to make
     addo sp, g0, sp # room for simulated
                     # interrupt frame
@@ -262,6 +261,7 @@ _user_type_core:
 .ifdef __i960SB__
     callx _init_fp
 .endif
+    callx setupInterruptHandler
     #callx _activate_read_write_transactions
     mov 0, g14      # C compiler expects g14 = 0
     callx _main     # assume a main for startup
@@ -275,6 +275,14 @@ _init_fp:
     movre   fp2, fp3
     ret
 .endif
+
+setupInterruptHandler:
+    # setup the interrupt handlers to work correctly
+    lda 0xff000004, g5
+    # give maximum priority to the interrupt handlers
+    lda 0xFCFDFEFF, g6
+    synmov g5, g6
+    ret
 
     .align 4 # Align BEFORE the label...holy crap
 reinitialize_iac:
