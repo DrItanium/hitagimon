@@ -8,6 +8,7 @@
 #include "../chipset/ChipsetInteract.h"
 #include "../cortex/EnvironmentInterface.h"
 #include "../cortex/SysExamine.h"
+#include "../chipset/IODevice.h"
 
 #define X(title) extern "C++" void title (Environment*, UDFContext*, UDFValue*)
 X(ExamineByte);
@@ -31,6 +32,7 @@ X(ExaminePC);
 X(ExamineAC);
 X(ExamineTC);
 X(shrdi960);
+X(TriggerInterrupt);
 #ifdef __i960SB__
 X(CallCos960);
 X(CallSin960);
@@ -61,6 +63,7 @@ InstallMonitorExtensions(Environment* env) {
     AddUDF(env, "examine-ac", "l", 0, 0, NULL, ExamineAC, "ExamineAC", NULL);
     AddUDF(env, "examine-tc", "l", 0, 0, NULL, ExamineTC, "ExamineTC", NULL);
     AddUDF(env, "shrdi960", "l", 2, 2, "l", shrdi960, "shrdi960", NULL);
+    AddUDF(env, "trigger-interrupt", "v", 0, 0, NULL, TriggerInterrupt, "TriggerInterrupt", NULL);
 #ifdef __i960SB__
     AddUDF(env, "cos960","d",1,1,"ld",CallCos960,"CallCos960",NULL);
     AddUDF(env, "sin960","d",1,1,"ld",CallSin960,"CallSin960",NULL);
@@ -352,5 +355,9 @@ DefClipsFunction(CallTan960) {
     retVal->floatValue = CreateFloat(theEnv,result);
 }
 #endif
+
+DefClipsFunction(TriggerInterrupt) {
+    getBasicChipsetInterface().triggerInt0();
+}
 
 #undef DefClipsFunction

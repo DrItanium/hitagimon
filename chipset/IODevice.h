@@ -69,12 +69,24 @@ public:
      * @return the number of bytes written
      */
     ssize_t write(char* buffer, size_t nbyte);
+    void triggerInt0();
 private:
     uint16_t waitForLegalCharacter();
 private:
     struct ChipsetRegistersRaw {
         volatile uint16_t consoleIOPort;
         volatile uint16_t consoleFlushPort;
+        volatile uint32_t consoleTimeoutPort;
+        volatile uint16_t consoleRXBufferSize;
+        volatile uint16_t consoleTXBufferSize;
+        volatile uint32_t chipsetClockSpeedPort;
+        volatile uint16_t cacheLineCountPort;
+        volatile uint16_t cacheLineSizePort;
+        volatile uint16_t numberOfCacheWaysPort;
+        volatile uint32_t sdCardClusterCountPort;
+        volatile uint32_t sdVolumeSectorCountPort;
+        volatile uint16_t sdbytesPerSectorPort;
+        volatile uint16_t triggerInt0Port;
     } __attribute__((packed));
 private:
     volatile ChipsetRegistersRaw& _memory;

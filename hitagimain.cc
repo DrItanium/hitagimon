@@ -5,6 +5,7 @@
 #include "chipset/IODevice.h"
 #include <string>
 #include "cortex/EnvironmentInterface.h"
+#include "cortex/Interrupts.h"
 
 //extern "C" int doommain (int argc, char** argv) ;
 extern "C" int clipsMain(int argc, char *argv[]);
@@ -27,6 +28,9 @@ char* args[] = { };
 void setupEnvironmentVariables() {
     cortex::EnvironmentInterface::set("HOME", "/home");
     cortex::EnvironmentInterface::set("DOOMWADDIR", "/home/wads");
+}
+void isr0Test() {
+    printf("INT0 Triggered!");
 }
 int main() {
     ChipsetBasicFunctions& theChipset = getBasicChipsetInterface();
@@ -58,6 +62,7 @@ int main() {
     theValue64 = 0x9876543210ABCDEFull;
     printf("OK? theValue64 = 0x%x%x but expecting 0x9876'5432'10AB'CDEF\n", static_cast<unsigned>(theValue64), static_cast<unsigned>(theValue64 >> 32));
     theDisplay.clearScreen();
+    setISR0Function(isr0Test);
     clipsMain(0, args);
     return 0;
 }
