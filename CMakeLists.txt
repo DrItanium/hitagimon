@@ -401,9 +401,7 @@ add_executable(hitagimon
 		boot/i_table.s
 		boot/f_handle.cc
 		boot/ISR.cc
-		# interface libraries
 		hitagimain.cc
-        #clips source
 		)
 
 #(add_library(doom
