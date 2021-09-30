@@ -51,7 +51,349 @@ add_library(hitagicortex
 		cortex/Interrupts.h
 		cortex/EnvironmentInterface.cc
 		cortex/EnvironmentInterface.h cortex/Faults.cc cortex/Faults.h)
-
+add_library(hitagiclips
+		clips/agenda.c
+		clips/agenda.h
+		clips/analysis.c
+		clips/analysis.h
+		clips/argacces.c
+		clips/argacces.h
+		clips/bload.c
+		clips/bload.h
+		clips/bmathfun.c
+		clips/bmathfun.h
+		clips/bsave.c
+		clips/bsave.h
+		clips/classcom.c
+		clips/classcom.h
+		clips/classexm.c
+		clips/classexm.h
+		clips/classfun.c
+		clips/classfun.h
+		clips/classinf.c
+		clips/classinf.h
+		clips/classini.c
+		clips/classini.h
+		clips/classpsr.c
+		clips/classpsr.h
+		clips/clips.h
+		clips/clsltpsr.c
+		clips/clsltpsr.h
+		clips/commline.c
+		clips/commline.h
+		clips/conscomp.c
+		clips/conscomp.h
+		clips/constant.h
+		clips/constrct.c
+		clips/constrct.h
+		clips/constrnt.c
+		clips/constrnt.h
+		clips/crstrtgy.c
+		clips/crstrtgy.h
+		clips/cstrcbin.c
+		clips/cstrcbin.h
+		clips/cstrccmp.h
+		clips/cstrccom.c
+		clips/cstrccom.h
+		clips/cstrcpsr.c
+		clips/cstrcpsr.h
+		clips/cstrnbin.c
+		clips/cstrnbin.h
+		clips/cstrnchk.c
+		clips/cstrnchk.h
+		clips/cstrncmp.c
+		clips/cstrncmp.h
+		clips/cstrnops.c
+		clips/cstrnops.h
+		clips/cstrnpsr.c
+		clips/cstrnpsr.h
+		clips/cstrnutl.c
+		clips/cstrnutl.h
+		clips/default.c
+		clips/default.h
+		clips/defins.c
+		clips/defins.h
+		clips/developr.c
+		clips/developr.h
+		clips/dffctbin.c
+		clips/dffctbin.h
+		clips/dffctbsc.c
+		clips/dffctbsc.h
+		clips/dffctcmp.c
+		clips/dffctcmp.h
+		clips/dffctdef.c
+		clips/dffctdef.h
+		clips/dffctpsr.c
+		clips/dffctpsr.h
+		clips/dffnxbin.c
+		clips/dffnxbin.h
+		clips/dffnxcmp.c
+		clips/dffnxcmp.h
+		clips/dffnxexe.c
+		clips/dffnxexe.h
+		clips/dffnxfun.c
+		clips/dffnxfun.h
+		clips/dffnxpsr.c
+		clips/dffnxpsr.h
+		clips/dfinsbin.c
+		clips/dfinsbin.h
+		clips/dfinscmp.c
+		clips/dfinscmp.h
+		clips/drive.c
+		clips/drive.h
+		clips/emathfun.c
+		clips/emathfun.h
+		clips/engine.c
+		clips/engine.h
+		clips/entities.h
+		clips/envrnbld.c
+		clips/envrnbld.h
+		clips/envrnmnt.c
+		clips/envrnmnt.h
+		clips/evaluatn.c
+		clips/evaluatn.h
+		clips/expressn.c
+		clips/expressn.h
+		clips/exprnbin.c
+		clips/exprnbin.h
+		clips/exprnops.c
+		clips/exprnops.h
+		clips/exprnpsr.c
+		clips/exprnpsr.h
+		clips/extnfunc.c
+		clips/extnfunc.h
+		clips/factbin.c
+		clips/factbin.h
+		clips/factbld.c
+		clips/factbld.h
+		clips/factcmp.c
+		clips/factcmp.h
+		clips/factcom.c
+		clips/factcom.h
+		clips/factfile.c
+		clips/factfile.h
+		clips/factfun.c
+		clips/factfun.h
+		clips/factgen.c
+		clips/factgen.h
+		clips/facthsh.c
+		clips/facthsh.h
+		clips/factlhs.c
+		clips/factlhs.h
+		clips/factmch.c
+		clips/factmch.h
+		clips/factmngr.c
+		clips/factmngr.h
+		clips/factprt.c
+		clips/factprt.h
+		clips/factqpsr.c
+		clips/factqpsr.h
+		clips/factqury.c
+		clips/factqury.h
+		clips/factrete.c
+		clips/factrete.h
+		clips/factrhs.c
+		clips/factrhs.h
+		clips/filecom.c
+		clips/filecom.h
+		clips/filertr.c
+		clips/filertr.h
+		clips/fileutil.c
+		clips/fileutil.h
+		clips/generate.c
+		clips/generate.h
+		clips/genrcbin.c
+		clips/genrcbin.h
+		clips/genrccmp.c
+		clips/genrccmp.h
+		clips/genrccom.c
+		clips/genrccom.h
+		clips/genrcexe.c
+		clips/genrcexe.h
+		clips/genrcfun.c
+		clips/genrcfun.h
+		clips/genrcpsr.c
+		clips/genrcpsr.h
+		clips/globlbin.c
+		clips/globlbin.h
+		clips/globlbsc.c
+		clips/globlbsc.h
+		clips/globlcmp.c
+		clips/globlcmp.h
+		clips/globlcom.c
+		clips/globlcom.h
+		clips/globldef.c
+		clips/globldef.h
+		clips/globlpsr.c
+		clips/globlpsr.h
+		clips/immthpsr.c
+		clips/immthpsr.h
+		clips/incrrset.c
+		clips/incrrset.h
+		clips/inherpsr.c
+		clips/inherpsr.h
+		clips/inscom.c
+		clips/inscom.h
+		clips/insfile.c
+		clips/insfile.h
+		clips/insfun.c
+		clips/insfun.h
+		clips/insmngr.c
+		clips/insmngr.h
+		clips/insmoddp.c
+		clips/insmoddp.h
+		clips/insmult.c
+		clips/insmult.h
+		clips/inspsr.c
+		clips/inspsr.h
+		clips/insquery.c
+		clips/insquery.h
+		clips/insqypsr.c
+		clips/insqypsr.h
+		clips/iofun.c
+		clips/iofun.h
+		clips/lgcldpnd.c
+		clips/lgcldpnd.h
+		clips/main.c
+		clips/match.h
+		clips/memalloc.c
+		clips/memalloc.h
+		clips/miscfun.c
+		clips/miscfun.h
+		clips/modulbin.c
+		clips/modulbin.h
+		clips/modulbsc.c
+		clips/modulbsc.h
+		clips/modulcmp.c
+		clips/modulcmp.h
+		clips/moduldef.c
+		clips/moduldef.h
+		clips/modulpsr.c
+		clips/modulpsr.h
+		clips/modulutl.c
+		clips/modulutl.h
+		clips/msgcom.c
+		clips/msgcom.h
+		clips/msgfun.c
+		clips/msgfun.h
+		clips/msgpass.c
+		clips/msgpass.h
+		clips/msgpsr.c
+		clips/msgpsr.h
+		clips/multifld.c
+		clips/multifld.h
+		clips/multifun.c
+		clips/multifun.h
+		clips/network.h
+		clips/objbin.c
+		clips/objbin.h
+		clips/objcmp.c
+		clips/objcmp.h
+		clips/object.h
+		clips/objrtbin.c
+		clips/objrtbin.h
+		clips/objrtbld.c
+		clips/objrtbld.h
+		clips/objrtcmp.c
+		clips/objrtcmp.h
+		clips/objrtfnx.c
+		clips/objrtfnx.h
+		clips/objrtgen.c
+		clips/objrtgen.h
+		clips/objrtmch.c
+		clips/objrtmch.h
+		clips/parsefun.c
+		clips/parsefun.h
+		clips/pattern.c
+		clips/pattern.h
+		clips/pprint.c
+		clips/pprint.h
+		clips/prccode.c
+		clips/prccode.h
+		clips/prcdrfun.c
+		clips/prcdrfun.h
+		clips/prcdrpsr.c
+		clips/prcdrpsr.h
+		clips/prdctfun.c
+		clips/prdctfun.h
+		clips/prntutil.c
+		clips/prntutil.h
+		clips/proflfun.c
+		clips/proflfun.h
+		clips/reorder.c
+		clips/reorder.h
+		clips/reteutil.c
+		clips/reteutil.h
+		clips/retract.c
+		clips/retract.h
+		clips/router.c
+		clips/router.h
+		clips/rulebin.c
+		clips/rulebin.h
+		clips/rulebld.c
+		clips/rulebld.h
+		clips/rulebsc.c
+		clips/rulebsc.h
+		clips/rulecmp.c
+		clips/rulecmp.h
+		clips/rulecom.c
+		clips/rulecom.h
+		clips/rulecstr.c
+		clips/rulecstr.h
+		clips/ruledef.c
+		clips/ruledef.h
+		clips/ruledlt.c
+		clips/ruledlt.h
+		clips/rulelhs.c
+		clips/rulelhs.h
+		clips/rulepsr.c
+		clips/rulepsr.h
+		clips/scanner.c
+		clips/scanner.h
+		clips/setup.h
+		clips/sortfun.c
+		clips/sortfun.h
+		clips/strngfun.c
+		clips/strngfun.h
+		clips/strngrtr.c
+		clips/strngrtr.h
+		clips/symblbin.c
+		clips/symblbin.h
+		clips/symblcmp.c
+		clips/symblcmp.h
+		clips/symbol.c
+		clips/symbol.h
+		clips/sysdep.c
+		clips/sysdep.h
+		clips/textpro.c
+		clips/textpro.h
+		clips/tmpltbin.c
+		clips/tmpltbin.h
+		clips/tmpltbsc.c
+		clips/tmpltbsc.h
+		clips/tmpltcmp.c
+		clips/tmpltcmp.h
+		clips/tmpltdef.c
+		clips/tmpltdef.h
+		clips/tmpltfun.c
+		clips/tmpltfun.h
+		clips/tmpltlhs.c
+		clips/tmpltlhs.h
+		clips/tmpltpsr.c
+		clips/tmpltpsr.h
+		clips/tmpltrhs.c
+		clips/tmpltrhs.h
+		clips/tmpltutl.c
+		clips/tmpltutl.h
+		clips/userdata.c
+		clips/userdata.h
+		clips/userfunctions.c
+		clips/usrsetup.h
+		clips/utility.c
+		clips/utility.h
+		clips/watch.c
+		clips/watch.h
+		clips/MonitorExtensions.cc clips/MonitorExtensions.h)
 add_executable(hitagimon
 		boot/sx_init.s # this must ALWAYS be first!
 		boot/f_table.s
@@ -62,348 +404,7 @@ add_executable(hitagimon
 		# interface libraries
 		hitagimain.cc
         #clips source
-clips/agenda.c
-clips/agenda.h
-clips/analysis.c
-clips/analysis.h
-clips/argacces.c
-clips/argacces.h
-clips/bload.c
-clips/bload.h
-clips/bmathfun.c
-clips/bmathfun.h
-clips/bsave.c
-clips/bsave.h
-clips/classcom.c
-clips/classcom.h
-clips/classexm.c
-clips/classexm.h
-clips/classfun.c
-clips/classfun.h
-clips/classinf.c
-clips/classinf.h
-clips/classini.c
-clips/classini.h
-clips/classpsr.c
-clips/classpsr.h
-clips/clips.h
-clips/clsltpsr.c
-clips/clsltpsr.h
-clips/commline.c
-clips/commline.h
-clips/conscomp.c
-clips/conscomp.h
-clips/constant.h
-clips/constrct.c
-clips/constrct.h
-clips/constrnt.c
-clips/constrnt.h
-clips/crstrtgy.c
-clips/crstrtgy.h
-clips/cstrcbin.c
-clips/cstrcbin.h
-clips/cstrccmp.h
-clips/cstrccom.c
-clips/cstrccom.h
-clips/cstrcpsr.c
-clips/cstrcpsr.h
-clips/cstrnbin.c
-clips/cstrnbin.h
-clips/cstrnchk.c
-clips/cstrnchk.h
-clips/cstrncmp.c
-clips/cstrncmp.h
-clips/cstrnops.c
-clips/cstrnops.h
-clips/cstrnpsr.c
-clips/cstrnpsr.h
-clips/cstrnutl.c
-clips/cstrnutl.h
-clips/default.c
-clips/default.h
-clips/defins.c
-clips/defins.h
-clips/developr.c
-clips/developr.h
-clips/dffctbin.c
-clips/dffctbin.h
-clips/dffctbsc.c
-clips/dffctbsc.h
-clips/dffctcmp.c
-clips/dffctcmp.h
-clips/dffctdef.c
-clips/dffctdef.h
-clips/dffctpsr.c
-clips/dffctpsr.h
-clips/dffnxbin.c
-clips/dffnxbin.h
-clips/dffnxcmp.c
-clips/dffnxcmp.h
-clips/dffnxexe.c
-clips/dffnxexe.h
-clips/dffnxfun.c
-clips/dffnxfun.h
-clips/dffnxpsr.c
-clips/dffnxpsr.h
-clips/dfinsbin.c
-clips/dfinsbin.h
-clips/dfinscmp.c
-clips/dfinscmp.h
-clips/drive.c
-clips/drive.h
-clips/emathfun.c
-clips/emathfun.h
-clips/engine.c
-clips/engine.h
-clips/entities.h
-clips/envrnbld.c
-clips/envrnbld.h
-clips/envrnmnt.c
-clips/envrnmnt.h
-clips/evaluatn.c
-clips/evaluatn.h
-clips/expressn.c
-clips/expressn.h
-clips/exprnbin.c
-clips/exprnbin.h
-clips/exprnops.c
-clips/exprnops.h
-clips/exprnpsr.c
-clips/exprnpsr.h
-clips/extnfunc.c
-clips/extnfunc.h
-clips/factbin.c
-clips/factbin.h
-clips/factbld.c
-clips/factbld.h
-clips/factcmp.c
-clips/factcmp.h
-clips/factcom.c
-clips/factcom.h
-clips/factfile.c
-clips/factfile.h
-clips/factfun.c
-clips/factfun.h
-clips/factgen.c
-clips/factgen.h
-clips/facthsh.c
-clips/facthsh.h
-clips/factlhs.c
-clips/factlhs.h
-clips/factmch.c
-clips/factmch.h
-clips/factmngr.c
-clips/factmngr.h
-clips/factprt.c
-clips/factprt.h
-clips/factqpsr.c
-clips/factqpsr.h
-clips/factqury.c
-clips/factqury.h
-clips/factrete.c
-clips/factrete.h
-clips/factrhs.c
-clips/factrhs.h
-clips/filecom.c
-clips/filecom.h
-clips/filertr.c
-clips/filertr.h
-clips/fileutil.c
-clips/fileutil.h
-clips/generate.c
-clips/generate.h
-clips/genrcbin.c
-clips/genrcbin.h
-clips/genrccmp.c
-clips/genrccmp.h
-clips/genrccom.c
-clips/genrccom.h
-clips/genrcexe.c
-clips/genrcexe.h
-clips/genrcfun.c
-clips/genrcfun.h
-clips/genrcpsr.c
-clips/genrcpsr.h
-clips/globlbin.c
-clips/globlbin.h
-clips/globlbsc.c
-clips/globlbsc.h
-clips/globlcmp.c
-clips/globlcmp.h
-clips/globlcom.c
-clips/globlcom.h
-clips/globldef.c
-clips/globldef.h
-clips/globlpsr.c
-clips/globlpsr.h
-clips/immthpsr.c
-clips/immthpsr.h
-clips/incrrset.c
-clips/incrrset.h
-clips/inherpsr.c
-clips/inherpsr.h
-clips/inscom.c
-clips/inscom.h
-clips/insfile.c
-clips/insfile.h
-clips/insfun.c
-clips/insfun.h
-clips/insmngr.c
-clips/insmngr.h
-clips/insmoddp.c
-clips/insmoddp.h
-clips/insmult.c
-clips/insmult.h
-clips/inspsr.c
-clips/inspsr.h
-clips/insquery.c
-clips/insquery.h
-clips/insqypsr.c
-clips/insqypsr.h
-clips/iofun.c
-clips/iofun.h
-clips/lgcldpnd.c
-clips/lgcldpnd.h
-clips/main.c
-clips/match.h
-clips/memalloc.c
-clips/memalloc.h
-clips/miscfun.c
-clips/miscfun.h
-clips/modulbin.c
-clips/modulbin.h
-clips/modulbsc.c
-clips/modulbsc.h
-clips/modulcmp.c
-clips/modulcmp.h
-clips/moduldef.c
-clips/moduldef.h
-clips/modulpsr.c
-clips/modulpsr.h
-clips/modulutl.c
-clips/modulutl.h
-clips/msgcom.c
-clips/msgcom.h
-clips/msgfun.c
-clips/msgfun.h
-clips/msgpass.c
-clips/msgpass.h
-clips/msgpsr.c
-clips/msgpsr.h
-clips/multifld.c
-clips/multifld.h
-clips/multifun.c
-clips/multifun.h
-clips/network.h
-clips/objbin.c
-clips/objbin.h
-clips/objcmp.c
-clips/objcmp.h
-clips/object.h
-clips/objrtbin.c
-clips/objrtbin.h
-clips/objrtbld.c
-clips/objrtbld.h
-clips/objrtcmp.c
-clips/objrtcmp.h
-clips/objrtfnx.c
-clips/objrtfnx.h
-clips/objrtgen.c
-clips/objrtgen.h
-clips/objrtmch.c
-clips/objrtmch.h
-clips/parsefun.c
-clips/parsefun.h
-clips/pattern.c
-clips/pattern.h
-clips/pprint.c
-clips/pprint.h
-clips/prccode.c
-clips/prccode.h
-clips/prcdrfun.c
-clips/prcdrfun.h
-clips/prcdrpsr.c
-clips/prcdrpsr.h
-clips/prdctfun.c
-clips/prdctfun.h
-clips/prntutil.c
-clips/prntutil.h
-clips/proflfun.c
-clips/proflfun.h
-clips/reorder.c
-clips/reorder.h
-clips/reteutil.c
-clips/reteutil.h
-clips/retract.c
-clips/retract.h
-clips/router.c
-clips/router.h
-clips/rulebin.c
-clips/rulebin.h
-clips/rulebld.c
-clips/rulebld.h
-clips/rulebsc.c
-clips/rulebsc.h
-clips/rulecmp.c
-clips/rulecmp.h
-clips/rulecom.c
-clips/rulecom.h
-clips/rulecstr.c
-clips/rulecstr.h
-clips/ruledef.c
-clips/ruledef.h
-clips/ruledlt.c
-clips/ruledlt.h
-clips/rulelhs.c
-clips/rulelhs.h
-clips/rulepsr.c
-clips/rulepsr.h
-clips/scanner.c
-clips/scanner.h
-clips/setup.h
-clips/sortfun.c
-clips/sortfun.h
-clips/strngfun.c
-clips/strngfun.h
-clips/strngrtr.c
-clips/strngrtr.h
-clips/symblbin.c
-clips/symblbin.h
-clips/symblcmp.c
-clips/symblcmp.h
-clips/symbol.c
-clips/symbol.h
-clips/sysdep.c
-clips/sysdep.h
-clips/textpro.c
-clips/textpro.h
-clips/tmpltbin.c
-clips/tmpltbin.h
-clips/tmpltbsc.c
-clips/tmpltbsc.h
-clips/tmpltcmp.c
-clips/tmpltcmp.h
-clips/tmpltdef.c
-clips/tmpltdef.h
-clips/tmpltfun.c
-clips/tmpltfun.h
-clips/tmpltlhs.c
-clips/tmpltlhs.h
-clips/tmpltpsr.c
-clips/tmpltpsr.h
-clips/tmpltrhs.c
-clips/tmpltrhs.h
-clips/tmpltutl.c
-clips/tmpltutl.h
-clips/userdata.c
-clips/userdata.h
-clips/userfunctions.c
-clips/usrsetup.h
-clips/utility.c
-clips/utility.h
-clips/watch.c
-clips/watch.h
-		clips/MonitorExtensions.cc clips/MonitorExtensions.h)
+		)
 
 #(add_library(doom
 #		# doom source code
@@ -534,6 +535,7 @@ clips/watch.h
 
 #set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT})
 target_link_libraries(hitagimon
+		hitagiclips
 		gcc
 		c
 		m
