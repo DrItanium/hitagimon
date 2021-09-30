@@ -280,7 +280,7 @@ setupInterruptHandler:
     # setup the interrupt handlers to work correctly
     lda 0xff000004, g5
     # give maximum priority to the interrupt handlers
-    lda 0xFCFDFEFF, g6
+    lda defaultInterruptHandlerValue, g6
     synmov g5, g6
     ret
 
@@ -291,6 +291,8 @@ reinitialize_iac:
     .word _prcb_ram     # use newly copied PRCB
     .word start_again_ip    # start here
 
+defaultInterruptHandlerValue:
+    .word 0xFCFDFEFF
 /* -- define RAM area to copy the PRCB and interrupt table
  *    to after initial bootup from EPROM/FLASH
  */
