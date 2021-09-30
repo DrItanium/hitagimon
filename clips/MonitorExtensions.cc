@@ -33,6 +33,7 @@ X(ExamineAC);
 X(ExamineTC);
 X(shrdi960);
 X(TriggerInterrupt);
+X(DoSYNLD);
 #ifdef __i960SB__
 X(CallCos960);
 X(CallSin960);
@@ -64,6 +65,7 @@ InstallMonitorExtensions(Environment* env) {
     AddUDF(env, "examine-tc", "l", 0, 0, NULL, ExamineTC, "ExamineTC", NULL);
     AddUDF(env, "shrdi960", "l", 2, 2, "l", shrdi960, "shrdi960", NULL);
     AddUDF(env, "trigger-interrupt", "v", 0, 0, NULL, TriggerInterrupt, "TriggerInterrupt", NULL);
+    AddUDF(env, "synld", "l", 1,1, "l", DoSYNLD, "DoSYNLD", NULL);
 #ifdef __i960SB__
     AddUDF(env, "cos960","d",1,1,"ld",CallCos960,"CallCos960",NULL);
     AddUDF(env, "sin960","d",1,1,"ld",CallSin960,"CallSin960",NULL);
@@ -358,6 +360,18 @@ DefClipsFunction(CallTan960) {
 
 DefClipsFunction(TriggerInterrupt) {
     getBasicChipsetInterface().triggerInt0();
+}
+
+DefClipsFunction(DoSYNLD) {
+    if (! UDFNthArgument(context,1,NUMBER_BITS,retVal)) {
+        return;
+    }
+    if (CVIsType(retVal, INTEGER_BIT)) {
+        uint32_t value = static_cast<uint32_t>(retVal->integerValue->contents);
+        uint32_t result = 0;
+        __asm__("synld %1, %0" : "=r" (result) : "r" (value));
+        retVal->integerValue = CreateInteger(theEnv, result);
+    }
 }
 
 #undef DefClipsFunction
