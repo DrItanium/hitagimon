@@ -373,8 +373,12 @@ DefClipsFunction(DoSYNLD) {
     if (CVIsType(retVal, INTEGER_BIT)) {
         uint32_t value = static_cast<uint32_t>(retVal->integerValue->contents);
         uint32_t result = 0;
-        __asm__("synld %1, %0" : "=r" (result) : "r" (value));
-        retVal->integerValue = CreateInteger(theEnv, result);
+        uint32_t conditionCode = 0;
+        asm volatile ("synld %1, %0" : "=r" (result) : "r" (value));
+        asm volatile ("modac 0, 0, %0" : "=r" (conditionCode));
+        conditionCode &= 0x7;
+        printf("Condition Code: 0x%x\n", static_cast<int>(conditionCode));
+        retVal->integerValue = CreateInteger(theEnv, static_cast<int>(result));
     }
 }
 

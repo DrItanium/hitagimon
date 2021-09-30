@@ -1,7 +1,7 @@
 //
 // Created by jwscoggins on 3/27/21.
 //
-#include "../chipset/ChipsetInteract.h"
+#include "../chipset/IODevice.h"
 #include "../cortex/Interrupts.h"
 extern "C" void ISR0(void);
 extern "C" void ISR_NMI(void);
@@ -10,6 +10,7 @@ extern "C"
 void
 ISR0(void) {
     InterruptFunction fn = getISR0Function();
+    getBasicChipsetInterface().writeLine("ISR0!");
     if (fn) {
         fn();
     }
