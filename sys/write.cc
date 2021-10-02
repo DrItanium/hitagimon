@@ -34,12 +34,7 @@ namespace
     sys_write(int fd, const void *buf, size_t sz, int &nwrite) {
         nwrite = 0;
         if (fd >= 3) {
-            if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
-                nwrite = getSDCardInterface().writeFile(fd - 3, buf, sz);
-                return 0;
-            } else {
-                return EBADF;
-            }
+            return EBADF;
         } else {
             // builtin files
             switch (fd) {

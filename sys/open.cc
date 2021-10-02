@@ -32,9 +32,6 @@ extern "C"
 int
 open (char* file, int flags, int mode) {
     // ignore the mode flags for now
-    int result = getSDCardInterface().openFile(file, flags);
-    if (result != -1) {
-        result =+ 3; // skip past the stdin/stderr/stdout ids
-    }
-    return result;
+    /// @todo implement
+    return -1;
 }

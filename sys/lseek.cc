@@ -37,12 +37,8 @@ lseek(int fd, off_t offset, int whence) {
     //printf("lseek(%d, %ld, %d)\n", fd, offset, whence);
     /// @todo implement this using an SD Card interface
     if (fd >= 3) {
-        if (fd < (getSDCardInterface().getMaximumNumberOfOpenFiles() + 3)) {
-            return getSDCardInterface().seek(fd - 3, offset, whence);
-        } else {
-            errno = EBADF;
-            return -1;
-        }
+        errno = EBADF;
+        return -1;
     } else {
         // builtin files
         switch (fd) {

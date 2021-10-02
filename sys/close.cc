@@ -33,11 +33,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C"
 int
 close(int fd) {
-    //printf("close(%d);\n", fd);
-    if (fd >= 3) {
-        return getSDCardInterface().closeFile(fd - 3);
-    } else {
-        errno = EBADF;
-        return -1;
-    }
+    errno = EBADF;
+    return -1;
 }

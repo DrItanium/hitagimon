@@ -100,7 +100,7 @@ ChipsetBasicFunctions::addressDebuggingEnabled() const {
 void
 ChipsetBasicFunctions::enableAddressDebugging() {
     // upper 16-bits are ignored on the chipset side but who cares
-    _memory.addressDebuggingFlag = 0xFFFFFFFFF;
+    _memory.addressDebuggingFlag = 0xFFFFFFFF;
 }
 void
 ChipsetBasicFunctions::disableAddressDebugging() {
