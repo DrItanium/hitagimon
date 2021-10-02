@@ -204,11 +204,17 @@ _user_type_core:
     mov 0, g14 # C compiler expects g14 = 0
 
 # copy the interrupt table to RAM space
+    lda 0xFE000022, g8
+    lda 0x1, g9
+    st g9, 0(g8)
     lda 1028, g0 # load length of the interrupt table
     lda 0, g4 # initialize offset to 0
     lda intr_table, g1 # load source
     lda intr_ram, g2    # load address of new table
     bal move_data # branch to move routine
+    lda 0xFE000022, g8
+    lda 0, g9
+    st g9, 0(g8)
 
 # copy PRCB to RAM space, located at _prcb_ram
 
@@ -308,17 +314,10 @@ defaultInterruptHandlerValue:
 /* -- Below is a software loop to move data */
 
 move_data:
-    lda 0xFE000022, g8
-    lda 0x1, g9
-    st g9, 0(g8)
-move_data_loop:
     ldq (g1)[g4*1], g8  # load 4 words into g8
     stq g8, (g2)[g4*1]  # store to RAM block
     addi g4,16, g4      # increment index
-    cmpibg  g0,g4, move_data_loop # loop until done
-    lda 0xFE000022, g8
-    lda 0, g9
-    st g9, 0(g8)
+    cmpibg  g0,g4, move_data # loop until done
     bx (g14)
 
 # setup the bss section so do giant blocks of writes
