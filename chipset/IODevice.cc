@@ -473,3 +473,16 @@ ChipsetBasicFunctions::triggerInt0() {
     _memory.triggerInt0Port = 1;
     writeLine("Done Force Triggering INT0");
 }
+bool
+ChipsetBasicFunctions::addressDebuggingEnabled() const {
+    return _memory.addressDebuggingFlag != 0;
+}
+void
+ChipsetBasicFunctions::enableAddressDebugging() {
+    // upper 16-bits are ignored on the chipset side but who cares
+    _memory.addressDebuggingFlag = 0xFFFFFFFFF;
+}
+void
+ChipsetBasicFunctions::disableAddressDebugging() {
+    _memory.addressDebuggingFlag = 0;
+}

@@ -70,6 +70,19 @@ public:
      */
     ssize_t write(char* buffer, size_t nbyte);
     void triggerInt0();
+    /**
+     * @brief Has the chipset been told to enable console debugging?
+     * @return True if the chipset has console debugging enabled
+     */
+    bool addressDebuggingEnabled() const;
+    /**
+     * @brief Turn chipset address debugging on (VERY EXPENSIVE!!!)
+     */
+    void enableAddressDebugging();
+    /**
+     * @brief Turn chipset address debugging off
+     */
+    void disableAddressDebugging();
 private:
     uint16_t waitForLegalCharacter();
 private:
@@ -87,6 +100,7 @@ private:
         volatile uint32_t sdVolumeSectorCountPort;
         volatile uint16_t sdbytesPerSectorPort;
         volatile uint16_t triggerInt0Port;
+        volatile uint32_t addressDebuggingFlag;
     } __attribute__((packed));
 private:
     volatile ChipsetRegistersRaw& _memory;
