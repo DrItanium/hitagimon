@@ -308,10 +308,17 @@ defaultInterruptHandlerValue:
 /* -- Below is a software loop to move data */
 
 move_data:
+    lda 0xFE000022, g8
+    lda 0x1, g9
+    st g9, 0(g8)
+move_data_loop:
     ldq (g1)[g4*1], g8  # load 4 words into g8
     stq g8, (g2)[g4*1]  # store to RAM block
     addi g4,16, g4      # increment index
-    cmpibg  g0,g4, move_data # loop until done
+    cmpibg  g0,g4, move_data_loop # loop until done
+    lda 0xFE000022, g8
+    lda 0, g9
+    st g9, 0(g8)
     bx (g14)
 
 # setup the bss section so do giant blocks of writes
