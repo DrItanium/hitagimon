@@ -34,7 +34,6 @@ void isr0Test() {
 }
 int main() {
     ChipsetBasicFunctions& theChipset = getBasicChipsetInterface();
-    BuiltinTFTDisplay& theDisplay = getDisplay();
     theChipset.writeLine("HITAGIMON");
     printf("Built on %s at %s\n", __DATE__, __TIME__);
     printf("--------------------------------------------\n\n\n\n");
@@ -61,7 +60,6 @@ int main() {
     printf("OK? theValue64 = 0x%x%x but expecting 0xABCD'EF01'2345'6789\n", static_cast<unsigned>(theValue64), static_cast<unsigned>(theValue64 >> 32));
     theValue64 = 0x9876543210ABCDEFull;
     printf("OK? theValue64 = 0x%x%x but expecting 0x9876'5432'10AB'CDEF\n", static_cast<unsigned>(theValue64), static_cast<unsigned>(theValue64 >> 32));
-    theDisplay.clearScreen();
     setISR0Function(isr0Test);
     clipsMain(0, args);
     return 0;
