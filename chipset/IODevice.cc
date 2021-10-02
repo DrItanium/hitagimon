@@ -469,9 +469,7 @@ SDCardInterface::seek(int fileId, off_t offset, int whence) {
 void
 ChipsetBasicFunctions::triggerInt0() {
     // force the chipset to trigger an interrupt
-    writeLine("Force Triggering INT0");
     _memory.triggerInt0Port = 1;
-    writeLine("Done Force Triggering INT0");
 }
 bool
 ChipsetBasicFunctions::addressDebuggingEnabled() const {
