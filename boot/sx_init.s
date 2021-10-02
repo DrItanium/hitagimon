@@ -204,7 +204,7 @@ _user_type_core:
     mov 0, g14 # C compiler expects g14 = 0
 
 # copy the interrupt table to RAM space
-    lda 1024, g0 # load length of the interrupt table
+    lda 1028, g0 # load length of the interrupt table
     lda 0, g4 # initialize offset to 0
     lda intr_table, g1 # load source
     lda intr_ram, g2    # load address of new table
