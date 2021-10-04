@@ -128,6 +128,7 @@ public:
     int openFile(const char* path, int flags, int mode);
 
     bool readFile(int fd, void *buf, size_t sz, int &nread);
+    bool writeFile(int fd, const void *buf, size_t sz, int &nwrite);
 private:
     uint16_t waitForLegalCharacter();
 private:

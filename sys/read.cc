@@ -36,7 +36,7 @@ namespace
     sys_read(int fd, void *buf, size_t sz, int &nread) {
         nread = 0;
         if (fd > 2) {
-            if (getBasicChipsetInterface().readFile(fd, buf, sz, nread)) {
+            if (getBasicChipsetInterface().readFile(fd - 3, buf, sz, nread)) {
                 return 0;
             } else {
                 return EBADF;

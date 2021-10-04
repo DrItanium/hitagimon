@@ -143,7 +143,7 @@ ChipsetBasicFunctions::openFile(const char *path, int flags, int mode) {
 }
 bool
 ChipsetBasicFunctions::readFile(int fd, void *buf, size_t sz, int &nread) {
-    SDFile* file = openFiles[fd - 3];
+    SDFile* file = openFiles[fd];
     if (!file->isOpen()) {
         return false;
     } else {
@@ -157,6 +157,26 @@ ChipsetBasicFunctions::readFile(int fd, void *buf, size_t sz, int &nread) {
             } else {
                 ++nread;
                 buffer[i] = static_cast<char>(result);
+            }
+        }
+        return true;
+    }
+}
+
+bool
+ChipsetBasicFunctions::writeFile(int fd, const void *buf, size_t sz, int &nwrite) {
+    SDFile* file = openFiles[fd];
+    if (!file->isOpen()) {
+        return false;
+    } else {
+        /// @todo implement
+        const char* buffer = reinterpret_cast<const char*>(buf) ;
+        for (size_t i = 0; i < sz; ++i) {
+            file->putChar(buffer[i]);
+            if (file->getWriteError()) {
+                break;
+            } else {
+                ++nwrite;
             }
         }
         return true;
