@@ -133,10 +133,21 @@ ChipsetBasicFunctions::openFile(const char *path, int flags, int mode) {
         return -1;
     } else {
         // transfer the path
-        for (int i = 0; i < len; ++i) {
+        int i = 0;
+        for (; i < len; ++i) {
             _sdbase.path[i] = path[i];
         }
-        _sdbase.permissionsPort = mode; // unsure if this is safe or not...
+        // zero out the rest of the path
+        for (; i < 80; ++i) {
+            _sdbase.path[i] = 0;
+        }
+        // decode i960 permissions into the appropriate registers for translation sake
+        _sdbase.filePermissions = 0; // clear previous permissions out
+        _sdbase.openWriteOnly = mode & O_WRONLY;
+        _sdbase.openReadOnly = mode & O_RDONLY;
+        _sdbase.openReadWrite = mode & O_RDWR;
+        _sdbase.clearFileContentsOnOpen = flags & O_TRUNC;
+        _sdbase.createFileIfMissing = flags & O_CREAT;
         // make the chipset look for an open file handle that we can use
         return _sdbase.openPort;
     }

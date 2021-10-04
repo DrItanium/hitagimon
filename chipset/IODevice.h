@@ -160,8 +160,13 @@ private:
         TwoByteEntry(numberOfOpenFilesPort);
         TwoByteEntry(maximumNumberOfOpenFilesPort);
         TwoByteEntry(errorCodePort);
-        FourByteEntry(permissionsPort);
         TwoByteEntry(makeMissingParentDirectoriesPort);
+        TwoByteEntry(filePermissions);
+        TwoByteEntry(openReadWrite);
+        TwoByteEntry(openReadOnly);
+        TwoByteEntry(openWriteOnly);
+        TwoByteEntry(createFileIfMissing);
+        TwoByteEntry(clearFileContentsOnOpen);
     } __attribute__((packed));
 #undef FourByteEntry
 #undef TwoByteEntry
