@@ -10,7 +10,12 @@
 
 
 BuiltinIOBaseDevice::BuiltinIOBaseDevice(uint32_t offset) : offset_(offset), baseAddress_(getIOBase0Address(offset)) { }
-ChipsetBasicFunctions::ChipsetBasicFunctions(uint32_t offset) : BuiltinIOBaseDevice(offset), _memory(memory<ChipsetRegistersRaw>(baseAddress_)) { }
+ChipsetBasicFunctions::ChipsetBasicFunctions(uint32_t offset) : BuiltinIOBaseDevice(offset),
+_memory(memory<ChipsetRegistersRaw>(baseAddress_)),
+_sdbase(memory<SDCardBaseInterfaceRaw>(baseAddress_ + 0x100))
+{
+
+}
 
 uint16_t
 ChipsetBasicFunctions::read() const {

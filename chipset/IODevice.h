@@ -47,7 +47,36 @@ protected:
  */
 class ChipsetBasicFunctions : public BuiltinIOBaseDevice {
 public:
+    class SDFile {
+    private:
+#define TwoByteEntry(name) volatile uint16_t name
+#define FourByteEntry(name) volatile uint32_t name
+        struct FileInterfaceRaw {
+            TwoByteEntry(ioPort);
+            TwoByteEntry(flushPort);
+            TwoByteEntry(syncPort);
+            TwoByteEntry(isOpenPort);
+            TwoByteEntry(seekEndPort);
+            TwoByteEntry(seekBeginningPort);
+            FourByteEntry(seekAbsolutePort);
+            volatile int32_t seekRelativePort;
+            FourByteEntry(sizePort);
+            FourByteEntry(permissionsPort);
+            TwoByteEntry(writeErrorPort);
+            TwoByteEntry(errorCodePort);
+        } __attribute__((packed));
+#undef TwoByteEntry
+#undef FourByteEntry
+    public:
+        SDFile(uint32_t baseAddress);
+    private:
+        volatile FileInterfaceRaw& raw;
+    };
+public:
     ChipsetBasicFunctions(uint32_t offset = 0);
+    ~ChipsetBasicFunctions() {
+        delete[] openFiles;
+    }
     void flush();
     uint16_t read() const;
     void write(uint16_t value);
@@ -86,6 +115,8 @@ public:
 private:
     uint16_t waitForLegalCharacter();
 private:
+#define TwoByteEntry(name) volatile uint16_t name
+#define FourByteEntry(name) volatile uint32_t name
     struct ChipsetRegistersRaw {
         volatile uint16_t consoleIOPort;
         volatile uint16_t consoleFlushPort;
@@ -96,14 +127,30 @@ private:
         volatile uint16_t cacheLineCountPort;
         volatile uint16_t cacheLineSizePort;
         volatile uint16_t numberOfCacheWaysPort;
-        volatile uint32_t sdCardClusterCountPort;
-        volatile uint32_t sdVolumeSectorCountPort;
-        volatile uint16_t sdbytesPerSectorPort;
         volatile uint16_t triggerInt0Port;
         volatile uint32_t addressDebuggingFlag;
     } __attribute__((packed));
+    struct SDCardBaseInterfaceRaw {
+        volatile char path[80];
+        TwoByteEntry(openPort);
+        TwoByteEntry(makeDirectoryPort);
+        TwoByteEntry(existsPort);
+        TwoByteEntry(removePort);
+        FourByteEntry(sdCardClusterCountPort);
+        FourByteEntry(sdVolumeSectorCountPort);
+        TwoByteEntry(sdbytesPerSectorPort);
+        TwoByteEntry(numberOfOpenFilesPort);
+        TwoByteEntry(maximumNumberOfOpenFilesPort);
+        TwoByteEntry(errorCodePort);
+        FourByteEntry(permissionsPort);
+        TwoByteEntry(makeMissingParentDirectoriesPort);
+    } __attribute__((packed));
+#undef FourByteEntry
+#undef TwoByteEntry
 private:
     volatile ChipsetRegistersRaw& _memory;
+    volatile SDCardBaseInterfaceRaw& _sdbase;
+    SDFile* openFiles;
 };
 
 ChipsetBasicFunctions& getBasicChipsetInterface();
