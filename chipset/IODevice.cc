@@ -9,12 +9,15 @@
 #include <fcntl.h>
 
 
+ChipsetBasicFunctions::SDFile::SDFile(uint32_t baseAddress) : raw(memory<FileInterfaceRaw>(baseAddress)) {}
 BuiltinIOBaseDevice::BuiltinIOBaseDevice(uint32_t offset) : offset_(offset), baseAddress_(getIOBase0Address(offset)) { }
 ChipsetBasicFunctions::ChipsetBasicFunctions(uint32_t offset) : BuiltinIOBaseDevice(offset),
 _memory(memory<ChipsetRegistersRaw>(baseAddress_)),
-_sdbase(memory<SDCardBaseInterfaceRaw>(baseAddress_ + 0x100))
-{
-
+_sdbase(memory<SDCardBaseInterfaceRaw>(baseAddress_ + 0x100)),
+openFiles(new SDFile*[_sdbase.maximumNumberOfOpenFilesPort]) {
+    for (int i = 0, offset = 2; i < _sdbase.maximumNumberOfOpenFilesPort; ++i, ++offset) {
+        openFiles[i] = new SDFile(baseAddress_ + (0x100 * offset));
+    }
 }
 
 uint16_t

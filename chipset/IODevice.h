@@ -69,6 +69,18 @@ public:
 #undef FourByteEntry
     public:
         SDFile(uint32_t baseAddress);
+        void flush() { raw.flushPort = 1; }
+        void sync() { raw.syncPort = 1; }
+        void seekEnd() { raw.seekEndPort = 1; }
+        void seekBeginning() { raw.seekBeginningPort = 1; }
+        void seekRelative(int32_t value) { raw.seekRelativePort = value; }
+        void seekAbsolute(uint32_t value) { raw.seekAbsolutePort = value; }
+        bool isOpen() const { return raw.isOpenPort; }
+        uint32_t getPermissions() const { return raw.permissionsPort; }
+        bool getWriteError() const { return raw.writeErrorPort; }
+        uint16_t getErrorCode() const { return raw.errorCodePort; }
+        void putChar(char value) { raw.ioPort = value; }
+        int getChar() { return raw.ioPort; }
     private:
         volatile FileInterfaceRaw& raw;
     };
@@ -150,7 +162,7 @@ private:
 private:
     volatile ChipsetRegistersRaw& _memory;
     volatile SDCardBaseInterfaceRaw& _sdbase;
-    SDFile* openFiles;
+    SDFile** openFiles;
 };
 
 ChipsetBasicFunctions& getBasicChipsetInterface();
