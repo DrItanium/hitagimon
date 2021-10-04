@@ -39,7 +39,6 @@ namespace
             } else {
                 return EBADF;
             }
-            return EBADF;
         } else {
             // builtin files
             switch (fd) {
