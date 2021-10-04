@@ -64,6 +64,7 @@ public:
             FourByteEntry(permissionsPort);
             TwoByteEntry(writeErrorPort);
             TwoByteEntry(errorCodePort);
+            TwoByteEntry(closePort);
         } __attribute__((packed));
 #undef TwoByteEntry
 #undef FourByteEntry
@@ -81,14 +82,13 @@ public:
         uint16_t getErrorCode() const { return raw.errorCodePort; }
         void putChar(char value) { raw.ioPort = value; }
         int getChar() { return raw.ioPort; }
+        void close() { raw.closePort = 1; }
     private:
         volatile FileInterfaceRaw& raw;
     };
 public:
     ChipsetBasicFunctions(uint32_t offset = 0);
-    ~ChipsetBasicFunctions() {
-        delete[] openFiles;
-    }
+    ~ChipsetBasicFunctions();
     void flush();
     uint16_t read() const;
     void write(uint16_t value);

@@ -114,3 +114,13 @@ void
 ChipsetBasicFunctions::disableAddressDebugging() {
     _memory.addressDebuggingFlag = 0;
 }
+
+ChipsetBasicFunctions::~ChipsetBasicFunctions() {
+    for (int i = 0; i < _sdbase.maximumNumberOfOpenFilesPort; ++i) {
+        if (openFiles[i]->isOpen()) {
+            openFiles[i]->close();
+        }
+        delete openFiles[i];
+    }
+    delete [] openFiles;
+}
