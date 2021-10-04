@@ -182,3 +182,13 @@ ChipsetBasicFunctions::writeFile(int fd, const void *buf, size_t sz, int &nwrite
         return true;
     }
 }
+bool
+ChipsetBasicFunctions::closeFile(int fd) {
+    SDFile* file = openFiles[fd];
+    if (!file->isOpen()) {
+        return false;
+    } else {
+        file->close();
+        return true;
+    }
+}

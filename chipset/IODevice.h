@@ -129,6 +129,7 @@ public:
 
     bool readFile(int fd, void *buf, size_t sz, int &nread);
     bool writeFile(int fd, const void *buf, size_t sz, int &nwrite);
+    bool closeFile(int fd);
 private:
     uint16_t waitForLegalCharacter();
 private:
