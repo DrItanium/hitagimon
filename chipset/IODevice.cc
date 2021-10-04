@@ -124,3 +124,20 @@ ChipsetBasicFunctions::~ChipsetBasicFunctions() {
     }
     delete [] openFiles;
 }
+
+int
+ChipsetBasicFunctions::openFile(const char *path, int flags, int mode) {
+    int len = strlen(path);
+    if (len > 80) {
+        errno = EBADF;
+        return -1;
+    } else {
+        // transfer the path
+        for (int i = 0; i < len; ++i) {
+            _sdbase.path[i] = path[i];
+        }
+        _sdbase.permissionsPort = flags | mode; // unsure if this is safe or not...
+        // make the chipset look for an open file handle that we can use
+        return _sdbase.openPort;
+    }
+}

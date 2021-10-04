@@ -124,6 +124,8 @@ public:
      * @brief Turn chipset address debugging off
      */
     void disableAddressDebugging();
+
+    int openFile(const char* path, int flags, int mode);
 private:
     uint16_t waitForLegalCharacter();
 private:

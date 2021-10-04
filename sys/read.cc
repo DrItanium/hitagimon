@@ -35,7 +35,8 @@ namespace
     int
     sys_read(int fd, void *buf, size_t sz, int &nread) {
         nread = 0;
-        if (fd >= 3) {
+        if (fd > 2) {
+            /// @todo have the file system interface decode the apropriate address
             return EBADF;
         } else {
             // builtin files
