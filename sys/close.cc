@@ -33,6 +33,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C"
 int
 close(int fd) {
-    errno = EBADF;
-    return -1;
+    if (fd > 2) {
+        if (getBasicChipsetInterface().closeFile(fd - 3)) {
+            return 0;
+        } else {
+            errno = EBADF;
+            return -1;
+        }
+    } else {
+        errno = EBADF;
+        return -1;
+    }
 }
