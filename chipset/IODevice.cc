@@ -141,3 +141,24 @@ ChipsetBasicFunctions::openFile(const char *path, int flags, int mode) {
         return _sdbase.openPort;
     }
 }
+bool
+ChipsetBasicFunctions::readFile(int fd, void *buf, size_t sz, int &nread) {
+    SDFile* file = openFiles[fd - 3];
+    if (!file->isOpen()) {
+        return false;
+    } else {
+        /// @todo implement
+        char* buffer = reinterpret_cast<char*>(buf) ;
+        for (size_t i = 0; i < sz; ++i) {
+            int result = file->getChar();
+            if (result == -1) {
+                // EOF reached
+                break;
+            } else {
+                ++nread;
+                buffer[i] = static_cast<char>(result);
+            }
+        }
+        return true;
+    }
+}

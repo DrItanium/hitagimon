@@ -36,8 +36,11 @@ namespace
     sys_read(int fd, void *buf, size_t sz, int &nread) {
         nread = 0;
         if (fd > 2) {
-            /// @todo have the file system interface decode the apropriate address
-            return EBADF;
+            if (getBasicChipsetInterface().readFile(fd, buf, sz, nread)) {
+                return 0;
+            } else {
+                return EBADF;
+            }
         } else {
             // builtin files
             switch (fd) {
