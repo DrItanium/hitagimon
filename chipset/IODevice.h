@@ -138,13 +138,13 @@ private:
     struct ChipsetRegistersRaw {
         volatile uint16_t consoleIOPort;
         volatile uint16_t consoleFlushPort;
-        volatile uint32_t consoleTimeoutPort;
-        volatile uint16_t consoleRXBufferSize;
-        volatile uint16_t consoleTXBufferSize;
-        volatile uint32_t chipsetClockSpeedPort;
-        volatile uint16_t cacheLineCountPort;
-        volatile uint16_t cacheLineSizePort;
-        volatile uint16_t numberOfCacheWaysPort;
+        //volatile uint32_t consoleTimeoutPort;
+        //volatile uint16_t consoleRXBufferSize;
+        //volatile uint16_t consoleTXBufferSize;
+        //volatile uint32_t chipsetClockSpeedPort;
+        //volatile uint16_t cacheLineCountPort;
+        //volatile uint16_t cacheLineSizePort;
+        //volatile uint16_t numberOfCacheWaysPort;
         volatile uint16_t triggerInt0Port;
         volatile uint32_t addressDebuggingFlag;
     } __attribute__((packed));
