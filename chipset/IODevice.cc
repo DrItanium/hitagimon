@@ -235,10 +235,9 @@ ChipsetBasicFunctions::closeFile(int fd) {
 
 void
 displayIOMemoryMap() {
-    ChipsetBasicFunctions& thing = getBasicChipsetInterface();
-    printf("Serial 0 base address 0x%x\n", getChipsetRegistersBase());
-    printf("SD ctl base address 0x%x\n", getSDCardRegisterBase());
-    printf("SD file begin address 0x%x\n", getSDCardFileBase());
-    printf("Display Aux begin address 0x%x\n", getAuxDisplayFunctionsBase());
-    printf("Display primary begin address 0x%x\n", getDisplayFunctionsBase());
+    printf("Serial 0 base address 0x%lx\n", getChipsetRegistersBase());
+    printf("SD ctl base address 0x%lx\n", getSDCardRegisterBase());
+    printf("SD file begin address 0x%lx\n", getSDCardFileBase());
+    printf("Display Aux begin address 0x%lx\n", getAuxDisplayFunctionsBase());
+    printf("Display primary begin address 0x%lx\n", getDisplayFunctionsBase());
 }
