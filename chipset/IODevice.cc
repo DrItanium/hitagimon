@@ -9,25 +9,31 @@
 #include <fcntl.h>
 
 namespace {
+    struct IOConfigurationSpaceView {
+        volatile uint32_t serial0Addr;
+        volatile uint32_t sdCardCtlAddr;
+        volatile uint32_t sdCardFileBegin;
+        volatile uint32_t auxDisplayStart;
+        volatile uint32_t displayFunctionsStart;
+    } __attribute__((packed));
+    volatile IOConfigurationSpaceView& getConfiguration0() {
+        return memory<IOConfigurationSpaceView>(getIOBase0Address(0));
+    }
     uint32_t getChipsetRegistersBase() {
-        // first index is the serial0/chipset registers base
-        return memory<uint32_t>(getIOBase0Address(0));
+        return getConfiguration0().serial0Addr;
     }
     uint32_t getSDCardRegisterBase() {
-        return memory<uint32_t>(getIOBase0Address(4)); // next address
+        return getConfiguration0().sdCardCtlAddr;
     }
 
     uint32_t getSDCardFileBase() {
-        return memory<uint32_t>(getIOBase0Address(8));
-    }
-    uint32_t getSDCardFileEnd() {
-        return memory<uint32_t>(getIOBase0Address(12));
+        return getConfiguration0().sdCardFileBegin;
     }
     uint32_t getAuxDisplayFunctionsBase() {
-        return memory<uint32_t>(getIOBase0Address(16));
+        return getConfiguration0().auxDisplayStart;
     }
     uint32_t getDisplayFunctionsBase() {
-        return memory<uint32_t>(getIOBase0Address(20));
+        return getConfiguration0().displayFunctionsStart;
     }
 }
 BuiltinIOBaseDevice::BuiltinIOBaseDevice(uint32_t offset) : offset_(offset), baseAddress_(getIOBase0Address(offset)) { }
@@ -37,8 +43,8 @@ _memory(memory<ChipsetRegistersRaw>(getChipsetRegistersBase())),
 _sdbase(memory<SDCardBaseInterfaceRaw>(getSDCardRegisterBase())),
 openFiles(new SDFile*[_sdbase.maximumNumberOfOpenFilesPort]) {
     uint32_t sdCardFileBase = getSDCardFileBase();
-    for (int i = 0, offset = 2; i < _sdbase.maximumNumberOfOpenFilesPort; ++i, ++offset) {
-        openFiles[i] = new SDFile(sdCardFileBase + (0x100 * i));
+    for (int i = 0; i < _sdbase.maximumNumberOfOpenFilesPort; ++i, sdCardFileBase += 0x100) {
+        openFiles[i] = new SDFile(sdCardFileBase);
     }
 }
 
