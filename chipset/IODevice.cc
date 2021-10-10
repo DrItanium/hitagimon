@@ -161,8 +161,8 @@ ChipsetBasicFunctions::readFile(int fd, void *buf, size_t sz, int &nread) {
         /// @todo implement
         char* buffer = reinterpret_cast<char*>(buf) ;
         for (size_t i = 0; i < sz; ++i) {
-            int result = file->getChar();
-            if (result == -1) {
+            uint16_t result = file->getChar();
+            if (result == 0xFFFF) {
                 // EOF reached
                 break;
             } else {

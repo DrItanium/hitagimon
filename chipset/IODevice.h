@@ -81,7 +81,7 @@ public:
         bool getWriteError() const { return raw.writeErrorPort; }
         uint16_t getErrorCode() const { return raw.errorCodePort; }
         void putChar(char value) { raw.ioPort = value; }
-        int getChar() { return raw.ioPort; }
+        uint16_t getChar() { return raw.ioPort; }
         void close() { raw.closePort = 1; }
     private:
         volatile FileInterfaceRaw& raw;
