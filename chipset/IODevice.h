@@ -61,7 +61,7 @@ public:
             FourByteEntry(seekAbsolutePort);
             volatile int32_t seekRelativePort;
             FourByteEntry(sizePort);
-            FourByteEntry(permissionsPort);
+            TwoByteEntry(permissionsPort);
             TwoByteEntry(writeErrorPort);
             TwoByteEntry(errorCodePort);
             TwoByteEntry(closePort);
