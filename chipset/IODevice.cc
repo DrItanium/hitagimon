@@ -48,6 +48,7 @@ openFiles(new SDFile*[_sdbase.maximumNumberOfOpenFilesPort]) {
     }
 }
 
+
 uint16_t
 ChipsetBasicFunctions::read() const {
     return _memory.consoleIOPort;
@@ -230,4 +231,14 @@ ChipsetBasicFunctions::closeFile(int fd) {
         file->close();
         return true;
     }
+}
+
+void
+displayIOMemoryMap() {
+    ChipsetBasicFunctions& thing = getBasicChipsetInterface();
+    printf("Serial 0 base address 0x%x\n", getChipsetRegistersBase());
+    printf("SD ctl base address 0x%x\n", getSDCardRegisterBase());
+    printf("SD file begin address 0x%x\n", getSDCardFileBase());
+    printf("Display Aux begin address 0x%x\n", getAuxDisplayFunctionsBase());
+    printf("Display primary begin address 0x%x\n", getDisplayFunctionsBase());
 }

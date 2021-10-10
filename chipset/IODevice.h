@@ -177,5 +177,6 @@ private:
 };
 
 ChipsetBasicFunctions& getBasicChipsetInterface();
+void displayIOMemoryMap();
 
 #endif //I960SXCHIPSET_IODEVICE_H
