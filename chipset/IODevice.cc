@@ -8,15 +8,37 @@
 #include <errno.h>
 #include <fcntl.h>
 
+namespace {
+    uint32_t getChipsetRegistersBase() {
+        // first index is the serial0/chipset registers base
+        return memory<uint32_t>(getIOBase0Address(0));
+    }
+    uint32_t getSDCardRegisterBase() {
+        return memory<uint32_t>(getIOBase0Address(4)); // next address
+    }
 
-ChipsetBasicFunctions::SDFile::SDFile(uint32_t baseAddress) : raw(memory<FileInterfaceRaw>(baseAddress)) {}
+    uint32_t getSDCardFileBase() {
+        return memory<uint32_t>(getIOBase0Address(8));
+    }
+    uint32_t getSDCardFileEnd() {
+        return memory<uint32_t>(getIOBase0Address(12));
+    }
+    uint32_t getAuxDisplayFunctionsBase() {
+        return memory<uint32_t>(getIOBase0Address(16));
+    }
+    uint32_t getDisplayFunctionsBase() {
+        return memory<uint32_t>(getIOBase0Address(20));
+    }
+}
 BuiltinIOBaseDevice::BuiltinIOBaseDevice(uint32_t offset) : offset_(offset), baseAddress_(getIOBase0Address(offset)) { }
+ChipsetBasicFunctions::SDFile::SDFile(uint32_t baseAddress) : raw(memory<FileInterfaceRaw>(baseAddress)) {}
 ChipsetBasicFunctions::ChipsetBasicFunctions(uint32_t offset) : BuiltinIOBaseDevice(offset),
-_memory(memory<ChipsetRegistersRaw>(baseAddress_)),
-_sdbase(memory<SDCardBaseInterfaceRaw>(baseAddress_ + 0x100)),
+_memory(memory<ChipsetRegistersRaw>(getChipsetRegistersBase())),
+_sdbase(memory<SDCardBaseInterfaceRaw>(getSDCardRegisterBase())),
 openFiles(new SDFile*[_sdbase.maximumNumberOfOpenFilesPort]) {
+    uint32_t sdCardFileBase = getSDCardFileBase();
     for (int i = 0, offset = 2; i < _sdbase.maximumNumberOfOpenFilesPort; ++i, ++offset) {
-        openFiles[i] = new SDFile(baseAddress_ + (0x100 * offset));
+        openFiles[i] = new SDFile(sdCardFileBase + (0x100 * i));
     }
 }
 
