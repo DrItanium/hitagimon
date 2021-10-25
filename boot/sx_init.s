@@ -494,8 +494,10 @@ _user_type_core:
     lda 0xff000010, g5
     lda reinitialize_iac, g6
     synmovq g5, g6
+    /* FALLTHROUGH DOES NOT HAPPEN HERE!!!! */
 
-  /* -- The process will begin execution here after being reinitialized.
+  /*
+   * The process will begin execution here after being reinitialized.
    *    We will now setup the stacks and continue.
    */
 
