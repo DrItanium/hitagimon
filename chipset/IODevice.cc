@@ -15,6 +15,8 @@ namespace {
         volatile uint32_t sdCardFileBegin;
         volatile uint32_t auxDisplayStart;
         volatile uint32_t displayFunctionsStart;
+        volatile uint32_t displayScreenAccessStart;
+        volatile uint32_t rtcStart;
     } __attribute__((packed));
     volatile IOConfigurationSpaceView& getConfiguration0() {
         return memory<IOConfigurationSpaceView>(getIOBase0Address(0));
