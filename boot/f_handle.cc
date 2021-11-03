@@ -34,51 +34,59 @@ basicDisplay(const std::string& kind, cortex::FaultData* record) {
     getBasicChipsetInterface().writeLine(" FAULT RAISED!");
     record->display();
 }
+inline void
+basicOperation(const std::string& kind, cortex::FaultData* record, cortex::FaultHandler handler) {
+    if (handler)  {
+        handler(record);
+    } else {
+        basicDisplay(kind, record);
+    }
+}
 
 extern "C"
 void
 user_reserved(cortex::FaultData* record) {
-    basicDisplay("USER RESERVED", record);
+    basicOperation("USER RESERVED", record, cortex::getUserReservedFaultHandler());
 }
 
 extern "C"
 void
 user_trace(cortex::FaultData* record) {
-    basicDisplay("USER TRACE", record);
+    basicOperation("USER TRACE", record, cortex::getUserTraceFaultHandler());
 }
 
 extern "C"
 void
 user_operation(cortex::FaultData* record) {
-    basicDisplay("USER OPERATION", record);
+    basicOperation("USER OPERATION", record, cortex::getUserOperationFaultHandler());
 }
 extern "C"
 void
 user_arithmetic(cortex::FaultData* record) {
-    basicDisplay("USER ARITHMETIC", record);
+    basicOperation("USER ARITHMETIC", record, cortex::getUserArithmeticFaultHandler());
 }
 extern "C"
 void
 user_real_arithmetic(cortex::FaultData* record) {
-    basicDisplay("USER REAL ARITHMETIC", record);
+    basicOperation("USER REAL ARITHMETIC", record, cortex::getUserRealArithmeticFaultHandler());
 }
 extern "C"
 void
 user_constraint(cortex::FaultData* record) {
-    basicDisplay("USER CONSTRAINT", record);
+    basicOperation("USER CONSTRAINT", record, cortex::getUserConstraintFaultHandler());
 }
 extern "C"
 void
 user_protection(cortex::FaultData* record) {
-    basicDisplay("USER PROTECTION", record);
+    basicOperation("USER PROTECTION", record, cortex::getUserProtectionFaultHandler());
 }
 extern "C"
 void
 user_machine(cortex::FaultData* record) {
-    basicDisplay("USER MACHINE", record);
+    basicOperation("USER MACHINE", record, cortex::getUserMachineFaultHandler());
 }
 extern "C"
 void
 user_type(cortex::FaultData* record) {
-    basicDisplay("USER TYPE", record);
+    basicOperation("USER TYPE", record, cortex::getUserTypeFaultHandler());
 }
