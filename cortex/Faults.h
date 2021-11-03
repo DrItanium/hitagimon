@@ -23,5 +23,23 @@ namespace cortex
     } __attribute__((packed));
 
     typedef void (*FaultHandler)(FaultData *data);
+    FaultHandler getUserReservedFaultHandler();
+    FaultHandler getUserTraceFaultHandler();
+    FaultHandler getUserOperationFaultHandler();
+    FaultHandler getUserArithmeticFaultHandler();
+    FaultHandler getUserRealArithmeticFaultHandler();
+    FaultHandler getUserConstraintFaultHandler();
+    FaultHandler getUserProtectionFaultHandler();
+    FaultHandler getUserMachineFaultHandler();
+    FaultHandler getUserTypeFaultHandler();
+    void getUserReservedFaultHandler(FaultHandler);
+    void getUserTraceFaultHandler(FaultHandler);
+    void getUserOperationFaultHandler(FaultHandler);
+    void getUserArithmeticFaultHandler(FaultHandler);
+    void getUserRealArithmeticFaultHandler(FaultHandler);
+    void getUserConstraintFaultHandler(FaultHandler);
+    void getUserProtectionFaultHandler(FaultHandler);
+    void getUserMachineFaultHandler(FaultHandler);
+    void getUserTypeFaultHandler(FaultHandler);
 }
 #endif //HITAGIMON_FAULTS_H

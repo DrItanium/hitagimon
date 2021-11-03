@@ -27,59 +27,58 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include "../chipset/IODevice.h"
 #include "../cortex/Faults.h"
+#include <string>
+void
+basicDisplay(const std::string& kind, cortex::FaultData* record) {
+    getBasicChipsetInterface().write(kind.c_str());
+    getBasicChipsetInterface().writeLine(" FAULT RAISED!");
+    record->display();
+}
+
 extern "C"
 void
 user_reserved(cortex::FaultData* record) {
-    getBasicChipsetInterface().writeLine("USER RESERVED FAULT RAISED!");
-    record->display();
+    basicDisplay("USER RESERVED", record);
 }
 
 extern "C"
 void
 user_trace(cortex::FaultData* record) {
-    getBasicChipsetInterface().writeLine("USER TRACE FAULT RAISED!");
-    record->display();
+    basicDisplay("USER TRACE", record);
 }
 
 extern "C"
 void
 user_operation(cortex::FaultData* record) {
-    getBasicChipsetInterface().writeLine("USER OPERATION FAULT RAISED!");
-    record->display();
+    basicDisplay("USER OPERATION", record);
 }
 extern "C"
 void
 user_arithmetic(cortex::FaultData* record) {
-    getBasicChipsetInterface().writeLine("USER ARITHMETIC FAULT RAISED!");
-    record->display();
+    basicDisplay("USER ARITHMETIC", record);
 }
 extern "C"
 void
 user_real_arithmetic(cortex::FaultData* record) {
-    getBasicChipsetInterface().writeLine("USER REAL ARITHMETIC FAULT RAISED!");
-    record->display();
+    basicDisplay("USER REAL ARITHMETIC", record);
 }
 extern "C"
 void
 user_constraint(cortex::FaultData* record) {
-    getBasicChipsetInterface().writeLine("USER CONSTRAINT FAULT RAISED!");
-    record->display();
+    basicDisplay("USER CONSTRAINT", record);
 }
 extern "C"
 void
 user_protection(cortex::FaultData* record) {
-    getBasicChipsetInterface().writeLine("USER PROTECTION FAULT RAISED!");
-    record->display();
+    basicDisplay("USER PROTECTION", record);
 }
 extern "C"
 void
 user_machine(cortex::FaultData* record) {
-    getBasicChipsetInterface().writeLine("USER MACHINE FAULT RAISED!");
-    record->display();
+    basicDisplay("USER MACHINE", record);
 }
 extern "C"
 void
 user_type(cortex::FaultData* record) {
-    getBasicChipsetInterface().writeLine("USER TYPE FAULT RAISED!");
-    record->display();
+    basicDisplay("USER TYPE", record);
 }

@@ -32,4 +32,33 @@ namespace cortex
         printf("PC: %x\n", pc);
         printf("AC: %x\n", ac);
     }
+    namespace {
+        FaultHandler userReserved_ = 0;
+        FaultHandler userTrace_ = 0;
+        FaultHandler userOperation_ = 0;
+        FaultHandler userArithmetic_ = 0;
+        FaultHandler userRealArithmetic_ = 0;
+        FaultHandler userConstraint_ = 0;
+        FaultHandler userProtection_ = 0;
+        FaultHandler userMachine_ = 0;
+        FaultHandler userType_ = 0;
+    }
+    FaultHandler getUserReservedFaultHandler() { return userReserved_; }
+    FaultHandler getUserTraceFaultHandler() { return userTrace_; }
+    FaultHandler getUserOperationFaultHandler() { return userOperation_; }
+    FaultHandler getUserArithmeticFaultHandler() { return userArithmetic_; }
+    FaultHandler getUserRealArithmeticFaultHandler() { return userRealArithmetic_; }
+    FaultHandler getUserConstraintFaultHandler() { return userConstraint_; }
+    FaultHandler getUserProtectionFaultHandler() { return userProtection_; }
+    FaultHandler getUserMachineFaultHandler() { return userMachine_; }
+    FaultHandler getUserTypeFaultHandler() { return userType_; }
+    void getUserReservedFaultHandler(FaultHandler handler) { userReserved_ = handler; }
+    void getUserTraceFaultHandler(FaultHandler handler) { userTrace_ = handler; }
+    void getUserOperationFaultHandler(FaultHandler handler) { userOperation_ = handler; }
+    void getUserArithmeticFaultHandler(FaultHandler handler) { userArithmetic_ = handler; }
+    void getUserRealArithmeticFaultHandler(FaultHandler handler) { userRealArithmetic_ = handler; }
+    void getUserConstraintFaultHandler(FaultHandler handler) { userConstraint_ = handler; }
+    void getUserProtectionFaultHandler(FaultHandler handler) { userProtection_ = handler; }
+    void getUserMachineFaultHandler(FaultHandler handler) { userMachine_ = handler; }
+    void getUserTypeFaultHandler(FaultHandler handler) { userType_ = handler; }
 }
