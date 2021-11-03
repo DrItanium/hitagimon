@@ -52,13 +52,13 @@ namespace cortex
     FaultHandler getUserProtectionFaultHandler() { return userProtection_; }
     FaultHandler getUserMachineFaultHandler() { return userMachine_; }
     FaultHandler getUserTypeFaultHandler() { return userType_; }
-    void getUserReservedFaultHandler(FaultHandler handler) { userReserved_ = handler; }
-    void getUserTraceFaultHandler(FaultHandler handler) { userTrace_ = handler; }
-    void getUserOperationFaultHandler(FaultHandler handler) { userOperation_ = handler; }
-    void getUserArithmeticFaultHandler(FaultHandler handler) { userArithmetic_ = handler; }
-    void getUserRealArithmeticFaultHandler(FaultHandler handler) { userRealArithmetic_ = handler; }
-    void getUserConstraintFaultHandler(FaultHandler handler) { userConstraint_ = handler; }
-    void getUserProtectionFaultHandler(FaultHandler handler) { userProtection_ = handler; }
-    void getUserMachineFaultHandler(FaultHandler handler) { userMachine_ = handler; }
-    void getUserTypeFaultHandler(FaultHandler handler) { userType_ = handler; }
+    void setUserReservedFaultHandler(FaultHandler handler) { userReserved_ = handler; }
+    void setUserTraceFaultHandler(FaultHandler handler) { userTrace_ = handler; }
+    void setUserOperationFaultHandler(FaultHandler handler) { userOperation_ = handler; }
+    void setUserArithmeticFaultHandler(FaultHandler handler) { userArithmetic_ = handler; }
+    void setUserRealArithmeticFaultHandler(FaultHandler handler) { userRealArithmetic_ = handler; }
+    void setUserConstraintFaultHandler(FaultHandler handler) { userConstraint_ = handler; }
+    void setUserProtectionFaultHandler(FaultHandler handler) { userProtection_ = handler; }
+    void setUserMachineFaultHandler(FaultHandler handler) { userMachine_ = handler; }
+    void setUserTypeFaultHandler(FaultHandler handler) { userType_ = handler; }
 }
