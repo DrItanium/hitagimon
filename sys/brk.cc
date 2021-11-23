@@ -39,6 +39,7 @@ sbrk(intptr_t increment) {
     }
     char* prevHeapEnd = heapEnd;
     heapEnd += increment;
+    /// @todo do burst writes
     return prevHeapEnd;
 }
 
