@@ -41,6 +41,8 @@ X(CallCos960);
 X(CallSin960);
 X(CallTan960);
 #endif
+// display routines
+X(Color565);
 #undef X
 extern "C"
 void
@@ -75,6 +77,7 @@ InstallMonitorExtensions(Environment* env) {
     AddUDF(env, "sin960","d",1,1,"ld",CallSin960,"CallSin960",NULL);
     AddUDF(env, "tan960","d",1,1,"ld",CallTan960,"CallTan960",NULL);
 #endif
+    AddUDF(env, "native:color565", "l", 3, 3, "l", Color565, "Color565", NULL);
 }
 #define DefClipsFunction(name) void name (Environment* theEnv, UDFContext* context, UDFValue* retVal)
 
@@ -383,6 +386,23 @@ DefClipsFunction(DoSYNLD) {
 
 DefClipsFunction(AddressICR) {
     retVal->integerValue = CreateInteger(theEnv, 0xFF000004);
+}
+
+DefClipsFunction(Color565) {
+    UDFValue redV, greenV, blueV;
+    if (! UDFNthArgument(context,1,NUMBER_BITS,&redV)) {
+        return;
+    }
+    uint8_t red = CVCoerceToInteger(&redV);
+    if (!UDFNthArgument(context, 2, NUMBER_BITS, &greenV)) {
+        return;
+    }
+    uint8_t green = CVCoerceToInteger(&greenV);
+    if (!UDFNthArgument(context, 2, NUMBER_BITS, &blueV)) {
+        return;
+    }
+    uint8_t blue = CVCoerceToInteger(&blueV);
+    retVal->integerValue = CreateInteger(theEnv, getBasicChipsetInterface().color565(red, green, blue));
 }
 
 #undef DefClipsFunction
