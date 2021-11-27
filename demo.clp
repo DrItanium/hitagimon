@@ -30,7 +30,7 @@
                    (default ?NONE)))
 
 (defrule draw-triangle
- (declare (salience 1))
+         (declare (salience 1))
          ?f <- (triangle (x0 ?x0)
                          (y0 ?y0)
                          (x1 ?x1)
@@ -41,7 +41,13 @@
                          (id ?id))
          =>
          (assert (move-triangle ?id))
-         (display:draw-triangle ?x0 ?y0 ?x1 ?y1 ?x2 ?y2 ?c))
+         (display:draw-triangle ?x0 
+                                ?y0 
+                                ?x1 
+                                ?y1 
+                                ?x2 
+                                ?y2 
+                                ?c))
 
 (defrule move-triangle-off
          ?f <- (move-triangle ?id)

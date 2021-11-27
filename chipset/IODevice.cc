@@ -321,13 +321,6 @@ ChipsetBasicFunctions::clearScreen() {
     fillScreen(normalColors_[0]);
 }
 
-void
-ChipsetBasicFunctions::drawPixel(uint16_t x, uint16_t y, uint16_t color) {
-    _displayItself.x0 = x;
-    _displayItself.y0 = y;
-    _displayItself.foregroundColor = color;
-    _displayItself.invoke = InvokeOpcode_DrawPixel;
-}
 
 uint16_t ChipsetBasicFunctions::displayHeight() const { return _displayItself.height; }
 uint16_t ChipsetBasicFunctions::displayWidth() const { return _displayItself.width; }
@@ -444,11 +437,40 @@ namespace {
     inline uint32_t makeOrdinal(uint16_t lower, uint16_t upper) {
         return static_cast<uint32_t>(lower) | (static_cast<uint32_t>(upper) << 16);
     }
+    inline uint64_t makeLongOrdinal(uint32_t lower, uint32_t upper) {
+        return static_cast<uint64_t>(lower) | (static_cast<uint64_t>(upper) << 32);
+    }
+    inline uint64_t makeLongOrdinal(uint16_t a, uint16_t b, uint16_t c, uint16_t d) {
+        return makeLongOrdinal(makeOrdinal(a, b),
+                               makeOrdinal(c, d));
+    }
 }
 void
 ChipsetBasicFunctions::drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t fgColor, bool fill) {
-    drawTriangle(makeOrdinal(x0, y0),
-                 makeOrdinal(x1, y1),
-                 makeOrdinal(x2, y2),
-                 fgColor, fill);
+    _displayItself.performFill = fill;
+    _displayItself.x0 = x0;
+    _displayItself.y0 = y0;
+    _displayItself.x1 = x1;
+    _displayItself.y1 = y1;
+    _displayItself.x2 = x2;
+    _displayItself.y2 = y2;
+    _displayItself.foregroundColor = fgColor;
+    _displayItself.invoke = InvokeOpcode_DrawTriangle;
+}
+void
+ChipsetBasicFunctions::drawTriangle(uint64_t xy01, uint32_t xy2, uint16_t fgColor, bool fill) {
+    _displayItself.xy01 = xy01;
+    _displayItself.xy2 = xy2;
+    _displayItself.foregroundColor = fgColor;
+    _displayItself.invoke = InvokeOpcode_DrawTriangle;
+}
+void
+ChipsetBasicFunctions::drawPixel(uint32_t xy, uint16_t color) {
+    _displayItself.xy0 = xy;
+    _displayItself.foregroundColor = color;
+    _displayItself.invoke = InvokeOpcode_DrawPixel;
+}
+void
+ChipsetBasicFunctions::drawPixel(uint16_t x, uint16_t y, uint16_t color) {
+    drawPixel(makeOrdinal(x, y), color);
 }

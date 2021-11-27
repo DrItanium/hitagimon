@@ -136,22 +136,12 @@ public:
     uint32_t timesince2000() const;
     uint32_t unixtime() const;
     void now() const;
-    uint16_t color565(uint32_t color);
-    uint16_t color565(uint8_t r, uint8_t g, uint8_t b);
-    void setCursor(uint16_t x, uint16_t y);
-    void clearScreen();
-    void fillScreen(uint16_t value);
-    uint16_t displayWidth() const;
-    uint16_t displayHeight() const;
-    void drawPixel(uint16_t x, uint16_t y, uint16_t color);
-    void setTextColor(uint16_t fg, uint16_t bg);
-    void setTextSize(uint16_t s);
-    void setTextSize(uint16_t sx, uint16_t sy);
 private:
     uint16_t waitForLegalCharacter();
 private:
 #define TwoByteEntry(name) volatile uint16_t name
 #define FourByteEntry(name) volatile uint32_t name
+#define EightByteEntry(name) volatile uint64_t name
     struct ChipsetRegistersRaw {
         volatile uint16_t consoleIOPort;
         volatile uint16_t consoleFlushPort;
@@ -220,6 +210,10 @@ private:
                FourByteEntry(xy2);
                FourByteEntry(sxy);
            } __attribute__((packed));
+           struct {
+               EightByteEntry(xy01);
+               EightByteEntry(xy2s);
+           } __attribute__((packed));
         } __attribute__((packed));
         TwoByteEntry(width);
         TwoByteEntry(height);
@@ -249,6 +243,7 @@ private:
         TwoByteEntry(colorOrange);
         TwoByteEntry(unused1);
     };
+#undef EightByteEntry
 #undef FourByteEntry
 #undef TwoByteEntry
     enum InvokeOpcodes {
@@ -276,7 +271,20 @@ public:
     void drawCircle(uint16_t x, uint16_t y, uint16_t radius, uint16_t fgColor, bool fill = false);
     void drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t fgColor, bool fill = false);
     void drawTriangle(uint32_t xy0, uint32_t xy1, uint32_t xy2, uint16_t fgColor, bool fill = false);
+    void drawTriangle(uint64_t xy01, uint32_t xy2, uint16_t fgColor, bool fill = false);
     void drawRoundedRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t radius, uint16_t fgColor, bool fill = false);
+    uint16_t color565(uint32_t color);
+    uint16_t color565(uint8_t r, uint8_t g, uint8_t b);
+    void setCursor(uint16_t x, uint16_t y);
+    void clearScreen();
+    void fillScreen(uint16_t value);
+    uint16_t displayWidth() const;
+    uint16_t displayHeight() const;
+    void drawPixel(uint16_t x, uint16_t y, uint16_t color);
+    void drawPixel(uint32_t xy, uint16_t color);
+    void setTextColor(uint16_t fg, uint16_t bg);
+    void setTextSize(uint16_t s);
+    void setTextSize(uint16_t sx, uint16_t sy);
 private:
     volatile ChipsetRegistersRaw& _memory;
     volatile SDCardBaseInterfaceRaw& _sdbase;
