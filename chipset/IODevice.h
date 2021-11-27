@@ -255,7 +255,6 @@ private:
         InvokeOpcode_SetTextColor,
         InvokeOpcode_SetTextSize,
         InvokeOpcode_DrawChar,
-        InvokeOpcode_Color565,
     };
 public:
     void drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t fgColor);

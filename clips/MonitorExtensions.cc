@@ -414,6 +414,7 @@ DefClipsFunction(Color565) {
         return;
     }
     uint8_t blue = CVCoerceToInteger(&blueV);
+
     retVal->integerValue = CreateInteger(theEnv, getBasicChipsetInterface().color565(red, green, blue));
 }
 

@@ -292,16 +292,17 @@ ChipsetBasicFunctions::now() const {
 
 uint16_t
 ChipsetBasicFunctions::color565(uint32_t color) {
-    _displayItself.packedRGB = color;
-    _displayItself.invoke = InvokeOpcode_Color565;
-    return _displayItself.result;
+    return color565(static_cast<uint8_t>(color),
+                    static_cast<uint8_t>(color >> 8),
+                    static_cast<uint8_t>(color >> 16)) ;
 }
 
 uint16_t
 ChipsetBasicFunctions::color565(uint8_t r, uint8_t g, uint8_t b) {
-    return color565(static_cast<uint32_t>(r) |
-                    (static_cast<uint32_t>(g) << 8) |
-                    (static_cast<uint32_t>(b) << 16));
+    // don't actually ask the chipset for this
+    return (static_cast<uint16_t>(r & 0xF8) << 8) |
+            (static_cast<uint16_t>(g & 0xFC) << 3) |
+            (static_cast<uint16_t>(b>>3));
 }
 
 void
