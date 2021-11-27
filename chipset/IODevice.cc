@@ -46,12 +46,23 @@ ChipsetBasicFunctions::ChipsetBasicFunctions(uint32_t offset) : BuiltinIOBaseDev
 _memory(memory<ChipsetRegistersRaw>(getChipsetRegistersBase())),
 _sdbase(memory<SDCardBaseInterfaceRaw>(getSDCardRegisterBase())),
 _displayAux(memory<SeesawRegisters>(getAuxDisplayFunctionsBase())),
+_displayItself(memory<DisplayRegisters>(getDisplayFunctionsBase())),
 _rtcBase(memory<RTCInterface>(getRTCBase())),
 openFiles(new SDFile*[_sdbase.maximumNumberOfOpenFilesPort]) {
     uint32_t sdCardFileBase = getSDCardFileBase();
     for (int i = 0; i < _sdbase.maximumNumberOfOpenFilesPort; ++i, sdCardFileBase += 0x100) {
         openFiles[i] = new SDFile(sdCardFileBase);
     }
+    normalColors_[0] = _displayItself.colorBlack;
+    normalColors_[1] = _displayItself.colorWhite;
+    normalColors_[2] = _displayItself.colorRed;
+    normalColors_[3] = _displayItself.colorGreen;
+    normalColors_[4] = _displayItself.colorBlue;
+    normalColors_[5] = _displayItself.colorCyan;
+    normalColors_[6] = _displayItself.colorMagenta;
+    normalColors_[7] = _displayItself.colorYellow;
+    normalColors_[8] = _displayItself.colorOrange;
+
 }
 
 
@@ -248,3 +259,49 @@ displayIOMemoryMap() {
     printf("Display primary begin address 0x%lx\n", getDisplayFunctionsBase());
     printf("RTC begin address 0x%lx\n", getRTCBase());
 }
+
+void
+ChipsetBasicFunctions::setBacklightIntensity(uint16_t value) {
+    _displayAux.backlight = value;
+}
+
+uint16_t
+ChipsetBasicFunctions::getBacklightIntensity() const {
+    return _displayAux.backlight;
+}
+
+uint32_t
+ChipsetBasicFunctions::getButtonsRaw() const {
+    return _displayAux.buttons;
+}
+
+uint32_t
+ChipsetBasicFunctions::unixtime() const {
+    return _rtcBase.unixtime;
+}
+
+uint32_t
+ChipsetBasicFunctions::timesince2000() const {
+    return _rtcBase.secondsSince2000;
+}
+
+void
+ChipsetBasicFunctions::now() const {
+    _rtcBase.nowRequest = 0;
+}
+
+uint16_t
+ChipsetBasicFunctions::color565(uint32_t color) {
+    _displayItself.packedRGB = color;
+    _displayItself.invoke = InvokeOpcode_Color565;
+    return _displayItself.result;
+}
+
+uint16_t
+ChipsetBasicFunctions::color565(uint8_t r, uint8_t g, uint8_t b) {
+    return color565(static_cast<uint32_t>(r) |
+                    (static_cast<uint32_t>(g) << 8) |
+                    (static_cast<uint32_t>(b) << 16));
+}
+
+

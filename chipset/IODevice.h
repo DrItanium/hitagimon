@@ -130,6 +130,14 @@ public:
     bool readFile(int fd, void *buf, size_t sz, int &nread);
     bool writeFile(int fd, const void *buf, size_t sz, int &nwrite);
     bool closeFile(int fd);
+    uint16_t getBacklightIntensity() const;
+    void setBacklightIntensity(uint16_t value);
+    uint32_t getButtonsRaw() const;
+    uint32_t timesince2000() const;
+    uint32_t unixtime() const;
+    void now() const;
+    uint16_t color565(uint32_t color);
+    uint16_t color565(uint8_t r, uint8_t g, uint8_t b);
 private:
     uint16_t waitForLegalCharacter();
 private:
@@ -181,14 +189,72 @@ private:
         TwoByteEntry(reserved0);
         FourByteEntry(buttons);
     } __attribute__((packed));
+
+    struct DisplayRegisters {
+        TwoByteEntry(portIO);
+        TwoByteEntry(invoke);
+        FourByteEntry(result);
+        TwoByteEntry(x0);
+        TwoByteEntry(y0);
+        TwoByteEntry(x1);
+        TwoByteEntry(y1);
+        TwoByteEntry(x2);
+        TwoByteEntry(y2);
+        TwoByteEntry(sx);
+        TwoByteEntry(sy);
+        TwoByteEntry(width);
+        TwoByteEntry(height);
+        TwoByteEntry(radius);
+        TwoByteEntry(unused0);
+        TwoByteEntry(foregroundColor);
+        TwoByteEntry(backgroundColor);
+        TwoByteEntry(performFill);
+        TwoByteEntry(invert);
+        TwoByteEntry(rotation);
+        TwoByteEntry(textWrap);
+        TwoByteEntry(displayWidth);
+        TwoByteEntry(displayHeight);
+        TwoByteEntry(cursorX);
+        TwoByteEntry(cursorY);
+        TwoByteEntry(treatAsSquare);
+        TwoByteEntry(currentCharacter);
+        FourByteEntry(packedRGB);
+        TwoByteEntry(colorBlack);
+        TwoByteEntry(colorWhite);
+        TwoByteEntry(colorRed);
+        TwoByteEntry(colorGreen);
+        TwoByteEntry(colorBlue);
+        TwoByteEntry(colorCyan);
+        TwoByteEntry(colorMagenta);
+        TwoByteEntry(colorYellow);
+        TwoByteEntry(colorOrange);
+        TwoByteEntry(unused1);
+    };
 #undef FourByteEntry
 #undef TwoByteEntry
+    enum InvokeOpcodes {
+        InvokeOpcode_DrawPixel,
+        InvokeOpcode_DrawFastVLine,
+        InvokeOpcode_DrawFastHLine,
+        InvokeOpcode_DrawRect,
+        InvokeOpcode_FillScreen,
+        InvokeOpcode_DrawLine,
+        InvokeOpcode_DrawCircle,
+        InvokeOpcode_DrawTriangle,
+        InvokeOpcode_DrawRoundRect,
+        InvokeOpcode_SetCursor,
+        InvokeOpcode_SetTextSize,
+        InvokeOpcode_DrawChar,
+        InvokeOpcode_Color565,
+    };
 private:
     volatile ChipsetRegistersRaw& _memory;
     volatile SDCardBaseInterfaceRaw& _sdbase;
     volatile SeesawRegisters& _displayAux;
+    volatile DisplayRegisters& _displayItself;
     volatile RTCInterface& _rtcBase;
     SDFile** openFiles;
+    uint16_t normalColors_[9];
 };
 
 ChipsetBasicFunctions& getBasicChipsetInterface();
