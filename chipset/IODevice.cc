@@ -62,7 +62,7 @@ openFiles(new SDFile*[_sdbase.maximumNumberOfOpenFilesPort]) {
     normalColors_[6] = _displayItself.colorMagenta;
     normalColors_[7] = _displayItself.colorYellow;
     normalColors_[8] = _displayItself.colorOrange;
-
+    now();
 }
 
 
@@ -277,11 +277,14 @@ ChipsetBasicFunctions::getButtonsRaw() const {
 
 uint32_t
 ChipsetBasicFunctions::unixtime() const {
+    // request a time update
+    now();
     return _rtcBase.unixtime;
 }
 
 uint32_t
 ChipsetBasicFunctions::timesince2000() const {
+    now();
     return _rtcBase.secondsSince2000;
 }
 
