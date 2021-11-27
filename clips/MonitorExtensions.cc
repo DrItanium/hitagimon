@@ -45,6 +45,7 @@ X(CallTan960);
 X(Color565);
 X(SetBacklightIntensity);
 X(GetBacklightIntensity);
+X(ReadButtons);
 #undef X
 extern "C"
 void
@@ -82,6 +83,7 @@ InstallMonitorExtensions(Environment* env) {
     AddUDF(env, "display:color565", "l", 3, 3, "l", Color565, "Color565", NULL);
     AddUDF(env, "display:set-backlight-intensity", "v", 1, 1, "l", SetBacklightIntensity, "SetBacklightIntensity", NULL);
     AddUDF(env, "display:get-backlight-intensity", "l", 0, 0, NULL, GetBacklightIntensity, "GetBacklightIntensity", NULL);
+    AddUDF(env, "input:read-buttons", "l", 0, 0, NULL, ReadButtons, "ReadButtons", NULL);
 }
 #define DefClipsFunction(name) void name (Environment* theEnv, UDFContext* context, UDFValue* retVal)
 
@@ -420,6 +422,10 @@ DefClipsFunction(SetBacklightIntensity) {
 
 DefClipsFunction(GetBacklightIntensity) {
     retVal->integerValue = CreateInteger(theEnv, getBasicChipsetInterface().getBacklightIntensity());
+}
+
+DefClipsFunction(ReadButtons) {
+    retVal->integerValue = CreateInteger(theEnv, getBasicChipsetInterface().getButtonsRaw());
 }
 
 
