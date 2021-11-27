@@ -48,6 +48,9 @@ X(GetBacklightIntensity);
 X(ReadButtons);
 X(DrawPixel);
 X(DrawLine);
+X(DrawCircle);
+X(DrawTriangle);
+X(DrawRect);
 X(FillScreen);
 #undef X
 extern "C"
@@ -90,6 +93,9 @@ InstallMonitorExtensions(Environment* env) {
     AddUDF(env, "display:draw-pixel", "v", 3, 3, "l", DrawPixel, "DrawPixel", NULL);
     AddUDF(env, "display:draw-line", "v", 5, 5, "l", DrawLine, "DrawLine", NULL);
     AddUDF(env, "display:fill-screen", "v", 1, 1, "l", FillScreen, "FillScreen", NULL);
+    AddUDF(env, "display:draw-circle", "v", 4, 4, "l", DrawCircle, "DrawCircle", NULL);
+    AddUDF(env, "display:draw-triangle", "v", 7, 7, "l", DrawTriangle, "DrawTriangle", NULL);
+    AddUDF(env, "display:draw-rect", "v", 5, 5, "l", DrawRect, "DrawRect", NULL);
 }
 #define DefClipsFunction(name) void name (Environment* theEnv, UDFContext* context, UDFValue* retVal)
 
@@ -440,6 +446,54 @@ DefClipsFunction(DrawLine) {
                                         CVCoerceToInteger(&y1v),
                                         CVCoerceToInteger(&fgColorv) ) ;
 }
+
+DefClipsFunction(DrawRect) {
+    UDFValue x0v, y0v, x1v, y1v, fgColorv;
+    if (!UDFFirstArgument(context, NUMBER_BITS, &x0v)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &y0v)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &x1v)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &y1v)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &fgColorv)) { return; }
+    getBasicChipsetInterface().drawRect(CVCoerceToInteger(&x0v),
+                                        CVCoerceToInteger(&y0v),
+                                        CVCoerceToInteger(&x1v),
+                                        CVCoerceToInteger(&y1v),
+                                        CVCoerceToInteger(&fgColorv) ) ;
+}
+
+DefClipsFunction(DrawCircle) {
+    UDFValue x0v, y0v, rv, fgColorv;
+    if (!UDFFirstArgument(context, NUMBER_BITS, &x0v)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &y0v)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &rv)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &fgColorv)) { return; }
+    getBasicChipsetInterface().drawCircle(CVCoerceToInteger(&x0v),
+                                          CVCoerceToInteger(&y0v),
+                                          CVCoerceToInteger(&rv),
+                                          CVCoerceToInteger(&fgColorv) ) ;
+}
+
+DefClipsFunction(DrawTriangle) {
+    UDFValue x0v, y0v,
+            x1v, y1v,
+            x2v, y2v,
+            fgColorv;
+    if (!UDFFirstArgument(context, NUMBER_BITS, &x0v)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &y0v)) { return; }
+    if (!UDFFirstArgument(context, NUMBER_BITS, &x1v)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &y1v)) { return; }
+    if (!UDFFirstArgument(context, NUMBER_BITS, &x2v)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &y2v)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &fgColorv)) { return; }
+    getBasicChipsetInterface().drawTriangle(CVCoerceToInteger(&x0v),
+                                          CVCoerceToInteger(&y0v),
+                                          CVCoerceToInteger(&x1v),
+                                          CVCoerceToInteger(&y1v),
+                                          CVCoerceToInteger(&x2v),
+                                          CVCoerceToInteger(&y2v),
+                                          CVCoerceToInteger(&fgColorv) ) ;
+}
+
 
 DefClipsFunction(DrawPixel) {
     UDFValue x0v, y0v, fgColorv;
