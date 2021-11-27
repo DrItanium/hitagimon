@@ -424,35 +424,6 @@ void ChipsetBasicFunctions::drawChar(uint16_t x, uint16_t y, uint16_t character,
 }
 
 void
-ChipsetBasicFunctions::drawTriangle(uint32_t xy0, uint32_t xy1, uint32_t xy2, uint16_t fgColor, bool fill) {
-    _displayItself.performFill = fill;
-    _displayItself.xy0 = xy0;
-    _displayItself.xy1 = xy1;
-    _displayItself.xy2 = xy2;
-    _displayItself.foregroundColor = fgColor;
-    _displayItself.invoke = InvokeOpcode_DrawTriangle;
-}
-
-void
-ChipsetBasicFunctions::drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t fgColor, bool fill) {
-    _displayItself.performFill = fill;
-    _displayItself.x0 = x0;
-    _displayItself.y0 = y0;
-    _displayItself.x1 = x1;
-    _displayItself.y1 = y1;
-    _displayItself.x2 = x2;
-    _displayItself.y2 = y2;
-    _displayItself.foregroundColor = fgColor;
-    _displayItself.invoke = InvokeOpcode_DrawTriangle;
-}
-void
-ChipsetBasicFunctions::drawTriangle(uint64_t xy01, uint32_t xy2, uint16_t fgColor, bool fill) {
-    _displayItself.xy01 = xy01;
-    _displayItself.xy2 = xy2;
-    _displayItself.foregroundColor = fgColor;
-    _displayItself.invoke = InvokeOpcode_DrawTriangle;
-}
-void
 ChipsetBasicFunctions::drawPixel(uint32_t xy, uint16_t color) {
     _displayItself.xy0 = xy;
     _displayItself.foregroundColor = color;

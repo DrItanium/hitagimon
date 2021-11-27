@@ -254,7 +254,6 @@ private:
         InvokeOpcode_FillScreen,
         InvokeOpcode_DrawLine,
         InvokeOpcode_DrawCircle,
-        InvokeOpcode_DrawTriangle,
         InvokeOpcode_DrawRoundRect,
         InvokeOpcode_SetCursor,
         InvokeOpcode_SetTextColor,
@@ -269,9 +268,6 @@ public:
     void drawChar(uint16_t x, uint16_t y, uint16_t character, uint16_t fgColor, uint16_t bgColor, uint16_t sx, uint16_t sy);
     void drawRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t fgColor, bool fill = false);
     void drawCircle(uint16_t x, uint16_t y, uint16_t radius, uint16_t fgColor, bool fill = false);
-    void drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t fgColor, bool fill = false);
-    void drawTriangle(uint32_t xy0, uint32_t xy1, uint32_t xy2, uint16_t fgColor, bool fill = false);
-    void drawTriangle(uint64_t xy01, uint32_t xy2, uint16_t fgColor, bool fill = false);
     void drawRoundedRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t radius, uint16_t fgColor, bool fill = false);
     uint16_t color565(uint32_t color);
     uint16_t color565(uint8_t r, uint8_t g, uint8_t b);
