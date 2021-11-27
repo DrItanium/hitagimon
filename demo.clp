@@ -26,21 +26,21 @@
                    (type INTEGER)
                    (default ?NONE))
              (slot color
-                    (type INTEGER)
-                    (default ?NONE)))
+                   (type INTEGER)
+                   (default ?NONE)))
 
 (defrule draw-triangle
          ?f <- (triangle (x0 ?x0)
-                   (y0 ?y0)
-                   (x1 ?x1)
-                   (y1 ?y1)
-                   (x2 ?x2)
-                   (y2 ?y2)
-                   (color ?c)
-                   (id ?id))
-        =>
-        (assert (move-triangle ?id))
-        (display:draw-triangle ?x0 ?y0 ?x1 ?y1 ?x2 ?y2 ?c))
+                         (y0 ?y0)
+                         (x1 ?x1)
+                         (y1 ?y1)
+                         (x2 ?x2)
+                         (y2 ?y2)
+                         (color ?c)
+                         (id ?id))
+         =>
+         (assert (move-triangle ?id))
+         (display:draw-triangle ?x0 ?y0 ?x1 ?y1 ?x2 ?y2 ?c))
 
 (defrule move-triangle-off
          ?f <- (move-triangle ?id)
@@ -60,18 +60,18 @@
                  (x2 (+ ?x2 1)) (y2 (+ ?y2 1)) ))
 
 (deffacts triangles
-          (triangle (x0 0) (y0 0)
-                    (x1 1) (y1 1)
-                    (x2 2) (y2 2)
+          (triangle (x0 5) (y0 5)
+                    (x1 10) (y1 10)
+                    (x2 15) (y2 15)
                     (color (color565 255 0 0)))
-          (triangle (x0 3) (y0 3)
-                    (x1 4) (y1 4)
-                    (x2 5) (y2 5)
+          (triangle (x0 25) (y0 25)
+                    (x1 30) (y1 30)
+                    (x2 35) (y2 35)
                     (color (color565 0 255 0)))
-          (triangle (x0 6) (y0 6)
-                    (x1 7) (y1 7)
-                    (x2 8) (y2 8)
-                    (color (color565 0 0 255))))
+          (triangle (x0 40) (y0 40)
+                    (x1 45) (y1 45)
+                    (x2 50) (y2 50)
+                    (color (color565 0 0 255)))
 
 
 
