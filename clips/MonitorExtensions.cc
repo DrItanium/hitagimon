@@ -46,6 +46,9 @@ X(Color565);
 X(SetBacklightIntensity);
 X(GetBacklightIntensity);
 X(ReadButtons);
+X(DrawPixel);
+X(DrawLine);
+X(FillScreen);
 #undef X
 extern "C"
 void
@@ -84,6 +87,9 @@ InstallMonitorExtensions(Environment* env) {
     AddUDF(env, "display:set-backlight-intensity", "v", 1, 1, "l", SetBacklightIntensity, "SetBacklightIntensity", NULL);
     AddUDF(env, "display:get-backlight-intensity", "l", 0, 0, NULL, GetBacklightIntensity, "GetBacklightIntensity", NULL);
     AddUDF(env, "input:read-buttons", "l", 0, 0, NULL, ReadButtons, "ReadButtons", NULL);
+    AddUDF(env, "display:draw-pixel", "v", 3, 3, "l", DrawPixel, "DrawPixel", NULL);
+    AddUDF(env, "display:draw-line", "v", 5, 5, "l", DrawLine, "DrawLine", NULL);
+    AddUDF(env, "display:fill-screen", "v", 1, 1, "l", FillScreen, "FillScreen", NULL);
 }
 #define DefClipsFunction(name) void name (Environment* theEnv, UDFContext* context, UDFValue* retVal)
 
@@ -404,7 +410,7 @@ DefClipsFunction(Color565) {
         return;
     }
     uint8_t green = CVCoerceToInteger(&greenV);
-    if (!UDFNthArgument(context, 2, NUMBER_BITS, &blueV)) {
+    if (!UDFNthArgument(context, 3, NUMBER_BITS, &blueV)) {
         return;
     }
     uint8_t blue = CVCoerceToInteger(&blueV);
@@ -418,6 +424,36 @@ DefClipsFunction(SetBacklightIntensity) {
     }
     uint16_t intensity = CVCoerceToInteger(&intensityV);
     getBasicChipsetInterface().setBacklightIntensity(intensity);
+}
+
+DefClipsFunction(DrawLine) {
+    UDFValue x0v, y0v, x1v, y1v, fgColorv;
+    if (!UDFFirstArgument(context, NUMBER_BITS, &x0v)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &y0v)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &x1v)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &y1v)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &fgColorv)) { return; }
+    getBasicChipsetInterface().drawLine(CVCoerceToInteger(&x0v),
+                                        CVCoerceToInteger(&y0v),
+                                        CVCoerceToInteger(&x1v),
+                                        CVCoerceToInteger(&y1v),
+                                        CVCoerceToInteger(&fgColorv) ) ;
+}
+
+DefClipsFunction(DrawPixel) {
+    UDFValue x0v, y0v, fgColorv;
+    if (!UDFFirstArgument(context, NUMBER_BITS, &x0v)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &y0v)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &fgColorv)) { return; }
+    getBasicChipsetInterface().drawPixel(CVCoerceToInteger(&x0v),
+                                         CVCoerceToInteger(&y0v),
+                                         CVCoerceToInteger(&fgColorv) ) ;
+}
+
+DefClipsFunction(FillScreen) {
+    UDFValue colorv;
+    if (!UDFFirstArgument(context, NUMBER_BITS, &colorv)) { return; }
+    getBasicChipsetInterface().fillScreen(CVCoerceToInteger(&colorv));
 }
 
 DefClipsFunction(GetBacklightIntensity) {
