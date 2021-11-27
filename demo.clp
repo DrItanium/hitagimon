@@ -33,18 +33,29 @@
   (clear-screen ?*color-black*))
 (deffunction generate-random-color-selection
              (?count)
-             (bind ?colors (create$))
-             (loop-for-count (?x 0 ?count) do
+             (bind ?colors 
+                   (create$))
+             (printout t "Generating " ?count " random colors!" crlf)
+             (loop-for-count ?count do
                              (bind ?colors
                                    ?colors
                                    (display:color565 (random 0 255)
                                                      (random 0 255)
                                                      (random 0 255))))
+             (printout t "Done" crlf)
              ?colors)
+(deffunction clear-screen-test
+             ()
+             (clear-screen)
+             (printout t "Clear screen test!" crlf)
+             (progn$ (?color (generate-random-color-selection 320)) do
+                     (clear-screen ?color)))
 (deffunction draw-rect-test
              ()
+             (clear-screen)
+             (printout t "draw rect test!" crlf)
              (bind ?colors
-                   (generate-random-number-selection 324))
+                   (generate-random-color-selection 324))
              (loop-for-count (?x 0 240) do
                              (bind ?x-end 
                                    (- 240 ?x))
@@ -58,8 +69,10 @@
                                                                       ?colors)))))
 (deffunction fill-rect-test 
              ()
+             (printout t "fill rect test!" crlf)
+             (clear-screen)
              (bind ?colors
-                   (generate-random-number-selection 324))
+                   (generate-random-color-selection 324))
              (loop-for-count (?x 0 240) do
                              (bind ?x-end 
                                    (- 240 ?x))
@@ -71,10 +84,12 @@
                                                                 ?y-end
                                                                 (nth$ (+ 1 ?y)
                                                                       ?colors)))))
-(deffunction circle-overlay0
+(deffunction draw-circle-test 
              ()
+             (printout t "draw circle test!" crlf)
+             (clear-screen)
              (bind ?colors
-                   (generate-random-number-selection 324))
+                   (generate-random-color-selection 324))
              (loop-for-count (?radius 16 (random 17 64)) do
                              (display:draw-circle (random 0 240)
                                                   (random 0 320)
@@ -82,10 +97,25 @@
                                                   (nth$ (random 0 320) 
                                                         ?colors))))
 
+(deffunction fill-circle-test 
+             ()
+             (printout t "fill circle test!" crlf)
+             (clear-screen)
+             (bind ?colors
+                   (generate-random-color-selection 128))
+             (loop-for-count (?radius 16 (random 17 64)) do
+                             (display:fill-circle (random 0 240)
+                                                  (random 0 320)
+                                                  ?radius
+                                                  (nth$ (random 0 128) 
+                                                        ?colors))))
+
 (deffunction pixel-test
              ()
+             (printout t "pixel test!" crlf)
+             (clear-screen)
              (bind ?colors
-                   (generate-random-number-selection 324))
+                   (generate-random-color-selection 324))
              (loop-for-count (?x 0 240) do
                              (loop-for-count (?y 0 320) do
                                              (display:draw-pixel ?x 
