@@ -258,6 +258,11 @@ private:
         InvokeOpcode_Color565,
     };
 public:
+    void drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t fgColor);
+    void drawVerticalLine(uint16_t x, uint16_t y, uint16_t height, uint16_t fgColor);
+    void drawHorizontalLine(uint16_t x, uint16_t y, uint16_t width, uint16_t fgColor);
+    void drawChar(uint16_t x, uint16_t y, uint16_t character, uint16_t fgColor, uint16_t bgColor, uint16_t size);
+    void drawChar(uint16_t x, uint16_t y, uint16_t character, uint16_t fgColor, uint16_t bgColor, uint16_t sx, uint16_t sy);
     void drawRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t fgColor, bool fill = false);
     void drawCircle(uint16_t x, uint16_t y, uint16_t radius, uint16_t fgColor, bool fill = false);
     void drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t fgColor, bool fill = false);

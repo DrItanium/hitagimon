@@ -398,3 +398,46 @@ ChipsetBasicFunctions::drawRoundedRect(uint16_t x, uint16_t y, uint16_t width, u
     _displayItself.invoke = InvokeOpcode_DrawRoundRect;
 
 }
+void ChipsetBasicFunctions::drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t fgColor) {
+    _displayItself.x0 = x0;
+    _displayItself.y0 = y0;
+    _displayItself.x1 = x1;
+    _displayItself.y1 = y1;
+    _displayItself.foregroundColor = fgColor;
+    _displayItself.invoke = InvokeOpcode_DrawLine;
+}
+void ChipsetBasicFunctions::drawVerticalLine(uint16_t x, uint16_t y, uint16_t height, uint16_t fgColor) {
+    _displayItself.x0 = x;
+    _displayItself.y0 = y;
+    _displayItself.height = height;
+    _displayItself.foregroundColor = fgColor;
+    _displayItself.invoke = InvokeOpcode_DrawFastVLine;
+}
+void ChipsetBasicFunctions::drawHorizontalLine(uint16_t x, uint16_t y, uint16_t width, uint16_t fgColor) {
+    _displayItself.x0 = x;
+    _displayItself.y0 = y;
+    _displayItself.width = width;
+    _displayItself.foregroundColor = fgColor;
+    _displayItself.invoke = InvokeOpcode_DrawFastHLine;
+}
+void ChipsetBasicFunctions::drawChar(uint16_t x, uint16_t y, uint16_t character, uint16_t fgColor, uint16_t bgColor, uint16_t size) {
+    _displayItself.treatAsSquare = true;
+    _displayItself.sx = size;
+    _displayItself.backgroundColor = bgColor;
+    _displayItself.foregroundColor = fgColor;
+    _displayItself.currentCharacter = character;
+    _displayItself.x0 = x;
+    _displayItself.y0 = y;
+    _displayItself.invoke = InvokeOpcode_DrawChar;
+}
+void ChipsetBasicFunctions::drawChar(uint16_t x, uint16_t y, uint16_t character, uint16_t fgColor, uint16_t bgColor, uint16_t sx, uint16_t sy) {
+    _displayItself.treatAsSquare = false;
+    _displayItself.sx = sx;
+    _displayItself.sy = sy;
+    _displayItself.backgroundColor = bgColor;
+    _displayItself.foregroundColor = fgColor;
+    _displayItself.currentCharacter = character;
+    _displayItself.x0 = x;
+    _displayItself.y0 = y;
+    _displayItself.invoke = InvokeOpcode_DrawChar;
+}
