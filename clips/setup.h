@@ -347,7 +347,7 @@
 /****************************************************************/
 
 #ifndef TEXTPRO_FUNCTIONS
-#define TEXTPRO_FUNCTIONS 1
+#define TEXTPRO_FUNCTIONS 0
 #endif
 
 /*************************************************************************/
@@ -442,7 +442,7 @@
 /******************************************************/
 
 #ifndef SYSTEM_FUNCTION
-#define SYSTEM_FUNCTION 1
+#define SYSTEM_FUNCTION 0
 #endif
 
 /********************************************/
