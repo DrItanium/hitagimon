@@ -31,3 +31,64 @@
 (defmethod clear-screen
   ()
   (clear-screen ?*color-black*))
+(deffunction generate-random-color-selection
+             (?count)
+             (bind ?colors (create$))
+             (loop-for-count (?x 0 ?count) do
+                             (bind ?colors
+                                   ?colors
+                                   (display:color565 (random 0 255)
+                                                     (random 0 255)
+                                                     (random 0 255))))
+             ?colors)
+(deffunction draw-rect-test
+             ()
+             (bind ?colors
+                   (generate-random-number-selection 324))
+             (loop-for-count (?x 0 240) do
+                             (bind ?x-end 
+                                   (- 240 ?x))
+                             (loop-for-count (?y 0 320) do
+                                             (bind ?y-end
+                                                   (- 320 ?y))
+                                             (display:draw-rect ?x ?y
+                                                                ?x-end 
+                                                                ?y-end
+                                                                (nth$ (+ 1 ?y) 
+                                                                      ?colors)))))
+(deffunction fill-rect-test 
+             ()
+             (bind ?colors
+                   (generate-random-number-selection 324))
+             (loop-for-count (?x 0 240) do
+                             (bind ?x-end 
+                                   (- 240 ?x))
+                             (loop-for-count (?y 0 320) do
+                                             (bind ?y-end
+                                                   (- 320 ?y))
+                                             (display:fill-rect ?x ?y
+                                                                ?x-end 
+                                                                ?y-end
+                                                                (nth$ (+ 1 ?y)
+                                                                      ?colors)))))
+(deffunction circle-overlay0
+             ()
+             (bind ?colors
+                   (generate-random-number-selection 324))
+             (loop-for-count (?radius 16 (random 17 64)) do
+                             (display:draw-circle (random 0 240)
+                                                  (random 0 320)
+                                                  ?radius
+                                                  (nth$ (random 0 320) 
+                                                        ?colors))))
+
+(deffunction pixel-test
+             ()
+             (bind ?colors
+                   (generate-random-number-selection 324))
+             (loop-for-count (?x 0 240) do
+                             (loop-for-count (?y 0 320) do
+                                             (display:draw-pixel ?x 
+                                                                 ?y
+                                                                 (nth$ (+ 1 ?y)
+                                                                       ?colors)))))
