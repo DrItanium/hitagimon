@@ -203,14 +203,24 @@ private:
         TwoByteEntry(portIO);
         TwoByteEntry(invoke);
         FourByteEntry(result);
-        TwoByteEntry(x0);
-        TwoByteEntry(y0);
-        TwoByteEntry(x1);
-        TwoByteEntry(y1);
-        TwoByteEntry(x2);
-        TwoByteEntry(y2);
-        TwoByteEntry(sx);
-        TwoByteEntry(sy);
+        union {
+           struct {
+               TwoByteEntry(x0);
+               TwoByteEntry(y0);
+               TwoByteEntry(x1);
+               TwoByteEntry(y1);
+               TwoByteEntry(x2);
+               TwoByteEntry(y2);
+               TwoByteEntry(sx);
+               TwoByteEntry(sy);
+           } __attribute__((packed));
+           struct {
+               FourByteEntry(xy0);
+               FourByteEntry(xy1);
+               FourByteEntry(xy2);
+               FourByteEntry(sxy);
+           } __attribute__((packed));
+        } __attribute__((packed));
         TwoByteEntry(width);
         TwoByteEntry(height);
         TwoByteEntry(radius);
@@ -265,6 +275,7 @@ public:
     void drawRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t fgColor, bool fill = false);
     void drawCircle(uint16_t x, uint16_t y, uint16_t radius, uint16_t fgColor, bool fill = false);
     void drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t fgColor, bool fill = false);
+    void drawTriangle(uint32_t xy0, uint32_t xy1, uint32_t xy2, uint16_t fgColor, bool fill = false);
     void drawRoundedRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t radius, uint16_t fgColor, bool fill = false);
 private:
     volatile ChipsetRegistersRaw& _memory;

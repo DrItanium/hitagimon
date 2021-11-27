@@ -375,19 +375,6 @@ ChipsetBasicFunctions::drawCircle(uint16_t x, uint16_t y, uint16_t radius, uint1
     _displayItself.invoke = InvokeOpcode_DrawCircle;
 }
 void
-ChipsetBasicFunctions::drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t fgColor, bool fill) {
-    _displayItself.performFill = fill;
-    _displayItself.x0 = x0;
-    _displayItself.y0 = y0;
-    _displayItself.x1 = x1;
-    _displayItself.y1 = y1;
-    _displayItself.x2 = x2;
-    _displayItself.y2 = y2;
-    _displayItself.foregroundColor = fgColor;
-    _displayItself.invoke = InvokeOpcode_DrawTriangle;
-
-}
-void
 ChipsetBasicFunctions::drawRoundedRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t radius, uint16_t fgColor, bool fill ) {
     _displayItself.performFill = fill;
     _displayItself.x0 = x;
@@ -441,4 +428,27 @@ void ChipsetBasicFunctions::drawChar(uint16_t x, uint16_t y, uint16_t character,
     _displayItself.x0 = x;
     _displayItself.y0 = y;
     _displayItself.invoke = InvokeOpcode_DrawChar;
+}
+
+void
+ChipsetBasicFunctions::drawTriangle(uint32_t xy0, uint32_t xy1, uint32_t xy2, uint16_t fgColor, bool fill) {
+    _displayItself.performFill = fill;
+    _displayItself.xy0 = xy0;
+    _displayItself.xy1 = xy1;
+    _displayItself.xy2 = xy2;
+    _displayItself.foregroundColor = fgColor;
+    _displayItself.invoke = InvokeOpcode_DrawTriangle;
+}
+
+namespace {
+    inline uint32_t makeOrdinal(uint16_t lower, uint16_t upper) {
+        return static_cast<uint32_t>(lower) | (static_cast<uint32_t>(upper) << 16);
+    }
+}
+void
+ChipsetBasicFunctions::drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t fgColor, bool fill) {
+    drawTriangle(makeOrdinal(x0, y0),
+                 makeOrdinal(x1, y1),
+                 makeOrdinal(x2, y2),
+                 fgColor, fill);
 }
