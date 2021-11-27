@@ -15,7 +15,6 @@ namespace {
         volatile uint32_t sdCardFileBegin;
         volatile uint32_t auxDisplayStart;
         volatile uint32_t displayFunctionsStart;
-        volatile uint32_t displayScreenAccessStart;
         volatile uint32_t rtcStart;
     } __attribute__((packed));
     volatile IOConfigurationSpaceView& getConfiguration0() {
@@ -37,12 +36,17 @@ namespace {
     uint32_t getDisplayFunctionsBase() {
         return getConfiguration0().displayFunctionsStart;
     }
+    uint32_t getRTCBase() {
+        return getConfiguration0().rtcStart;
+    }
 }
 BuiltinIOBaseDevice::BuiltinIOBaseDevice(uint32_t offset) : offset_(offset), baseAddress_(getIOBase0Address(offset)) { }
 ChipsetBasicFunctions::SDFile::SDFile(uint32_t baseAddress) : raw(memory<FileInterfaceRaw>(baseAddress)) {}
 ChipsetBasicFunctions::ChipsetBasicFunctions(uint32_t offset) : BuiltinIOBaseDevice(offset),
 _memory(memory<ChipsetRegistersRaw>(getChipsetRegistersBase())),
 _sdbase(memory<SDCardBaseInterfaceRaw>(getSDCardRegisterBase())),
+_displayAux(memory<SeesawRegisters>(getAuxDisplayFunctionsBase())),
+_rtcBase(memory<RTCInterface>(getRTCBase())),
 openFiles(new SDFile*[_sdbase.maximumNumberOfOpenFilesPort]) {
     uint32_t sdCardFileBase = getSDCardFileBase();
     for (int i = 0; i < _sdbase.maximumNumberOfOpenFilesPort; ++i, sdCardFileBase += 0x100) {
@@ -242,4 +246,5 @@ displayIOMemoryMap() {
     printf("SD file begin address 0x%lx\n", getSDCardFileBase());
     printf("Display Aux begin address 0x%lx\n", getAuxDisplayFunctionsBase());
     printf("Display primary begin address 0x%lx\n", getDisplayFunctionsBase());
+    printf("RTC begin address 0x%lx\n", getRTCBase());
 }

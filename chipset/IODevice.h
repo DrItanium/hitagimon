@@ -138,13 +138,6 @@ private:
     struct ChipsetRegistersRaw {
         volatile uint16_t consoleIOPort;
         volatile uint16_t consoleFlushPort;
-        //volatile uint32_t consoleTimeoutPort;
-        //volatile uint16_t consoleRXBufferSize;
-        //volatile uint16_t consoleTXBufferSize;
-        //volatile uint32_t chipsetClockSpeedPort;
-        //volatile uint16_t cacheLineCountPort;
-        //volatile uint16_t cacheLineSizePort;
-        //volatile uint16_t numberOfCacheWaysPort;
         volatile uint16_t triggerInt0Port;
         volatile uint32_t addressDebuggingFlag;
     } __attribute__((packed));
@@ -168,11 +161,33 @@ private:
         TwoByteEntry(createFileIfMissing);
         TwoByteEntry(clearFileContentsOnOpen);
     } __attribute__((packed));
+    struct RTCInterface {
+        TwoByteEntry(available);
+        TwoByteEntry(nowRequest);
+        TwoByteEntry(seconds);
+        TwoByteEntry(minutes);
+        TwoByteEntry(hours);
+        TwoByteEntry(day);
+        TwoByteEntry(month);
+        TwoByteEntry(year);
+        TwoByteEntry(dayOfTheWeek);
+        TwoByteEntry(reserved0);
+        FourByteEntry(secondsSince2000);
+        FourByteEntry(unixtime);
+
+    } __attribute__((packed));
+    struct SeesawRegisters {
+        TwoByteEntry(backlight);
+        TwoByteEntry(reserved0);
+        FourByteEntry(buttons);
+    } __attribute__((packed));
 #undef FourByteEntry
 #undef TwoByteEntry
 private:
     volatile ChipsetRegistersRaw& _memory;
     volatile SDCardBaseInterfaceRaw& _sdbase;
+    volatile SeesawRegisters& _displayAux;
+    volatile RTCInterface& _rtcBase;
     SDFile** openFiles;
 };
 
