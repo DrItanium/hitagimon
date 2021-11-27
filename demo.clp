@@ -17,7 +17,7 @@
              (display:fill-screen (color565 0 0 0)))
 
 (deftemplate triangle
-            (slot id
+             (slot id
                    (type SYMBOL)
                    (default-dynamic (gensym*)))
              (slot x0
