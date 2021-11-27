@@ -354,3 +354,47 @@ ChipsetBasicFunctions::setTextSize(uint16_t sx, uint16_t sy) {
     _displayItself.invoke = InvokeOpcode_SetTextSize;
 }
 
+void
+ChipsetBasicFunctions::drawRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t fgColor, bool fill) {
+    _displayItself.performFill = fill;
+    _displayItself.x0 = x;
+    _displayItself.y0 = y;
+    _displayItself.width = width;
+    _displayItself.height = height;
+    _displayItself.foregroundColor = fgColor;
+    _displayItself.invoke = InvokeOpcode_DrawRect;
+}
+void
+ChipsetBasicFunctions::drawCircle(uint16_t x, uint16_t y, uint16_t radius, uint16_t fgColor, bool fill) {
+    _displayItself.performFill = fill;
+    _displayItself.x0 = x;
+    _displayItself.y0 = y;
+    _displayItself.radius = radius;
+    _displayItself.foregroundColor = fgColor;
+    _displayItself.invoke = InvokeOpcode_DrawCircle;
+}
+void
+ChipsetBasicFunctions::drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t fgColor, bool fill) {
+    _displayItself.performFill = fill;
+    _displayItself.x0 = x0;
+    _displayItself.y0 = y0;
+    _displayItself.x1 = x1;
+    _displayItself.y1 = y1;
+    _displayItself.x2 = x2;
+    _displayItself.y2 = y2;
+    _displayItself.foregroundColor = fgColor;
+    _displayItself.invoke = InvokeOpcode_DrawTriangle;
+
+}
+void
+ChipsetBasicFunctions::drawRoundedRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t radius, uint16_t fgColor, bool fill ) {
+    _displayItself.performFill = fill;
+    _displayItself.x0 = x;
+    _displayItself.y0 = y;
+    _displayItself.width = width;
+    _displayItself.height = height;
+    _displayItself.radius = radius;
+    _displayItself.foregroundColor = fgColor;
+    _displayItself.invoke = InvokeOpcode_DrawRoundRect;
+
+}
