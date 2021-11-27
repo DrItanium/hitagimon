@@ -304,4 +304,53 @@ ChipsetBasicFunctions::color565(uint8_t r, uint8_t g, uint8_t b) {
                     (static_cast<uint32_t>(b) << 16));
 }
 
+void
+ChipsetBasicFunctions::setCursor(uint16_t x, uint16_t y) {
+    _displayItself.x0 = x;
+    _displayItself.y0 = y;
+    _displayItself.invoke = InvokeOpcode_SetCursor;
+}
+void
+ChipsetBasicFunctions::fillScreen(uint16_t value) {
+    _displayItself.foregroundColor = value;
+    _displayItself.invoke = InvokeOpcode_FillScreen;
+}
+void
+ChipsetBasicFunctions::clearScreen() {
+    fillScreen(normalColors_[0]);
+}
+
+void
+ChipsetBasicFunctions::drawPixel(uint16_t x, uint16_t y, uint16_t color) {
+    _displayItself.x0 = x;
+    _displayItself.y0 = y;
+    _displayItself.foregroundColor = color;
+    _displayItself.invoke = InvokeOpcode_DrawPixel;
+}
+
+uint16_t ChipsetBasicFunctions::displayHeight() const { return _displayItself.height; }
+uint16_t ChipsetBasicFunctions::displayWidth() const { return _displayItself.width; }
+
+
+void
+ChipsetBasicFunctions::setTextColor(uint16_t fg, uint16_t bg) {
+    _displayItself.foregroundColor = fg;
+    _displayItself.backgroundColor = bg;
+    _displayItself.invoke = InvokeOpcode_SetTextColor;
+}
+
+void
+ChipsetBasicFunctions::setTextSize(uint16_t s) {
+    _displayItself.treatAsSquare = true;
+    _displayItself.sx = s;
+    _displayItself.invoke = InvokeOpcode_SetTextSize;
+}
+
+void
+ChipsetBasicFunctions::setTextSize(uint16_t sx, uint16_t sy) {
+    _displayItself.treatAsSquare = false;
+    _displayItself.sx = sx;
+    _displayItself.sy = sy;
+    _displayItself.invoke = InvokeOpcode_SetTextSize;
+}
 

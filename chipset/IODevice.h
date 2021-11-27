@@ -138,6 +138,15 @@ public:
     void now() const;
     uint16_t color565(uint32_t color);
     uint16_t color565(uint8_t r, uint8_t g, uint8_t b);
+    void setCursor(uint16_t x, uint16_t y);
+    void clearScreen();
+    void fillScreen(uint16_t value);
+    uint16_t displayWidth() const;
+    uint16_t displayHeight() const;
+    void drawPixel(uint16_t x, uint16_t y, uint16_t color);
+    void setTextColor(uint16_t fg, uint16_t bg);
+    void setTextSize(uint16_t s);
+    void setTextSize(uint16_t sx, uint16_t sy);
 private:
     uint16_t waitForLegalCharacter();
 private:
@@ -243,6 +252,7 @@ private:
         InvokeOpcode_DrawTriangle,
         InvokeOpcode_DrawRoundRect,
         InvokeOpcode_SetCursor,
+        InvokeOpcode_SetTextColor,
         InvokeOpcode_SetTextSize,
         InvokeOpcode_DrawChar,
         InvokeOpcode_Color565,
