@@ -433,18 +433,6 @@ ChipsetBasicFunctions::drawTriangle(uint32_t xy0, uint32_t xy1, uint32_t xy2, ui
     _displayItself.invoke = InvokeOpcode_DrawTriangle;
 }
 
-namespace {
-    inline uint32_t makeOrdinal(uint16_t lower, uint16_t upper) {
-        return static_cast<uint32_t>(lower) | (static_cast<uint32_t>(upper) << 16);
-    }
-    inline uint64_t makeLongOrdinal(uint32_t lower, uint32_t upper) {
-        return static_cast<uint64_t>(lower) | (static_cast<uint64_t>(upper) << 32);
-    }
-    inline uint64_t makeLongOrdinal(uint16_t a, uint16_t b, uint16_t c, uint16_t d) {
-        return makeLongOrdinal(makeOrdinal(a, b),
-                               makeOrdinal(c, d));
-    }
-}
 void
 ChipsetBasicFunctions::drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t fgColor, bool fill) {
     _displayItself.performFill = fill;

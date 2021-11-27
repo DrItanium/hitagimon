@@ -297,5 +297,15 @@ private:
 
 ChipsetBasicFunctions& getBasicChipsetInterface();
 void displayIOMemoryMap();
+inline uint32_t makeOrdinal(uint16_t lower, uint16_t upper) {
+    return static_cast<uint32_t>(lower) | (static_cast<uint32_t>(upper) << 16);
+}
+inline uint64_t makeLongOrdinal(uint32_t lower, uint32_t upper) {
+    return static_cast<uint64_t>(lower) | (static_cast<uint64_t>(upper) << 32);
+}
+inline uint64_t makeLongOrdinal(uint16_t a, uint16_t b, uint16_t c, uint16_t d) {
+    return makeLongOrdinal(makeOrdinal(a, b),
+                           makeOrdinal(c, d));
+}
 
 #endif //I960SXCHIPSET_IODEVICE_H

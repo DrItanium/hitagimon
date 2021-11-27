@@ -3,8 +3,21 @@
              (display:color565 ?r
                                ?g
                                ?b))
+(deffunction check-time
+             (?fn $?rest)
+             (bind ?start-time (rtc:unixtime))
+             (bind ?result 
+                   (funcall ?fn (expand$ ?rest)))
+             (bind ?end-time (rtc:unixtime))
+             (printout t "(" ?fn " " (expand$ ?rest) ") took: " 
+                       (- ?end-time ?start-time) crlf)
+             ?result)
+(deffunction clear-screen
+             ()
+             (display:fill-screen (color565 0 0 0)))
+
 (deftemplate triangle
-             (slot id
+            (slot id
                    (type SYMBOL)
                    (default-dynamic (gensym*)))
              (slot x0
@@ -29,57 +42,34 @@
                    (type INTEGER)
                    (default ?NONE)))
 
-(defrule draw-triangle
-         (declare (salience 1))
-         ?f <- (triangle (x0 ?x0)
-                         (y0 ?y0)
-                         (x1 ?x1)
-                         (y1 ?y1)
-                         (x2 ?x2)
-                         (y2 ?y2)
-                         (color ?c)
-                         (id ?id))
+(defrule draw-triangle-generic
+         (check triangle ?fn)
+         (triangle (x0 ?x0)
+                   (y0 ?y0)
+                   (x1 ?x1)
+                   (y1 ?y1)
+                   (x2 ?x2)
+                   (y2 ?y2)
+                   (color ?c))
          =>
-         (assert (move-triangle ?id))
-         (display:draw-triangle ?x0 
-                                ?y0 
-                                ?x1 
-                                ?y1 
-                                ?x2 
-                                ?y2 
-                                ?c))
-
-(defrule move-triangle-off
-         ?f <- (move-triangle ?id)
-         ?k <- (triangle (id ?id)
-                         (x0 ?x0)
-                         (y0 ?y0)
-                         (x1 ?x1)
-                         (y1 ?y1)
-                         (x2 ?x2)
-                         (y2 ?y2)
-                         (color ?c))
-         =>
-         (retract ?f)
-         (modify ?k
-                 (x0 (+ ?x0 1)) (y0 (+ ?y0 1))
-                 (x1 (+ ?x1 1)) (y1 (+ ?y1 1))
-                 (x2 (+ ?x2 1)) (y2 (+ ?y2 1)) ))
+         (clear-screen)
+         (check-time ?fn
+                     ?x0 
+                     ?y0 
+                     ?x1 
+                     ?y1 
+                     ?x2 
+                     ?y2 
+                     ?c))
 
 (deffacts triangles
-          (triangle (x0 5) (y0 5)
-                    (x1 10) (y1 10)
-                    (x2 15) (y2 15)
-                    (color (color565 255 0 0)))
-          (triangle (x0 25) (y0 25)
-                    (x1 30) (y1 30)
-                    (x2 35) (y2 35)
-                    (color (color565 0 255 0)))
-          (triangle (x0 40) (y0 40)
-                    (x1 45) (y1 45)
-                    (x2 50) (y2 50)
-                    (color (color565 0 0 255)))
-          )
+          (check triangle display:draw-triangle)
+          (check triangle display:draw-triangle32)
+          (check triangle display:draw-triangle64)
+          (triangle (x0 50) (y0 50)
+                    (x1 100) (y1 100)
+                    (x2 150) (y2 150)
+                    (color (color565 255 0 0))))
 
 
 
