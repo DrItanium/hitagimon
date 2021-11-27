@@ -43,6 +43,8 @@ X(CallTan960);
 #endif
 // display routines
 X(Color565);
+X(SetBacklightIntensity);
+X(GetBacklightIntensity);
 #undef X
 extern "C"
 void
@@ -77,7 +79,9 @@ InstallMonitorExtensions(Environment* env) {
     AddUDF(env, "sin960","d",1,1,"ld",CallSin960,"CallSin960",NULL);
     AddUDF(env, "tan960","d",1,1,"ld",CallTan960,"CallTan960",NULL);
 #endif
-    AddUDF(env, "native:color565", "l", 3, 3, "l", Color565, "Color565", NULL);
+    AddUDF(env, "display:color565", "l", 3, 3, "l", Color565, "Color565", NULL);
+    AddUDF(env, "display:set-backlight-intensity", "v", 1, 1, "l", SetBacklightIntensity, "SetBacklightIntensity", NULL);
+    AddUDF(env, "display:get-backlight-intensity", "l", 0, 0, NULL, GetBacklightIntensity, "GetBacklightIntensity", NULL);
 }
 #define DefClipsFunction(name) void name (Environment* theEnv, UDFContext* context, UDFValue* retVal)
 
@@ -404,5 +408,20 @@ DefClipsFunction(Color565) {
     uint8_t blue = CVCoerceToInteger(&blueV);
     retVal->integerValue = CreateInteger(theEnv, getBasicChipsetInterface().color565(red, green, blue));
 }
+
+DefClipsFunction(SetBacklightIntensity) {
+    UDFValue intensityV;
+    if (! UDFNthArgument(context,1,NUMBER_BITS,&intensityV)) {
+        return;
+    }
+    uint16_t intensity = CVCoerceToInteger(&intensityV);
+    getBasicChipsetInterface().setBacklightIntensity(intensity);
+}
+
+DefClipsFunction(GetBacklightIntensity) {
+    retVal->integerValue = CreateInteger(theEnv, getBasicChipsetInterface().getBacklightIntensity());
+}
+
+
 
 #undef DefClipsFunction
