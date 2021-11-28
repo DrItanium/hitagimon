@@ -40,6 +40,18 @@ namespace {
         return getConfiguration0().rtcStart;
     }
 }
+uint16_t
+computeColor565(uint8_t r, uint8_t g, uint8_t b) {
+    // don't actually ask the chipset for this
+    return (static_cast<uint16_t>(r & 0xF8) << 8) |
+           (static_cast<uint16_t>(g & 0xFC) << 3) |
+           (static_cast<uint16_t>(b>>3));
+}
+uint16_t
+ChipsetBasicFunctions::color565(uint8_t r, uint8_t g, uint8_t b) {
+    // don't actually ask the chipset for this
+    return computeColor565(r, g, b);
+}
 BuiltinIOBaseDevice::BuiltinIOBaseDevice(uint32_t offset) : offset_(offset), baseAddress_(getIOBase0Address(offset)) { }
 ChipsetBasicFunctions::SDFile::SDFile(uint32_t baseAddress) : raw(memory<FileInterfaceRaw>(baseAddress)) {}
 ChipsetBasicFunctions::ChipsetBasicFunctions(uint32_t offset) : BuiltinIOBaseDevice(offset),
@@ -48,20 +60,12 @@ _sdbase(memory<SDCardBaseInterfaceRaw>(getSDCardRegisterBase())),
 _displayAux(memory<SeesawRegisters>(getAuxDisplayFunctionsBase())),
 _displayItself(memory<DisplayRegisters>(getDisplayFunctionsBase())),
 _rtcBase(memory<RTCInterface>(getRTCBase())),
-openFiles(new SDFile*[_sdbase.maximumNumberOfOpenFilesPort]) {
+openFiles(new SDFile*[_sdbase.maximumNumberOfOpenFilesPort]),
+colorBlack_(computeColor565(0,0,0)){
     uint32_t sdCardFileBase = getSDCardFileBase();
     for (int i = 0; i < _sdbase.maximumNumberOfOpenFilesPort; ++i, sdCardFileBase += 0x100) {
         openFiles[i] = new SDFile(sdCardFileBase);
     }
-    normalColors_[0] = _displayItself.colorBlack;
-    normalColors_[1] = _displayItself.colorWhite;
-    normalColors_[2] = _displayItself.colorRed;
-    normalColors_[3] = _displayItself.colorGreen;
-    normalColors_[4] = _displayItself.colorBlue;
-    normalColors_[5] = _displayItself.colorCyan;
-    normalColors_[6] = _displayItself.colorMagenta;
-    normalColors_[7] = _displayItself.colorYellow;
-    normalColors_[8] = _displayItself.colorOrange;
     now();
 }
 
@@ -300,13 +304,6 @@ ChipsetBasicFunctions::color565(uint32_t color) {
                     static_cast<uint8_t>(color >> 16)) ;
 }
 
-uint16_t
-ChipsetBasicFunctions::color565(uint8_t r, uint8_t g, uint8_t b) {
-    // don't actually ask the chipset for this
-    return (static_cast<uint16_t>(r & 0xF8) << 8) |
-            (static_cast<uint16_t>(g & 0xFC) << 3) |
-            (static_cast<uint16_t>(b>>3));
-}
 
 void
 ChipsetBasicFunctions::setCursor(uint16_t x, uint16_t y) {
@@ -321,7 +318,7 @@ ChipsetBasicFunctions::fillScreen(uint16_t value) {
 }
 void
 ChipsetBasicFunctions::clearScreen() {
-    fillScreen(normalColors_[0]);
+    fillScreen(colorBlack_);
 }
 
 
@@ -338,14 +335,12 @@ ChipsetBasicFunctions::setTextColor(uint16_t fg, uint16_t bg) {
 
 void
 ChipsetBasicFunctions::setTextSize(uint16_t s) {
-    _displayItself.treatAsSquare = true;
     _displayItself.sx = s;
-    _displayItself.invoke = InvokeOpcode_SetTextSize;
+    _displayItself.invoke = InvokeOpcode_SetTextSizeSquare;
 }
 
 void
 ChipsetBasicFunctions::setTextSize(uint16_t sx, uint16_t sy) {
-    _displayItself.treatAsSquare = false;
     _displayItself.sx = sx;
     _displayItself.sy = sy;
     _displayItself.invoke = InvokeOpcode_SetTextSize;
@@ -353,33 +348,30 @@ ChipsetBasicFunctions::setTextSize(uint16_t sx, uint16_t sy) {
 
 void
 ChipsetBasicFunctions::drawRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t fgColor, bool fill) {
-    _displayItself.performFill = fill;
     _displayItself.x0 = x;
     _displayItself.y0 = y;
     _displayItself.width = width;
     _displayItself.height = height;
     _displayItself.foregroundColor = fgColor;
-    _displayItself.invoke = InvokeOpcode_DrawRect;
+    _displayItself.invoke = fill ? InvokeOpcode_FillRect : InvokeOpcode_DrawRect;
 }
 void
 ChipsetBasicFunctions::drawCircle(uint16_t x, uint16_t y, uint16_t radius, uint16_t fgColor, bool fill) {
-    _displayItself.performFill = fill;
     _displayItself.x0 = x;
     _displayItself.y0 = y;
     _displayItself.radius = radius;
     _displayItself.foregroundColor = fgColor;
-    _displayItself.invoke = InvokeOpcode_DrawCircle;
+    _displayItself.invoke = fill ? InvokeOpcode_FillCircle : InvokeOpcode_DrawCircle;
 }
 void
 ChipsetBasicFunctions::drawRoundedRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t radius, uint16_t fgColor, bool fill ) {
-    _displayItself.performFill = fill;
     _displayItself.x0 = x;
     _displayItself.y0 = y;
     _displayItself.width = width;
     _displayItself.height = height;
     _displayItself.radius = radius;
     _displayItself.foregroundColor = fgColor;
-    _displayItself.invoke = InvokeOpcode_DrawRoundRect;
+    _displayItself.invoke = fill ? InvokeOpcode_FillRoundRect : InvokeOpcode_DrawRoundRect;
 
 }
 void ChipsetBasicFunctions::drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t fgColor) {
@@ -405,17 +397,15 @@ void ChipsetBasicFunctions::drawHorizontalLine(uint16_t x, uint16_t y, uint16_t 
     _displayItself.invoke = InvokeOpcode_DrawFastHLine;
 }
 void ChipsetBasicFunctions::drawChar(uint16_t x, uint16_t y, uint16_t character, uint16_t fgColor, uint16_t bgColor, uint16_t size) {
-    _displayItself.treatAsSquare = true;
     _displayItself.sx = size;
     _displayItself.backgroundColor = bgColor;
     _displayItself.foregroundColor = fgColor;
     _displayItself.currentCharacter = character;
     _displayItself.x0 = x;
     _displayItself.y0 = y;
-    _displayItself.invoke = InvokeOpcode_DrawChar;
+    _displayItself.invoke = InvokeOpcode_DrawCharSquare;
 }
 void ChipsetBasicFunctions::drawChar(uint16_t x, uint16_t y, uint16_t character, uint16_t fgColor, uint16_t bgColor, uint16_t sx, uint16_t sy) {
-    _displayItself.treatAsSquare = false;
     _displayItself.sx = sx;
     _displayItself.sy = sy;
     _displayItself.backgroundColor = bgColor;

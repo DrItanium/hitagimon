@@ -192,7 +192,6 @@ private:
     struct DisplayRegisters {
         TwoByteEntry(portIO);
         TwoByteEntry(invoke);
-        FourByteEntry(result);
         union {
            struct {
                TwoByteEntry(x0);
@@ -221,7 +220,6 @@ private:
         TwoByteEntry(unused0);
         TwoByteEntry(foregroundColor);
         TwoByteEntry(backgroundColor);
-        TwoByteEntry(performFill);
         TwoByteEntry(invert);
         TwoByteEntry(rotation);
         TwoByteEntry(textWrap);
@@ -229,19 +227,8 @@ private:
         TwoByteEntry(displayHeight);
         TwoByteEntry(cursorX);
         TwoByteEntry(cursorY);
-        TwoByteEntry(treatAsSquare);
         TwoByteEntry(currentCharacter);
         FourByteEntry(packedRGB);
-        TwoByteEntry(colorBlack);
-        TwoByteEntry(colorWhite);
-        TwoByteEntry(colorRed);
-        TwoByteEntry(colorGreen);
-        TwoByteEntry(colorBlue);
-        TwoByteEntry(colorCyan);
-        TwoByteEntry(colorMagenta);
-        TwoByteEntry(colorYellow);
-        TwoByteEntry(colorOrange);
-        TwoByteEntry(unused1);
     };
 #undef EightByteEntry
 #undef FourByteEntry
@@ -259,6 +246,11 @@ private:
         InvokeOpcode_SetTextColor,
         InvokeOpcode_SetTextSize,
         InvokeOpcode_DrawChar,
+        InvokeOpcode_FillRect,
+        InvokeOpcode_FillCircle,
+        InvokeOpcode_FillRoundRect,
+        InvokeOpcode_DrawCharSquare,
+        InvokeOpcode_SetTextSizeSquare,
     };
 public:
     void drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t fgColor);
@@ -288,7 +280,7 @@ private:
     volatile DisplayRegisters& _displayItself;
     volatile RTCInterface& _rtcBase;
     SDFile** openFiles;
-    uint16_t normalColors_[9];
+    uint16_t colorBlack_;
 };
 
 ChipsetBasicFunctions& getBasicChipsetInterface();
