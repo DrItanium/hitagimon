@@ -286,6 +286,7 @@ public:
     void drawPixel(uint16_t x, uint16_t y, uint16_t color);
 private:
     void installInstruction0(const RawDisplayInstruction& instruction, Opcodes opcode);
+    void installInstruction0_FirstQuadField(const RawDisplayInstruction& instruction, Opcodes opcode);
 private:
     volatile ChipsetRegistersRaw& _memory;
     volatile SDCardBaseInterfaceRaw& _sdbase;

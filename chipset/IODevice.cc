@@ -307,9 +307,15 @@ ChipsetBasicFunctions::installInstruction0(const RawDisplayInstruction &instruct
 }
 
 void
+ChipsetBasicFunctions::installInstruction0_FirstQuadField(const RawDisplayInstruction &instruction, Opcodes opcode) {
+    _displayItself.instructionLower0 = instruction.quadFields_[0];
+    _displayItself.invoke0 = static_cast<uint16_t>(opcode);
+}
+
+void
 ChipsetBasicFunctions::fillScreen(uint16_t value) {
     RawDisplayInstruction rdi(value, 0, 0, 0, 0, 0, 0, 0);
-    installInstruction0(rdi, InvokeOpcodes_FillScreen);
+    installInstruction0_FirstQuadField(rdi, InvokeOpcodes_FillScreen);
 }
 void
 ChipsetBasicFunctions::clearScreen() {
@@ -328,7 +334,7 @@ ChipsetBasicFunctions::drawRect(uint16_t x, uint16_t y, uint16_t width, uint16_t
 void
 ChipsetBasicFunctions::drawCircle(uint16_t x, uint16_t y, uint16_t radius, uint16_t fgColor, bool fill) {
     RawDisplayInstruction rdi(x, y, radius, fgColor, 0, 0, 0, 0);
-    installInstruction0(rdi, fill ? InvokeOpcodes_FillCircle : InvokeOpcodes_DrawCircle) ;
+    installInstruction0_FirstQuadField(rdi, fill ? InvokeOpcodes_FillCircle : InvokeOpcodes_DrawCircle) ;
 }
 void
 ChipsetBasicFunctions::drawRoundedRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t radius, uint16_t fgColor, bool fill ) {
@@ -342,15 +348,15 @@ void ChipsetBasicFunctions::drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint
 }
 void ChipsetBasicFunctions::drawVerticalLine(uint16_t x, uint16_t y, uint16_t height, uint16_t fgColor) {
     RawDisplayInstruction rdi(x, y, height, fgColor, 0, 0, 0, 0);
-    installInstruction0(rdi, InvokeOpcodes_DrawFastVLine);
+    installInstruction0_FirstQuadField(rdi, InvokeOpcodes_DrawFastVLine);
 }
 void ChipsetBasicFunctions::drawHorizontalLine(uint16_t x, uint16_t y, uint16_t width, uint16_t fgColor) {
     RawDisplayInstruction rdi(x, y, width, fgColor, 0, 0, 0, 0);
-    installInstruction0(rdi, InvokeOpcodes_DrawFastHLine);
+    installInstruction0_FirstQuadField(rdi, InvokeOpcodes_DrawFastHLine);
 }
 
 void
 ChipsetBasicFunctions::drawPixel(uint16_t x, uint16_t y, uint16_t color) {
     RawDisplayInstruction rdi(x, y, color, 0, 0, 0, 0, 0);
-    installInstruction0(rdi, InvokeOpcodes_DrawPixel);
+    installInstruction0_FirstQuadField(rdi, InvokeOpcodes_DrawPixel);
 }
