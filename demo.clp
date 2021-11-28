@@ -177,7 +177,7 @@
                                                  (+ ?width (cos ?a))
                                                  (get-random-color))))
 
-(deffunction draw-tangent-wiave 
+(deffunction draw-tangent-wave 
              ()
              (enter-test-routine t "draw tangent wave test!")
              (bind ?width
