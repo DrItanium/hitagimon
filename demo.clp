@@ -51,13 +51,15 @@
 (defmethod clear-screen
   ()
   (clear-screen ?*color-black*))
+(deffunction compute-divide-count 
+             (?count ?fractional ?skip)
+             (- (div ?count ?fractional)
+                (div ?skip ?fractional)))
 (deffunction generate-random-color-selection
              (?count)
              (update-seed)
              (bind ?qcount
-                   (- (div ?count 
-                           8) 
-                      8))
+                   (compute-divide-count ?count 8 8)) ; skip 8 elements but make the divisor do the work for us
              ; always provide these colors to be on the safe side
              (bind ?colors 
                    ?*color-black*
