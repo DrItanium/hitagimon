@@ -131,16 +131,16 @@
              (enter-test-routine ?router
                                  ?msg)
              (loop-for-count 256 do
-              (funcall ?fn
-                       (bind ?x 
-                             (random 0 ?*display-width*))
-                       (bind ?y 
-                             (random 0 ?*display-height*))
-                       (random (+ ?x 1) 
-                               ?*display-width*)
-                       (random (+ ?y 1) 
-                               ?*display-height*)
-                       (get-random-color))))
+                             (funcall ?fn
+                                      (bind ?x 
+                                            (random 0 ?*display-width*))
+                                      (bind ?y 
+                                            (random 0 ?*display-height*))
+                                      (random (+ ?x 1) 
+                                              ?*display-width*)
+                                      (random (+ ?y 1) 
+                                              ?*display-height*)
+                                      (get-random-color))))
 
 (deffunction draw-circle-test () (generic-circle-test t "draw circle test!" display:draw-circle))
 (deffunction fill-circle-test () (generic-circle-test t "fill circle test!" display:fill-circle))
@@ -155,4 +155,34 @@
              (loop-for-count 256 do
                              (display:draw-pixel (random 0 ?*display-width*)
                                                  (random 0 ?*display-height*)
+                                                 (get-random-color))))
+
+(deffunction draw-sine-wave
+             ()
+             (enter-test-routine t "draw sine wave test!")
+             (bind ?width
+                   (/ ?*display-width* 2))
+             (loop-for-count (?a 0 ?*display-width*) do
+                             (display:draw-pixel ?a 
+                                                 (+ ?width (sin ?a))
+                                                 (get-random-color))))
+
+(deffunction draw-cosine-wave
+             ()
+             (enter-test-routine t "draw cosine wave test!")
+             (bind ?width
+                   (/ ?*display-width* 2))
+             (loop-for-count (?a 0 ?*display-width*) do
+                             (display:draw-pixel ?a 
+                                                 (+ ?width (cos ?a))
+                                                 (get-random-color))))
+
+(deffunction draw-tangent-wiave 
+             ()
+             (enter-test-routine t "draw tangent wave test!")
+             (bind ?width
+                   (/ ?*display-width* 2))
+             (loop-for-count (?a 0 ?*display-width*) do
+                             (display:draw-pixel ?a 
+                                                 (+ ?width (tan ?a))
                                                  (get-random-color))))
