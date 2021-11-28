@@ -88,8 +88,8 @@
              (clear-screen)
              (if (= (length$ ?*random-colors0*) 0) then
                (bind ?*random-colors0*
-                     (generate-random-color-selection ?*display-height*))
-               (update-seed)))
+                     (generate-random-color-selection ?*display-height*)))
+             (update-seed))
 
 (deffunction clear-screen-test
              ()
@@ -119,28 +119,77 @@
              (?router ?msg ?fn)
              (enter-test-routine ?router 
                                  ?msg)
-             (loop-for-count (?radius 16 256) do
-                             (funcall ?fn 
-                                      (random 0 ?*display-width*)
-                                      (random 0 ?*display-height*)
-                                      ?radius
-                                      (get-random-color))))
+             (switch ?fn 
+                     (case display:draw-circle then
+                       (loop-for-count 256 do
+                                       (display:draw-circle (random 0 ?*display-width*)
+                                                            (random 0 ?*display-height*)
+                                                            (random 16 ?*display-width*)
+                                                            (get-random-color))))
+                     (case display:fill-circle then
+                       (loop-for-count 256 do
+                                       (display:fill-circle (random 0 ?*display-width*)
+                                                            (random 0 ?*display-height*)
+                                                            (random 16 ?*display-width*)
+                                                            (get-random-color))))
+                     (default
+                       (loop-for-count 256 do
+                                       (funcall ?fn 
+                                                (random 0 ?*display-width*)
+                                                (random 0 ?*display-height*)
+                                                (random 16 ?*display-width*)
+                                                (get-random-color))))))
 
 (deffunction generic-rect/line-test
              (?router ?msg ?fn)
              (enter-test-routine ?router
                                  ?msg)
-             (loop-for-count 256 do
-                             (funcall ?fn
-                                      (bind ?x 
-                                            (random 0 ?*display-width*))
-                                      (bind ?y 
-                                            (random 0 ?*display-height*))
-                                      (random (+ ?x 1) 
-                                              ?*display-width*)
-                                      (random (+ ?y 1) 
-                                              ?*display-height*)
-                                      (get-random-color))))
+             (switch ?fn
+                     (case display:draw-rect then 
+                       (loop-for-count 256 do
+                                       (display:draw-rect (bind ?x 
+                                                                (random 0 ?*display-width*))
+                                                          (bind ?y 
+                                                                (random 0 ?*display-height*))
+                                                          (random (+ ?x 1) 
+                                                                  ?*display-width*)
+                                                          (random (+ ?y 1) 
+                                                                  ?*display-height*)
+                                                          (get-random-color))))
+                     (case display:fill-rect then 
+                       (loop-for-count 256 do
+                                       (display:fill-rect (bind ?x 
+                                                                (random 0 ?*display-width*))
+                                                          (bind ?y 
+                                                                (random 0 ?*display-height*))
+                                                          (random (+ ?x 1) 
+                                                                  ?*display-width*)
+                                                          (random (+ ?y 1) 
+                                                                  ?*display-height*)
+                                                          (get-random-color))))
+                     (case display:draw-line then 
+                       (loop-for-count 256 do
+                                       (display:draw-line (bind ?x 
+                                                                (random 0 ?*display-width*))
+                                                          (bind ?y 
+                                                                (random 0 ?*display-height*))
+                                                          (random (+ ?x 1) 
+                                                                  ?*display-width*)
+                                                          (random (+ ?y 1) 
+                                                                  ?*display-height*)
+                                                          (get-random-color))))
+                     (default 
+                       (loop-for-count 256 do
+                                       (funcall ?fn
+                                                (bind ?x 
+                                                      (random 0 ?*display-width*))
+                                                (bind ?y 
+                                                      (random 0 ?*display-height*))
+                                                (random (+ ?x 1) 
+                                                        ?*display-width*)
+                                                (random (+ ?y 1) 
+                                                        ?*display-height*)
+                                                (get-random-color))))))
 
 (deffunction draw-circle-test () (generic-circle-test t "draw circle test!" display:draw-circle))
 (deffunction fill-circle-test () (generic-circle-test t "fill circle test!" display:fill-circle))
@@ -158,31 +207,31 @@
                                                  (get-random-color))))
 
 (deffunction draw-sine-wave
-             ()
+             (?factor ?count ?height)
              (enter-test-routine t "draw sine wave test!")
-             (bind ?width
-                   (/ ?*display-width* 2))
-             (loop-for-count (?a 0 ?*display-width*) do
+             (loop-for-count (?a 0 ?count) do
                              (display:draw-pixel ?a 
-                                                 (+ ?width (sin ?a))
+                                                 (+ ?height (* ?factor (sin ?a)))
                                                  (get-random-color))))
 
 (deffunction draw-cosine-wave
-             ()
+             (?factor ?count ?height)
              (enter-test-routine t "draw cosine wave test!")
-             (bind ?width
-                   (/ ?*display-width* 2))
-             (loop-for-count (?a 0 ?*display-width*) do
+             (loop-for-count (?a 0 ?count) do
                              (display:draw-pixel ?a 
-                                                 (+ ?width (cos ?a))
+                                                 (+ ?height (* ?factor (cos ?a)))
                                                  (get-random-color))))
 
 (deffunction draw-tangent-wave 
-             ()
+             (?factor ?count ?height)
              (enter-test-routine t "draw tangent wave test!")
-             (bind ?width
-                   (/ ?*display-width* 2))
-             (loop-for-count (?a 0 ?*display-width*) do
+             (loop-for-count (?a 0 ?count) do
                              (display:draw-pixel ?a 
-                                                 (+ ?width (tan ?a))
+                                                 (+ ?height (* ?factor (tan ?a)))
                                                  (get-random-color))))
+
+(deffunction draw-waves-test
+             (?factor ?count ?height)
+             (draw-sine-wave ?factor ?count ?height)
+             (draw-cosine-wave ?factor ?count ?height)
+             (draw-tangent-wave ?factor ?count ?height))
