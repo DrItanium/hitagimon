@@ -115,71 +115,44 @@
              (nth$ (random 1 ?*display-height*)
                    ?*random-colors0*))
 
-(deffunction draw-rect-test
-             ()
-             (enter-test-routine t "draw rect test!")
-             (loop-for-count (?x 0 ?*display-width*) do
-                             (bind ?x-end 
-                                   (- ?*display-width* ?x))
-                             (loop-for-count (?y 0 ?*display-height*) do
-                                             (bind ?y-end
-                                                   (- ?*display-height* ?y))
-                                             (display:draw-rect ?x ?y
-                                                                ?x-end 
-                                                                ?y-end
-                                                                (get-unified-offset-color ?y ?x)))))
-(deffunction fill-rect-test 
-             ()
-             (enter-test-routine t "fill rect test!")
-             (loop-for-count (?x 0 ?*display-width*) do
-                             (bind ?x-end 
-                                   (- ?*display-width* ?x))
-                             (loop-for-count (?y 0 ?*display-height*) do
-                                             (bind ?y-end
-                                                   (- ?*display-height* 
-                                                      ?y))
-                                             (display:fill-rect ?x ?y
-                                                                ?x-end 
-                                                                ?y-end
-                                                                (get-unified-offset-color ?y ?x)))))
-(deffunction draw-circle-test 
-             ()
-             (enter-test-routine t "draw circle test!")
+(deffunction generic-circle-test 
+             (?router ?msg ?fn)
+             (enter-test-routine ?router 
+                                 ?msg)
              (loop-for-count (?radius 16 256) do
-                             (display:draw-circle (random 0 ?*display-width*)
-                                                  (random 0 ?*display-height*)
-                                                  ?radius
-                                                  (get-random-color))))
+                             (funcall ?fn 
+                                      (random 0 ?*display-width*)
+                                      (random 0 ?*display-height*)
+                                      ?radius
+                                      (get-random-color))))
 
-(deffunction fill-circle-test 
-             ()
-             (enter-test-routine t "fill circle test!")
-             (loop-for-count (?radius 16 (random 17 64)) do
-                             (display:fill-circle (random 0 ?*display-width*)
-                                                  (random 0 ?*display-height*)
-                                                  ?radius
-                                                  (get-random-color))))
+(deffunction generic-rect/line-test
+             (?router ?msg ?fn)
+             (enter-test-routine ?router
+                                 ?msg)
+             (loop-for-count 256 do
+              (funcall ?fn
+                       (bind ?x 
+                             (random 0 ?*display-width*))
+                       (bind ?y 
+                             (random 0 ?*display-height*))
+                       (random (+ ?x 1) 
+                               ?*display-width*)
+                       (random (+ ?y 1) 
+                               ?*display-height*)
+                       (get-random-color))))
+
+(deffunction draw-circle-test () (generic-circle-test t "draw circle test!" display:draw-circle))
+(deffunction fill-circle-test () (generic-circle-test t "fill circle test!" display:fill-circle))
+(deffunction draw-rect-test () (generic-rect/line-test t "draw rect test!" display:draw-rect))
+(deffunction fill-rect-test () (generic-rect/line-test t "fill rect test!" display:fill-rect))
+(deffunction draw-line-test () (generic-rect/line-test t "draw line test!" display:draw-line))
+
 
 (deffunction pixel-test
              ()
-             (enter-test-routine t "pixel test!")
-             (loop-for-count (?x 0 ?*display-width*) do
-                             (loop-for-count (?y 0 ?*display-height*) do
-                                             (display:draw-pixel ?x 
-                                                                 ?y
-                                                                 (get-unified-offset-color ?y ?x)))))
-
-(deffunction draw-line-test
-             () 
-             (enter-test-routine t "line test!")
-             (loop-for-count (?x 0 ?*display-width*) do
-                             (loop-for-count (?y 0 ?*display-height*) do
-                                             (bind ?target-color 
-                                                   (get-unified-offset-color ?y ?x))
-                                             (loop-for-count (?x0 ?x ?*display-width*) do
-                                                             (loop-for-count (?y0 ?y ?*display-height*) do
-                                                                             (display:draw-line ?x 
-                                                                                                ?y 
-                                                                                                ?x0 
-                                                                                                ?y0 
-                                                                                                ?target-color))))))
+             (enter-test-routine t "256 pixel test!")
+             (loop-for-count 256 do
+                             (display:draw-pixel (random 0 ?*display-width*)
+                                                 (random 0 ?*display-height*)
+                                                 (get-random-color))))
