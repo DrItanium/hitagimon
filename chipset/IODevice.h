@@ -167,6 +167,7 @@ private:
         TwoByteEntry(openWriteOnly);
         TwoByteEntry(createFileIfMissing);
         TwoByteEntry(clearFileContentsOnOpen);
+        TwoByteEntry(mountCTL);
     } __attribute__((packed));
     struct RTCInterface {
         TwoByteEntry(available);
