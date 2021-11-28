@@ -319,8 +319,7 @@ ChipsetBasicFunctions::fillScreen(uint16_t value) {
 }
 void
 ChipsetBasicFunctions::clearScreen() {
-    static RawDisplayInstruction colorBlackOperation(computeColor565(0,0,0),0,0,0,0,0,0,0 );
-    installInstruction0(colorBlackOperation, InvokeOpcodes_FillScreen);
+    fillScreen(colorBlack_);
 }
 
 
@@ -353,6 +352,12 @@ void ChipsetBasicFunctions::drawVerticalLine(uint16_t x, uint16_t y, uint16_t he
 void ChipsetBasicFunctions::drawHorizontalLine(uint16_t x, uint16_t y, uint16_t width, uint16_t fgColor) {
     RawDisplayInstruction rdi(x, y, width, fgColor, 0, 0, 0, 0);
     installInstruction0_FirstQuadField(rdi, InvokeOpcodes_DrawFastHLine);
+}
+
+void
+ChipsetBasicFunctions::drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t fgColor, bool fill) {
+    RawDisplayInstruction rdi(x0, y0, x1, y1, x2, y2, fgColor, 0);
+    installInstruction0(rdi, fill ? InvokeOpcodes_FillTriangle : InvokeOpcodes_DrawTriangle);
 }
 
 void
