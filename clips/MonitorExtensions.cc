@@ -45,7 +45,6 @@ X(CallTan960);
 X(Color565);
 X(SetBacklightIntensity);
 X(GetBacklightIntensity);
-X(ReadButtons);
 X(DrawPixel);
 X(DrawLine);
 X(DrawCircle);
@@ -54,8 +53,6 @@ X(FillCircle);
 X(FillRect);
 X(FillScreen);
 X(RTCUnixTime);
-X(DisplayWidth);
-X(DisplayHeight);
 #undef X
 extern "C"
 void
@@ -93,7 +90,6 @@ InstallMonitorExtensions(Environment* env) {
     AddUDF(env, "display:color565", "l", 3, 3, "l", Color565, "Color565", NULL);
     AddUDF(env, "display:set-backlight-intensity", "v", 1, 1, "l", SetBacklightIntensity, "SetBacklightIntensity", NULL);
     AddUDF(env, "display:get-backlight-intensity", "l", 0, 0, NULL, GetBacklightIntensity, "GetBacklightIntensity", NULL);
-    AddUDF(env, "input:read-buttons", "l", 0, 0, NULL, ReadButtons, "ReadButtons", NULL);
     AddUDF(env, "display:draw-pixel", "v", 3, 3, "l", DrawPixel, "DrawPixel", NULL);
     AddUDF(env, "display:draw-line", "v", 5, 5, "l", DrawLine, "DrawLine", NULL);
     AddUDF(env, "display:fill-screen", "v", 1, 1, "l", FillScreen, "FillScreen", NULL);
@@ -102,12 +98,8 @@ InstallMonitorExtensions(Environment* env) {
     AddUDF(env, "display:draw-rect", "v", 5, 5, "l", DrawRect, "DrawRect", NULL);
     AddUDF(env, "display:fill-rect", "v", 5, 5, "l", FillRect, "FillRect", NULL);
     AddUDF(env, "rtc:unixtime", "l", 0, 0, NULL, RTCUnixTime, "RTCUnixTime", NULL);
-    AddUDF(env, "display:width", "l", 0, 0, NULL, DisplayWidth, "DisplayWidth", NULL);
-    AddUDF(env, "display:height", "l", 0, 0, NULL, DisplayHeight, "DisplayHeight", NULL);
 }
 #define DefClipsFunction(name) void name (Environment* theEnv, UDFContext* context, UDFValue* retVal)
-DefClipsFunction(DisplayWidth) { retVal->integerValue = CreateInteger(theEnv, getBasicChipsetInterface().displayWidth()); }
-DefClipsFunction(DisplayHeight) { retVal->integerValue = CreateInteger(theEnv, getBasicChipsetInterface().displayHeight()); }
 DefClipsFunction(ExamineByte) {
     if (! UDFNthArgument(context,1,NUMBER_BITS,retVal)) {
         return;
@@ -530,10 +522,6 @@ DefClipsFunction(FillScreen) {
 
 DefClipsFunction(GetBacklightIntensity) {
     retVal->integerValue = CreateInteger(theEnv, getBasicChipsetInterface().getBacklightIntensity());
-}
-
-DefClipsFunction(ReadButtons) {
-    retVal->integerValue = CreateInteger(theEnv, getBasicChipsetInterface().getButtonsRaw());
 }
 
 DefClipsFunction(RTCUnixTime) {

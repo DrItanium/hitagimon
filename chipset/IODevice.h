@@ -185,94 +185,106 @@ private:
     } __attribute__((packed));
     struct SeesawRegisters {
         TwoByteEntry(backlight);
-        TwoByteEntry(reserved0);
-        FourByteEntry(buttons);
     } __attribute__((packed));
-
-    struct DisplayRegisters {
-        TwoByteEntry(portIO);
-        TwoByteEntry(invoke);
+    struct RawDisplayInstruction {
+        RawDisplayInstruction() {
+            quadFields_[0] = 0;
+            quadFields_[1] = 0;
+        }
+        RawDisplayInstruction(uint64_t a, uint64_t b) {
+            quadFields_[0] = a;
+            quadFields_[1] = b;
+        }
+        RawDisplayInstruction(uint16_t a, uint16_t b, uint16_t c, uint16_t d,
+                              uint16_t e, uint16_t f, uint16_t g, uint16_t h) {
+            fields_[0] = a;
+            fields_[1] = b;
+            fields_[2] = c;
+            fields_[3] = d;
+            fields_[4] = e;
+            fields_[5] = f;
+            fields_[6] = g;
+            fields_[7] = h;
+        }
+        RawDisplayInstruction(uint32_t a, uint32_t b, uint32_t c, uint32_t d) {
+            doubleFields_[0] = a;
+            doubleFields_[1] = b;
+            doubleFields_[2] = c;
+            doubleFields_[3] = d;
+        }
+        RawDisplayInstruction(const RawDisplayInstruction& other) {
+            quadFields_[0] = other.quadFields_[0];
+            quadFields_[1] = other.quadFields_[1];
+        }
         union {
-           struct {
-               TwoByteEntry(x0);
-               TwoByteEntry(y0);
-               TwoByteEntry(x1);
-               TwoByteEntry(y1);
-               TwoByteEntry(x2);
-               TwoByteEntry(y2);
-               TwoByteEntry(sx);
-               TwoByteEntry(sy);
-           } __attribute__((packed));
-           struct {
-               FourByteEntry(xy0);
-               FourByteEntry(xy1);
-               FourByteEntry(xy2);
-               FourByteEntry(sxy);
-           } __attribute__((packed));
-           struct {
-               EightByteEntry(xy01);
-               EightByteEntry(xy2s);
-           } __attribute__((packed));
-        } __attribute__((packed));
-        TwoByteEntry(width);
-        TwoByteEntry(height);
-        TwoByteEntry(radius);
-        TwoByteEntry(unused0);
-        TwoByteEntry(foregroundColor);
-        TwoByteEntry(backgroundColor);
-        TwoByteEntry(invert);
-        TwoByteEntry(rotation);
-        TwoByteEntry(textWrap);
-        TwoByteEntry(displayWidth);
-        TwoByteEntry(displayHeight);
-        TwoByteEntry(cursorX);
-        TwoByteEntry(cursorY);
-        TwoByteEntry(currentCharacter);
-        FourByteEntry(packedRGB);
-    };
+            uint16_t fields_[8];
+            uint32_t doubleFields_[4];
+            uint64_t quadFields_[2];
+            struct
+            {
+                uint16_t iField0_;
+                uint16_t iField1_;
+                uint16_t iField2_;
+                uint16_t iField3_;
+                uint16_t iField4_;
+                uint16_t iField5_;
+                uint16_t iField6_;
+                uint16_t iField7_;
+            };
+        };
+    } __attribute__((packed));
+    struct DisplayRegisters {
+        volatile uint64_t instructionLower0;
+        volatile uint64_t instructionUpper0;
+        volatile uint16_t invoke0;
+    }__attribute__((packed));
 #undef EightByteEntry
 #undef FourByteEntry
 #undef TwoByteEntry
-    enum InvokeOpcodes {
-        InvokeOpcode_DrawPixel,
-        InvokeOpcode_DrawFastVLine,
-        InvokeOpcode_DrawFastHLine,
-        InvokeOpcode_DrawRect,
-        InvokeOpcode_FillScreen,
-        InvokeOpcode_DrawLine,
-        InvokeOpcode_DrawCircle,
-        InvokeOpcode_DrawRoundRect,
-        InvokeOpcode_SetCursor,
-        InvokeOpcode_SetTextColor,
-        InvokeOpcode_SetTextSize,
-        InvokeOpcode_DrawChar,
-        InvokeOpcode_FillRect,
-        InvokeOpcode_FillCircle,
-        InvokeOpcode_FillRoundRect,
-        InvokeOpcode_DrawCharSquare,
-        InvokeOpcode_SetTextSizeSquare,
+    enum Shape {
+        ShapePixel = 0x00,
+        ShapeLine = 0x01,
+        ShapeFastVLine = 0x02,
+        ShapeFastHLine = 0x03,
+        ShapeRect = 0x04,
+        ShapeTriangle = 0x05,
+        ShapeRoundRect = 0x06,
+        ShapeCircle = 0x07,
+    };
+    enum InvokeClass {
+        InvokeClass_Draw = 0x00,
+        InvokeClass_Fill = 0x10,
+    };
+    enum Opcodes {
+        InvokeOpcodes_DrawPixel = InvokeClass_Draw | ShapePixel,
+        InvokeOpcodes_DrawLine = InvokeClass_Draw | ShapeLine,
+        InvokeOpcodes_DrawFastVLine = InvokeClass_Draw | ShapeFastVLine,
+        InvokeOpcodes_DrawFastHLine = InvokeClass_Draw | ShapeFastHLine,
+        InvokeOpcodes_DrawRect = InvokeClass_Draw | ShapeRect,
+        InvokeOpcodes_DrawTriangle = InvokeClass_Draw | ShapeTriangle,
+        InvokeOpcodes_DrawRoundRect = InvokeClass_Draw | ShapeRoundRect,
+        InvokeOpcodes_DrawCircle = InvokeClass_Draw | ShapeCircle,
+
+        InvokeOpcodes_FillScreen = InvokeClass_Fill | ShapePixel,
+        InvokeOpcodes_FillRect = InvokeClass_Fill | ShapeRect,
+        InvokeOpcodes_FillTriangle = InvokeClass_Fill | ShapeTriangle,
+        InvokeOpcodes_FillRoundRect = InvokeClass_Fill | ShapeRoundRect,
+        InvokeOpcodes_FillCircle = InvokeClass_Fill | ShapeCircle,
     };
 public:
     void drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t fgColor);
     void drawVerticalLine(uint16_t x, uint16_t y, uint16_t height, uint16_t fgColor);
     void drawHorizontalLine(uint16_t x, uint16_t y, uint16_t width, uint16_t fgColor);
-    void drawChar(uint16_t x, uint16_t y, uint16_t character, uint16_t fgColor, uint16_t bgColor, uint16_t size);
-    void drawChar(uint16_t x, uint16_t y, uint16_t character, uint16_t fgColor, uint16_t bgColor, uint16_t sx, uint16_t sy);
     void drawRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t fgColor, bool fill = false);
     void drawCircle(uint16_t x, uint16_t y, uint16_t radius, uint16_t fgColor, bool fill = false);
     void drawRoundedRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t radius, uint16_t fgColor, bool fill = false);
     uint16_t color565(uint32_t color);
     uint16_t color565(uint8_t r, uint8_t g, uint8_t b);
-    void setCursor(uint16_t x, uint16_t y);
     void clearScreen();
     void fillScreen(uint16_t value);
-    uint16_t displayWidth() const;
-    uint16_t displayHeight() const;
     void drawPixel(uint16_t x, uint16_t y, uint16_t color);
-    void drawPixel(uint32_t xy, uint16_t color);
-    void setTextColor(uint16_t fg, uint16_t bg);
-    void setTextSize(uint16_t s);
-    void setTextSize(uint16_t sx, uint16_t sy);
+private:
+    void installInstruction0(const RawDisplayInstruction& instruction, Opcodes opcode);
 private:
     volatile ChipsetRegistersRaw& _memory;
     volatile SDCardBaseInterfaceRaw& _sdbase;

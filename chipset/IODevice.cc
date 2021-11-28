@@ -274,10 +274,6 @@ ChipsetBasicFunctions::getBacklightIntensity() const {
     return _displayAux.backlight;
 }
 
-uint32_t
-ChipsetBasicFunctions::getButtonsRaw() const {
-    return _displayAux.buttons;
-}
 
 uint32_t
 ChipsetBasicFunctions::unixtime() const {
@@ -303,126 +299,58 @@ ChipsetBasicFunctions::color565(uint32_t color) {
                     static_cast<uint8_t>(color >> 8),
                     static_cast<uint8_t>(color >> 16)) ;
 }
-
-
 void
-ChipsetBasicFunctions::setCursor(uint16_t x, uint16_t y) {
-    _displayItself.x0 = x;
-    _displayItself.y0 = y;
-    _displayItself.invoke = InvokeOpcode_SetCursor;
+ChipsetBasicFunctions::installInstruction0(const RawDisplayInstruction &instruction, Opcodes opcode) {
+    _displayItself.instructionLower0 = instruction.quadFields_[0];
+    _displayItself.instructionUpper0 = instruction.quadFields_[1];
+    _displayItself.invoke0 = static_cast<uint16_t>(opcode);
 }
+
 void
 ChipsetBasicFunctions::fillScreen(uint16_t value) {
-    _displayItself.foregroundColor = value;
-    _displayItself.invoke = InvokeOpcode_FillScreen;
+    RawDisplayInstruction rdi(value, 0, 0, 0, 0, 0, 0, 0);
+    installInstruction0(rdi, InvokeOpcodes_FillScreen);
 }
 void
 ChipsetBasicFunctions::clearScreen() {
-    fillScreen(colorBlack_);
+    static RawDisplayInstruction colorBlackOperation(computeColor565(0,0,0),0,0,0,0,0,0,0 );
+    installInstruction0(colorBlackOperation, InvokeOpcodes_FillScreen);
 }
 
 
-uint16_t ChipsetBasicFunctions::displayHeight() const { return _displayItself.height; }
-uint16_t ChipsetBasicFunctions::displayWidth() const { return _displayItself.width; }
 
-
-void
-ChipsetBasicFunctions::setTextColor(uint16_t fg, uint16_t bg) {
-    _displayItself.foregroundColor = fg;
-    _displayItself.backgroundColor = bg;
-    _displayItself.invoke = InvokeOpcode_SetTextColor;
-}
-
-void
-ChipsetBasicFunctions::setTextSize(uint16_t s) {
-    _displayItself.sx = s;
-    _displayItself.invoke = InvokeOpcode_SetTextSizeSquare;
-}
-
-void
-ChipsetBasicFunctions::setTextSize(uint16_t sx, uint16_t sy) {
-    _displayItself.sx = sx;
-    _displayItself.sy = sy;
-    _displayItself.invoke = InvokeOpcode_SetTextSize;
-}
 
 void
 ChipsetBasicFunctions::drawRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t fgColor, bool fill) {
-    _displayItself.x0 = x;
-    _displayItself.y0 = y;
-    _displayItself.width = width;
-    _displayItself.height = height;
-    _displayItself.foregroundColor = fgColor;
-    _displayItself.invoke = fill ? InvokeOpcode_FillRect : InvokeOpcode_DrawRect;
+    RawDisplayInstruction rdi(x, y, width, height, fgColor, 0, 0, 0);
+    installInstruction0(rdi, fill ? InvokeOpcodes_FillRect : InvokeOpcodes_DrawRect) ;
 }
 void
 ChipsetBasicFunctions::drawCircle(uint16_t x, uint16_t y, uint16_t radius, uint16_t fgColor, bool fill) {
-    _displayItself.x0 = x;
-    _displayItself.y0 = y;
-    _displayItself.radius = radius;
-    _displayItself.foregroundColor = fgColor;
-    _displayItself.invoke = fill ? InvokeOpcode_FillCircle : InvokeOpcode_DrawCircle;
+    RawDisplayInstruction rdi(x, y, radius, fgColor, 0, 0, 0, 0);
+    installInstruction0(rdi, fill ? InvokeOpcodes_FillCircle : InvokeOpcodes_DrawCircle) ;
 }
 void
 ChipsetBasicFunctions::drawRoundedRect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t radius, uint16_t fgColor, bool fill ) {
-    _displayItself.x0 = x;
-    _displayItself.y0 = y;
-    _displayItself.width = width;
-    _displayItself.height = height;
-    _displayItself.radius = radius;
-    _displayItself.foregroundColor = fgColor;
-    _displayItself.invoke = fill ? InvokeOpcode_FillRoundRect : InvokeOpcode_DrawRoundRect;
+    RawDisplayInstruction rdi(x, y, width, height, radius, fgColor, 0, 0);
+    installInstruction0(rdi, fill ? InvokeOpcodes_FillRoundRect : InvokeOpcodes_DrawRoundRect) ;
 
 }
 void ChipsetBasicFunctions::drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t fgColor) {
-    _displayItself.x0 = x0;
-    _displayItself.y0 = y0;
-    _displayItself.x1 = x1;
-    _displayItself.y1 = y1;
-    _displayItself.foregroundColor = fgColor;
-    _displayItself.invoke = InvokeOpcode_DrawLine;
+    RawDisplayInstruction rdi(x0, y0, x1, y1, fgColor, 0, 0, 0);
+    installInstruction0(rdi, InvokeOpcodes_DrawLine);
 }
 void ChipsetBasicFunctions::drawVerticalLine(uint16_t x, uint16_t y, uint16_t height, uint16_t fgColor) {
-    _displayItself.x0 = x;
-    _displayItself.y0 = y;
-    _displayItself.height = height;
-    _displayItself.foregroundColor = fgColor;
-    _displayItself.invoke = InvokeOpcode_DrawFastVLine;
+    RawDisplayInstruction rdi(x, y, height, fgColor, 0, 0, 0, 0);
+    installInstruction0(rdi, InvokeOpcodes_DrawFastVLine);
 }
 void ChipsetBasicFunctions::drawHorizontalLine(uint16_t x, uint16_t y, uint16_t width, uint16_t fgColor) {
-    _displayItself.x0 = x;
-    _displayItself.y0 = y;
-    _displayItself.width = width;
-    _displayItself.foregroundColor = fgColor;
-    _displayItself.invoke = InvokeOpcode_DrawFastHLine;
-}
-void ChipsetBasicFunctions::drawChar(uint16_t x, uint16_t y, uint16_t character, uint16_t fgColor, uint16_t bgColor, uint16_t size) {
-    _displayItself.sx = size;
-    _displayItself.backgroundColor = bgColor;
-    _displayItself.foregroundColor = fgColor;
-    _displayItself.currentCharacter = character;
-    _displayItself.x0 = x;
-    _displayItself.y0 = y;
-    _displayItself.invoke = InvokeOpcode_DrawCharSquare;
-}
-void ChipsetBasicFunctions::drawChar(uint16_t x, uint16_t y, uint16_t character, uint16_t fgColor, uint16_t bgColor, uint16_t sx, uint16_t sy) {
-    _displayItself.sx = sx;
-    _displayItself.sy = sy;
-    _displayItself.backgroundColor = bgColor;
-    _displayItself.foregroundColor = fgColor;
-    _displayItself.currentCharacter = character;
-    _displayItself.x0 = x;
-    _displayItself.y0 = y;
-    _displayItself.invoke = InvokeOpcode_DrawChar;
+    RawDisplayInstruction rdi(x, y, width, fgColor, 0, 0, 0, 0);
+    installInstruction0(rdi, InvokeOpcodes_DrawFastHLine);
 }
 
 void
-ChipsetBasicFunctions::drawPixel(uint32_t xy, uint16_t color) {
-    _displayItself.xy0 = xy;
-    _displayItself.foregroundColor = color;
-    _displayItself.invoke = InvokeOpcode_DrawPixel;
-}
-void
 ChipsetBasicFunctions::drawPixel(uint16_t x, uint16_t y, uint16_t color) {
-    drawPixel(makeOrdinal(x, y), color);
+    RawDisplayInstruction rdi(x, y, color, 0, 0, 0, 0, 0);
+    installInstruction0(rdi, InvokeOpcodes_DrawPixel);
 }
