@@ -55,6 +55,8 @@ X(FillScreen);
 X(RTCUnixTime);
 X(DrawTriangle);
 X(FillTriangle);
+X(DrawRoundRect);
+X(FillRoundRect);
 #undef X
 extern "C"
 void
@@ -101,6 +103,8 @@ InstallMonitorExtensions(Environment* env) {
     AddUDF(env, "display:fill-rect", "v", 5, 5, "l", FillRect, "FillRect", NULL);
     AddUDF(env, "display:draw-triangle", "v", 7, 7, "l", DrawTriangle, "DrawTriangle", NULL);
     AddUDF(env, "display:fill-triangle", "v", 7, 7, "l", FillTriangle, "FillTriangle", NULL);
+    AddUDF(env, "display:draw-round-rect", "v", 7, 7, "l", DrawRoundRect, "DrawRoundRect", NULL);
+    AddUDF(env, "display:fill-round-rect", "v", 7, 7, "l", FillRoundRect, "FillRoundRect", NULL);
     AddUDF(env, "rtc:unixtime", "l", 0, 0, NULL, RTCUnixTime, "RTCUnixTime", NULL);
 }
 #define DefClipsFunction(name) void name (Environment* theEnv, UDFContext* context, UDFValue* retVal)
@@ -567,4 +571,35 @@ DefClipsFunction(DrawTriangle) {
                                             CVCoerceToInteger(&y2v),
                                             CVCoerceToInteger(&fgColorv)) ;
 }
+DefClipsFunction(FillRoundRect) {
+    UDFValue x0v, y0v, width, height, radius, fgColorv;
+    if (!UDFFirstArgument(context, NUMBER_BITS, &x0v)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &y0v)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &width)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &height)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &radius)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &fgColorv)) { return; }
+    getBasicChipsetInterface().drawRoundedRect(CVCoerceToInteger(&x0v),
+                                               CVCoerceToInteger(&y0v),
+                                               CVCoerceToInteger(&width),
+                                               CVCoerceToInteger(&height),
+                                               CVCoerceToInteger(&radius),
+                                               CVCoerceToInteger(&fgColorv), true) ;
+}
+DefClipsFunction(DrawRoundRect) {
+    UDFValue x0v, y0v, width, height, radius, fgColorv;
+    if (!UDFFirstArgument(context, NUMBER_BITS, &x0v)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &y0v)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &width)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &height)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &radius)) { return; }
+    if (!UDFNextArgument(context, NUMBER_BITS, &fgColorv)) { return; }
+    getBasicChipsetInterface().drawRoundedRect(CVCoerceToInteger(&x0v),
+                                               CVCoerceToInteger(&y0v),
+                                               CVCoerceToInteger(&width),
+                                               CVCoerceToInteger(&height),
+                                               CVCoerceToInteger(&radius),
+                                               CVCoerceToInteger(&fgColorv)) ;
+}
+
 #undef DefClipsFunction
