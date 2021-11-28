@@ -9,22 +9,28 @@
 ;(deffunction display:color565 (?r ?g ?b) (random 0 65536))
 ;(deffunction display:height () 320)
 ;(deffunction display:width () 240)
+(deffunction update-seed
+             ()
+             (seed (rtc:unixtime)))
 (defglobal MAIN
-           ?*display-width* = (display:width)
-           ?*display-height* = (display:height)
+           ?*display-width* = 128
+           ?*display-height* = 160
            ?*color-black* = (display:color565 0 0 0)
            ?*color-white* = (display:color565 255 255 255)
            ?*color-red* = (display:color565 255 0 0)
            ?*color-green* = (display:color565 0 255 0)
            ?*color-blue* = (display:color565 0 0 255)
            ?*color-purple* = (display:color565 255 0 255)
-           ?*color-yellow* = (display:color565 0 255 255))
+           ?*color-yellow* = (display:color565 0 255 255)
+           ?*color-red-green* = (display:color565 255 255 0)
+           )
 (deffunction check-time
              (?fn $?rest)
              (bind ?start-time (rtc:unixtime))
              (bind ?result 
                    (funcall ?fn (expand$ ?rest)))
-             (bind ?end-time (rtc:unixtime))
+             (bind ?end-time 
+                   (rtc:unixtime))
              (printout t "(" ?fn " " (expand$ ?rest) ") took: " 
                        (- ?end-time ?start-time) crlf)
              ?result)
@@ -46,33 +52,61 @@
   (clear-screen ?*color-black*))
 (deffunction generate-random-color-selection
              (?count)
+             (update-seed)
              (bind ?qcount
-                   (div ?count 4))
+                   (- (div ?count 
+                           8) 
+                      8))
+             ; always provide these colors to be on the safe side
              (bind ?colors 
-                   (create$))
-             (printout t "Generating " ?count " random colors!" crlf)
+                   ?*color-black*
+                   ?*color-white*
+                   ?*color-red*
+                   ?*color-green*
+                   ?*color-blue*
+                   ?*color-purple*
+                   ?*color-yellow*
+                   ?*color-red-green*)
              (loop-for-count ?qcount do
                              (bind ?colors
                                    ?colors
-                                   ; just generate a random 16-bit number
+                                   (random 0 65536)
+                                   (random 0 65536)
+                                   (random 0 65536)
+                                   (random 0 65536)
                                    (random 0 65536)
                                    (random 0 65536)
                                    (random 0 65536)
                                    (random 0 65536)))
-             (printout t "Done" crlf)
              ?colors)
+(deffunction get-display-height-number-of-colors
+             ()
+             (clear-screen)
+             (bind ?result 
+                   (generate-random-color-selection ?*display-height*))
+             (update-seed)
+             ?result)
+
 (deffunction clear-screen-test
              ()
              (clear-screen)
              (printout t "Clear screen test!" crlf)
              (progn$ (?color (generate-random-color-selection ?*display-height*)) do
                      (clear-screen ?color)))
+(deffunction unified-offset
+             (?max ?advance ?x ?y ?modulo)
+             (max ?max 
+                  (integer 
+                    (mod 
+                      (+ ?advance 
+                         ?x 
+                         ?y) 
+                      ?modulo))))
 (deffunction draw-rect-test
              ()
-             (clear-screen)
              (printout t "draw rect test!" crlf)
              (bind ?colors
-                   (generate-random-color-selection ?*display-height*))
+                   (get-display-height-number-of-colors))
              (loop-for-count (?x 0 ?*display-width*) do
                              (bind ?x-end 
                                    (- ?*display-width* ?x))
@@ -82,60 +116,78 @@
                                              (display:draw-rect ?x ?y
                                                                 ?x-end 
                                                                 ?y-end
-                                                                (nth$ (integer (mod (+ 1 ?y ?x) ?*display-height*))
+                                                                (nth$ (unified-offset 1 1 ?y ?x ?*display-height*)
                                                                       ?colors)))))
 (deffunction fill-rect-test 
              ()
              (printout t "fill rect test!" crlf)
-             (clear-screen)
              (bind ?colors
-                   (generate-random-color-selection ?*display-height*))
+                   (get-display-height-number-of-colors))
              (loop-for-count (?x 0 ?*display-width*) do
                              (bind ?x-end 
                                    (- ?*display-width* ?x))
                              (loop-for-count (?y 0 ?*display-height*) do
                                              (bind ?y-end
-                                                   (- ?*display-height* ?y))
+                                                   (- ?*display-height* 
+                                                      ?y))
                                              (display:fill-rect ?x ?y
                                                                 ?x-end 
                                                                 ?y-end
-                                                                (nth$ (integer (mod (+ 1 ?y ?x) ?*display-height*))
+                                                                (nth$ (unified-offset 1 1 ?y ?x ?*display-height*)
                                                                       ?colors)))))
 (deffunction draw-circle-test 
              ()
              (printout t "draw circle test!" crlf)
-             (clear-screen)
              (bind ?colors
-                   (generate-random-color-selection ?*display-height*))
-             (loop-for-count (?radius 16 (random 17 64)) do
+                   (get-display-height-number-of-colors))
+             (loop-for-count (?radius 16 256) do
                              (display:draw-circle (random 0 ?*display-width*)
                                                   (random 0 ?*display-height*)
                                                   ?radius
-                                                  (nth$ (random 0 ?*display-height*) 
+                                                  (nth$ (random 1 ?*display-height*) 
                                                         ?colors))))
 
 (deffunction fill-circle-test 
              ()
              (printout t "fill circle test!" crlf)
-             (clear-screen)
              (bind ?colors
-                   (generate-random-color-selection ?*display-height*))
+                   (get-display-height-number-of-colors))
              (loop-for-count (?radius 16 (random 17 64)) do
                              (display:fill-circle (random 0 ?*display-width*)
                                                   (random 0 ?*display-height*)
                                                   ?radius
-                                                  (nth$ (random 0 ?*display-height*) 
+                                                  (nth$ (random 1 ?*display-height*) 
                                                         ?colors))))
 
 (deffunction pixel-test
              ()
              (printout t "pixel test!" crlf)
-             (clear-screen)
              (bind ?colors
-                   (generate-random-color-selection ?*display-height*))
+                   (get-display-height-number-of-colors))
              (loop-for-count (?x 0 ?*display-width*) do
                              (loop-for-count (?y 0 ?*display-height*) do
                                              (display:draw-pixel ?x 
                                                                  ?y
-                                                                (nth$ (integer (mod (+ 1 ?y ?x) ?*display-height*))
-                                                                      ?colors)))))
+                                                                 (nth$ (unified-offset 1 1 ?y ?x ?*display-height*)
+                                                                       ?colors)))))
+
+(deffunction draw-line-test
+             () 
+             (printout t "line test!" crlf)
+             (bind ?colors
+                   (get-display-height-number-of-colors))
+             (loop-for-count (?x 0 
+                                 ?*display-width*) do
+                             (loop-for-count (?y 0 ?*display-height*) do
+                                             (loop-for-count (?x0 ?x ?*display-width*) do
+                                                             (loop-for-count (?y0 ?y ?*display-height*) do
+                                                                             (display:draw-line ?x 
+                                                                                                ?y 
+                                                                                                ?x0 
+                                                                                                ?y0 
+                                                                                                (nth$ (unified-offset 1 
+                                                                                                                      1 
+                                                                                                                      ?y 
+                                                                                                                      ?x 
+                                                                                                                      ?*display-height*)
+                                                                                                      ?colors)))))))
