@@ -5,6 +5,7 @@
 ;(defgeneric display:fill-circle)
 ;(defgeneric display:draw-pixel)
 ;(defgeneric display:fill-screen)
+;(defgeneric display:draw-line)
 ;(defgeneric rtc:unixtime)
 ;(deffunction display:color565 (?r ?g ?b) (random 0 65536))
 ;(deffunction display:height () 320)
@@ -23,7 +24,7 @@
            ?*color-purple* = (display:color565 255 0 255)
            ?*color-yellow* = (display:color565 0 255 255)
            ?*color-red-green* = (display:color565 255 255 0)
-           )
+           ?*random-colors0* = (create$))
 (deffunction check-time
              (?fn $?rest)
              (bind ?start-time (rtc:unixtime))
@@ -79,20 +80,21 @@
                                    (random 0 65536)
                                    (random 0 65536)))
              ?colors)
-(deffunction get-display-height-number-of-colors
-             ()
+(deffunction enter-test-routine 
+             (?router $?message)
+             (printout ?router (expand$ ?message) crlf)
              (clear-screen)
-             (bind ?result 
-                   (generate-random-color-selection ?*display-height*))
-             (update-seed)
-             ?result)
+             (if (= (length$ ?*random-colors0*) 0) then
+               (bind ?*random-colors0*
+                     (generate-random-color-selection ?*display-height*))
+               (update-seed)))
 
 (deffunction clear-screen-test
              ()
-             (clear-screen)
-             (printout t "Clear screen test!" crlf)
-             (progn$ (?color (generate-random-color-selection ?*display-height*)) do
+             (enter-test-routine t "Clear screen test!")
+             (progn$ (?color ?*random-colors0*) do
                      (clear-screen ?color)))
+
 (deffunction unified-offset
              (?max ?advance ?x ?y ?modulo)
              (max ?max 
@@ -102,11 +104,18 @@
                          ?x 
                          ?y) 
                       ?modulo))))
+(deffunction get-unified-offset-color
+             (?y ?x)
+             (nth$ (unified-offset 1 1 ?y ?x ?*display-height*)
+                   ?*random-colors0*))
+(deffunction get-random-color
+             ()
+             (nth$ (random 1 ?*display-height*)
+                   ?*random-colors0*))
+
 (deffunction draw-rect-test
              ()
-             (printout t "draw rect test!" crlf)
-             (bind ?colors
-                   (get-display-height-number-of-colors))
+             (enter-test-routine t "draw rect test!")
              (loop-for-count (?x 0 ?*display-width*) do
                              (bind ?x-end 
                                    (- ?*display-width* ?x))
@@ -116,13 +125,10 @@
                                              (display:draw-rect ?x ?y
                                                                 ?x-end 
                                                                 ?y-end
-                                                                (nth$ (unified-offset 1 1 ?y ?x ?*display-height*)
-                                                                      ?colors)))))
+                                                                (get-unified-offset-color ?y ?x)))))
 (deffunction fill-rect-test 
              ()
-             (printout t "fill rect test!" crlf)
-             (bind ?colors
-                   (get-display-height-number-of-colors))
+             (enter-test-routine t "fill rect test!")
              (loop-for-count (?x 0 ?*display-width*) do
                              (bind ?x-end 
                                    (- ?*display-width* ?x))
@@ -133,61 +139,45 @@
                                              (display:fill-rect ?x ?y
                                                                 ?x-end 
                                                                 ?y-end
-                                                                (nth$ (unified-offset 1 1 ?y ?x ?*display-height*)
-                                                                      ?colors)))))
+                                                                (get-unified-offset-color ?y ?x)))))
 (deffunction draw-circle-test 
              ()
-             (printout t "draw circle test!" crlf)
-             (bind ?colors
-                   (get-display-height-number-of-colors))
+             (enter-test-routine t "draw circle test!")
              (loop-for-count (?radius 16 256) do
                              (display:draw-circle (random 0 ?*display-width*)
                                                   (random 0 ?*display-height*)
                                                   ?radius
-                                                  (nth$ (random 1 ?*display-height*) 
-                                                        ?colors))))
+                                                  (get-random-color))))
 
 (deffunction fill-circle-test 
              ()
-             (printout t "fill circle test!" crlf)
-             (bind ?colors
-                   (get-display-height-number-of-colors))
+             (enter-test-routine t "fill circle test!")
              (loop-for-count (?radius 16 (random 17 64)) do
                              (display:fill-circle (random 0 ?*display-width*)
                                                   (random 0 ?*display-height*)
                                                   ?radius
-                                                  (nth$ (random 1 ?*display-height*) 
-                                                        ?colors))))
+                                                  (get-random-color))))
 
 (deffunction pixel-test
              ()
-             (printout t "pixel test!" crlf)
-             (bind ?colors
-                   (get-display-height-number-of-colors))
+             (enter-test-routine t "pixel test!")
              (loop-for-count (?x 0 ?*display-width*) do
                              (loop-for-count (?y 0 ?*display-height*) do
                                              (display:draw-pixel ?x 
                                                                  ?y
-                                                                 (nth$ (unified-offset 1 1 ?y ?x ?*display-height*)
-                                                                       ?colors)))))
+                                                                 (get-unified-offset-color ?y ?x)))))
 
 (deffunction draw-line-test
              () 
-             (printout t "line test!" crlf)
-             (bind ?colors
-                   (get-display-height-number-of-colors))
-             (loop-for-count (?x 0 
-                                 ?*display-width*) do
+             (enter-test-routine t "line test!")
+             (loop-for-count (?x 0 ?*display-width*) do
                              (loop-for-count (?y 0 ?*display-height*) do
+                                             (bind ?target-color 
+                                                   (get-unified-offset-color ?y ?x))
                                              (loop-for-count (?x0 ?x ?*display-width*) do
                                                              (loop-for-count (?y0 ?y ?*display-height*) do
                                                                              (display:draw-line ?x 
                                                                                                 ?y 
                                                                                                 ?x0 
                                                                                                 ?y0 
-                                                                                                (nth$ (unified-offset 1 
-                                                                                                                      1 
-                                                                                                                      ?y 
-                                                                                                                      ?x 
-                                                                                                                      ?*display-height*)
-                                                                                                      ?colors)))))))
+                                                                                                ?target-color))))))
