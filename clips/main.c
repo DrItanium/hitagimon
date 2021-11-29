@@ -65,7 +65,7 @@
 /***************************************/
 
    static Environment            *mainEnv;
-   static Environment            *debugEnv;
+   //static Environment            *debugEnv;
 
 /****************************************/
 /* main: Starts execution of the expert */
@@ -75,10 +75,10 @@ int clipsMain(
   int argc,
   char *argv[])
   {
-    printf("Setting up primary environment!\n");
+   //printf("Setting up primary environment!\n");
    mainEnv = CreateEnvironment();
-   printf("Setting up secondary environment!\n");
-   debugEnv = CreateEnvironment();
+   //printf("Setting up secondary environment!\n");
+   //debugEnv = CreateEnvironment();
 
 #if UNIX_V || LINUX || DARWIN || UNIX_7 || WIN_GCC || WIN_MVC
    signal(SIGINT,CatchCtrlC);
@@ -98,7 +98,7 @@ int clipsMain(
    /*==================================================================*/
 
    DestroyEnvironment(mainEnv);
-   DestroyEnvironment(debugEnv);
+   //DestroyEnvironment(debugEnv);
 
    return -1;
   }
