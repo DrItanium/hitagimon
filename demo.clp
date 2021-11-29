@@ -225,13 +225,60 @@
 (deffunction draw-tangent-wave 
              (?factor ?count ?height)
              (enter-test-routine t "draw tangent wave test!")
+             (bind ?table
+                   (create$))
+             (loop-for-count (?a 0 ?count) do
+                             (bind ?table
+                                   ?table
+                                   (+ ?height (* ?factor (tan ?a)))))
              (loop-for-count (?a 0 ?count) do
                              (display:draw-pixel ?a 
-                                                 (+ ?height (* ?factor (tan ?a)))
+                                                 (nth$ (+ 1 ?a)
+                                                       ?table)
                                                  (get-random-color))))
 
-(deffunction draw-waves-test
-             (?factor ?count ?height)
-             (draw-sine-wave ?factor ?count ?height)
-             (draw-cosine-wave ?factor ?count ?height)
-             (draw-tangent-wave ?factor ?count ?height))
+
+(deffunction random-pixel-layout
+             ()
+             (enter-test-routine t "map random layout!")
+             (bind ?height
+                   (/ ?*display-height* 2))
+             (loop-for-count (?a 0 ?*display-width*) do
+                             (display:draw-pixel ?a
+                                                 (+ ?height 
+                                                    (random 0 
+                                                            ?height))
+                                                 (get-random-color))))
+
+(deffunction draw-tangent-blocks
+             (?factor ?count ?height ?blk-size)
+             (enter-test-routine t "draw tangent blocks test!")
+             (loop-for-count (?a 0 ?count) do
+                             (display:fill-rect ?a 
+                                                (+ ?height 
+                                                   (* ?factor 
+                                                      (tan ?a)))
+                                                ?blk-size ?blk-size
+                                                (get-random-color))))
+
+(deffunction draw-cosine-blocks 
+             (?factor ?count ?height ?blk-size)
+             (enter-test-routine t "draw cosine blocks test!")
+             (loop-for-count (?a 0 ?count) do
+                             (display:fill-rect ?a 
+                                                (+ ?height 
+                                                   (* ?factor 
+                                                      (cos ?a)))
+                                                ?blk-size ?blk-size
+                                                (get-random-color))))
+
+(deffunction draw-sine-blocks 
+             (?factor ?count ?height ?blk-size)
+             (enter-test-routine t "draw sine blocks test!")
+             (loop-for-count (?a 0 ?count) do
+                             (display:fill-rect ?a 
+                                                (+ ?height 
+                                                   (* ?factor 
+                                                      (sin ?a)))
+                                                ?blk-size ?blk-size
+                                                (get-random-color))))
