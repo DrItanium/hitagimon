@@ -21,6 +21,9 @@ namespace cortex
             default:
                 break;
         }
+        printf("Faulting Address: %p\n", faddress);
+        printf("PC: %x\n", pc);
+        printf("AC: %x\n", ac);
         printf("Fault Subtype: %x\n", fsubtype);
         if (ftype == 2) {
             // load and display the operation in question
@@ -35,9 +38,6 @@ namespace cortex
                printf("\t\t\t0x%x\n", *ptr);
             }
         }
-        printf("Faulting Address: %p\n", faddress);
-        printf("PC: %x\n", pc);
-        printf("AC: %x\n", ac);
     }
     namespace {
         FaultHandler userReserved_ = 0;
