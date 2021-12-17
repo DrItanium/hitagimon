@@ -11,19 +11,16 @@ namespace cortex
     FaultData::display() {
         printf("Fault Type: %x\n", ftype);
         switch (ftype) {
-            case 1: printf("\tTrace Fault"); break;
-            case 2: printf("\tOperation Fault"); break;
-            case 3: printf("\tArithmetic Fault"); break;
-            case 4: printf("\tFloating-Point Fault"); break;
-            case 5: printf("\tConstraint Fault"); break;
-            case 7: printf("\tProtection Fault"); break;
-            case 0xa: printf("\tType Fault"); break;
+            case 1: printf("\tTrace Fault\n"); break;
+            case 2: printf("\tOperation Fault\n"); break;
+            case 3: printf("\tArithmetic Fault\n"); break;
+            case 4: printf("\tFloating-Point Fault\n"); break;
+            case 5: printf("\tConstraint Fault\n"); break;
+            case 7: printf("\tProtection Fault\n"); break;
+            case 0xa: printf("\tType Fault\n"); break;
             default:
                 break;
         }
-        printf("Faulting Address: %p\n", faddress);
-        printf("PC: %x\n", pc);
-        printf("AC: %x\n", ac);
         printf("Fault Subtype: %x\n", fsubtype);
         if (ftype == 2) {
             // load and display the operation in question
@@ -33,11 +30,18 @@ namespace cortex
                 printf("\tInvalid Operand\n");
             }
             volatile unsigned int* ptr = faddress;
+            unsigned int container[8] = { 0 };
+            for (int i = 0;i < 8; ++i, ++ptr) {
+                container[i] = *ptr;
+            }
             printf("\t\tContents: \n");
-            for (int i = 0; i < 8; ++i, ++ptr) {
-               printf("\t\t\t0x%x\n", *ptr);
+            for (int i = 0; i < 8; ++i) {
+               printf("\t\t\t0x%x\n", container[i]);
             }
         }
+        printf("Faulting Address: %p\n", faddress);
+        printf("PC: %x\n", pc);
+        printf("AC: %x\n", ac);
     }
     namespace {
         FaultHandler userReserved_ = 0;
