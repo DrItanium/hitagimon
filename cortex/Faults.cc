@@ -3,6 +3,7 @@
 //
 
 #include "Faults.h"
+#include "../chipset/ChipsetInteract.h"
 #include <stdio.h>
 namespace cortex
 {
@@ -22,10 +23,16 @@ namespace cortex
         }
         printf("Fault Subtype: %x\n", fsubtype);
         if (ftype == 2) {
+            // load and display the operation in question
             if (fsubtype == 1) {
                 printf("\tInvalid Opcode\n");
             } else if (fsubtype == 4) {
                 printf("\tInvalid Operand\n");
+            }
+            volatile unsigned int* ptr = faddress;
+            printf("\t\tContents: \n");
+            for (int i = 0; i < 8; ++i, ++ptr) {
+               printf("\t\t\t0x%x\n", *ptr);
             }
         }
         printf("Faulting Address: %p\n", faddress);
