@@ -4,10 +4,7 @@ A bare metal application which runs on my custom i960SB based development hardwa
 The monitor is not actually a monitor but closer to a framework that the application sits
 on top of. 
 
-Currently, the program that I am bringing up is DOOM. I have no illusions that the cpu
-will be fast enough to run DOOM but it is a very good test of my AVR based chipset. 
-It is written in a combination of C and C++98 (gcc 3.4.6 is the last supported version...).
-So I don't get C++11 and later but I still get quite a lot of nice features afforded by C++. 
+Previously, the program that I was bringing up was DOOM. I ran into issues so I migrated to the i960 running CLIPS (C Language Integrated Processing System) which is a piece of software I have a considerable amount of experience with. 
 
 The design of this program is broken up into several components:
 
@@ -16,7 +13,10 @@ The design of this program is broken up into several components:
 2. chipset - The code which is used to interact with the memory mapped io provided by the 1284p based chipset through a very clean C++ interface which is leveraged by sys.
 3. sys - Implementations of the system specific routines required by newlibc (sbrk, read, write, etc)
 4. cortex - Wrapper classes around C library functionality plus anything else that C++ makes easier
-5. program - The DOOM source code + hitagimain
+5. clips - The clips source code
+6. doom - The doom source code left around in case I figure out why errors were happening (could be the compiler)
+7. reference - NINDY source code reference
+8. clp - Demo programs written in CLIPS to try out different features
 
 Hitagimon does not use the system procedure table at this point and is closer to an arduino program in its design. This
 choice was made due to the fact that there is no operating system nor indirect services that I have to insulate from the
