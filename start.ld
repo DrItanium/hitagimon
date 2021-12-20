@@ -8,7 +8,7 @@ MEMORY /* describe the partitioning of the memory space for the application */
 	rom (rx)  : ORIGIN = 0, l = 2M
 	/* the "ram" section will start at 0x0020'0000 which comes immediately after the rom space
 	 * the 32-bit address space and be 14 megs in size */
-	ram (!rx) : o = 0x00200000, l = 14M
+	ram (!rx) : o = 0x00200000, l = 6M
 
     /* This design will span the entire 64 megabyte space */
 	/* the rom section will start at address 0 and be up to 8 megs in
