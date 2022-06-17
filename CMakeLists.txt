@@ -30,6 +30,8 @@ add_library(hitagichipset
 		chipset/IODevice.cc
 		chipset/IODevice.h
 		chipset/ChipsetInteract.h
+		chipset/DMA.h
+		chipset/DMA.cc
 		)
 add_library(hitagisys
 		sys/brk.cc
