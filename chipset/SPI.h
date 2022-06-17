@@ -41,13 +41,14 @@ public:
         Buffer src;
         Buffer dest;
         uint32_t transferRate;
-        union {
+        union Flags {
             uint32_t full;
             struct {
                 uint32_t overwriteSrc : 1;
+                uint32_t mode : 2;
                 uint32_t count : 8;
             };
-        };
+        } flags;
         uint8_t size() const { return count; }
         bool overwriteSource() const { return overwriteSrc; }
         uint32_t fullConfigurationRegister() const { return full; }
@@ -70,11 +71,13 @@ public:
     void setCurrentTransferRate(uint32_t value);
     bool available() const { return raw_.valid; }
     operator bool() const { return available(); }
+    void setMode(int value) { mode_ = value; }
 private:
     void transfer(Buffer src, Buffer dest, uint8_t count, bool overwriteSource);
 private:
     volatile RawView& raw_;
     uint32_t currentTransferRate_;
+    uint32_t mode_ : 2;
     Request internalRequest_;
 };
 

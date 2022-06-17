@@ -25,7 +25,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SPI.h"
 #include <cmath>
 
-SPIEngine::SPIEngine() : raw_(memory<SPIEngine::RawView>(getSPIEngineBaseAddress())), currentTransferRate_(getMaximumTransferRate()) { }
+SPIEngine::SPIEngine() :
+        raw_(memory<SPIEngine::RawView>(getSPIEngineBaseAddress())),
+        currentTransferRate_(getMaximumTransferRate()),
+        mode_(0) { }
 SPIEngine::~SPIEngine() { }
 
 
@@ -35,8 +38,9 @@ SPIEngine::transfer(Buffer src, Buffer dest, uint8_t count, bool overwriteSource
         internalRequest_.src = src;
         internalRequest_.dest = dest;
         internalRequest_.transferRate = currentTransferRate_;
-        internalRequest_.count = count;
-        internalRequest_.overwriteSrc = overwriteSource;
+        internalRequest_.flags.count = count;
+        internalRequest_.flags.mode = mode_;
+        internalRequest_.flags.overwriteSrc = overwriteSource;
         raw_.requestBaseAddress = &internalRequest_;
         // now we are going to implicitly wait until SPI is done transferring, not much we can do here until it is finished!
         // but for future compatiblity purposes lets put a wait loop here. It is implicitly blocking on the 1284p based chipset
@@ -62,6 +66,6 @@ getSPIEngine() {
 uint8_t
 SPIEngine::transfer(uint8_t value) {
     uint8_t storage = value;
-    transfer(&storage, 1);
+    transfer(&storage, sizeof(storage));
     return storage;
 }
