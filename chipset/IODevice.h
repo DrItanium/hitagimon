@@ -312,5 +312,7 @@ inline uint64_t makeLongOrdinal(uint16_t a, uint16_t b, uint16_t c, uint16_t d) 
 }
 
 uint32_t getSPIEngineBaseAddress();
+uint32_t getGPIOEngineBaseAddress();
+uint32_t getTWIEngineBaseAddress();
 
 #endif //I960SXCHIPSET_IODEVICE_H

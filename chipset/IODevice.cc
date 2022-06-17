@@ -17,6 +17,8 @@ namespace {
         volatile uint32_t displayFunctionsStart;
         volatile uint32_t rtcStart;
         volatile uint32_t spiEngineStart;
+        volatile uint32_t gpioEngineStart;
+        volatile uint32_t twiEngineStart;
     } __attribute__((packed));
     volatile IOConfigurationSpaceView& getConfiguration0() {
         return memory<IOConfigurationSpaceView>(getIOBase0Address(0));
@@ -44,6 +46,14 @@ namespace {
 uint32_t
 getSPIEngineBaseAddress() {
     return getConfiguration0().spiEngineStart;
+}
+uint32_t
+getGPIOEngineBaseAddress() {
+    return getConfiguration0().gpioEngineStart;
+}
+uint32_t
+getTWIEngineBaseAddress() {
+    return getConfiguration0().twiEngineStart;
 }
 uint16_t
 computeColor565(uint8_t r, uint8_t g, uint8_t b) {

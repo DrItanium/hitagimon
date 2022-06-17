@@ -32,32 +32,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * Simple wrapper around the SPI interface provided by the Chipset. It does not fiddle with GPIOs, that is the job of the GPIO class!
  */
 class SPIEngine : public BuiltinIOBaseDevice {
-    public:
-        typedef uint8_t* Buffer;
-        /**
-         * @brief Raw view of the SPI control registers
-         */
-        struct Request {
-            Buffer* src;
-            Buffer* dest;
-            uint32_t transferRate;
-            union {
-                uint32_t full;
-                struct {
-                    uint32_t overwriteSrc : 1;
-                    uint32_t count : 8;
-                };
+public:
+    typedef uint8_t* Buffer;
+    /**
+     * @brief Raw view of the SPI control registers
+     */
+    struct Request {
+        Buffer* src;
+        Buffer* dest;
+        uint32_t transferRate;
+        union {
+            uint32_t full;
+            struct {
+                uint32_t overwriteSrc : 1;
+                uint32_t count : 8;
             };
-            uint8_t size() const { return count; }
-            bool overwriteSource() const { return overwriteSrc; }
-            uint32_t fullConfigurationRegister() const { return full; }
-            void clear();
         };
-        struct RawView {
-            volatile Request* requestBaseAddress;
-            volatile uint32_t maximumSpeed;
-        };
-    SPIEngine(uint32_t offest);
+        uint8_t size() const { return count; }
+        bool overwriteSource() const { return overwriteSrc; }
+        uint32_t fullConfigurationRegister() const { return full; }
+        void clear();
+    } __attribute__((packed));
+    struct RawView {
+        volatile Request* requestBaseAddress;
+        volatile uint32_t maximumSpeed;
+        volatile uint32_t ready;
+    } __attribute__((packed));
+SPIEngine(uint32_t offest);
         ~SPIEngine();
         void begin();
         void transfer(Buffer* src, uint32_t speed, uint8_t count) { transfer(src, 0, speed, count, true); }
@@ -69,7 +70,7 @@ private:
         void transfer(Buffer* src, Buffer* dest, uint32_t speed, uint8_t count, bool overwriteSource);
 private:
     volatile RawView& raw_;
-
+    Request internalRequest_;
 };
 
 #endif // end HITAGIMON_DMA_H__
