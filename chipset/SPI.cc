@@ -24,66 +24,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include "SPI.h"
 
-DMAEngine::DMAEngine(uint32_t offset) : BuiltinIOBaseDevice(offset), numRegisteredRequests_(0) { }
-DMAEngine::~DMAEngine() {
+SPIEngine::SPIEngine(uint32_t offset) : BuiltinIOBaseDevice(offset),
+raw_(memory<SPIEngine::RawView>(getSPIEngineBaseAddress())) { }
+SPIEngine::~SPIEngine() { }
 
-}
 
-bool 
-DMAEngine::hasPendingRequests() const {
-    for (int i = 0; i < 10; ++i) {
-        const Request& curr = requests_[i];
-        if (curr.isValid() && !curr.isFulfilled()) {
-            return true;
-        }
-    }
-    return false;
-}
 void
-DMAEngine::Request::clear() {
-    src = 0;
-    destination = 0;
-    full = 0;
-}
-void
-DMAEngine::clear()
-{
-    for (int i = 0; i < 10; ++i) {
-        requests_[i].clear();
-    }
-    numRegisteredRequests_ = 0;
-}
-void
-DMAEngine::begin()
-{
-    static bool initialized = false;
-    if (!initialized) {
-        initialized = true;
-        clear();
-    }
-}
+SPIEngine::transfer(Buffer *src, Buffer *dest, uint32_t speed, uint8_t count, bool overwriteSource) {
 
-bool
-DMAEngine::registerRequest(Buffer *src, Buffer *dest, uint8_t count, bool incrementSourceAddress, bool incrementDestinationAddress) {
-    if (numRegisteredRequests_ < 10) {
-        // find the first invalid
-        Request& curr = requests_[numRegisteredRequests_];
-        curr.count = count;
-        curr.src = src;
-        curr.destination = dest;
-        curr.incrementDestinationAddress = incrementDestinationAddress;
-        curr.incrementSourceAddress = incrementSourceAddress;
-        ++numRegisteredRequests_;
-        return true;
-    } else {
-        return false;
-    }
-}
-
-bool
-DMAEngine::processRequest() {
-    if (!empty()) {
-        // find the first valid unfulfilled element
-
-    }
 }

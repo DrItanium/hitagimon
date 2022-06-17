@@ -29,47 +29,47 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ChipsetInteract.h"
 
 /**
- * Simple DMA Engine Wrapper meant for SPI
+ * Simple wrapper around the SPI interface provided by the Chipset. It does not fiddle with GPIOs, that is the job of the GPIO class!
  */
-class DMAEngine : public BuiltinIOBaseDevice {
+class SPIEngine : public BuiltinIOBaseDevice {
     public:
         typedef uint8_t* Buffer;
+        /**
+         * @brief Raw view of the SPI control registers
+         */
         struct Request {
             Buffer* src;
-            Buffer* destination;
+            Buffer* dest;
+            uint32_t transferRate;
             union {
                 uint32_t full;
                 struct {
-                    uint32_t incrementSourceAddress : 1;
-                    uint32_t incrementDestinationAddress : 1;
-                    uint32_t fulfilled : 1;
-                    uint32_t valid : 1;
+                    uint32_t overwriteSrc : 1;
                     uint32_t count : 8;
                 };
             };
-            bool isValid() const { return valid; }
             uint8_t size() const { return count; }
-            bool isFulfilled() const { return fulfilled; }
+            bool overwriteSource() const { return overwriteSrc; }
+            uint32_t fullConfigurationRegister() const { return full; }
             void clear();
         };
-        DMAEngine(uint32_t offest);
-        ~DMAEngine();
+        struct RawView {
+            volatile Request* requestBaseAddress;
+            volatile uint32_t maximumSpeed;
+        };
+    SPIEngine(uint32_t offest);
+        ~SPIEngine();
         void begin();
-        bool hasPendingRequests() const;
-        bool registerRequest(Buffer* src, Buffer* dest, uint8_t count, bool incrementSourceAddress, bool incrementDestinationAddress);
-        bool processRequest();
-        void clear();
-        size_t size() const { return numRegisteredRequests_; }
-        bool full() const { return numRegisteredRequests_ == 10; }
-        bool empty() const { return numRegisteredRequests_ == 0; }
-    private:
-        bool engineAvailable();
-    private:
-        Request requests_[10];
-        size_t numRegisteredRequests_;
+        void transfer(Buffer* src, uint32_t speed, uint8_t count) { transfer(src, 0, speed, count, true); }
+        void transfer(Buffer* src, Buffer* dest, uint32_t speed, uint8_t count) { transfer(src, dest, speed, count, false); }
+        void transfer(Buffer* src, uint8_t count) { transfer(src, getMaximumTransferRate(), count); }
+        void transfer(Buffer* src, Buffer* dest, uint8_t count) { transfer(src, dest, getMaximumTransferRate(), count); }
+        uint32_t getMaximumTransferRate() const { return raw_.maximumSpeed; }
+private:
+        void transfer(Buffer* src, Buffer* dest, uint32_t speed, uint8_t count, bool overwriteSource);
+private:
+    volatile RawView& raw_;
 
 };
-typedef DMAEngine::Request DMARequest;
-typedef DMAEngine::Buffer DMABuffer;
 
 #endif // end HITAGIMON_DMA_H__

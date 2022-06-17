@@ -16,6 +16,7 @@ namespace {
         volatile uint32_t auxDisplayStart;
         volatile uint32_t displayFunctionsStart;
         volatile uint32_t rtcStart;
+        volatile uint32_t spiEngineStart;
     } __attribute__((packed));
     volatile IOConfigurationSpaceView& getConfiguration0() {
         return memory<IOConfigurationSpaceView>(getIOBase0Address(0));
@@ -39,6 +40,10 @@ namespace {
     uint32_t getRTCBase() {
         return getConfiguration0().rtcStart;
     }
+}
+uint32_t
+getSPIEngineBaseAddress() {
+    return getConfiguration0().spiEngineStart;
 }
 uint16_t
 computeColor565(uint8_t r, uint8_t g, uint8_t b) {
