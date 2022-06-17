@@ -140,7 +140,20 @@ pinMode(int index, PinDirection dir) {
             break;
     }
 }
-void portWrite(int index, uint32_t value);
-uint32_t portRead(int index);
-bool validPort(int index);
-bool validPin(int index);
+void
+portWrite(int index, uint32_t value) {
+    getGPIOEngine().getPort(index).output = value;
+}
+uint32_t
+portRead(int index) {
+    return getGPIOEngine().getPort(index).input;
+}
+bool
+validPort(int index) {
+    return getGPIOEngine().validPort(index);
+}
+bool
+validPin(int index) {
+    GPIOEngine& gpio = getGPIOEngine();
+    return gpio.getPort(gpio.pinToPort(index)).pinValid(gpio.portOffset(index));
+}
