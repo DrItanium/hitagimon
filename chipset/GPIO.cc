@@ -34,3 +34,12 @@ void
 GPIOEngine::begin() {
     // nothing to do
 }
+
+volatile GPIOEngine::Port&
+GPIOEngine::getPort(int index) {
+    return raw_.ports[index & 0x1F];
+}
+volatile const GPIOEngine::Port&
+GPIOEngine::getPort(int index) const {
+    return raw_.ports[index & 0x1F];
+}
