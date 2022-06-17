@@ -22,9 +22,9 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#include "DMA.h"
+#include "SPI.h"
 
-DMAEngine::DMAEngine(uint32_t offset) : BuiltinIOBaseDevice(offset) { }
+DMAEngine::DMAEngine(uint32_t offset) : BuiltinIOBaseDevice(offset), numRegisteredRequests_(0) { }
 DMAEngine::~DMAEngine() {
 
 }
@@ -32,16 +32,58 @@ DMAEngine::~DMAEngine() {
 bool 
 DMAEngine::hasPendingRequests() const {
     for (int i = 0; i < 10; ++i) {
-        const Request& curr = requests[i];
-        if (curr.isValid()) {
+        const Request& curr = requests_[i];
+        if (curr.isValid() && !curr.isFulfilled()) {
             return true;
         }
     }
     return false;
 }
-
 void
-DMAEngine::begin() 
+DMAEngine::Request::clear() {
+    src = 0;
+    destination = 0;
+    full = 0;
+}
+void
+DMAEngine::clear()
 {
+    for (int i = 0; i < 10; ++i) {
+        requests_[i].clear();
+    }
+    numRegisteredRequests_ = 0;
+}
+void
+DMAEngine::begin()
+{
+    static bool initialized = false;
+    if (!initialized) {
+        initialized = true;
+        clear();
+    }
 }
 
+bool
+DMAEngine::registerRequest(Buffer *src, Buffer *dest, uint8_t count, bool incrementSourceAddress, bool incrementDestinationAddress) {
+    if (numRegisteredRequests_ < 10) {
+        // find the first invalid
+        Request& curr = requests_[numRegisteredRequests_];
+        curr.count = count;
+        curr.src = src;
+        curr.destination = dest;
+        curr.incrementDestinationAddress = incrementDestinationAddress;
+        curr.incrementSourceAddress = incrementSourceAddress;
+        ++numRegisteredRequests_;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool
+DMAEngine::processRequest() {
+    if (!empty()) {
+        // find the first valid unfulfilled element
+
+    }
+}

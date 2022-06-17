@@ -50,15 +50,23 @@ class DMAEngine : public BuiltinIOBaseDevice {
             bool isValid() const { return valid; }
             uint8_t size() const { return count; }
             bool isFulfilled() const { return fulfilled; }
+            void clear();
         };
         DMAEngine(uint32_t offest);
         ~DMAEngine();
         void begin();
         bool hasPendingRequests() const;
         bool registerRequest(Buffer* src, Buffer* dest, uint8_t count, bool incrementSourceAddress, bool incrementDestinationAddress);
-
+        bool processRequest();
+        void clear();
+        size_t size() const { return numRegisteredRequests_; }
+        bool full() const { return numRegisteredRequests_ == 10; }
+        bool empty() const { return numRegisteredRequests_ == 0; }
     private:
-        Request requests[10];
+        bool engineAvailable();
+    private:
+        Request requests_[10];
+        size_t numRegisteredRequests_;
 
 };
 typedef DMAEngine::Request DMARequest;
