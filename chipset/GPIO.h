@@ -56,7 +56,21 @@ public:
          * @brief Each bit corresponds to a given pin in the port, when set to 1 then activate pin change interrupts
          */
         volatile uint32_t interruptEnable;
-        volatile uint32_t reserved[(256 - (6 * sizeof(uint32_t))) / sizeof(uint32_t)];
+
+        /**
+         * @brief Setting a bit here causes the result to be inverted on that pin, clearing it will cause the input to be normal
+         */
+        volatile uint32_t inputPolarity;
+        /**
+         * @brief Describes the bits
+         */
+         volatile union {
+            uint32_t full;
+            struct {
+                uint32_t inputPolaritySupported : 1;
+            };
+         } features;
+        volatile uint32_t reserved[(256 - (8 * sizeof(uint32_t))) / sizeof(uint32_t)];
         inline bool valid() const volatile { return mask != 0; }
         inline bool invalid() const volatile { return mask == 0; }
         bool pinValid(int index) const volatile;
