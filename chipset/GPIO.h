@@ -56,10 +56,13 @@ public:
          * @brief Each bit corresponds to a given pin in the port, when set to 1 then activate pin change interrupts
          */
         volatile uint32_t interruptEnable;
+        volatile uint32_t reserved[(256 - (6 * sizeof(uint32_t))) / sizeof(uint32_t)];
         inline bool valid() const volatile { return mask != 0; }
         inline bool invalid() const volatile { return mask == 0; }
         bool pinValid(int index) const volatile;
     } __attribute__((packed));
+    // A way to do static assert but without the messaging
+    static uint8_t PortViewIsAlignedCorrectlyTo256Bytes[sizeof(Port) == 256 ? 1 : -1];
     /**
      * @brief We support up to 32 ports of 32-bits each
      */
@@ -68,6 +71,7 @@ public:
          * @brief The set of ports which are valid (a zero means not valid)
          */
         volatile uint32_t mask;
+        volatile uint32_t reserved[(256 - (1 *sizeof(uint32_t))) / sizeof(uint32_t)];
         /**
          * @brief The set of ports
          */
@@ -75,6 +79,7 @@ public:
         inline bool valid() const volatile { return mask != 0; }
         inline bool invalid() const volatile { return mask == 0; }
     } __attribute__((packed));
+    static uint8_t RegisterSetIsSizedCorrectly[sizeof(Registers) == (33 * 256) ? 1 : -1];
 
 public:
     GPIOEngine();
