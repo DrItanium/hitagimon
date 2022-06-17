@@ -22,27 +22,26 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#include "SPI.h"
 
-SPIEngine::SPIEngine(uint32_t offset) : raw_(memory<SPIEngine::RawView>(getSPIEngineBaseAddress())) { }
-SPIEngine::~SPIEngine() { }
+#ifndef HITAGIMON_GPIO_H
+#define HITAGIMON_GPIO_H
+#include <stdint.h>
+#include "IODevice.h"
+#include "ChipsetInteract.h"
 
+class GPIOEngine {
+public:
+    struct Registers {
+        volatile uint32_t valid;
 
-void
-SPIEngine::transfer(Buffer *src, Buffer *dest, uint32_t speed, uint8_t count, bool overwriteSource) {
-    if (available()) {
-        internalRequest_.src = src;
-        internalRequest_.dest = dest;
-        if (speed > getMaximumTransferRate()) {
-            internalRequest_.transferRate = getMaximumTransferRate();
-        } else {
-            internalRequest_.transferRate = speed;
-        }
-        internalRequest_.count = count;
-        internalRequest_.overwriteSrc = overwriteSource;
-        raw_.requestBaseAddress = &internalRequest_;
-        // now we are going to implicitly wait until SPI is done transferring, not much we can do here until it is finished!
-        // but for future compatiblity purposes lets put a wait loop here. It is implicitly blocking on the 1284p based chipset
-        while (!raw_.ready);
-    }
-}
+    };
+public:
+    GPIOEngine();
+    ~GPIOEngine();
+    void begin();
+private:
+    volatile Registers& raw_;
+
+};
+
+#endif //HITAGIMON_GPIO_H

@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
  * Simple wrapper around the SPI interface provided by the Chipset. It does not fiddle with GPIOs, that is the job of the GPIO class!
  */
-class SPIEngine : public BuiltinIOBaseDevice {
+class SPIEngine {
 public:
     typedef uint8_t* Buffer;
     /**
@@ -54,20 +54,23 @@ public:
         void clear();
     } __attribute__((packed));
     struct RawView {
+        volatile uint32_t valid;
         volatile Request* requestBaseAddress;
         volatile uint32_t maximumSpeed;
         volatile uint32_t ready;
     } __attribute__((packed));
-SPIEngine(uint32_t offest);
-        ~SPIEngine();
-        void begin();
-        void transfer(Buffer* src, uint32_t speed, uint8_t count) { transfer(src, 0, speed, count, true); }
-        void transfer(Buffer* src, Buffer* dest, uint32_t speed, uint8_t count) { transfer(src, dest, speed, count, false); }
-        void transfer(Buffer* src, uint8_t count) { transfer(src, getMaximumTransferRate(), count); }
-        void transfer(Buffer* src, Buffer* dest, uint8_t count) { transfer(src, dest, getMaximumTransferRate(), count); }
-        uint32_t getMaximumTransferRate() const { return raw_.maximumSpeed; }
+    SPIEngine(uint32_t offest);
+    ~SPIEngine();
+    void begin();
+    void transfer(Buffer* src, uint32_t speed, uint8_t count) { transfer(src, 0, speed, count, true); }
+    void transfer(Buffer* src, Buffer* dest, uint32_t speed, uint8_t count) { transfer(src, dest, speed, count, false); }
+    void transfer(Buffer* src, uint8_t count) { transfer(src, getMaximumTransferRate(), count); }
+    void transfer(Buffer* src, Buffer* dest, uint8_t count) { transfer(src, dest, getMaximumTransferRate(), count); }
+    uint32_t getMaximumTransferRate() const { return raw_.maximumSpeed; }
+    bool available() const { return raw_.valid; }
+    operator bool() const { return available(); }
 private:
-        void transfer(Buffer* src, Buffer* dest, uint32_t speed, uint8_t count, bool overwriteSource);
+    void transfer(Buffer* src, Buffer* dest, uint32_t speed, uint8_t count, bool overwriteSource);
 private:
     volatile RawView& raw_;
     Request internalRequest_;

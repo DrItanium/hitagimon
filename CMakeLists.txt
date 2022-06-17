@@ -32,6 +32,8 @@ add_library(hitagichipset
 		chipset/ChipsetInteract.h
 		chipset/SPI.h
 		chipset/SPI.cc
+		chipset/GPIO.h
+		chipset/GPIO.cc
 		)
 add_library(hitagisys
 		sys/brk.cc
