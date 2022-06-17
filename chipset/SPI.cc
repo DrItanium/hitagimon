@@ -23,21 +23,18 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include "SPI.h"
+#include <cmath>
 
-SPIEngine::SPIEngine() : raw_(memory<SPIEngine::RawView>(getSPIEngineBaseAddress())) { }
+SPIEngine::SPIEngine() : raw_(memory<SPIEngine::RawView>(getSPIEngineBaseAddress())), currentTransferRate_(getMaximumTransferRate()) { }
 SPIEngine::~SPIEngine() { }
 
 
 void
-SPIEngine::transfer(Buffer *src, Buffer *dest, uint32_t speed, uint8_t count, bool overwriteSource) {
+SPIEngine::transfer(Buffer src, Buffer dest, uint8_t count, bool overwriteSource) {
     if (available()) {
         internalRequest_.src = src;
         internalRequest_.dest = dest;
-        if (speed > getMaximumTransferRate()) {
-            internalRequest_.transferRate = getMaximumTransferRate();
-        } else {
-            internalRequest_.transferRate = speed;
-        }
+        internalRequest_.transferRate = currentTransferRate_;
         internalRequest_.count = count;
         internalRequest_.overwriteSrc = overwriteSource;
         raw_.requestBaseAddress = &internalRequest_;
@@ -46,7 +43,10 @@ SPIEngine::transfer(Buffer *src, Buffer *dest, uint32_t speed, uint8_t count, bo
         while (!raw_.ready);
     }
 }
-
+void
+SPIEngine::setCurrentTransferRate(uint32_t value) {
+    currentTransferRate_ = std::min(value, getMaximumTransferRate());
+}
 void
 SPIEngine::begin()
 {
@@ -57,4 +57,11 @@ SPIEngine&
 getSPIEngine() {
     static SPIEngine theEngine;
     return theEngine;
+}
+
+uint8_t
+SPIEngine::transfer(uint8_t value) {
+    uint8_t storage = value;
+    transfer(&storage, 1);
+    return storage;
 }

@@ -38,8 +38,8 @@ public:
      * @brief Raw view of the SPI control registers
      */
     struct Request {
-        Buffer* src;
-        Buffer* dest;
+        Buffer src;
+        Buffer dest;
         uint32_t transferRate;
         union {
             uint32_t full;
@@ -62,17 +62,19 @@ public:
     SPIEngine();
     ~SPIEngine();
     void begin();
-    void transfer(Buffer* src, uint32_t speed, uint8_t count) { transfer(src, 0, speed, count, true); }
-    void transfer(Buffer* src, Buffer* dest, uint32_t speed, uint8_t count) { transfer(src, dest, speed, count, false); }
-    void transfer(Buffer* src, uint8_t count) { transfer(src, getMaximumTransferRate(), count); }
-    void transfer(Buffer* src, Buffer* dest, uint8_t count) { transfer(src, dest, getMaximumTransferRate(), count); }
+    void transfer(Buffer src, uint8_t count) { transfer(src, 0, count, true); }
+    void transfer(Buffer src, Buffer dest, uint8_t count) { transfer(src, dest, count, false); }
+    uint8_t transfer(uint8_t value);
     uint32_t getMaximumTransferRate() const { return raw_.maximumSpeed; }
+    uint32_t getCurrentTransferRate() const { return currentTransferRate_; }
+    void setCurrentTransferRate(uint32_t value);
     bool available() const { return raw_.valid; }
     operator bool() const { return available(); }
 private:
-    void transfer(Buffer* src, Buffer* dest, uint32_t speed, uint8_t count, bool overwriteSource);
+    void transfer(Buffer src, Buffer dest, uint8_t count, bool overwriteSource);
 private:
     volatile RawView& raw_;
+    uint32_t currentTransferRate_;
     Request internalRequest_;
 };
 
