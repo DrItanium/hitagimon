@@ -24,7 +24,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include "SPI.h"
 
-SPIEngine::SPIEngine(uint32_t offset) : raw_(memory<SPIEngine::RawView>(getSPIEngineBaseAddress())) { }
+SPIEngine::SPIEngine() : raw_(memory<SPIEngine::RawView>(getSPIEngineBaseAddress())) { }
 SPIEngine::~SPIEngine() { }
 
 
@@ -45,4 +45,16 @@ SPIEngine::transfer(Buffer *src, Buffer *dest, uint32_t speed, uint8_t count, bo
         // but for future compatiblity purposes lets put a wait loop here. It is implicitly blocking on the 1284p based chipset
         while (!raw_.ready);
     }
+}
+
+void
+SPIEngine::begin()
+{
+
+}
+
+SPIEngine&
+getSPIEngine() {
+    static SPIEngine theEngine;
+    return theEngine;
 }

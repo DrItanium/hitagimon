@@ -6,6 +6,8 @@
 #include <string>
 #include "cortex/EnvironmentInterface.h"
 #include "cortex/Interrupts.h"
+#include "chipset/SPI.h"
+#include "chipset/GPIO.h"
 
 //extern "C" int doommain (int argc, char** argv) ;
 extern "C" int clipsMain(int argc, char *argv[]);
@@ -61,6 +63,10 @@ int main() {
     theValue64 = 0x9876543210ABCDEFull;
     printf("OK? theValue64 = 0x%x%x but expecting 0x9876'5432'10AB'CDEF\n", static_cast<unsigned>(theValue64), static_cast<unsigned>(theValue64 >> 32));
     setISR0Function(isr0Test);
+    GPIOEngine& gpio = getGPIOEngine();
+    gpio.begin();
+    SPIEngine& spi = getSPIEngine();
+    spi.begin();
     displayIOMemoryMap();
     printf("Starting up CLIPS!\n");
     clipsMain(0, args);

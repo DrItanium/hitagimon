@@ -59,7 +59,7 @@ public:
         volatile uint32_t maximumSpeed;
         volatile uint32_t ready;
     } __attribute__((packed));
-    SPIEngine(uint32_t offest);
+    SPIEngine();
     ~SPIEngine();
     void begin();
     void transfer(Buffer* src, uint32_t speed, uint8_t count) { transfer(src, 0, speed, count, true); }
@@ -76,4 +76,5 @@ private:
     Request internalRequest_;
 };
 
+SPIEngine& getSPIEngine();
 #endif // end HITAGIMON_DMA_H__

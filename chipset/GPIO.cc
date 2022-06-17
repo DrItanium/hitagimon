@@ -27,11 +27,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
 #include "GPIO.h"
-GPIOEngine::GPIOEngine() : raw_(memory<GPIOEngine::Registers>(getGPIOEngineBaseAddress())) { }
+GPIOEngine::GPIOEngine() : raw_(memory<GPIOEngine::Registers>(getGPIOEngineBaseAddress())), initialized_(false) { }
 GPIOEngine::~GPIOEngine() {}
 
 void
 GPIOEngine::begin() {
+    if (!initialized_) {
+        initialized_ = true;
+    }
     // nothing to do
 }
 
@@ -43,3 +46,101 @@ volatile const GPIOEngine::Port&
 GPIOEngine::getPort(int index) const {
     return raw_.ports[index & 0x1F];
 }
+
+bool
+GPIOEngine::Port::pinValid(int index) const volatile {
+    // port relative index needs to be computed
+    int offset = index % 32;
+    // now get the mask offset
+    uint32_t targetMask = 1 << offset;
+    return (targetMask & mask) != 0;
+}
+bool
+GPIOEngine::validPin(int pinIndex) const {
+    int targetPort = pinToPort(pinIndex);
+    if (validPort(targetPort)) {
+        volatile const GPIOEngine::Port& port = getPort(targetPort);
+        return port.pinValid(pinIndex);
+    } else {
+        return false;
+    }
+}
+
+GPIOEngine&
+getGPIOEngine() {
+    static GPIOEngine theEngine;
+    return theEngine;
+}
+void digitalWrite(int index, bool value) {
+   GPIOEngine& gpio = getGPIOEngine();
+   // we can safely ignore validity checks as the chipset will just accept modifications to invalid pins but not express them
+   int targetPort = gpio.pinToPort(index);
+   int portOffset = gpio.portOffset(index);
+    int pinMask = 1 << portOffset;
+   volatile GPIOEngine::Port& port = gpio.getPort(targetPort);
+   uint32_t outputContents = port.output;
+   if (value) {
+       //set the pin
+       outputContents |= pinMask;
+   } else {
+       outputContents &= ~pinMask;
+   }
+   port.output = outputContents;
+}
+bool
+digitalRead(int index) {
+    GPIOEngine& gpio = getGPIOEngine();
+    // we can safely ignore validity checks as the chipset will just accept modifications to invalid pins but not express them
+    int targetPort = gpio.pinToPort(index);
+    int portOffset = gpio.portOffset(index);
+    int pinMask = 1 << portOffset;
+    volatile const GPIOEngine::Port& port = gpio.getPort(targetPort);
+    return (port.input & pinMask) != 0;
+}
+namespace
+{
+    void
+    configurePinForOutput(int index) {
+        GPIOEngine& gpio = getGPIOEngine();
+        volatile GPIOEngine::Port& port = gpio.getPort(gpio.pinToPort(index));
+        uint32_t mask = 1 << gpio.portOffset(index);
+        port.direction |= mask;
+        port.pullup &= ~mask;
+    }
+    void
+    configurePinForInput(int index) {
+        GPIOEngine& gpio = getGPIOEngine();
+        volatile GPIOEngine::Port& port = gpio.getPort(gpio.pinToPort(index));
+        uint32_t mask = 1 << gpio.portOffset(index);
+        port.direction &= ~mask;
+        port.pullup &= ~mask;
+    }
+    void
+    configurePinForInputPullup(int index) {
+        GPIOEngine& gpio = getGPIOEngine();
+        volatile GPIOEngine::Port& port = gpio.getPort(gpio.pinToPort(index));
+        uint32_t mask = 1 << gpio.portOffset(index);
+        port.direction &= ~mask;
+        port.pullup |= mask;
+    }
+}
+void
+pinMode(int index, PinDirection dir) {
+    switch (dir) {
+        case OUTPUT:
+            configurePinForOutput(index);
+            break;
+        case INPUT:
+            configurePinForInput(index);
+            break;
+        case INPUT_PULLUP:
+            configurePinForInputPullup(index);
+            break;
+        default:
+            break;
+    }
+}
+void portWrite(int index, uint32_t value);
+uint32_t portRead(int index);
+bool validPort(int index);
+bool validPin(int index);

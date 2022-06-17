@@ -58,6 +58,7 @@ public:
         volatile uint32_t interruptEnable;
         inline bool valid() const volatile { return mask != 0; }
         inline bool invalid() const volatile { return mask == 0; }
+        bool pinValid(int index) const volatile;
     } __attribute__((packed));
     /**
      * @brief We support up to 32 ports of 32-bits each
@@ -85,9 +86,26 @@ public:
     const volatile Port& getPort(int index) const;
     inline bool validPort(int index) { return getPort(index).valid(); }
     inline bool validPort(int index) const { return getPort(index).valid(); }
+    inline int pinToPort(int pinIndex) const { return pinIndex / 32; }
+    inline int portOffset(int pinIndex) const { return pinIndex % 32; }
+    bool validPin(int pinIndex) const;
 private:
     volatile Registers& raw_;
-
+    bool initialized_;
 };
+
+GPIOEngine& getGPIOEngine();
+enum PinDirection{
+    INPUT = 0,
+    OUTPUT,
+    INPUT_PULLUP,
+};
+void digitalWrite(int index, bool value);
+bool digitalRead(int index);
+void pinMode(int index, PinDirection dir);
+void portWrite(int index, uint32_t value);
+uint32_t portRead(int index);
+bool validPort(int index);
+bool validPin(int index);
 
 #endif //HITAGIMON_GPIO_H
