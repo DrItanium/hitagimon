@@ -28,7 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 SPIEngine::SPIEngine() :
         raw_(memory<SPIEngine::RawView>(getSPIEngineBaseAddress())),
         currentTransferRate_(getMaximumTransferRate()),
-        mode_(0) { }
+        mode_(0),
+        dataOrder_(0) { }
 SPIEngine::~SPIEngine() { }
 
 

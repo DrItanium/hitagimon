@@ -46,6 +46,7 @@ public:
             struct {
                 uint32_t overwriteSrc : 1;
                 uint32_t mode : 2;
+                uint32_t dataOrder : 1;
                 uint32_t count : 8;
             };
         } flags;
@@ -72,12 +73,16 @@ public:
     bool available() const { return raw_.valid; }
     operator bool() const { return available(); }
     void setMode(int value) { mode_ = value; }
+    void setByteOrder(bool littleEndian) { dataOrder_ = littleEndian; }
+    void setByteOrderLSB() { setByteOrder(true); }
+    void setByteOrderMSB() { setByteOrder(false); }
 private:
     void transfer(Buffer src, Buffer dest, uint8_t count, bool overwriteSource);
 private:
     volatile RawView& raw_;
     uint32_t currentTransferRate_;
     uint32_t mode_ : 2;
+    uint32_t dataOrder_ : 1;
     Request internalRequest_;
 };
 
