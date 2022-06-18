@@ -3,7 +3,7 @@
 //
 
 #include "Faults.h"
-#include "../chipset/ChipsetInteract.h"
+#include "chipset/ChipsetInteract.h"
 #include <stdio.h>
 namespace cortex
 {

@@ -5,10 +5,10 @@
 #include "MonitorExtensions.h"
 #include "clips.h"
 /// @todo fix this
-#include "../chipset/ChipsetInteract.h"
-#include "../cortex/EnvironmentInterface.h"
-#include "../cortex/SysExamine.h"
-#include "../chipset/IODevice.h"
+#include "chipset/ChipsetInteract.h"
+#include "cortex/EnvironmentInterface.h"
+#include "cortex/SysExamine.h"
+#include "chipset/IODevice.h"
 
 #define X(title) extern "C++" void title (Environment*, UDFContext*, UDFValue*)
 X(ExamineByte);

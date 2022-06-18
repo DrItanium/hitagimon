@@ -58,7 +58,8 @@ add_library(hitagicortex
 		include/cortex/Interrupts.h
 		cortex/EnvironmentInterface.cc
 		include/cortex/EnvironmentInterface.h cortex/Faults.cc include/cortex/Faults.h)
-target_include_directories(hitagicortex PUBLIC cortex)
+target_include_directories(hitagicortex PRIVATE include/cortex)
+target_link_libraries(hitagicortex hitagilang)
 add_library(hitagiclips
 		clips/agenda.c
 		clips/agenda.h

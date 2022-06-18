@@ -25,8 +25,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*
  * Fault handler routines
  */
-#include "../chipset/IODevice.h"
-#include "../cortex/Faults.h"
+#include "chipset/IODevice.h"
+#include "cortex/Faults.h"
 #include <string>
 void
 basicDisplay(const std::string& kind, cortex::FaultData* record) {
