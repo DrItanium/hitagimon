@@ -27,14 +27,14 @@ set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 add_library(hitagilang INTERFACE)
-target_include_directories(hitagilang INTERFACE .)
+target_include_directories(hitagilang INTERFACE include)
 add_library(hitagichipset
 		chipset/IODevice.cc
-		chipset/IODevice.h
-		chipset/ChipsetInteract.h
-		chipset/SPI.h
+		include/chipset/IODevice.h
+		include/chipset/ChipsetInteract.h
+		include/chipset/SPI.h
 		chipset/SPI.cc
-		chipset/GPIO.h
+		include/chipset/GPIO.h
 		chipset/GPIO.cc)
 target_link_libraries(hitagichipset hitagilang)
 target_include_directories(hitagichipset PUBLIC chipset)
@@ -55,9 +55,9 @@ add_library(hitagisys
 		sys/_exit.cc sys/link.cc sys/unlink.cc)
 add_library(hitagicortex
 		cortex/Interrupts.cc
-		cortex/Interrupts.h
+		include/cortex/Interrupts.h
 		cortex/EnvironmentInterface.cc
-		cortex/EnvironmentInterface.h cortex/Faults.cc cortex/Faults.h)
+		include/cortex/EnvironmentInterface.h cortex/Faults.cc include/cortex/Faults.h)
 target_include_directories(hitagicortex PUBLIC cortex)
 add_library(hitagiclips
 		clips/agenda.c
