@@ -35,7 +35,7 @@ add_library(hitagichipset
 		include/chipset/SPI.h
 		chipset/SPI.cc
 		include/chipset/GPIO.h
-		chipset/GPIO.cc)
+		chipset/GPIO.cc include/chipset/MemoryManagementUnit.h chipset/MemoryManagementUnit.cc)
 target_link_libraries(hitagichipset hitagilang)
 target_include_directories(hitagichipset PUBLIC chipset)
 add_library(hitagisys
