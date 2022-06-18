@@ -26,6 +26,9 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+add_library(hitagilang
+			lang/nullptr.h
+		lang/noexcept.h)
 add_library(hitagichipset
 		chipset/IODevice.cc
 		chipset/IODevice.h
@@ -33,8 +36,7 @@ add_library(hitagichipset
 		chipset/SPI.h
 		chipset/SPI.cc
 		chipset/GPIO.h
-		chipset/GPIO.cc
-		)
+		chipset/GPIO.cc)
 add_library(hitagisys
 		sys/brk.cc
 		sys/fstat.cc
@@ -542,6 +544,7 @@ target_link_libraries(hitagimon
 		c
 		m
 		#doom
+		hitagilang
 		hitagicortex
 		hitagisys
 		hitagichipset

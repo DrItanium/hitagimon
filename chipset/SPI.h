@@ -74,8 +74,8 @@ public:
     operator bool() const { return available(); }
     void setMode(int value) { mode_ = value; }
     void setByteOrder(bool littleEndian) { dataOrder_ = littleEndian; }
-    void setByteOrderLSB() { setByteOrder(true); }
-    void setByteOrderMSB() { setByteOrder(false); }
+    inline void setByteOrderLSB() { setByteOrder(true); }
+    inline void setByteOrderMSB() { setByteOrder(false); }
 private:
     void transfer(Buffer src, Buffer dest, uint8_t count, bool overwriteSource);
 private:
