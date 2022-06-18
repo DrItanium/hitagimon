@@ -27,7 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 #include <unistd.h>
 #include <errno.h>
-#include "../chipset/IODevice.h"
+#include "chipset/IODevice.h"
 namespace
 {
     int

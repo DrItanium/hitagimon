@@ -26,6 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define HITAGIMON_DMA_H__
 #include <stdint.h>
 #include "IODevice.h"
+#include "lang/noexcept.h"
 #include "ChipsetInteract.h"
 
 /**
@@ -50,9 +51,9 @@ public:
                 uint32_t count : 8;
             };
         } flags;
-        uint8_t size() const { return count; }
-        bool overwriteSource() const { return overwriteSrc; }
-        uint32_t fullConfigurationRegister() const { return full; }
+        uint8_t size() const { return flags.count; }
+        bool overwriteSource() const { return flags.overwriteSrc; }
+        uint32_t fullConfigurationRegister() const { return flags.full; }
         void clear();
     } __attribute__((packed));
     struct RawView {

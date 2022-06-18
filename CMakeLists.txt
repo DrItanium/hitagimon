@@ -26,9 +26,8 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
-add_library(hitagilang
-			lang/nullptr.h
-		lang/noexcept.h)
+add_library(hitagilang INTERFACE)
+target_include_directories(hitagilang INTERFACE lang)
 add_library(hitagichipset
 		chipset/IODevice.cc
 		chipset/IODevice.h
@@ -37,6 +36,9 @@ add_library(hitagichipset
 		chipset/SPI.cc
 		chipset/GPIO.h
 		chipset/GPIO.cc)
+target_link_libraries(hitagichipset
+		hitagilang)
+target_include_directories(hitagichipset PUBLIC chipset)
 add_library(hitagisys
 		sys/brk.cc
 		sys/fstat.cc
@@ -57,6 +59,7 @@ add_library(hitagicortex
 		cortex/Interrupts.h
 		cortex/EnvironmentInterface.cc
 		cortex/EnvironmentInterface.h cortex/Faults.cc cortex/Faults.h)
+target_include_directories(hitagicortex PUBLIC cortex)
 add_library(hitagiclips
 		clips/agenda.c
 		clips/agenda.h
@@ -400,6 +403,10 @@ add_library(hitagiclips
 		clips/watch.c
 		clips/watch.h
 		clips/MonitorExtensions.cc clips/MonitorExtensions.h)
+target_link_libraries(hitagiclips
+		hitagilang
+		hitagicortex
+		hitagichipset)
 add_executable(hitagimon
 		boot/sx_init.s # this must ALWAYS be first!
 		boot/f_table.s
@@ -409,6 +416,10 @@ add_executable(hitagimon
 		boot/ISR.cc
 		hitagimain.cc
 		)
+target_link_libraries(hitagisys
+		hitagilang
+		hitagicortex
+		hitagichipset )
 
 #(add_library(doom
 #		# doom source code
@@ -536,7 +547,8 @@ add_executable(hitagimon
 #		doom/wi_stuff.c
 #		doom/w_wad.c
 #		doom/z_zone.c)
-
+target_include_directories(hitagicortex PUBLIC cortex)
+target_include_directories(hitagichipset PUBLIC chipset)
 #set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT})
 target_link_libraries(hitagimon
 		hitagiclips
