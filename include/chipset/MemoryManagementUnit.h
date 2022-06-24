@@ -28,7 +28,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef HITAGIMON_MEMORYMANAGEMENTUNIT_H
 #define HITAGIMON_MEMORYMANAGEMENTUNIT_H
+#include <stdint.h>
+#include "lang/noexcept.h"
 class MMU {
-
+public:
+    /**
+     * @brief Describes a logical to physical memory mapping (influenced by the design of the MC68541)
+     */
+    struct Descriptor {
+        uint32_t logicalBaseAddress;
+        uint32_t logicalAddressMask;
+        uint32_t physicalBaseAddress;
+        uint16_t addressSpaceNumber;
+        uint16_t addressSpaceMask;
+        uint8_t status;
+        uint8_t unused;
+    } __attribute__((packed));
+private:
+    Descriptor descriptors[32];
 };
 #endif //HITAGIMON_MEMORYMANAGEMENTUNIT_H

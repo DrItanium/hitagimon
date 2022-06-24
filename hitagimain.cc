@@ -8,6 +8,7 @@
 #include "cortex/Interrupts.h"
 #include "chipset/SPI.h"
 #include "chipset/GPIO.h"
+#include "chipset/MemoryManagementUnit.h"
 
 //extern "C" int doommain (int argc, char** argv) ;
 extern "C" int clipsMain(int argc, char *argv[]);
