@@ -44,7 +44,7 @@ hitagi_read(int fd, void *buf, size_t sz, int *nread) {
         // builtin files
         switch (fd) {
             case STDIN_FILENO:
-                nread = getBasicChipsetInterface().read(reinterpret_cast<char *>(buf), sz);
+                *nread = getBasicChipsetInterface().read(reinterpret_cast<char *>(buf), sz);
                 return 0;
             default:
                 return EBADF;
