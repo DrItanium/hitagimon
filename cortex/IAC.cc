@@ -26,7 +26,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Created by jwscoggins on 7/10/22.
 //
 #include "IAC.h"
-extern "C" void sendIACCommand(void* theMessage);
+extern "C" void sendIACCommand(uint32_t iacPort, void* theMessage);
+extern "C" uint32_t hitagi_readInterruptState();
+extern "C" void hitagi_writeInterruptState(uint32_t value);
 namespace cortex {
     struct IACMessage {
         uint16_t field2;
@@ -45,18 +47,40 @@ namespace cortex {
         theMessage.field3 = field3;
         theMessage.field4 = field4;
         theMessage.field5 = field5;
-        sendIACCommand(&theMessage);
+        sendIACCommand(0, &theMessage);
     }
 
     void
     triggerInterrupt(uint8_t interruptVector) {
-        sendIAC(0x40, interruptVector, 0, 0, 0, 0);
+        sendIAC(0x40, interruptVector);
     }
-    void purgeInstructionCache();
-    void reinitializeProcessor(SystemAddressTable* sat, PRCB* prcb, void (*start)());
-    void setBreakpointRegister(uint32_t first, uint32_t second);
-    void storeSystemBaseAddress(SystemBase* to);
-    void testPendingInterrupts();
-    uint32_t readInterruptState();
-    void setInterruptState(uint32_t);
+    void
+    purgeInstructionCache() {
+        sendIAC(0x89);
+    }
+    void
+    reinitializeProcessor(SystemAddressTable* sat, PRCB* prcb, void (*start)()) {
+        sendIAC(0x93, 0,
+                      0,
+                      reinterpret_cast<uint32_t>(sat),
+                      reinterpret_cast<uint32_t>(prcb),
+                      reinterpret_cast<uint32_t>(start));
+    }
+    void
+    setBreakpointRegister(uint32_t first, uint32_t second) {
+        sendIAC(0x8F, 0, 0, first, second);
+    }
+    void
+    storeSystemBaseAddress(SystemBase* to) {
+        sendIAC(0x80, 0, 0, reinterpret_cast<uint32_t>(to));
+    }
+    void testPendingInterrupts() {
+        sendIAC(0x41);
+    }
+    uint32_t readInterruptState() {
+        return hitagi_readInterruptState();
+    }
+    void setInterruptState(uint32_t value) {
+        hitagi_writeInterruptState(value);
+    }
 }

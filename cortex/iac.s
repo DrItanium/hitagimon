@@ -22,3 +22,29 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+/* taken from the mon960 source code */
+_sendIACCommand:
+/* G0 is the address to send the iac to (if it is 0, use 0xff000010).  */
+/* G1 is the address of the IAC (four words).  Copy the IAC to ensure  */
+/* that it is aligned. */
+	mov	sp, g2
+	addo	0x10, sp, sp
+	ldq	(g1), r4
+
+	lda	0xff000010, r3
+	cmpobne	0, g0, 1f		# If the specified address is 0,
+	mov	r3, g0			# use 0xff000010.
+
+1:	cmpobne	g0, r3, 2f		# If the destination is 0xff000010,
+
+	ldconst	0x93000000, r3		# and it is a reinitialize processor
+	cmpobne	r4, r3, 2f		# IAC,
+
+	cmpobne	0, r7, 2f		# and the destination address is 0,
+	lda	3f, r7			# set the destination address to 3f.
+	flushreg
+
+2:	stq	r4, (g2)
+	synmovq g0, g2
+3:	ret
