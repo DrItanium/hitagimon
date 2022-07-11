@@ -30,40 +30,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <errno.h>
 #include "../chipset/IODevice.h"
 
-namespace
-{
-    int
-    sys_read(int fd, void *buf, size_t sz, int &nread) {
-        nread = 0;
-        if (fd > 2) {
-            if (getBasicChipsetInterface().readFile(fd - 3, buf, sz, nread)) {
-                return 0;
-            } else {
-                return EBADF;
-            }
-        } else {
-            // builtin files
-            switch (fd) {
-                case STDIN_FILENO:
-                    nread = getBasicChipsetInterface().read(reinterpret_cast<char *>(buf), sz);
-                    return 0;
-                default:
-                    return EBADF;
-            }
-        }
-    }
-}
-
 extern "C"
 int
-read (int fd, void* buf, size_t sz) {
-    //printf("read(%d, 0x%x, %ld)\n", fd, buf, sz);
-    int nread = 0;
-    int r = sys_read (fd, buf, sz, nread);
-    if (r != 0)
-    {
-        errno = r;
-        return -1;
+hitagi_read(int fd, void *buf, size_t sz, int *nread) {
+    nread = 0;
+    if (fd > 2) {
+        if (getBasicChipsetInterface().readFile(fd - 3, buf, sz, *nread)) {
+            return 0;
+        } else {
+            return EBADF;
+        }
+    } else {
+        // builtin files
+        switch (fd) {
+            case STDIN_FILENO:
+                nread = getBasicChipsetInterface().read(reinterpret_cast<char *>(buf), sz);
+                return 0;
+            default:
+                return EBADF;
+        }
     }
-    return nread;
 }

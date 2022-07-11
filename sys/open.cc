@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 extern "C"
 int
-open (char* file, int flags, int mode) {
+hitagi_open (char* file, int flags, int mode) {
     ChipsetBasicFunctions& basic = getBasicChipsetInterface();
     // ignore the mode flags for now
     /// @todo implement
