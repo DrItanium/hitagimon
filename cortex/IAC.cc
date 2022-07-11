@@ -50,15 +50,15 @@ namespace cortex {
         sendIACCommand(0, &theMessage);
     }
 
-    __attribute__((used)) void
+    void
     triggerInterrupt(uint8_t interruptVector) {
         sendIAC(0x40, interruptVector);
     }
-    __attribute__((used)) void
+    void
     purgeInstructionCache() {
         sendIAC(0x89);
     }
-    __attribute__((used)) void
+    void
     reinitializeProcessor(SystemAddressTable* sat, PRCB* prcb, void (*start)()) {
         sendIAC(0x93, 0,
                       0,
@@ -66,21 +66,21 @@ namespace cortex {
                       reinterpret_cast<uint32_t>(prcb),
                       reinterpret_cast<uint32_t>(start));
     }
-    __attribute__((used)) void
+    void
     setBreakpointRegister(uint32_t first, uint32_t second) {
         sendIAC(0x8F, 0, 0, first, second);
     }
-    __attribute__((used)) void
+    void
     storeSystemBaseAddress(SystemBase* to) {
         sendIAC(0x80, 0, 0, reinterpret_cast<uint32_t>(to));
     }
-    __attribute__((used)) void testPendingInterrupts() {
+    void testPendingInterrupts() {
         sendIAC(0x41);
     }
-    __attribute__((used)) uint32_t readInterruptState() {
+    uint32_t readInterruptState() {
         return hitagi_readInterruptState();
     }
-    __attribute__((used)) void setInterruptState(uint32_t value) {
+    void setInterruptState(uint32_t value) {
         hitagi_writeInterruptState(value);
     }
 }
