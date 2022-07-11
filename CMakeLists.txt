@@ -52,7 +52,7 @@ add_library(hitagicortex
 		cortex/Interrupts.cc
 		cortex/Interrupts.h
 		cortex/EnvironmentInterface.cc
-		cortex/EnvironmentInterface.h cortex/Faults.cc cortex/Faults.h cortex/IAC.h)
+		cortex/EnvironmentInterface.h cortex/Faults.cc cortex/Faults.h cortex/IAC.h cortex/IAC.cc)
 add_library(hitagiclips
 		clips/agenda.c
 		clips/agenda.h

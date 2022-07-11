@@ -25,23 +25,38 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 // Created by jwscoggins on 7/10/22.
 //
-
-#ifndef HITAGIMON_IAC_H
-#define HITAGIMON_IAC_H
-#include <stdint.h>
-#include "SysExamine.h"
+#include "IAC.h"
+extern "C" void sendIACCommand(void* theMessage);
 namespace cortex {
-   struct SystemBase {
-       SystemAddressTable* theSAT;
-       PRCB* thePRCB;
-   };
-   void triggerInterrupt(uint8_t interruptVector);
-   void purgeInstructionCache();
-   void reinitializeProcessor(SystemAddressTable* sat, PRCB* prcb, void (*start)());
-   void setBreakpointRegister(uint32_t first, uint32_t second);
-   void storeSystemBaseAddress(SystemBase* to);
-   void testPendingInterrupts();
-   uint32_t readInterruptState();
-   void setInterruptState(uint32_t);
+    struct IACMessage {
+        uint16_t field2;
+        uint8_t field1;
+        uint8_t type;
+        uint32_t field3;
+        uint32_t field4;
+        uint32_t field5;
+    } __attribute__((packed));
+    void
+    sendIAC(uint8_t type, uint8_t field1 = 0, uint16_t field2 = 0, uint32_t field3 = 0, uint32_t field4 = 0, uint32_t field5 = 0) {
+        IACMessage theMessage;
+        theMessage.type = type;
+        theMessage.field1 = field1;
+        theMessage.field2 = field2;
+        theMessage.field3 = field3;
+        theMessage.field4 = field4;
+        theMessage.field5 = field5;
+        sendIACCommand(&theMessage);
+    }
+
+    void
+    triggerInterrupt(uint8_t interruptVector) {
+        sendIAC(0x40, interruptVector, 0, 0, 0, 0);
+    }
+    void purgeInstructionCache();
+    void reinitializeProcessor(SystemAddressTable* sat, PRCB* prcb, void (*start)());
+    void setBreakpointRegister(uint32_t first, uint32_t second);
+    void storeSystemBaseAddress(SystemBase* to);
+    void testPendingInterrupts();
+    uint32_t readInterruptState();
+    void setInterruptState(uint32_t);
 }
-#endif //HITAGIMON_IAC_H
