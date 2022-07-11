@@ -35,17 +35,17 @@ add_library(hitagisys
 		#sys/brk.cc
 		#sys/fstat.cc
 		#sys/isatty.cc
-		#sys/lseek.cc
+		sys/lseek.cc
 		sys/write.cc
 		sys/read.cc
 		sys/open.cc
 		#sys/kill.cc
 		#sys/setitimer.cc
-		#sys/close.cc
+		sys/close.cc
 		sys/gettimeofday.cc
 		#sys/access.cc
 		#sys/getpid.cc
-		#sys/_exit.cc
+		sys/_exit.cc
 		sys/link.cc
 		sys/unlink.cc)
 add_library(hitagicortex

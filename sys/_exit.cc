@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdio.h>
 extern "C"
 void
-_exit(int status) {
+hitagi_exit(int status) {
     printf("exit(%d)\n", status);
     while (true) {
         // just hang here

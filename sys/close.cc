@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 extern "C"
 int
-close(int fd) {
+hitagi_close(int fd) {
     if (fd > 2) {
         if (getBasicChipsetInterface().closeFile(fd - 3)) {
             return 0;
