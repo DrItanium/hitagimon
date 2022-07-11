@@ -6,6 +6,7 @@
 #include <string>
 #include "cortex/EnvironmentInterface.h"
 #include "cortex/Interrupts.h"
+#include "cortex/IAC.h"
 //extern "C" int doommain (int argc, char** argv) ;
 extern "C" int clipsMain(int argc, char *argv[]);
 uint64_t delay(uint64_t count) {
@@ -63,6 +64,7 @@ int main() {
     displayIOMemoryMap();
     printf("Starting up CLIPS!\n");
     clipsMain(0, args);
+    (void)cortex::readInterruptState();
     return 0;
 }
 

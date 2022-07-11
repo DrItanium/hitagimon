@@ -39,7 +39,7 @@ namespace cortex {
    void purgeInstructionCache();
    void reinitializeProcessor(SystemAddressTable* sat, PRCB* prcb, void (*start)());
    void setBreakpointRegister(uint32_t first, uint32_t second);
-   void storeSystemBaseAddress(SystemBase* to);
+    __attribute__((unused)) void storeSystemBaseAddress(SystemBase* to);
    void testPendingInterrupts();
    uint32_t readInterruptState();
    void setInterruptState(uint32_t);

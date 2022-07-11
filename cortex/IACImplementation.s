@@ -22,7 +22,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
+.global _sendIACCommand
 /* taken from the mon960 source code */
 _sendIACCommand:
 /* G0 is the address to send the iac to (if it is 0, use 0xff000010).  */
@@ -51,6 +51,8 @@ _sendIACCommand:
 
 #extern "C" uint32_t hitagi_readInterruptState();
 #extern "C" void hitagi_writeInterruptState(uint32_t value);
+.global _hitagi_readInterruptState
+.global _hitagi_writeInterruptState
 _hitagi_readInterruptState:
     lda 0xFF000004, r5
     synld r5, g0
