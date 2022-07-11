@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C"
 int
 hitagi_read(int fd, void *buf, size_t sz, int *nread) {
-    nread = 0;
+    *nread = 0;
     if (fd > 2) {
         if (getBasicChipsetInterface().readFile(fd - 3, buf, sz, *nread)) {
             return 0;

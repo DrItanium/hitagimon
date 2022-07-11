@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C"
 int
 hitagi_write(int fd, const void *buf, size_t sz, int *nwrite) {
-    nwrite = 0;
+    *nwrite = 0;
     if (fd > 2) {
         if (getBasicChipsetInterface().writeFile(fd - 3, buf, sz, *nwrite)) {
             return 0;
