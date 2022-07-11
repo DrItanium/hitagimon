@@ -32,20 +32,22 @@ add_library(hitagichipset
 		chipset/ChipsetInteract.h
 		)
 add_library(hitagisys
-		sys/brk.cc
-		sys/fstat.cc
-		sys/isatty.cc
-		sys/lseek.cc
-		sys/write.cc
-		sys/read.cc
-		sys/open.cc
-		sys/kill.cc
-		sys/setitimer.cc
-		sys/close.cc
+		#sys/brk.cc
+		#sys/fstat.cc
+		#sys/isatty.cc
+		#sys/lseek.cc
+		#sys/write.cc
+		#sys/read.cc
+		#sys/open.cc
+		#sys/kill.cc
+		#sys/setitimer.cc
+		#sys/close.cc
 		sys/gettimeofday.cc
-		sys/access.cc
-		sys/getpid.cc
-		sys/_exit.cc sys/link.cc sys/unlink.cc)
+		#sys/access.cc
+		#sys/getpid.cc
+		#sys/_exit.cc
+		sys/link.cc
+		sys/unlink.cc)
 add_library(hitagicortex
 		cortex/Interrupts.cc
 		cortex/Interrupts.h
@@ -537,12 +539,13 @@ target_link_libraries(hitagimon
 		gcc
 		c
 		m
-		#doom
 		hitagicortex
 		hitagisys
+		mon960
 		hitagichipset
 		stdc++
 		c
 		m
 		gcc # necessary for soft float support, will need to provide my own custom routines ahead of this point to access the fpu
+		mon960
 		)

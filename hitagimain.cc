@@ -6,7 +6,6 @@
 #include <string>
 #include "cortex/EnvironmentInterface.h"
 #include "cortex/Interrupts.h"
-
 //extern "C" int doommain (int argc, char** argv) ;
 extern "C" int clipsMain(int argc, char *argv[]);
 uint64_t delay(uint64_t count) {

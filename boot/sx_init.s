@@ -118,266 +118,72 @@ sys_proc_table:
 # up to 260 entries!
     # example entry
 	#.word	(_console_io + 0x2)	# Calls 0 - console I/O routines
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
+	.word 0, 0, 0, 0 # 0-3
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 8-11
+	.word 0, 0, 0, 0 # 12-15
+	.word 0, 0, 0, 0 # 16-19
+	.word 0, 0, 0, 0 # 20-23
+	.word 0, 0, 0, 0 # 24-27
+	.word 0, 0, 0, 0 # 28-31
+	.word 0, 0, 0, 0 # 32-35
+	.word 0, 0, 0, 0 # 36-39
+	.word 0, 0, 0, 0 # 40-43
+	.word 0, 0, 0, 0 # 44-47
+	.word 0, 0, 0, 0 # 48-51
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 4-7
+	# mon960 registrations
+	.word 0, 0, (_hitagi_open + 0x2), (_hitagi_read + 0x2), (_hitagi_write + 0x2), (_hitagi_lseek + 0x2), (_hitagi_close + 0x2), 0 # 228-235
+	.word 0, 0, 0, 0 # 236-239
+	.word 0, 0, 0, 0 # 240-243
+	.word 0, 0, 0, 0 # 244-247
+	.word 0, 0, 0, 0 # 248-251
+	.word 0, 0, 0, 0 # 252-255
+	.word 0, (_hitagi_exit + 0x2), 0, 0 # 256-259
+	#.word	(_console_io + 0x2)	# Calls 0 - console I/O routines
 # up to a total of 260 entries
 
 # below is the fault table for calls to the fault handler.
