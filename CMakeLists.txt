@@ -36,7 +36,7 @@ add_library(hitagisys
 		#sys/fstat.cc
 		#sys/isatty.cc
 		#sys/lseek.cc
-		#sys/write.cc
+		sys/write.cc
 		sys/read.cc
 		sys/open.cc
 		#sys/kill.cc

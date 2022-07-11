@@ -28,39 +28,26 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <unistd.h>
 #include <errno.h>
 #include "../chipset/IODevice.h"
-namespace
-{
-    int
-    sys_write(int fd, const void *buf, size_t sz, int &nwrite) {
-        nwrite = 0;
-        if (fd > 2) {
-            if (getBasicChipsetInterface().writeFile(fd - 3, buf, sz, nwrite)) {
-                return 0;
-            } else {
-                return EBADF;
-            }
-        } else {
-            // builtin files
-            switch (fd) {
-                case STDOUT_FILENO:
-                case STDERR_FILENO:
-                    nwrite = getBasicChipsetInterface().write(reinterpret_cast<char *>(const_cast<void *>(buf)), sz);
-                    break;
-                default:
-                    return EBADF;
-            }
-            return 0;
-        }
-    }
-}
 extern "C"
 int
-write (int fd, const void* buf, size_t sz) {
-    int numWritten = 0;
-    int r = sys_write(fd, buf, sz, numWritten);
-    if (r != 0) {
-        errno = r;
-        return -1;
+hitagi_write(int fd, const void *buf, size_t sz, int *nwrite) {
+    nwrite = 0;
+    if (fd > 2) {
+        if (getBasicChipsetInterface().writeFile(fd - 3, buf, sz, *nwrite)) {
+            return 0;
+        } else {
+            return EBADF;
+        }
+    } else {
+        // builtin files
+        switch (fd) {
+            case STDOUT_FILENO:
+            case STDERR_FILENO:
+                *nwrite = getBasicChipsetInterface().write(reinterpret_cast<char *>(const_cast<void *>(buf)), sz);
+                break;
+            default:
+                return EBADF;
+        }
+        return 0;
     }
-    return numWritten;
 }
