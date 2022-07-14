@@ -8,6 +8,7 @@
 #include "cortex/Interrupts.h"
 #include "cortex/IAC.h"
 #include "cortex/ConfigurationSpacePage.h"
+#include "cortex/ModernCpp.h"
 //extern "C" int doommain (int argc, char** argv) ;
 extern "C" int clipsMain(int argc, char *argv[]);
 uint64_t delay(uint64_t count) {
@@ -26,14 +27,14 @@ union TestStorage {
     }__attribute__((packed));
 } __attribute__((packed));
 char* args[] = { };
-void setupEnvironmentVariables() {
+void setupEnvironmentVariables() noexcept {
     cortex::EnvironmentInterface::set("HOME", "/home");
     cortex::EnvironmentInterface::set("DOOMWADDIR", "/home/wads");
 }
-void isr0Test() {
+void isr0Test() noexcept {
     printf("INT0 Triggered!");
 }
-int main() {
+int main() noexcept {
     ChipsetBasicFunctions& theChipset = getBasicChipsetInterface();
     theChipset.writeLine("HITAGIMON");
     printf("Built on %s at %s\n", __DATE__, __TIME__);

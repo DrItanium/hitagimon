@@ -29,17 +29,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef HITAGIMON_CONFIGURATIONSPACEPAGE_H
 #define HITAGIMON_CONFIGURATIONSPACEPAGE_H
 #include <stdint.h>
+#include "ModernCpp.h"
 /**
  * @brief A standard page that the chipset exposes to provide standard descriptions of devices in an unordred fashion
  */
  class ConfigurationSpacePage {
  public:
-     uint32_t getBaseAddress() const { return baseAddress_; }
-     void setBaseAddress(uint32_t address) { baseAddress_ = address; }
-     uint32_t size() const { return size_; }
-     uint64_t getKind() const { return kind_; }
-     uint64_t getFlags() const { return flags_; }
-     bool valid() const { return valid_ != 0; }
+     constexpr uint32_t getBaseAddress() const noexcept{ return baseAddress_; }
+     void setBaseAddress(uint32_t address) noexcept { baseAddress_ = address; }
+     constexpr uint32_t size() const noexcept { return size_; }
+     constexpr uint64_t getKind() const noexcept { return kind_; }
+     constexpr uint64_t getFlags() const noexcept { return flags_; }
+     constexpr bool valid() const noexcept { return valid_ != 0; }
  private:
      union {
          volatile uint8_t pageBytes_[256];

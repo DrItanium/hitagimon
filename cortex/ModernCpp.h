@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef HITAGIMON_MODERNCPP_H
 #define HITAGIMON_MODERNCPP_H
 #ifdef __cplusplus
-#ifdef __cplusplus < 201103
+#if __cplusplus < 201103
 // pre c++11
 #define constexpr
 #define noexcept

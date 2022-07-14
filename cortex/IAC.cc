@@ -26,6 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Created by jwscoggins on 7/10/22.
 //
 #include "IAC.h"
+#include "ModernCpp.h"
 extern "C" void sendIACCommand(uint32_t iacPort, void* theMessage);
 extern "C" uint32_t hitagi_readInterruptState();
 extern "C" void hitagi_writeInterruptState(uint32_t value);
