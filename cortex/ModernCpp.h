@@ -26,37 +26,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Created by jwscoggins on 7/13/22.
 //
 
-#ifndef HITAGIMON_CONFIGURATIONSPACEPAGE_H
-#define HITAGIMON_CONFIGURATIONSPACEPAGE_H
-#include <stdint.h>
-/**
- * @brief A standard page that the chipset exposes to provide standard descriptions of devices in an unordred fashion
- */
- class ConfigurationSpacePage {
- public:
-     uint32_t getBaseAddress() const { return baseAddress_; }
-     void setBaseAddress(uint32_t address) { baseAddress_ = address; }
-     uint32_t size() const { return size_; }
-     uint64_t getKind() const { return kind_; }
-     uint64_t getFlags() const { return flags_; }
-     bool valid() const { return valid_ != 0; }
- private:
-     union {
-         volatile uint8_t pageBytes_[256];
-         volatile uint64_t pageLongWords_[256 / sizeof(uint64_t)];
-         volatile uint64_t pageWords_[256 / sizeof(uint32_t)];
-         struct {
-             volatile uint64_t kind_;
-             union {
-                 volatile uint64_t flags_;
-                 struct {
-                     volatile uint64_t valid_ : 1;
-                 };
-             };
-             volatile uint32_t baseAddress_;
-             volatile uint32_t size_;
-         };
-
-     };
- } __attribute__((packed));
-#endif //HITAGIMON_CONFIGURATIONSPACEPAGE_H
+#ifndef HITAGIMON_MODERNCPP_H
+#define HITAGIMON_MODERNCPP_H
+#ifdef __cplusplus
+#ifdef __cplusplus < 201103
+// pre c++11
+#define constexpr
+#define noexcept
+#define explicit
+#endif
+#endif
+#endif //HITAGIMON_MODERNCPP_H
