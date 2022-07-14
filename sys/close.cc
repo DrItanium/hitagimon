@@ -28,13 +28,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <unistd.h>
 #include <errno.h>
-#include "../chipset/IODevice.h"
+#include "../cortex/IODevice.h"
 
 extern "C"
 int
 hitagi_close(int fd) {
     if (fd > 2) {
-        if (getBasicChipsetInterface().closeFile(fd - 3)) {
+        if (cortex::getBasicChipsetInterface().closeFile(fd - 3)) {
             return 0;
         } else {
             errno = EBADF;

@@ -5,10 +5,10 @@
 #include "MonitorExtensions.h"
 #include "clips.h"
 /// @todo fix this
-#include "../chipset/ChipsetInteract.h"
+#include "../cortex/ChipsetInteract.h"
 #include "../cortex/EnvironmentInterface.h"
 #include "../cortex/SysExamine.h"
-#include "../chipset/IODevice.h"
+#include "../cortex/IODevice.h"
 
 #define X(title) extern "C++" void title (Environment*, UDFContext*, UDFValue*)
 X(ExamineByte);
@@ -113,7 +113,7 @@ DefClipsFunction(ExamineByte) {
         return;
     }
     if (CVIsType(retVal, INTEGER_BIT)) {
-        retVal->integerValue = CreateInteger(theEnv, memory<uint8_t>(static_cast<uint32_t>(retVal->integerValue->contents)));
+        retVal->integerValue = CreateInteger(theEnv, cortex::memory<uint8_t>(static_cast<uint32_t>(retVal->integerValue->contents)));
     }
 }
 
@@ -122,7 +122,7 @@ DefClipsFunction(ExamineShort) {
         return;
     }
     if (CVIsType(retVal, INTEGER_BIT)) {
-        retVal->integerValue = CreateInteger(theEnv, memory<uint16_t>(static_cast<uint32_t>(retVal->integerValue->contents)));
+        retVal->integerValue = CreateInteger(theEnv, cortex::memory<uint16_t>(static_cast<uint32_t>(retVal->integerValue->contents)));
     }
 }
 
@@ -131,7 +131,7 @@ DefClipsFunction(ExamineWord) {
         return;
     }
     if (CVIsType(retVal, INTEGER_BIT)) {
-        retVal->integerValue = CreateInteger(theEnv, memory<uint32_t>(static_cast<uint32_t>(retVal->integerValue->contents)));
+        retVal->integerValue = CreateInteger(theEnv, cortex::memory<uint32_t>(static_cast<uint32_t>(retVal->integerValue->contents)));
     }
 }
 
@@ -141,7 +141,7 @@ DefClipsFunction(ExamineLongWord) {
     }
     if (CVIsType(retVal, INTEGER_BIT)) {
         // this could be negative but who cares
-        retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>(memory<uint64_t>(static_cast<uint32_t>(retVal->integerValue->contents))));
+        retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>(cortex::memory<uint64_t>(static_cast<uint32_t>(retVal->integerValue->contents))));
     }
 }
 
@@ -393,7 +393,7 @@ DefClipsFunction(CallTan960) {
 #endif
 
 DefClipsFunction(TriggerInterrupt) {
-    getBasicChipsetInterface().triggerInt0();
+    cortex::getBasicChipsetInterface().triggerInt0();
 }
 
 DefClipsFunction(DoSYNLD) {
@@ -430,7 +430,7 @@ DefClipsFunction(Color565) {
     }
     uint8_t blue = CVCoerceToInteger(&blueV);
 
-    retVal->integerValue = CreateInteger(theEnv, getBasicChipsetInterface().color565(red, green, blue));
+    retVal->integerValue = CreateInteger(theEnv, cortex::getBasicChipsetInterface().color565(red, green, blue));
 }
 
 DefClipsFunction(SetBacklightIntensity) {
@@ -439,7 +439,7 @@ DefClipsFunction(SetBacklightIntensity) {
         return;
     }
     uint16_t intensity = CVCoerceToInteger(&intensityV);
-    getBasicChipsetInterface().setBacklightIntensity(intensity);
+    cortex::getBasicChipsetInterface().setBacklightIntensity(intensity);
 }
 
 DefClipsFunction(DrawLine) {
@@ -449,7 +449,7 @@ DefClipsFunction(DrawLine) {
     if (!UDFNextArgument(context, NUMBER_BITS, &x1v)) { return; }
     if (!UDFNextArgument(context, NUMBER_BITS, &y1v)) { return; }
     if (!UDFNextArgument(context, NUMBER_BITS, &fgColorv)) { return; }
-    getBasicChipsetInterface().drawLine(CVCoerceToInteger(&x0v),
+    cortex::getBasicChipsetInterface().drawLine(CVCoerceToInteger(&x0v),
                                         CVCoerceToInteger(&y0v),
                                         CVCoerceToInteger(&x1v),
                                         CVCoerceToInteger(&y1v),
@@ -463,7 +463,7 @@ DefClipsFunction(DrawRect) {
     if (!UDFNextArgument(context, NUMBER_BITS, &x1v)) { return; }
     if (!UDFNextArgument(context, NUMBER_BITS, &y1v)) { return; }
     if (!UDFNextArgument(context, NUMBER_BITS, &fgColorv)) { return; }
-    getBasicChipsetInterface().drawRect(CVCoerceToInteger(&x0v),
+    cortex::getBasicChipsetInterface().drawRect(CVCoerceToInteger(&x0v),
                                         CVCoerceToInteger(&y0v),
                                         CVCoerceToInteger(&x1v),
                                         CVCoerceToInteger(&y1v),
@@ -476,7 +476,7 @@ DefClipsFunction(DrawCircle) {
     if (!UDFNextArgument(context, NUMBER_BITS, &y0v)) { return; }
     if (!UDFNextArgument(context, NUMBER_BITS, &rv)) { return; }
     if (!UDFNextArgument(context, NUMBER_BITS, &fgColorv)) { return; }
-    getBasicChipsetInterface().drawCircle(CVCoerceToInteger(&x0v),
+    cortex::getBasicChipsetInterface().drawCircle(CVCoerceToInteger(&x0v),
                                           CVCoerceToInteger(&y0v),
                                           CVCoerceToInteger(&rv),
                                           CVCoerceToInteger(&fgColorv) ) ;
@@ -489,7 +489,7 @@ DefClipsFunction(FillRect) {
     if (!UDFNextArgument(context, NUMBER_BITS, &x1v)) { return; }
     if (!UDFNextArgument(context, NUMBER_BITS, &y1v)) { return; }
     if (!UDFNextArgument(context, NUMBER_BITS, &fgColorv)) { return; }
-    getBasicChipsetInterface().drawRect(CVCoerceToInteger(&x0v),
+    cortex::getBasicChipsetInterface().drawRect(CVCoerceToInteger(&x0v),
                                         CVCoerceToInteger(&y0v),
                                         CVCoerceToInteger(&x1v),
                                         CVCoerceToInteger(&y1v),
@@ -503,7 +503,7 @@ DefClipsFunction(FillCircle) {
     if (!UDFNextArgument(context, NUMBER_BITS, &y0v)) { return; }
     if (!UDFNextArgument(context, NUMBER_BITS, &rv)) { return; }
     if (!UDFNextArgument(context, NUMBER_BITS, &fgColorv)) { return; }
-    getBasicChipsetInterface().drawCircle(CVCoerceToInteger(&x0v),
+    cortex::getBasicChipsetInterface().drawCircle(CVCoerceToInteger(&x0v),
                                           CVCoerceToInteger(&y0v),
                                           CVCoerceToInteger(&rv),
                                           CVCoerceToInteger(&fgColorv),
@@ -517,7 +517,7 @@ DefClipsFunction(DrawPixel) {
     if (!UDFFirstArgument(context, NUMBER_BITS, &x0v)) { return; }
     if (!UDFNextArgument(context, NUMBER_BITS, &y0v)) { return; }
     if (!UDFNextArgument(context, NUMBER_BITS, &fgColorv)) { return; }
-    getBasicChipsetInterface().drawPixel(CVCoerceToInteger(&x0v),
+    cortex::getBasicChipsetInterface().drawPixel(CVCoerceToInteger(&x0v),
                                          CVCoerceToInteger(&y0v),
                                          CVCoerceToInteger(&fgColorv) ) ;
 }
@@ -525,15 +525,15 @@ DefClipsFunction(DrawPixel) {
 DefClipsFunction(FillScreen) {
     UDFValue colorv;
     if (!UDFFirstArgument(context, NUMBER_BITS, &colorv)) { return; }
-    getBasicChipsetInterface().fillScreen(CVCoerceToInteger(&colorv));
+    cortex::getBasicChipsetInterface().fillScreen(CVCoerceToInteger(&colorv));
 }
 
 DefClipsFunction(GetBacklightIntensity) {
-    retVal->integerValue = CreateInteger(theEnv, getBasicChipsetInterface().getBacklightIntensity());
+    retVal->integerValue = CreateInteger(theEnv, cortex::getBasicChipsetInterface().getBacklightIntensity());
 }
 
 DefClipsFunction(RTCUnixTime) {
-    retVal->integerValue = CreateInteger(theEnv, getBasicChipsetInterface().unixtime());
+    retVal->integerValue = CreateInteger(theEnv, cortex::getBasicChipsetInterface().unixtime());
 }
 
 DefClipsFunction(FillTriangle) {
@@ -545,7 +545,7 @@ DefClipsFunction(FillTriangle) {
     if (!UDFNextArgument(context, NUMBER_BITS, &x2v)) { return; }
     if (!UDFNextArgument(context, NUMBER_BITS, &y2v)) { return; }
     if (!UDFNextArgument(context, NUMBER_BITS, &fgColorv)) { return; }
-    getBasicChipsetInterface().drawTriangle(CVCoerceToInteger(&x0v),
+    cortex::getBasicChipsetInterface().drawTriangle(CVCoerceToInteger(&x0v),
                                             CVCoerceToInteger(&y0v),
                                             CVCoerceToInteger(&x1v),
                                             CVCoerceToInteger(&y1v),
@@ -563,7 +563,7 @@ DefClipsFunction(DrawTriangle) {
     if (!UDFNextArgument(context, NUMBER_BITS, &x2v)) { return; }
     if (!UDFNextArgument(context, NUMBER_BITS, &y2v)) { return; }
     if (!UDFNextArgument(context, NUMBER_BITS, &fgColorv)) { return; }
-    getBasicChipsetInterface().drawTriangle(CVCoerceToInteger(&x0v),
+    cortex::getBasicChipsetInterface().drawTriangle(CVCoerceToInteger(&x0v),
                                             CVCoerceToInteger(&y0v),
                                             CVCoerceToInteger(&x1v),
                                             CVCoerceToInteger(&y1v),
@@ -579,7 +579,7 @@ DefClipsFunction(FillRoundRect) {
     if (!UDFNextArgument(context, NUMBER_BITS, &height)) { return; }
     if (!UDFNextArgument(context, NUMBER_BITS, &radius)) { return; }
     if (!UDFNextArgument(context, NUMBER_BITS, &fgColorv)) { return; }
-    getBasicChipsetInterface().drawRoundedRect(CVCoerceToInteger(&x0v),
+    cortex::getBasicChipsetInterface().drawRoundedRect(CVCoerceToInteger(&x0v),
                                                CVCoerceToInteger(&y0v),
                                                CVCoerceToInteger(&width),
                                                CVCoerceToInteger(&height),
@@ -594,7 +594,7 @@ DefClipsFunction(DrawRoundRect) {
     if (!UDFNextArgument(context, NUMBER_BITS, &height)) { return; }
     if (!UDFNextArgument(context, NUMBER_BITS, &radius)) { return; }
     if (!UDFNextArgument(context, NUMBER_BITS, &fgColorv)) { return; }
-    getBasicChipsetInterface().drawRoundedRect(CVCoerceToInteger(&x0v),
+    cortex::getBasicChipsetInterface().drawRoundedRect(CVCoerceToInteger(&x0v),
                                                CVCoerceToInteger(&y0v),
                                                CVCoerceToInteger(&width),
                                                CVCoerceToInteger(&height),

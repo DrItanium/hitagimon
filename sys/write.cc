@@ -27,13 +27,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 #include <unistd.h>
 #include <errno.h>
-#include "../chipset/IODevice.h"
+#include "../cortex/IODevice.h"
 extern "C"
 int
 hitagi_write(int fd, const void *buf, size_t sz, int *nwrite) {
     *nwrite = 0;
     if (fd > 2) {
-        if (getBasicChipsetInterface().writeFile(fd - 3, buf, sz, *nwrite)) {
+        if (cortex::getBasicChipsetInterface().writeFile(fd - 3, buf, sz, *nwrite)) {
             return 0;
         } else {
             return EBADF;
@@ -43,7 +43,7 @@ hitagi_write(int fd, const void *buf, size_t sz, int *nwrite) {
         switch (fd) {
             case STDOUT_FILENO:
             case STDERR_FILENO:
-                *nwrite = getBasicChipsetInterface().write(reinterpret_cast<char *>(const_cast<void *>(buf)), sz);
+                *nwrite = cortex::getBasicChipsetInterface().write(reinterpret_cast<char *>(const_cast<void *>(buf)), sz);
                 break;
             default:
                 return EBADF;

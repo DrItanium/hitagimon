@@ -2,7 +2,7 @@
 // Created by jwscoggins on 6/7/21.
 //
 #include <stdint.h>
-#include "chipset/IODevice.h"
+#include "cortex/IODevice.h"
 #include <string>
 #include "cortex/EnvironmentInterface.h"
 #include "cortex/Interrupts.h"
@@ -35,7 +35,7 @@ void isr0Test() noexcept {
     printf("INT0 Triggered!");
 }
 int main() noexcept {
-    ChipsetBasicFunctions& theChipset = getBasicChipsetInterface();
+    cortex::ChipsetBasicFunctions& theChipset = cortex::getBasicChipsetInterface();
     theChipset.writeLine("HITAGIMON");
     printf("Built on %s at %s\n", __DATE__, __TIME__);
     printf("--------------------------------------------\n\n\n\n");
@@ -63,7 +63,7 @@ int main() noexcept {
     theValue64 = 0x9876543210ABCDEFull;
     printf("OK? theValue64 = 0x%x%x but expecting 0x9876'5432'10AB'CDEF\n", static_cast<unsigned>(theValue64), static_cast<unsigned>(theValue64 >> 32));
     setISR0Function(isr0Test);
-    displayIOMemoryMap();
+    cortex::displayIOMemoryMap();
     printf("Starting up CLIPS!\n");
     clipsMain(0, args);
     (void)cortex::readInterruptState();

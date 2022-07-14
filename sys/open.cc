@@ -26,12 +26,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Created by jwscoggins on 6/29/21.
 //
 
-#include "../chipset/IODevice.h"
+#include "../cortex/IODevice.h"
 
 extern "C"
 int
 hitagi_open (char* file, int flags, int mode) {
-    ChipsetBasicFunctions& basic = getBasicChipsetInterface();
+    cortex::ChipsetBasicFunctions& basic = cortex::getBasicChipsetInterface();
     // ignore the mode flags for now
     /// @todo implement
     int result = basic.openFile(file, flags, mode);

@@ -28,14 +28,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <unistd.h>
 #include <errno.h>
-#include "../chipset/IODevice.h"
+#include "../cortex/IODevice.h"
 
 extern "C"
 int
 hitagi_read(int fd, void *buf, size_t sz, int *nread) {
     *nread = 0;
     if (fd > 2) {
-        if (getBasicChipsetInterface().readFile(fd - 3, buf, sz, *nread)) {
+        if (cortex::getBasicChipsetInterface().readFile(fd - 3, buf, sz, *nread)) {
             return 0;
         } else {
             return EBADF;
@@ -44,7 +44,7 @@ hitagi_read(int fd, void *buf, size_t sz, int *nread) {
         // builtin files
         switch (fd) {
             case STDIN_FILENO:
-                *nread = getBasicChipsetInterface().read(reinterpret_cast<char *>(buf), sz);
+                *nread = cortex::getBasicChipsetInterface().read(reinterpret_cast<char *>(buf), sz);
                 return 0;
             default:
                 return EBADF;

@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <unistd.h>
 #include <errno.h>
 #include <sys/time.h>
-#include "../chipset/IODevice.h"
+#include "../cortex/IODevice.h"
 
 extern "C"
 off_t

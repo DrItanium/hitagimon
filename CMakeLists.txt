@@ -26,11 +26,6 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
-add_library(hitagichipset
-		chipset/IODevice.cc
-		chipset/IODevice.h
-		chipset/ChipsetInteract.h
-		)
 add_library(hitagisys
 		#sys/brk.cc
 		#sys/fstat.cc
@@ -49,6 +44,9 @@ add_library(hitagisys
 		sys/link.cc
 		sys/unlink.cc)
 add_library(hitagicortex
+		cortex/IODevice.cc
+		cortex/IODevice.h
+		cortex/ChipsetInteract.h
 		cortex/Interrupts.cc
 		cortex/Interrupts.h
 		cortex/EnvironmentInterface.cc
@@ -547,7 +545,6 @@ target_link_libraries(hitagimon
 		hitagicortex
 		hitagisys
 		mon960
-		hitagichipset
 		stdc++
 		c
 		m

@@ -25,13 +25,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*
  * Fault handler routines
  */
-#include "../chipset/IODevice.h"
+#include "../cortex/IODevice.h"
 #include "../cortex/Faults.h"
 #include <string>
 void
 basicDisplay(const std::string& kind, cortex::FaultData* record) {
-    getBasicChipsetInterface().write(kind.c_str());
-    getBasicChipsetInterface().writeLine(" FAULT RAISED!");
+    cortex::getBasicChipsetInterface().write(kind.c_str());
+    cortex::getBasicChipsetInterface().writeLine(" FAULT RAISED!");
     record->display();
 }
 inline void
