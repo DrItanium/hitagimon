@@ -51,17 +51,16 @@ namespace cortex
             union
             {
                 volatile uint8_t pageBytes_[256];
-                volatile uint64_t pageLongWords_[256 / sizeof(uint64_t)];
-                volatile uint64_t pageWords_[256 / sizeof(uint32_t)];
+                volatile uint32_t pageWords_[256 / sizeof(uint32_t)];
                 struct
                 {
-                    volatile uint64_t kind_;
+                    volatile uint32_t kind_;
                     union
                     {
-                        volatile uint64_t flags_;
+                        volatile uint32_t flags_;
                         struct
                         {
-                            volatile uint64_t valid_: 1;
+                            volatile uint32_t valid_: 1;
                         };
                     };
                     volatile uint32_t baseAddress_;
