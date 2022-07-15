@@ -44,11 +44,13 @@ namespace cortex
             constexpr uint32_t getBaseAddress() const noexcept { return baseAddress_; }
             void setBaseAddress(uint32_t address) noexcept { baseAddress_ = address; }
             constexpr uint32_t size() const noexcept { return size_; }
-            constexpr uint64_t getKind() const noexcept { return kind_; }
-            constexpr uint64_t getFlags() const noexcept { return flags_; }
+            constexpr uint32_t getKind() const noexcept { return kind_; }
+            constexpr uint32_t getFlags() const noexcept { return flags_; }
             constexpr bool valid() const noexcept { return valid_ != 0; }
             const volatile uint32_t& getWord(uint8_t index) const noexcept { return pageWords_[index << 2]; }
             volatile uint32_t& getWord(uint8_t index) noexcept { return pageWords_[index << 2]; }
+            volatile uint32_t& operator[](uint8_t index) noexcept { return getWord(index); }
+            const volatile uint32_t& operator[](uint8_t index) const noexcept {return getWord(index); }
         private:
             union
             {
