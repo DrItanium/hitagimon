@@ -40,47 +40,18 @@ namespace cortex
  */
         class Page
         {
-            enum DeviceKind {
-                None,
-                Disk,
-                Display,
-                RealTimeClock,
-                SPI,
-                UART,
-                I2C,
-                WiFi,
-                Bluetooth,
-                BluetoothLE,
-                USBPort,
-                SoundCard,
-                MIDI,
-                GPIO,
-                Analog,
-                PWM,
-                DigitalToAnalogConverter,
-                MMU,
-                InterruptControl,
-                DMA,
-                Timer,
-                EventSystem,
-                CustomConfigurableLogic,
-                Sensor,
-                HumanInterface,
-            };
         public:
             constexpr uint32_t getBaseAddress() const noexcept { return baseAddress_; }
             void setBaseAddress(uint32_t address) noexcept { baseAddress_ = address; }
-            constexpr uint32_t size() const noexcept { return size_; }
-            constexpr uint32_t getKind() const noexcept { return kind_; }
-            constexpr uint32_t getFlags() const noexcept { return flags_; }
-            constexpr bool valid() const noexcept { return valid_ != 0; }
+            constexpr uint8_t pageSize() const noexcept { return flags_.pageSize_; }
+            constexpr uint8_t group() const noexcept { return kind_.group; }
+            constexpr uint8_t subGroup() const noexcept { return kind_.subGroup; }
+            constexpr uint64_t getEntireFlags() const noexcept { return flags_.raw; }
+            constexpr bool valid() const noexcept { return kind_.group != 0; }
             const volatile uint32_t& getWord(uint8_t index) const noexcept { return pageWords_[index << 2]; }
             volatile uint32_t& getWord(uint8_t index) noexcept { return pageWords_[index << 2]; }
             volatile uint32_t& operator[](uint8_t index) noexcept { return getWord(index); }
             const volatile uint32_t& operator[](uint8_t index) const noexcept {return getWord(index); }
-            template<DeviceKind kind>
-            constexpr bool isOfKind() const noexcept { return kind_ == kind; }
-            constexpr bool noDevice() const noexcept { return isOfKind<None>(); }
 
         private:
             union
@@ -88,19 +59,24 @@ namespace cortex
                 volatile uint32_t pageWords_[256 / sizeof(uint32_t)];
                 struct
                 {
-                    volatile uint32_t kind_;
                     union
                     {
-                        volatile uint32_t flags_;
+                        uint32_t raw;
                         struct
                         {
-                            volatile uint32_t valid_: 1;
+                            uint32_t group: 8;
+                            uint32_t subGroup: 8;
+                            uint32_t tagBits : 16;
                         };
-                    };
-                    volatile uint32_t baseAddress_;
-                    volatile uint32_t size_;
-                };
+                    } kind_;
+                    union {
+                        uint32_t raw;
+                        struct {
 
+                        } bits;
+                    } flags_;
+                    volatile uint32_t baseAddress_;
+                };
             };
         } __attribute__((packed));
     } // end namespace ConfigurationSpace
