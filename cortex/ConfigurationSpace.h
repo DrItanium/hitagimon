@@ -57,7 +57,13 @@ namespace cortex
                 volatile uint32_t pageWords_[256 / sizeof(uint32_t)];
                 struct
                 {
-                    volatile uint32_t kind_;
+                    union {
+                        volatile uint32_t kind_;
+                        struct {
+                            volatile uint32_t minorKindBits : 24;
+                            volatile uint32_t majorKindBits : 8;
+                        };
+                    };
                     union
                     {
                         volatile uint32_t flags_;
