@@ -47,10 +47,11 @@ namespace cortex
             constexpr uint64_t getKind() const noexcept { return kind_; }
             constexpr uint64_t getFlags() const noexcept { return flags_; }
             constexpr bool valid() const noexcept { return valid_ != 0; }
+            const volatile uint32_t& getWord(uint8_t index) const noexcept { return pageWords_[index << 2]; }
+            volatile uint32_t& getWord(uint8_t index) noexcept { return pageWords_[index << 2]; }
         private:
             union
             {
-                volatile uint8_t pageBytes_[256];
                 volatile uint32_t pageWords_[256 / sizeof(uint32_t)];
                 struct
                 {
