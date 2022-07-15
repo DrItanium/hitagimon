@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define constexpr
 #define noexcept
 #define explicit
+#define nullptr NULL
 #endif
 #endif
 #endif //HITAGIMON_MODERNCPP_H
