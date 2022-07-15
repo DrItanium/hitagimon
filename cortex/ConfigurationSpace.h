@@ -40,6 +40,33 @@ namespace cortex
  */
         class Page
         {
+            enum DeviceKind {
+                None,
+                Disk,
+                Display,
+                RealTimeClock,
+                SPI,
+                UART,
+                I2C,
+                WiFi,
+                Bluetooth,
+                BluetoothLE,
+                USBPort,
+                SoundCard,
+                MIDI,
+                GPIO,
+                Analog,
+                PWM,
+                DigitalToAnalogConverter,
+                MMU,
+                InterruptControl,
+                DMA,
+                Timer,
+                EventSystem,
+                CustomConfigurableLogic,
+                Sensor,
+                HumanInterface,
+            };
         public:
             constexpr uint32_t getBaseAddress() const noexcept { return baseAddress_; }
             void setBaseAddress(uint32_t address) noexcept { baseAddress_ = address; }
@@ -51,19 +78,17 @@ namespace cortex
             volatile uint32_t& getWord(uint8_t index) noexcept { return pageWords_[index << 2]; }
             volatile uint32_t& operator[](uint8_t index) noexcept { return getWord(index); }
             const volatile uint32_t& operator[](uint8_t index) const noexcept {return getWord(index); }
+            template<DeviceKind kind>
+            constexpr bool isOfKind() const noexcept { return kind_ == kind; }
+            constexpr bool noDevice() const noexcept { return isOfKind<None>(); }
+
         private:
             union
             {
                 volatile uint32_t pageWords_[256 / sizeof(uint32_t)];
                 struct
                 {
-                    union {
-                        volatile uint32_t kind_;
-                        struct {
-                            volatile uint32_t minorKindBits : 24;
-                            volatile uint32_t majorKindBits : 8;
-                        };
-                    };
+                    volatile uint32_t kind_;
                     union
                     {
                         volatile uint32_t flags_;
