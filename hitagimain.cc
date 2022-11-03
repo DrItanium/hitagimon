@@ -34,8 +34,7 @@ void isr0Test() noexcept {
     printf("INT0 Triggered!");
 }
 int main() noexcept {
-    cortex::ChipsetBasicFunctions& theChipset = cortex::getBasicChipsetInterface();
-    theChipset.writeLine("HITAGIMON");
+    cortex::ChipsetBasicFunctions::Console::writeLine("HITAGIMON");
     printf("Built on %s at %s\n", __DATE__, __TIME__);
     printf("--------------------------------------------\n\n\n\n");
     printf("Sizeof(int) = %lu\n", sizeof(int));

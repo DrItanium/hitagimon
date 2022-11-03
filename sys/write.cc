@@ -33,21 +33,14 @@ int
 hitagi_write(int fd, const void *buf, size_t sz, int *nwrite) {
     *nwrite = 0;
     if (fd > 2) {
-#if 0
-        if (cortex::getBasicChipsetInterface().writeFile(fd - 3, buf, sz, *nwrite)) {
-            return 0;
-        } else {
-#endif
-            return EBADF;
-#if 0
-        }
-#endif
+        // we don't currently support opening files
+        return EBADF;
     } else {
         // builtin files
         switch (fd) {
             case STDOUT_FILENO:
             case STDERR_FILENO:
-                *nwrite = cortex::getBasicChipsetInterface().write(reinterpret_cast<char *>(const_cast<void *>(buf)), sz);
+                *nwrite = cortex::ChipsetBasicFunctions::Console::write(reinterpret_cast<char *>(const_cast<void *>(buf)), sz);
                 break;
             default:
                 return EBADF;

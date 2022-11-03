@@ -34,52 +34,32 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ChipsetInteract.h"
 namespace cortex
 {
-    class BuiltinIOBaseDevice
-    {
-    public:
-        BuiltinIOBaseDevice(uint32_t offset);
-        uint32_t getBaseAddress() const { return baseAddress_; }
-        uint32_t getOffset() const { return offset_; }
-    protected:
-        uint32_t offset_;
-        uint32_t baseAddress_;
-    };
-
-/**
- * @brief Manages the builtin led provided by the chipset
- */
-    class ChipsetBasicFunctions : public BuiltinIOBaseDevice
-    {
-    public:
-        ChipsetBasicFunctions();
-        ~ChipsetBasicFunctions();
-        void flush();
-        uint16_t read() const;
-        void write(uint16_t value);
-        void write(char c);
-        void write(const char *ptr);
-        void writeLine();
-        void writeLine(const char *ptr);
-        /**
-         * @brief sequential read from the console into the provided buffer
-         * @param buffer the buffer to save to
-         * @param nbyte the maximum number of bytes to read
-         * @return number of bytes read
-         */
-        ssize_t read(char *buffer, size_t nbyte);
-        /**
-         * @brief Sequential write to the console into the provided buffer
-         * @param buffer the buffer to write into
-         * @param nbyte the maximum number of bytes to write
-         * @return the number of bytes written
-         */
-        ssize_t write(char *buffer, size_t nbyte);
-
-    private:
-        uint16_t waitForLegalCharacter();
-    };
-
-    ChipsetBasicFunctions & getBasicChipsetInterface();
+    namespace ChipsetBasicFunctions {
+        namespace Console
+        {
+            void flush();
+            uint16_t read();
+            void write(uint16_t value);
+            void write(char c);
+            void write(const char *ptr);
+            void writeLine();
+            void writeLine(const char *ptr);
+            /**
+             * @brief sequential read from the console into the provided buffer
+             * @param buffer the buffer to save to
+             * @param nbyte the maximum number of bytes to read
+             * @return number of bytes read
+             */
+            ssize_t read(char *buffer, size_t nbyte);
+            /**
+             * @brief Sequential write to the console into the provided buffer
+             * @param buffer the buffer to write into
+             * @param nbyte the maximum number of bytes to write
+             * @return the number of bytes written
+             */
+            ssize_t write(char *buffer, size_t nbyte);
+        } // end namespace Console
+    } // end namespace ChipsetBasicFunctions
     inline uint32_t
     makeOrdinal(uint16_t lower, uint16_t upper) {
         return static_cast<uint32_t>(lower) | (static_cast<uint32_t>(upper) << 16);

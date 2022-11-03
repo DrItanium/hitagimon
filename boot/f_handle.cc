@@ -30,8 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 void
 basicDisplay(const std::string& kind, cortex::FaultData* record) {
-    cortex::getBasicChipsetInterface().write(kind.c_str());
-    cortex::getBasicChipsetInterface().writeLine(" FAULT RAISED!");
+    cortex::ChipsetBasicFunctions::Console::write(kind.c_str());
+    cortex::ChipsetBasicFunctions::Console::writeLine(" FAULT RAISED!");
     record->display();
 }
 inline void
