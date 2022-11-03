@@ -8,7 +8,6 @@
 #include "../cortex/ChipsetInteract.h"
 #include "../cortex/EnvironmentInterface.h"
 #include "../cortex/SysExamine.h"
-#include "../cortex/IODevice.h"
 
 #define X(title) extern "C++" void title (Environment*, UDFContext*, UDFValue*)
 X(ExamineByte);
