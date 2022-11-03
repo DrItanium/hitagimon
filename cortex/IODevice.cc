@@ -14,15 +14,13 @@ namespace cortex
             uint16_t
             read() {
                 Opcode code;
-                code.full_ = 0;
-                return code.memory<uint16_t>();
+                return code.read16();
             }
 
             void
             write(uint16_t c) {
                 Opcode code;
-                code.full_ = 0;
-                code.memory<uint16_t>() = c;
+                code.write16(c);
             }
 
             void
@@ -31,12 +29,9 @@ namespace cortex
             }
             void
             flush() {
-                Opcode code;
-                code.function = 2;
-                code.group = 0;
-                code.subminor = 0;
+                Opcode code(0, 2, 0);
                 // doesn't matter what you write as long as you write it
-                code.memory<uint16_t>() = 0;
+                code.write16(0);
             }
             void
             write(const char *ptr) {
