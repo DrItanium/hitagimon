@@ -7,7 +7,6 @@
 #include "cortex/EnvironmentInterface.h"
 #include "cortex/Interrupts.h"
 #include "cortex/IAC.h"
-#include "cortex/ConfigurationSpace.h"
 #include "cortex/ModernCpp.h"
 //extern "C" int doommain (int argc, char** argv) ;
 extern "C" int clipsMain(int argc, char *argv[]);
