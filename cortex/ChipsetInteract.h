@@ -43,6 +43,20 @@ namespace cortex
     inline volatile uint8_t &
     iobase0Memory(const uint32_t offset = 0) { return memory<uint8_t>(getIOBase0Address(offset)); }
 
+    /**
+     * @brief 28-bit opcode that is converted to an address and sent to the microcontroller to be interepreted as an action
+     */
+    union Opcode {
+        uint32_t full_ : 28;
+        struct {
+            uint32_t subminor : 16;
+            uint32_t function : 8;
+            uint32_t group : 4;
+        };
 
+        uint32_t makeFullAddress() const {
+            return 0xF0000000 | full_;
+        }
+    };
 }
 #endif //I960SXCHIPSET_PERIPHERALS_H
