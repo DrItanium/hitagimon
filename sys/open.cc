@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C"
 int
 hitagi_open (char* file, int flags, int mode) {
+#if 0
     cortex::ChipsetBasicFunctions& basic = cortex::getBasicChipsetInterface();
     // ignore the mode flags for now
     /// @todo implement
@@ -40,4 +41,7 @@ hitagi_open (char* file, int flags, int mode) {
     } else {
         return result + 3;
     }
+#else
+    return -1;
+#endif
 }

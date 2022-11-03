@@ -62,7 +62,6 @@ int main() noexcept {
     theValue64 = 0x9876543210ABCDEFull;
     printf("OK? theValue64 = 0x%x%x but expecting 0x9876'5432'10AB'CDEF\n", static_cast<unsigned>(theValue64), static_cast<unsigned>(theValue64 >> 32));
     setISR0Function(isr0Test);
-    cortex::displayIOMemoryMap();
     printf("Starting up CLIPS!\n");
     clipsMain(0, args);
     (void)cortex::readInterruptState();

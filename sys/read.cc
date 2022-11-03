@@ -35,11 +35,15 @@ int
 hitagi_read(int fd, void *buf, size_t sz, int *nread) {
     *nread = 0;
     if (fd > 2) {
+#if 0
         if (cortex::getBasicChipsetInterface().readFile(fd - 3, buf, sz, *nread)) {
             return 0;
         } else {
+#endif
             return EBADF;
+#if 0
         }
+#endif
     } else {
         // builtin files
         switch (fd) {

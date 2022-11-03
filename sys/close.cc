@@ -34,12 +34,16 @@ extern "C"
 int
 hitagi_close(int fd) {
     if (fd > 2) {
+#if 0
         if (cortex::getBasicChipsetInterface().closeFile(fd - 3)) {
             return 0;
         } else {
+#endif
             errno = EBADF;
             return -1;
+#if 0
         }
+#endif
     } else {
         errno = EBADF;
         return -1;

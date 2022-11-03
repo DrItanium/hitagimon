@@ -43,6 +43,7 @@ namespace cortex
     inline volatile uint8_t &
     iobase0Memory(const uint32_t offset = 0) { return memory<uint8_t>(getIOBase0Address(offset)); }
 
+
     /**
      * @brief 28-bit opcode that is converted to an address and sent to the microcontroller to be interepreted as an action
      */
@@ -56,6 +57,10 @@ namespace cortex
 
         uint32_t makeFullAddress() const {
             return 0xF0000000 | full_;
+        }
+        template<typename T>
+        inline volatile T& memory() {
+            return *reinterpret_cast<T*>(makeFullAddress());
         }
     };
 }

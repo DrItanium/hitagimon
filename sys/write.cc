@@ -33,11 +33,15 @@ int
 hitagi_write(int fd, const void *buf, size_t sz, int *nwrite) {
     *nwrite = 0;
     if (fd > 2) {
+#if 0
         if (cortex::getBasicChipsetInterface().writeFile(fd - 3, buf, sz, *nwrite)) {
             return 0;
         } else {
+#endif
             return EBADF;
+#if 0
         }
+#endif
     } else {
         // builtin files
         switch (fd) {
