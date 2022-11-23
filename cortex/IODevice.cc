@@ -10,13 +10,13 @@ namespace cortex
         namespace Console {
             uint16_t
             read() {
-                Opcode code(0, 1, 0, 0);
+                Opcode code(0, 1, 2, 0);
                 return code.read16();
             }
 
             void
             write(uint16_t c) {
-                Opcode code(0, 1, 0, 0);
+                Opcode code(0, 1, 2, 0);
                 code.write16(c);
             }
 
@@ -26,7 +26,7 @@ namespace cortex
             }
             void
             flush() {
-                Opcode code(0, 1, 2, 0);
+                Opcode code(0, 1, 3, 0);
                 // doesn't matter what you write as long as you write it
                 code.write16(0);
             }
