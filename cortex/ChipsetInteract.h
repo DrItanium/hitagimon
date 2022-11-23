@@ -49,12 +49,20 @@ namespace cortex
      */
     union Opcode {
         Opcode(uint32_t whole = 0) : full_(whole) { }
-        Opcode(uint8_t group, uint8_t function, uint16_t subminor = 0) : subminor(subminor), function(function), group(group) { }
+        Opcode(uint8_t group, uint8_t function, uint16_t subminor) : subminor(subminor), function(function), group(group) { }
+        Opcode(uint8_t group, uint8_t device, uint8_t operation, uint8_t subminor) : lowest(subminor), deviceOperation(operation),
+        targetDevice(device), deviceGroup(group) { }
         uint32_t full_ : 28;
         struct {
             uint32_t subminor : 16;
             uint32_t function : 8;
             uint32_t group : 4;
+        };
+        struct {
+            uint32_t lowest : 8;
+            uint32_t deviceOperation : 8;
+            uint32_t targetDevice : 8;
+            uint32_t deviceGroup : 4;
         };
 
         uint32_t makeFullAddress() const {
