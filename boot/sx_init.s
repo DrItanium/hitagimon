@@ -34,6 +34,9 @@ fault, and system procedure tables, and then vectors to a user defined routine. 
 
 # declare ahead of time
 
+.macro DefTableEntry name
+   .word (\name + 0x2)
+.endm
 .global system_address_table
 .global prcb_ptr
 .global _prcb_ram
@@ -62,22 +65,15 @@ system_address_table:
 
     # now reserve 88 more bytes
     .space 88
-
-    .word sys_proc_table        # initialization words
-    .word 0x304000fb
-    .space 8
-
-    .word system_address_table
-    .word 0x00fc00fb            # initialization words
-    .space 8
-
-    .word sys_proc_table
-    .word 0x304000fb            # initialization words
-    .space 8
-
-    .word fault_proc_table
-    .word 0x304000fb            # initialization words
-
+.macro InitializationWords line0, line1, space=8
+.word \line0
+.word \line1
+.space \space
+.endm
+    InitializationWords sys_proc_table, 0x304000fb
+    InitializationWords system_address_table, 0x00fc00fb
+    InitializationWords sys_proc_table, 0x304000fb
+    InitializationWords fault_proc_table, 0x304000fb, 0
 # initial PRCB
 # this is our startup PRCB. After initialization.
 # this will be copied to RAM
@@ -176,13 +172,21 @@ sys_proc_table:
 	.word 0, 0, 0, 0 # 4-7
 	.word 0, 0, 0, 0 # 4-7
 	# mon960 registrations
-	.word 0, 0, (_hitagi_open + 0x2), (_hitagi_read + 0x2), (_hitagi_write + 0x2), (_hitagi_lseek + 0x2), (_hitagi_close + 0x2), 0 # 228-235
+	.word 0, 0
+	DefTableEntry _hitagi_open
+	DefTableEntry _hitagi_read
+	DefTableEntry _hitagi_write
+	DefTableEntry _hitagi_lseek
+	DefTableEntry _hitagi_close
+	.word 0
 	.word 0, 0, 0, 0 # 236-239
 	.word 0, 0, 0, 0 # 240-243
 	.word 0, 0, 0, 0 # 244-247
 	.word 0, 0, 0, 0 # 248-251
 	.word 0, 0, 0, 0 # 252-255
-	.word 0, (_hitagi_exit + 0x2), 0, 0 # 256-259
+	.word 0
+	DefTableEntry _hitagi_exit
+	.word 0, 0 # 256-259
 	#.word	(_console_io + 0x2)	# Calls 0 - console I/O routines
 # up to a total of 260 entries
 
@@ -190,7 +194,9 @@ sys_proc_table:
 # this table is provided because the above table (supervisor table) will allow
 # tracing of trace-fault events (creating an endless loop), whereas this table will
 # not allow tracing of trace-fault events.
-
+.macro FaultTableEntry name
+DefTableEntry _user_\()\name\()_core
+.endm
     .align 6
 fault_proc_table:
     .word 0 # Reserved
@@ -205,62 +211,32 @@ fault_proc_table:
     .word 0 # Preserved
     .word 0 # Preserved
     .word 0 # Preserved
-    .word (_user_reserved_core + 0x2)    # entry 0
-    .word (_user_trace_core + 0x2)    # entry 1
-    .word (_user_operation_core + 0x2)    # entry 2
-    .word (_user_arithmetic_core + 0x2)    # entry 3
-    .word (_user_real_arithmetic_core + 0x2)    # entry 4
-    .word (_user_constraint_core + 0x2)    # entry 5
-    .word (_user_protection_core + 0x2)    # entry 6
-    .word (_user_machine_core + 0x2)    # entry 7
-    .word (_user_type_core + 0x2)    # entry 8
-
+    FaultTableEntry reserved # entry 0
+    FaultTableEntry trace
+    FaultTableEntry operation
+    FaultTableEntry arithmetic
+    FaultTableEntry real_arithmetic
+    FaultTableEntry constraint
+    FaultTableEntry protection
+    FaultTableEntry machine
+    FaultTableEntry type
+.macro DefFaultDispatcher name
+_user_\()\name\()_core:
+	lda	-48(fp), g0	/* pass fault data */
+	callx _user_\()reserved
+	flushreg
+	ret
+.endm
+DefFaultDispatcher reserved
+DefFaultDispatcher trace
+DefFaultDispatcher operation
+DefFaultDispatcher arithmetic
+DefFaultDispatcher real_arithmetic
+DefFaultDispatcher constraint
+DefFaultDispatcher protection
+DefFaultDispatcher machine
+DefFaultDispatcher type
  # processor starts execution at this spot upon power-up after self-test.
-_user_reserved_core:
-	lda	-48(fp), g0	/* pass fault data */
-	callx _user_reserved
-	flushreg
-	ret
-_user_trace_core:
-	lda	-48(fp), g0	/* pass fault data */
-	callx  _user_trace
-	flushreg
-	ret
-_user_operation_core:
-	lda	-48(fp), g0	/* pass fault data */
-	callx _user_operation
-	flushreg
-	ret
-_user_arithmetic_core:
-	lda	-48(fp), g0	/* pass fault data */
-	callx _user_arithmetic
-	flushreg
-	ret
-_user_real_arithmetic_core:
-	lda	-48(fp), g0	/* pass fault data */
-	callx _user_real_arithmetic
-	flushreg
-	ret
-_user_constraint_core:
-	lda	-48(fp), g0	/* pass fault data */
-	callx _user_constraint
-	flushreg
-	ret
-_user_protection_core:
-	lda	-48(fp), g0	/* pass fault data */
-	callx _user_protection
-	flushreg
-	ret
-_user_machine_core:
-	lda	-48(fp), g0	/* pass fault data */
-	callx _user_machine
-	flushreg
-	ret
-_user_type_core:
-	lda	-48(fp), g0	/* pass fault data */
-	callx _user_type
-	flushreg
-	ret
  start_ip:
     mov 0, g14 # C compiler expects g14 = 0
 
