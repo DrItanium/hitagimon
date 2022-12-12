@@ -23,7 +23,18 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 .text 
-
+.macro save_globals
+        stq     g0, -64(sp)
+        stq     g4, -48(sp)
+        stq     g8, -32(sp)
+        stt     g12, -16(sp)
+ .endm
+ .macro restore_globals
+        ldq     -64(sp), g0
+        ldq     -48(sp), g4
+        ldq     -32(sp), g8
+        ldq     -16(sp), g12
+ .endm
 .global _user_intr
 _user_intr:
 /* -- We allocate a spot for a "register holder" on the stack
@@ -32,21 +43,14 @@ _user_intr:
  */
         ldconst 64, r4
         addo    sp, r4, sp
-
-        stq     g0, -64(sp)
-        stq     g4, -48(sp)
-        stq     g8, -32(sp)
-        stt     g12, -16(sp)
+        save_globals
 
 /* -- Interrupt handler to go here */
         ldconst 0, g14 # c compiler expects g14 to be 0
         call    _ISR0
 
 /* restore the registers before we return */
-        ldq     -64(sp), g0
-        ldq     -48(sp), g4
-        ldq     -32(sp), g8
-        ldq     -16(sp), g12
+        restore_globals
         ret
 .global _NMI_intr
 _NMI_intr:
@@ -57,18 +61,13 @@ _NMI_intr:
         ldconst 64, r4
         addo    sp, r4, sp
 
-        stq     g0, -64(sp)
-        stq     g4, -48(sp)
-        stq     g8, -32(sp)
-        stt     g12, -16(sp)
+        save_globals
 
 /* -- Interrupt handler to go here */
         ldconst 0, g14 # c compiler expects g14 to be 0
         call    _ISR_NMI
 
 /* restore the registers before we return */
-        ldq     -64(sp), g0
-        ldq     -48(sp), g4
-        ldq     -32(sp), g8
-        ldq     -16(sp), g12
+        
+        restore_globals
         ret
