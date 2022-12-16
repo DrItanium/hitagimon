@@ -26,6 +26,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         ldconst 0, g14 # c compiler expects g14 to be 0
 .endm
 .macro save_globals
+/* -- We allocate a spot for a "register holder" on the stack
+ *    and store data to that spot. We will take advantage of
+ *    the fact that this will be allocated at the first spot on the stack
+ */
+        ldconst 64, r4
+        addo    sp, r4, sp
         stq     g0, -64(sp)
         stq     g4, -48(sp)
         stq     g8, -32(sp)

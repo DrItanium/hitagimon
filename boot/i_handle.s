@@ -26,35 +26,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .include "macros.s"
 .global _user_intr
 _user_intr:
-/* -- We allocate a spot for a "register holder" on the stack
- *    and store data to that spot. We will take advantage of
- *    the fact that this will be allocated at the first spot on the stack
- */
-        ldconst 64, r4
-        addo    sp, r4, sp
         save_globals
-
 /* -- Interrupt handler to go here */
         c_call _ISR0
-
 /* restore the registers before we return */
         restore_globals
         ret
+
 .global _NMI_intr
 _NMI_intr:
-/* -- We allocate a spot for a "register holder" on the stack
- *    and store data to that spot. We will take advantage of
- *    the fact that this will be allocated at the first spot on the stack
- */
-        ldconst 64, r4
-        addo    sp, r4, sp
-
         save_globals
-
 /* -- Interrupt handler to go here */
         c_call _ISR_NMI
-
 /* restore the registers before we return */
-        
         restore_globals
         ret
