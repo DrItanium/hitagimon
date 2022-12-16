@@ -9,6 +9,8 @@ set(CMAKE_CXX_COMPILER ${tools}/bin/i960-elf-g++)
 set(CMAKE_ASM-ATT_COMPILER ${tools}/bin/i960-elf-as)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -DBARE_METAL")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -DBARE_METAL --std=gnu99")
+# gcc 3.4.6 doesn't support colorizing output
+unset(CMAKE_COLOR_DIAGNOSTICS CACHE)
 set(LINKER_SCRIPT "start.ld")
 add_compile_options(-Wall)
 add_link_options(-Wl,--as-needed -nostdlib -static -T ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT} -ffreestanding)

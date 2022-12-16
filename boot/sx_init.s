@@ -223,7 +223,7 @@ fault_proc_table:
 .macro DefFaultDispatcher name
 _user_\()\name\()_core:
 	lda	-48(fp), g0	/* pass fault data */
-	callx _user_\()reserved
+	callx _user_\()\name
 	flushreg
 	ret
 .endm
