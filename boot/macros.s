@@ -37,3 +37,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         ldq     -32(sp), g8
         ldq     -16(sp), g12
  .endm
+
+.macro c_call function
+    clear_g14
+    call \function
+.endm
+
+.macro c_callx function
+    clear_g14
+    callx \function
+.endm

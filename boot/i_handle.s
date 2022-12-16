@@ -35,8 +35,7 @@ _user_intr:
         save_globals
 
 /* -- Interrupt handler to go here */
-        ldconst 0, g14 # c compiler expects g14 to be 0
-        call    _ISR0
+        c_call _ISR0
 
 /* restore the registers before we return */
         restore_globals
@@ -53,8 +52,7 @@ _NMI_intr:
         save_globals
 
 /* -- Interrupt handler to go here */
-        ldconst 0, g14 # c compiler expects g14 to be 0
-        call    _ISR_NMI
+        c_call _ISR_NMI
 
 /* restore the registers before we return */
         

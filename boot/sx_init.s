@@ -33,7 +33,7 @@ fault, and system procedure tables, and then vectors to a user defined routine. 
 */
 
 # declare ahead of time
-
+.include "macros.s"
 .macro DefTableEntry name
    .word (\name + 0x2)
 .endm
@@ -238,7 +238,7 @@ DefFaultDispatcher machine
 DefFaultDispatcher type
  # processor starts execution at this spot upon power-up after self-test.
  start_ip:
-    mov 0, g14 # C compiler expects g14 = 0
+    clear_g14
 
 # enable address debugging
     # lda 0xFE000022, g8
@@ -309,8 +309,7 @@ DefFaultDispatcher type
 .endif
     callx setupInterruptHandler
     #callx _activate_read_write_transactions
-    mov 0, g14      # C compiler expects g14 = 0
-    callx _main     # assume a main for startup
+    c_callx _main # assume a main for startup
 
 .ifdef __i960SB__
 _init_fp:
