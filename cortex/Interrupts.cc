@@ -3,10 +3,11 @@
 //
 
 #include "Interrupts.h"
-
+#include "ModernCpp.h"
+#include <stdio.h>
 namespace {
-    InterruptFunction nmiFunction_ = 0;
-    InterruptFunction isr0Function_ = 0;
+    InterruptFunction nmiFunction_ = nullptr;
+    InterruptFunction isr0Function_ = nullptr;
 }
 extern "C" InterruptFunction getNMIFunction() { return nmiFunction_; }
 extern "C" InterruptFunction getISR0Function() { return isr0Function_; }

@@ -8,6 +8,7 @@
 #include "cortex/Interrupts.h"
 #include "cortex/IAC.h"
 #include "cortex/ModernCpp.h"
+#include <newlib.h>
 //extern "C" int doommain (int argc, char** argv) ;
 extern "C" int clipsMain(int argc, char *argv[]);
 uint64_t delay(uint64_t count) {
@@ -33,10 +34,13 @@ void setupEnvironmentVariables() noexcept {
 void isr0Test() noexcept {
     printf("INT0 Triggered!");
 }
-int main() noexcept {
+void banner() noexcept {
     cortex::ChipsetBasicFunctions::Console::writeLine("HITAGIMON");
     printf("Built on %s at %s\n", __DATE__, __TIME__);
     printf("--------------------------------------------\n\n\n\n");
+    printf("NEWLIB Version: %s\n", _NEWLIB_VERSION);
+}
+void doTestDiagnostics() noexcept {
     printf("Sizeof(int) = %lu\n", sizeof(int));
     printf("Setting up Environment Variables....{\n");
     setupEnvironmentVariables();
@@ -60,6 +64,10 @@ int main() noexcept {
     printf("OK? theValue64 = 0x%x%x but expecting 0xABCD'EF01'2345'6789\n", static_cast<unsigned>(theValue64), static_cast<unsigned>(theValue64 >> 32));
     theValue64 = 0x9876543210ABCDEFull;
     printf("OK? theValue64 = 0x%x%x but expecting 0x9876'5432'10AB'CDEF\n", static_cast<unsigned>(theValue64), static_cast<unsigned>(theValue64 >> 32));
+}
+int main() noexcept {
+    banner();
+    doTestDiagnostics();
     setISR0Function(isr0Test);
     printf("Starting up CLIPS!\n");
     clipsMain(0, args);
