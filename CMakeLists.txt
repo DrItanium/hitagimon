@@ -16,11 +16,11 @@ add_compile_options(-Wall)
 add_link_options(-Wl,--as-needed -nostdlib -static -T ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT} -ffreestanding)
 if (DEFINED i960SB)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msb -mnumerics")
-	set(CMAKE_ASM-ATT_FLAGS "${CMAKE_ASM_FLAGS} -ASB")
+	set(CMAKE_ASM-ATT_FLAGS "${CMAKE_ASM_FLAGS} -ASB -I${CMAKE_SOURCE_DIR}/boot")
 	add_link_options(-msb -mnumerics)
 else()
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msa")
-	set(CMAKE_ASM-ATT_FLAGS "${CMAKE_ASM_FLAGS} -ASA")
+	set(CMAKE_ASM-ATT_FLAGS "${CMAKE_ASM_FLAGS} -ASA -I${CMAKE_SOURCE_DIR}/boot")
 	add_link_options(-msa)
 endif()
 #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--as-needed -nostdlib -static -T ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT} -msb -mnumerics -ffreestanding")
@@ -407,6 +407,7 @@ add_executable(hitagimon
 		boot/i_handle.s
 		boot/i_table.s
 		boot/f_handle.cc
+		boot/macros.s
 		boot/ISR.cc
 		hitagimain.cc
 		)
