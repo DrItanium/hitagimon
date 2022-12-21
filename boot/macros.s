@@ -41,7 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         ldq     -64(sp), g0
         ldq     -48(sp), g4
         ldq     -32(sp), g8
-        ldq     -16(sp), g12
+        ldt     -16(sp), g12
  .endm
 
 .macro c_call function
