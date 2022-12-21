@@ -14,10 +14,14 @@ InterruptFunction getNMIFunction();
 InterruptFunction getISR0Function();
 void setNMIFunction(InterruptFunction func);
 void setISR0Function(InterruptFunction func);
+typedef void (*InterruptRoutine)(void);
 typedef struct __attribute__((packed)) InterruptTable {
     uint32_t pendingPriorities;
     uint32_t pendingInterrupts[8];
-    uint32_t vectors[248];
+    union {
+        uint32_t vectors[248];
+        InterruptRoutine routines[248];
+    };
 } InterruptTable_t ;
 
 
