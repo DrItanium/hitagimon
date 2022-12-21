@@ -4,6 +4,8 @@
 
 #ifndef HITAGIMON_INTERRUPTS_H
 #define HITAGIMON_INTERRUPTS_H
+#include "ModernCpp.h"
+#include <stdint.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -12,6 +14,13 @@ InterruptFunction getNMIFunction();
 InterruptFunction getISR0Function();
 void setNMIFunction(InterruptFunction func);
 void setISR0Function(InterruptFunction func);
+typedef struct __attribute__((packed)) InterruptTable {
+    uint32_t pendingPriorities;
+    uint32_t pendingInterrupts[8];
+    uint32_t vectors[248];
+} InterruptTable_t ;
+
+
 #ifdef __cplusplus
 }
 #endif

@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define noexcept
 #define explicit
 #define nullptr NULL
+#define static_assert(condition, msg)
 #endif
 #endif
 #endif //HITAGIMON_MODERNCPP_H
