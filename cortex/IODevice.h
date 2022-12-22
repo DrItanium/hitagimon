@@ -59,6 +59,14 @@ namespace cortex
              */
             ssize_t write(char *buffer, size_t nbyte);
         } // end namespace Console
+        namespace RTC {
+            bool available() noexcept;
+            /**
+             * @brief Get the unixtime of the system
+             * @return the unixtime as an unsigned 32-bit number
+             */
+            uint32_t unixtime() noexcept;
+        }
     } // end namespace ChipsetBasicFunctions
     inline uint32_t
     makeOrdinal(uint16_t lower, uint16_t upper) {

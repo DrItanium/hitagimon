@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C"
 int
 gettimeofday(struct timeval* tv, void* tz) {
+    // read the unix time from the rtc connected to the microcontroller
     printf("gettimeofday(%x, %x);\n", tv, tz);
     return 0;
 }

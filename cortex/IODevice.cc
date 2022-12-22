@@ -76,7 +76,18 @@ namespace cortex
                 }
                 return numRead;
             }
-
-        }
-    }
-}
+        } // end namespace Console
+        namespace RTC {
+            bool
+            available() noexcept {
+                Opcode code(0, 2, 0, 0);
+                return code.read16();
+            }
+            uint32_t
+            unixtime() noexcept {
+                Opcode code(0, 2, 2, 0);
+                return code.read32();
+            }
+        } // end namespace RTC
+    } // end namespace ChipsetBasicFunctions
+} // end namespace cortex
