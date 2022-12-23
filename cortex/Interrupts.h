@@ -4,8 +4,6 @@
 
 #ifndef HITAGIMON_INTERRUPTS_H
 #define HITAGIMON_INTERRUPTS_H
-#include "ModernCpp.h"
-#include <stdint.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
