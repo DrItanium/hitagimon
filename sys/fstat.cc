@@ -33,3 +33,10 @@ int
 fstat (int file, struct stat* st) {
     return _sys_fstat(file, st);
 }
+
+extern "C"
+int
+hitagi_fstat (int file, struct stat* st) {
+    st->st_mode = S_IFCHR;
+    return 0;
+}
