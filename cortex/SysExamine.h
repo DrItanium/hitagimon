@@ -44,7 +44,7 @@ namespace cortex {
             uint32_t unused3 : 16;
 #endif
         };
-    };
+    } __attribute((packed));
     union ProcessControls
     {
         uint32_t raw;
@@ -60,7 +60,7 @@ namespace cortex {
             uint32_t priority: 5;
             uint32_t internalState: 10;
         };
-    };
+    } __attribute((packed));
     union TraceControls {
         uint32_t raw;
         struct {
@@ -82,13 +82,13 @@ namespace cortex {
             uint32_t breakpointTraceEvent : 1;
             uint32_t unused2 : 8;
         };
-    };
+    } __attribute((packed));
     struct FaultRecord {
         uint32_t pc;
         uint32_t ac;
         uint32_t type;
         uint32_t* addr;
-    };
+    } __attribute((packed));
     struct FaultTableEntry {
         typedef void(*FaultOperation)();
         uint32_t handlerRaw;
@@ -99,20 +99,20 @@ namespace cortex {
         inline bool isSystemProcedure() const noexcept { return getProcedureKind() == 0x2 && getMagicNumber() == 0x0000027F; }
         inline bool isTraceFaultHandler() const noexcept { return getProcedureKind() == 0x2 && getMagicNumber() == 0x000002BF; }
         inline int32_t getMagicNumber() const noexcept { return magicNumber; }
-    };
+    } __attribute((packed));
     struct FaultTable {
         FaultTableEntry entries[32];
-    };
+    } __attribute((packed));
     struct InterruptTable {
         uint32_t pendingPriorities;
         uint32_t pendingInterrupts[8];
         void (*interruptProcedures[248])();
-    };
+    } __attribute((packed));
     struct InterruptRecord {
         uint32_t pc;
         uint32_t ac;
         uint8_t vectorNumber;
-    };
+    } __attribute((packed));
     struct SATEntry {
         typedef void (*Executable)();
         enum Kind {
@@ -130,7 +130,7 @@ namespace cortex {
         inline Kind getKind() const noexcept {
             return static_cast<Kind>(raw & 0x3);
         }
-    };
+    } __attribute((packed));
     struct SysProcTable {
         uint32_t reserved[3];
         void* supervisorStack;
@@ -152,7 +152,7 @@ namespace cortex {
                 return entries[index].getKind();
             }
         }
-    };
+    } __attribute((packed));
     struct PRCB {
         uint32_t reserved0;
         uint32_t magicNumber;
@@ -164,7 +164,7 @@ namespace cortex {
         uint32_t magicNumber2;
         FaultTable* theFaultTable;
         uint32_t reserved3[32];
-    };
+    } __attribute((packed));
     struct SystemAddressTable {
         SystemAddressTable* satPtr;
         PRCB* thePRCB;
@@ -183,7 +183,7 @@ namespace cortex {
         uint32_t preserved3[2];
         SysProcTable* traceTable;
         uint32_t magicNumber3;
-    };
+    } __attribute((packed));
 #define GetProcessControls(pc) asm volatile ("modpc 0, 0, %0" : "=r" (pc.raw))
 #define GetArithmeticControls(ac) asm volatile ("modac 0, 0, %0" : "=r" (ac.raw))
 #define GetTraceControls(tc) asm volatile ("modtc 0, 0, %0" : "=r" (tc.raw))
