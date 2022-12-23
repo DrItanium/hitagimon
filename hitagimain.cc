@@ -40,7 +40,6 @@ void banner() noexcept {
     printf("Built on %s at %s\n", __DATE__, __TIME__);
     printf("--------------------------------------------\n\n\n\n");
     printf("NEWLIB Version: %s\n", _NEWLIB_VERSION);
-    time_t foo = time(nullptr);
 }
 void doTestDiagnostics() noexcept {
     printf("Sizeof(int) = %lu\n", sizeof(int));
