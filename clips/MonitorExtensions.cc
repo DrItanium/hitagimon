@@ -5,9 +5,11 @@
 #include "MonitorExtensions.h"
 #include "clips.h"
 /// @todo fix this
-#include "cortex/ChipsetInteract.h"
-#include "cortex/EnvironmentInterface.h"
-#include "cortex/SysExamine.h"
+#include <cortex/Types.h>
+#include <cortex/ChipsetInteract.h>
+#include <cortex/EnvironmentInterface.h>
+#include <cortex/SysExamine.h>
+#include <cortex/IAC.h>
 
 #define X(title) extern "C++" void title (Environment*, UDFContext*, UDFValue*)
 X(ExamineByte);
@@ -381,11 +383,17 @@ DefClipsFunction(AddressICR) {
 }
 
 DefClipsFunction(GetSATAddress) {
+    cortex::SystemBase sbase;
+    cortex::storeSystemBaseAddress(&sbase);
 
+    retVal->integerValue = CreateInteger(theEnv, reinterpret_cast<uintptr_t>(sbase.theSAT));
 }
 
 DefClipsFunction(GetPRCBAddress) {
+    cortex::SystemBase sbase;
+    cortex::storeSystemBaseAddress(&sbase);
 
+    retVal->integerValue = CreateInteger(theEnv, reinterpret_cast<uintptr_t>(sbase.thePRCB));
 }
 
 
