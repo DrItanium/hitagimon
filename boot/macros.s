@@ -53,3 +53,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     clear_g14
     callx \function
 .endm
+
+.macro def_system_call index,name
+.text
+.align 4
+.global _\()\name
+_\()\name:
+lda \index, g13
+calls g13
+ret
+.endm

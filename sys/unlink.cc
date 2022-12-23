@@ -28,9 +28,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <errno.h>
 
+extern "C" int _sys_unlink(const char* path);
 extern "C"
 int
 unlink(const char* path) {
+    return _sys_unlink(path);
+}
+
+extern "C"
+int
+hitagi_unlink(const char* path) {
     errno = ENOSYS;
     return -1;
 }

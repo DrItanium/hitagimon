@@ -113,12 +113,21 @@ sys_proc_table:
     .word 0 # Preserved
 # up to 260 entries!
     # example entry
-	#.word	(_console_io + 0x2)	# Calls 0 - console I/O routines
 	.word 0, 0, 0, 0 # 0-3
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 8-11
-	.word 0, 0, 0, 0 # 12-15
-	.word 0, 0, 0, 0 # 16-19
+	.word 0, 0, 0    # 4-6
+	DefTableEntry _hitagi_unlink
+	DefTableEntry _hitagi_getpid
+	DefTableEntry _hitagi_kill
+	DefTableEntry _hitagi_fstat
+	DefTableEntry _hitagi_sbrk
+	DefTableEntry _hitagi_argvlen
+	DefTableEntry _hitagi_argv
+	DefTableEntry _hitagi_chdir
+	DefTableEntry _hitagi_stat
+    DefTableEntry _hitagi_chmod
+    DefTableEntry _hitagi_utime
+    DefTableEntry _hitagi_time
+	.word 0 # 19
 	.word 0, 0, 0, 0 # 20-23
 	.word 0, 0, 0, 0 # 24-27
 	.word 0, 0, 0, 0 # 28-31
@@ -380,3 +389,8 @@ fix_stack:
     ret
 
 
+def_system_call 7, _sys_unlink
+def_system_call 8, _sys_getpid
+def_system_call 9, _sys_kill
+def_system_call 10, _sys_fstat
+def_system_call 11, _sys_sbrk
