@@ -28,12 +28,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 #include "../cortex/IODevice.h"
 #include <sys/time.h>
+#include <stdint.h>
 extern "C"
 int
-gettimeofday(struct timeval* tv, void* tz) {
+gettimeofday(struct timeval* tv, void*) {
     // read the unix time from the rtc connected to the microcontroller
     if (cortex::ChipsetBasicFunctions::RTC::available()) {
-        tv->tv_sec = cortex::ChipsetBasicFunctions::RTC::unixtime();
+        uint32_t theTime = cortex::ChipsetBasicFunctions::RTC::unixtime();
+        tv->tv_sec = theTime;
+        tv->tv_usec = theTime * 1000000;
     }
     return 0;
 }
