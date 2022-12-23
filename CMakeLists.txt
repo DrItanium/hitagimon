@@ -57,7 +57,9 @@ add_library(hitagicortex
 		cortex/Faults.h
 		cortex/IAC.h
 		cortex/IAC.cc
-		cortex/IACImplementation.s cortex/ModernCpp.h)
+		cortex/IACImplementation.s
+		cortex/ModernCpp.h
+		cortex/Types.h)
 add_library(hitagiclips
 		clips/agenda.c
 		clips/agenda.h

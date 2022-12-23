@@ -33,7 +33,8 @@ X(ExamineTC);
 X(shrdi960);
 X(DoSYNLD);
 X(AddressICR);
-//X(DoSYNMOV);
+X(GetPRCBAddress);
+X(GetSATAddress);
 #ifdef __i960SB__
 X(CallCos960);
 X(CallSin960);
@@ -66,7 +67,8 @@ InstallMonitorExtensions(Environment* env) {
     AddUDF(env, "shrdi960", "l", 2, 2, "l", shrdi960, "shrdi960", NULL);
     AddUDF(env, "synld960", "l", 1,1, "l", DoSYNLD, "DoSYNLD", NULL);
     AddUDF(env, "address:interrupt-control-register", "l", 0, 0, NULL, AddressICR, "AddressICR", NULL);
-    //AddUDF(env, "synmov960", "l", 1, 1, "l", DoSYNMOV, "DoSNMOV", NULL);
+    AddUDF(env, "get-prcb-address", "l", 0, 0, NULL, GetPRCBAddress, "GetPRCBAddress", NULL);
+    AddUDF(env, "get-sat-address", "l", 0, 0, NULL, GetSATAddress, "GetSATAddress", NULL);
 #ifdef __i960SB__
     AddUDF(env, "cos960","d",1,1,"ld",CallCos960,"CallCos960",NULL);
     AddUDF(env, "sin960","d",1,1,"ld",CallSin960,"CallSin960",NULL);
@@ -376,6 +378,14 @@ DefClipsFunction(DoSYNLD) {
 
 DefClipsFunction(AddressICR) {
     retVal->integerValue = CreateInteger(theEnv, 0xFF000004);
+}
+
+DefClipsFunction(GetSATAddress) {
+
+}
+
+DefClipsFunction(GetPRCBAddress) {
+
 }
 
 
