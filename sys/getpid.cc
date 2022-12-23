@@ -26,12 +26,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Created by jwscoggins on 6/29/21.
 //
 
-extern "C" int _sys_getpid ();
-extern "C"
-int
-getpid () {
-    return _sys_getpid();
-}
 
 extern "C"
 int

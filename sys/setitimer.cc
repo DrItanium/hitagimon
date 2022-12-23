@@ -27,12 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
 #include <sys/time.h>
-#include <stdio.h>
 
 extern "C"
 int
-setitimer(int which, const struct itimerval* newValue, struct itimerval* oldValue) {
-    printf("setitimer(%d, %x, %x)\n", which, newValue, oldValue);
+hitagi_setitimer(int which, const struct itimerval* newValue, struct itimerval* oldValue) {
     /// @todo use arduino timers to satisfy this, we use the interrupts to trigger timers
     return 0;
 }

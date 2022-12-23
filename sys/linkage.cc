@@ -1,6 +1,6 @@
 /*
 hitagimon
-Copyright (c) 2020-2021, Joshua Scoggins
+Copyright (c) 2020-2023, Joshua Scoggins
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -23,13 +23,46 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 //
-// Created by jwscoggins on 6/29/21.
+// Created by jwscoggins on 12/23/22.
 //
-#include <sys/stat.h>
 
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <stdint.h>
+#include <stdio.h>
+
+// all of the system linkage goes in this file
+// these are symbols which are handled by other implementations
+#if 0
+extern "C" int _sys_fstat (int file, struct stat* st);
 extern "C"
 int
-hitagi_fstat (int file, struct stat* st) {
-    st->st_mode = S_IFCHR;
-    return 0;
+fstat (int file, struct stat* st) {
+    return _sys_fstat(file, st);
+}
+
+extern "C" int _sys_getpid ();
+extern "C"
+int
+getpid () {
+    return _sys_getpid();
+}
+extern "C" int _sys_kill (int pid, int signal);
+extern "C"
+int
+kill (int pid, int signal) {
+    _sys_kill(pid, signal);
+}
+#endif
+extern "C" int _sys_gettimeofday(struct timeval*, void*);
+extern "C"
+int
+gettimeofday(struct timeval* tv, void* tz) {
+    return _sys_gettimeofday(tv, tz);
+}
+extern "C" int _sys_setitimer(int which, const struct itimerval* newValue, struct itimerval* oldValue);
+extern "C"
+int
+setitimer(int which, const struct itimerval* newValue, struct itimerval* oldValue) {
+    return _sys_setitimer(which, newValue, oldValue);
 }

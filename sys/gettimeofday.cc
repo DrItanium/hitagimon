@@ -26,15 +26,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 // Created by jwscoggins on 6/29/21.
 //
-#include "../cortex/IODevice.h"
+#include <cortex/IODevice.h>
 #include <sys/time.h>
 #include <stdint.h>
-extern "C" int _sys_gettimeofday(struct timeval*, void*);
-extern "C"
-int
-gettimeofday(struct timeval* tv, void* tz) {
-    return _sys_gettimeofday(tv, tz);
-}
 
 extern "C"
 int

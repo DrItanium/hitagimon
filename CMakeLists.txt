@@ -38,14 +38,14 @@ add_library(hitagisys
 		sys/read.cc
 		sys/open.cc
 		#sys/kill.cc
-		#sys/setitimer.cc
+		sys/setitimer.cc
 		sys/close.cc
 		sys/gettimeofday.cc
 		#sys/access.cc
 		#sys/getpid.cc
 		sys/_exit.cc
 		sys/link.cc
-		sys/unlink.cc)
+		sys/unlink.cc sys/linkage.cc)
 add_library(hitagicortex
 		cortex/IODevice.cc
 		cortex/IODevice.h
