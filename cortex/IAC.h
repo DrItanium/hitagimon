@@ -31,6 +31,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdint.h>
 #include "SysExamine.h"
 namespace cortex {
+    struct IACMessage {
+        uint16_t field2;
+        uint8_t field1;
+        uint8_t type;
+        uint32_t field3;
+        uint32_t field4;
+        uint32_t field5;
+    } __attribute__((packed));
    struct SystemBase {
        SystemAddressTable* theSAT;
        PRCB* thePRCB;
@@ -43,5 +51,6 @@ namespace cortex {
    void testPendingInterrupts();
    uint32_t readInterruptState();
    void setInterruptState(uint32_t);
+    void sendIAC(uint8_t type, uint8_t field1 = 0, uint16_t field2 = 0, uint32_t field3 = 0, uint32_t field4 = 0, uint32_t field5 = 0);
 }
 #endif //HITAGIMON_IAC_H

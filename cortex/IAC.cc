@@ -31,16 +31,8 @@ extern "C" void sendIACCommand(uint32_t iacPort, void* theMessage);
 extern "C" uint32_t hitagi_readInterruptState();
 extern "C" void hitagi_writeInterruptState(uint32_t value);
 namespace cortex {
-    struct IACMessage {
-        uint16_t field2;
-        uint8_t field1;
-        uint8_t type;
-        uint32_t field3;
-        uint32_t field4;
-        uint32_t field5;
-    } __attribute__((packed));
     void
-    sendIAC(uint8_t type, uint8_t field1 = 0, uint16_t field2 = 0, uint32_t field3 = 0, uint32_t field4 = 0, uint32_t field5 = 0) {
+    sendIAC(uint8_t type, uint8_t field1, uint16_t field2, uint32_t field3, uint32_t field4, uint32_t field5) {
         IACMessage theMessage;
         theMessage.type = type;
         theMessage.field1 = field1;
