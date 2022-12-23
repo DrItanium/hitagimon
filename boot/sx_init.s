@@ -37,6 +37,9 @@ fault, and system procedure tables, and then vectors to a user defined routine. 
 .macro DefTableEntry name
    .word (\name + 0x2)
 .endm
+.macro ReservedTableEntry
+.word 0
+.endm
 .global system_address_table
 .global prcb_ptr
 .global _prcb_ram
@@ -116,18 +119,18 @@ sys_proc_table:
 	.word 0, 0, 0, 0 # 0-3
 	.word 0, 0, 0    # 4-6
 	DefTableEntry _hitagi_unlink
-	DefTableEntry _hitagi_getpid
-	DefTableEntry _hitagi_kill
-	DefTableEntry _hitagi_fstat
-	DefTableEntry _hitagi_sbrk
-	DefTableEntry _hitagi_argvlen
-	DefTableEntry _hitagi_argv
-	DefTableEntry _hitagi_chdir
-	DefTableEntry _hitagi_stat
-    DefTableEntry _hitagi_chmod
-    DefTableEntry _hitagi_utime
-    DefTableEntry _hitagi_time
-	.word 0 # 19
+	ReservedTableEntry # _hitagi_getpid
+	ReservedTableEntry # _hitagi_kill
+	ReservedTableEntry # _hitagi_fstat
+	ReservedTableEntry # sbrk
+	ReservedTableEntry #_hitagi_argvlen
+	ReservedTableEntry # _hitagi_argv
+	ReservedTableEntry # _hitagi_chdir
+	ReservedTableEntry # _hitagi_stat
+    ReservedTableEntry # _hitagi_chmod
+    ReservedTableEntry # _hitagi_utime
+    ReservedTableEntry # _hitagi_time
+    DefTableEntry _hitagi_gettimeofday
 	.word 0, 0, 0, 0 # 20-23
 	.word 0, 0, 0, 0 # 24-27
 	.word 0, 0, 0, 0 # 28-31
@@ -389,8 +392,17 @@ fix_stack:
     ret
 
 
+# reserved entries
 def_system_call 7, _sys_unlink
-def_system_call 8, _sys_getpid
-def_system_call 9, _sys_kill
-def_system_call 10, _sys_fstat
-def_system_call 11, _sys_sbrk
+#def_system_call 8, _sys_getpid
+#def_system_call 9, _sys_kill
+#def_system_call 10, _sys_fstat
+#def_system_call 11, _sys_sbrk
+#def_system_call 12, _sys_argvlen
+#def_system_call 13, _sys_argv
+#def_system_call 14, _sys_chdir
+#def_system_call 15, _sys_stat
+#def_system_call 16, _sys_chmod
+#def_system_call 17, _sys_utime
+#def_system_call 18, _sys_time
+def_system_call 19, _sys_gettimeofday

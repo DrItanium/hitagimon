@@ -27,9 +27,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 #include <sys/stat.h>
 
+extern "C" int _sys_fstat (int file, struct stat* st);
 extern "C"
 int
 fstat (int file, struct stat* st) {
-    st->st_mode = S_IFCHR;
-    return 0;
+    return _sys_fstat(file, st);
 }

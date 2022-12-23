@@ -1,6 +1,6 @@
 /*
 hitagimon
-Copyright (c) 2020-2021, Joshua Scoggins
+Copyright (c) 2020-2023, Joshua Scoggins
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -22,28 +22,15 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+//
+// Created by jwscoggins on 12/23/22.
+//
 
-//
-// Created by jwscoggins on 6/29/21.
-//
-#include "../cortex/IODevice.h"
-#include <sys/time.h>
-#include <stdint.h>
-extern "C" int _sys_gettimeofday(struct timeval*, void*);
-extern "C"
-int
-gettimeofday(struct timeval* tv, void* tz) {
-    return _sys_gettimeofday(tv, tz);
-}
+#include <sys/stat.h>
 
 extern "C"
 int
-hitagi_gettimeofday(struct timeval* tv, void*) {
-    // read the unix time from the rtc connected to the microcontroller
-    if (cortex::ChipsetBasicFunctions::RTC::available()) {
-        uint32_t theTime = cortex::ChipsetBasicFunctions::RTC::unixtime();
-        tv->tv_sec = theTime;
-        tv->tv_usec = theTime * 1000000;
-    }
+hitagi_fstat (int file, struct stat* st) {
+    st->st_mode = S_IFCHR;
     return 0;
 }

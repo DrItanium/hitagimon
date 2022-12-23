@@ -29,6 +29,7 @@ set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 add_library(hitagisys
+		# disabled entries are because mon960 provides the implementations for them
 		#sys/brk.cc
 		#sys/fstat.cc
 		#sys/isatty.cc
