@@ -140,12 +140,7 @@ DefClipsFunction(ShiftRight) {
     uint64_t shiftAmount = CVCoerceToInteger(&second);
     retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>(base >> shiftAmount));
 }
-
-union DecomposedType {
-    uint64_t total;
-    int64_t totalI;
-    uint32_t halves[sizeof(uint64_t)/sizeof(uint32_t)];
-};
+typedef cortex::SplitWord64 DecomposedType;
 
 DefClipsFunction(BinaryNor) {
     UDFValue first, second;
@@ -153,16 +148,16 @@ DefClipsFunction(BinaryNor) {
         return;
     }
     DecomposedType a;
-    a.total = CVCoerceToInteger(&first);
+    a.base = CVCoerceToInteger(&first);
     if (!UDFNthArgument(context, 2, NUMBER_BITS, &second)) {
         return;
     }
     DecomposedType b;
-    b.total = CVCoerceToInteger(&second);
+    b.base = CVCoerceToInteger(&second);
     DecomposedType c;
     c.halves[0] = ~(a.halves[0] | b.halves[0]);
     c.halves[1] = ~(a.halves[1] | b.halves[1]);
-    retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>(c.total));
+    retVal->integerValue = CreateInteger(theEnv, c.sbase);
 }
 DefClipsFunction(BinaryXnor) {
     UDFValue first, second;
@@ -170,16 +165,16 @@ DefClipsFunction(BinaryXnor) {
         return;
     }
     DecomposedType a;
-    a.total = CVCoerceToInteger(&first);
+    a.base = CVCoerceToInteger(&first);
     if (!UDFNthArgument(context, 2, NUMBER_BITS, &second)) {
         return;
     }
     DecomposedType b;
-    b.total = CVCoerceToInteger(&second);
+    b.base= CVCoerceToInteger(&second);
     DecomposedType c;
     c.halves[0] = ~(a.halves[0] ^ b.halves[0]);
     c.halves[1] = ~(a.halves[1] ^ b.halves[1]);
-    retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>(c.total));
+    retVal->integerValue = CreateInteger(theEnv, c.sbase);
 }
 DefClipsFunction(BinaryNand) {
     // forces the use of the i960's nand instruction
@@ -188,16 +183,16 @@ DefClipsFunction(BinaryNand) {
         return;
     }
     DecomposedType a;
-    a.total = CVCoerceToInteger(&first);
+    a.base = CVCoerceToInteger(&first);
     if (!UDFNthArgument(context, 2, NUMBER_BITS, &second)) {
         return;
     }
     DecomposedType b;
-    b.total = CVCoerceToInteger(&second);
+    b.base = CVCoerceToInteger(&second);
     DecomposedType c;
     c.halves[0] = ~(a.halves[0] & b.halves[0]);
     c.halves[1] = ~(a.halves[1] & b.halves[1]);
-    retVal->integerValue = CreateInteger(theEnv, static_cast<int64_t>(c.total));
+    retVal->integerValue = CreateInteger(theEnv, c.sbase);
 }
 DefClipsFunction(BinaryAnd) {
     UDFValue first, second;
