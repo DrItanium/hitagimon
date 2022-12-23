@@ -541,6 +541,10 @@ add_executable(hitagimon
 #		doom/w_wad.c
 #		doom/z_zone.c)
 
+target_include_directories(hitagicortex PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(hitagisys PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(hitagiclips PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(hitagimon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 #set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT})
 target_link_libraries(hitagimon
 		hitagiclips

@@ -5,9 +5,9 @@
 #include "MonitorExtensions.h"
 #include "clips.h"
 /// @todo fix this
-#include "../cortex/ChipsetInteract.h"
-#include "../cortex/EnvironmentInterface.h"
-#include "../cortex/SysExamine.h"
+#include "cortex/ChipsetInteract.h"
+#include "cortex/EnvironmentInterface.h"
+#include "cortex/SysExamine.h"
 
 #define X(title) extern "C++" void title (Environment*, UDFContext*, UDFValue*)
 X(ExamineByte);
