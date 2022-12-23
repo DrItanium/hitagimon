@@ -5,6 +5,7 @@
 #ifndef HITAGIMON_SYSEXAMINE_H
 #define HITAGIMON_SYSEXAMINE_H
 #include <stdint.h>
+#include "ModernCpp.h"
 namespace cortex {
     /**
      * @brief i960 specific arithmetic controls
@@ -88,8 +89,24 @@ namespace cortex {
         uint32_t* addr;
     };
     struct FaultTableEntry {
-        void (*handler)();
+        typedef void(*FaultOperation)();
+        uint32_t handlerRaw;
         int32_t magicNumber;
+        FaultOperation getFaultFunction() const noexcept { return reinterpret_cast<FaultOperation>(handlerRaw & 0xFFFFFFFC); }
+        uint8_t getProcedureKind() const noexcept {
+            return static_cast<uint8_t>(handlerRaw & 0x3);
+        }
+        bool isLocalProcedure() const noexcept {
+            return getProcedureKind() == 0;
+        }
+        bool isSystemProcedure() const noexcept {
+            return getProcedureKind() == 0x2 && getMagicNumber() == 0x0000027F;
+        }
+        bool isTraceFaultHandler() const noexcept {
+            return getProcedureKind() == 0x2 && getMagicNumber() == 0x000002BF;
+        }
+        int32_t getMagicNumber() const noexcept { return magicNumber; }
+
     };
     struct FaultTable {
         FaultTableEntry entries[32];
