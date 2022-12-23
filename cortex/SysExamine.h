@@ -5,6 +5,7 @@
 #ifndef HITAGIMON_SYSEXAMINE_H
 #define HITAGIMON_SYSEXAMINE_H
 #include <stdint.h>
+#include <stdio.h>
 #include "ModernCpp.h"
 namespace cortex {
     /**
@@ -92,21 +93,12 @@ namespace cortex {
         typedef void(*FaultOperation)();
         uint32_t handlerRaw;
         int32_t magicNumber;
-        FaultOperation getFaultFunction() const noexcept { return reinterpret_cast<FaultOperation>(handlerRaw & 0xFFFFFFFC); }
-        uint8_t getProcedureKind() const noexcept {
-            return static_cast<uint8_t>(handlerRaw & 0x3);
-        }
-        bool isLocalProcedure() const noexcept {
-            return getProcedureKind() == 0;
-        }
-        bool isSystemProcedure() const noexcept {
-            return getProcedureKind() == 0x2 && getMagicNumber() == 0x0000027F;
-        }
-        bool isTraceFaultHandler() const noexcept {
-            return getProcedureKind() == 0x2 && getMagicNumber() == 0x000002BF;
-        }
-        int32_t getMagicNumber() const noexcept { return magicNumber; }
-
+        inline FaultOperation getFaultFunction() const noexcept { return reinterpret_cast<FaultOperation>(handlerRaw & 0xFFFFFFFC); }
+        inline uint8_t getProcedureKind() const noexcept { return static_cast<uint8_t>(handlerRaw & 0x3); }
+        inline bool isLocalProcedure() const noexcept { return getProcedureKind() == 0; }
+        inline bool isSystemProcedure() const noexcept { return getProcedureKind() == 0x2 && getMagicNumber() == 0x0000027F; }
+        inline bool isTraceFaultHandler() const noexcept { return getProcedureKind() == 0x2 && getMagicNumber() == 0x000002BF; }
+        inline int32_t getMagicNumber() const noexcept { return magicNumber; }
     };
     struct FaultTable {
         FaultTableEntry entries[32];
@@ -121,11 +113,45 @@ namespace cortex {
         uint32_t ac;
         uint8_t vectorNumber;
     };
+    struct SATEntry {
+        typedef void (*Executable)();
+        enum Kind {
+            LocalProcedure,
+            Reserved0,
+            SupervisorProcedure,
+            Reserved1,
+            Invalid = Reserved1,
+        };
+        uint32_t raw;
+        inline Executable asFunction() const noexcept {
+            // drop the lowest tag bits to make sure that it is the right location
+            return reinterpret_cast<Executable>(raw & 0xFFFFFFFC);
+        }
+        inline Kind getKind() const noexcept {
+            return static_cast<Kind>(raw & 0x3);
+        }
+    };
     struct SysProcTable {
         uint32_t reserved[3];
         void* supervisorStack;
         uint32_t preserved[8];
-        void (*entries[260])();
+        SATEntry entries[260];
+        typedef SATEntry::Executable FunctionBody;
+
+        inline FunctionBody getEntry(uint32_t index) noexcept {
+            if (index > 259) {
+                return nullptr;
+            } else {
+                return entries[index].asFunction();
+            }
+        }
+        inline SATEntry::Kind getEntryKind(uint32_t index) noexcept {
+            if (index > 259) {
+                return SATEntry::Reserved1;
+            } else {
+                return entries[index].getKind();
+            }
+        }
     };
     struct PRCB {
         uint32_t reserved0;
