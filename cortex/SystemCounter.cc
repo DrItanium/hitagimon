@@ -26,12 +26,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Created by jwscoggins on 12/23/22.
 //
 #include <cortex/SystemCounter.h>
+#include <cortex/IODevice.h>
 namespace cortex {
     namespace {
         uint64_t coreSystemCounter_ = 0;
     } // end namespace
-    uint64_t getSystemCounter() noexcept {
+    uint64_t
+    getSystemCounter() noexcept {
         return coreSystemCounter_;
+    }
+    void
+    enableSystemCounter(uint8_t compareMatch, uint8_t prescalar) noexcept
+    {
+        cortex::ChipsetBasicFunctions::Timer::setCompareValue(compareMatch);
+        cortex::ChipsetBasicFunctions::Timer::setPrescalar(prescalar);
     }
 } // end namespace cortex
 
