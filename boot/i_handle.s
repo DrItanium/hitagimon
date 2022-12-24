@@ -25,6 +25,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .text
 .include "macros.s"
 .global _system_counter_intr
+_system_counter_intr:
         save_globals
         c_call _SystemCounterISR
 /* restore the registers before we return */

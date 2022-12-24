@@ -34,9 +34,9 @@ void banner() noexcept {
     printf("--------------------------------------------\n\n\n\n");
     printf("NEWLIB Version: %s\n", _NEWLIB_VERSION);
     printf("unixtime: %lu\n", cortex::ChipsetBasicFunctions::Timer::unixtime());
-    //printf("Enabling system counter....");
-    //cortex::enableSystemCounter(97, 0x7);
-    //printf("done\n");
+    printf("Enabling system counter....");
+    cortex::enableSystemCounter(97, 0x7);
+    printf("done\n");
 }
 void doTestDiagnostics() noexcept {
     printf("Sizeof(int) = %lu\n", sizeof(int));
