@@ -77,7 +77,7 @@ namespace cortex
                 return numRead;
             }
         } // end namespace Console
-        namespace RTC {
+        namespace Timer {
             bool
             available() noexcept {
                 Opcode code(0, 2, 0, 0);
@@ -87,6 +87,25 @@ namespace cortex
             unixtime() noexcept {
                 Opcode code(0, 2, 2, 0);
                 return code.read32();
+            }
+            void
+            setCompareValue(uint8_t value) noexcept {
+                Opcode code(0, 2, 3, 0);
+                code.write16(value);
+            }
+            uint8_t
+            getCompareValue() noexcept {
+                Opcode code(0, 2, 3, 0);
+                return code.read16();
+            }
+            void
+            setPrescalar(uint8_t value) noexcept {
+                Opcode code(0, 2, 4, 0);
+                code.write16(value);
+            }
+            uint8_t getPrescalar() noexcept {
+                Opcode code(0, 2, 4, 0);
+                return code.read16();
             }
         } // end namespace RTC
     } // end namespace ChipsetBasicFunctions

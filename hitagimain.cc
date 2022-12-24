@@ -40,7 +40,7 @@ void banner() noexcept {
     printf("Built on %s at %s\n", __DATE__, __TIME__);
     printf("--------------------------------------------\n\n\n\n");
     printf("NEWLIB Version: %s\n", _NEWLIB_VERSION);
-    printf("unixtime: %lu\n", cortex::ChipsetBasicFunctions::RTC::unixtime());
+    printf("unixtime: %lu\n", cortex::ChipsetBasicFunctions::Timer::unixtime());
 }
 void doTestDiagnostics() noexcept {
     printf("Sizeof(int) = %lu\n", sizeof(int));

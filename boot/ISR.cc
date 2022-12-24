@@ -4,7 +4,9 @@
 #include "../cortex/IODevice.h"
 #include "../cortex/Interrupts.h"
 extern "C" void ISR0(void);
+extern "C" void SystemCounterISR(void);
 extern "C" void ISR_NMI(void);
+void IncrementSystemCounter();
 
 extern "C"
 void
@@ -14,7 +16,11 @@ ISR0(void) {
         fn();
     }
 }
-
+extern "C"
+void
+SystemCounterISR(void) {
+    IncrementSystemCounter();
+}
 extern "C"
 void
 ISR_NMI(void) {

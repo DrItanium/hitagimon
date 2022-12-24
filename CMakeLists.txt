@@ -60,7 +60,7 @@ add_library(hitagicortex
 		cortex/IAC.cc
 		cortex/IACImplementation.s
 		cortex/ModernCpp.h
-		cortex/Types.h)
+		cortex/Types.h cortex/SystemCounter.h cortex/SystemCounter.cc)
 add_library(hitagiclips
 		clips/agenda.c
 		clips/agenda.h

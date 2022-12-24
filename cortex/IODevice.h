@@ -59,13 +59,18 @@ namespace cortex
              */
             ssize_t write(char *buffer, size_t nbyte);
         } // end namespace Console
-        namespace RTC {
+        namespace Timer {
             bool available() noexcept;
             /**
              * @brief Get the unixtime of the system
              * @return the unixtime as an unsigned 32-bit number
              */
             uint32_t unixtime() noexcept;
+
+            void setCompareValue(uint8_t value) noexcept;
+            uint8_t getCompareValue() noexcept;
+            void setPrescalar(uint8_t value) noexcept;
+            uint8_t getPrescalar() noexcept;
         }
     } // end namespace ChipsetBasicFunctions
     inline uint32_t
