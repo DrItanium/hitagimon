@@ -10,6 +10,7 @@
 #include <cortex/EnvironmentInterface.h>
 #include <cortex/SysExamine.h>
 #include <cortex/IAC.h>
+#include <cortex/SystemCounter.h>
 
 #define X(title) extern "C++" void title (Environment*, UDFContext*, UDFValue*)
 X(ExamineByte);
@@ -37,6 +38,7 @@ X(DoSYNLD);
 X(AddressICR);
 X(GetPRCBAddress);
 X(GetSATAddress);
+X(GetSystemCounter);
 #ifdef __i960SB__
 X(CallCos960);
 X(CallSin960);
@@ -71,6 +73,7 @@ InstallMonitorExtensions(Environment* env) {
     AddUDF(env, "address:interrupt-control-register", "l", 0, 0, NULL, AddressICR, "AddressICR", NULL);
     AddUDF(env, "get-prcb-address", "l", 0, 0, NULL, GetPRCBAddress, "GetPRCBAddress", NULL);
     AddUDF(env, "get-sat-address", "l", 0, 0, NULL, GetSATAddress, "GetSATAddress", NULL);
+    AddUDF(env, "get-system-counter", "l", 0, 0, NULL, GetSystemCounter, "GetSystemCounter", NULL);
 #ifdef __i960SB__
     AddUDF(env, "cos960","d",1,1,"ld",CallCos960,"CallCos960",NULL);
     AddUDF(env, "sin960","d",1,1,"ld",CallSin960,"CallSin960",NULL);
@@ -391,5 +394,8 @@ DefClipsFunction(GetPRCBAddress) {
     retVal->integerValue = CreateInteger(theEnv, reinterpret_cast<uintptr_t>(sbase.thePRCB));
 }
 
+DefClipsFunction(GetSystemCounter) {
+    retVal->integerValue = CreateInteger(theEnv, cortex::getSystemCounter());
+}
 
 #undef DefClipsFunction
