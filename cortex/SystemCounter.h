@@ -33,5 +33,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace cortex {
     uint64_t getSystemCounter() noexcept;
     void enableSystemCounter(uint8_t compareMatch, uint8_t prescalar) noexcept;
+    /// @todo add support for installing handlers when the system timer is incremented
 } // end namespace cortex
 #endif //HITAGIMON_SYSTEMCOUNTER_H

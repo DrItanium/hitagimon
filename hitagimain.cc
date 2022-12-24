@@ -2,23 +2,16 @@
 // Created by jwscoggins on 6/7/21.
 //
 #include <stdint.h>
-#include "cortex/IODevice.h"
 #include <string>
-#include "cortex/EnvironmentInterface.h"
-#include "cortex/Interrupts.h"
-#include "cortex/IAC.h"
-#include "cortex/ModernCpp.h"
+#include <cortex/IODevice.h>
+#include <cortex/EnvironmentInterface.h>
+#include <cortex/Interrupts.h>
+#include <cortex/IAC.h>
+#include <cortex/ModernCpp.h>
+#include <cortex/SystemCounter.h>
 #include <newlib.h>
 #include <time.h>
-//extern "C" int doommain (int argc, char** argv) ;
 extern "C" int clipsMain(int argc, char *argv[]);
-uint64_t delay(uint64_t count) {
-    uint64_t value = 0;
-    for (uint64_t i = 0; i < count; ++i) {
-        ++value;
-    }
-    return value;
-}
 union TestStorage {
     uint32_t value;
     struct {
@@ -41,6 +34,9 @@ void banner() noexcept {
     printf("--------------------------------------------\n\n\n\n");
     printf("NEWLIB Version: %s\n", _NEWLIB_VERSION);
     printf("unixtime: %lu\n", cortex::ChipsetBasicFunctions::Timer::unixtime());
+    printf("Enabling system counter....");
+    cortex::enableSystemCounter(97, 0x7);
+    printf("done\n");
 }
 void doTestDiagnostics() noexcept {
     printf("Sizeof(int) = %lu\n", sizeof(int));

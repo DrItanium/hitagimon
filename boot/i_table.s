@@ -278,4 +278,4 @@ intr_table:
         .word _user_intr;           # interrupt table entry 252
         .word _user_intr;           # interrupt table entry 253
         .word _user_intr;           # interrupt table entry 254
-        .word _user_intr;           # interrupt table entry 255
+        .word _SystemCounterISR;           # interrupt table entry 255
