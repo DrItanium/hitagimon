@@ -76,4 +76,21 @@ namespace cortex {
     void setInterruptState(uint32_t value) {
         hitagi_writeInterruptState(value);
     }
+
+    SystemBase
+    getSystemBase() noexcept {
+        SystemBase sbase;
+        storeSystemBaseAddress(&sbase);
+        return sbase;
+    }
+    SystemAddressTable*
+    getSystemAddressTable() noexcept {
+        return getSystemBase().theSAT;
+    }
+    PRCB*
+    getPRCB() noexcept {
+        return getSystemBase().thePRCB;
+    }
+
+
 }

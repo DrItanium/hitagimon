@@ -8,6 +8,7 @@
 #include <cortex/Types.h>
 #include <cortex/ChipsetInteract.h>
 #include <cortex/EnvironmentInterface.h>
+#include <cortex/ModernCpp.h>
 #include <cortex/SysExamine.h>
 #include <cortex/IAC.h>
 #include <cortex/SystemCounter.h>
@@ -371,31 +372,27 @@ DefClipsFunction(DoSYNLD) {
         cortex::ArithmeticControls ac;
         asm volatile ("synld %1, %0" : "=r" (result) : "r" (value));
         GetArithmeticControls(ac);
-        printf("Condition Code: 0x%x\n", static_cast<int>(ac.cc));
+        //printf("Condition Code: 0x%x\n", static_cast<int>(ac.cc));
         retVal->integerValue = CreateInteger(theEnv, static_cast<int>(result));
     }
 }
-
+const uintptr_t ICRAddress = 0xFF000004;
 DefClipsFunction(AddressICR) {
-    retVal->integerValue = CreateInteger(theEnv, 0xFF000004);
+    retVal->integerValue = CreateInteger(theEnv, ICRAddress);
 }
 
 DefClipsFunction(GetSATAddress) {
-    cortex::SystemBase sbase;
-    cortex::storeSystemBaseAddress(&sbase);
-
-    retVal->integerValue = CreateInteger(theEnv, reinterpret_cast<uintptr_t>(sbase.theSAT));
+    retVal->integerValue = CreateInteger(theEnv, reinterpret_cast<uintptr_t>(cortex::getSystemAddressTable()));
 }
 
 DefClipsFunction(GetPRCBAddress) {
-    cortex::SystemBase sbase;
-    cortex::storeSystemBaseAddress(&sbase);
-
-    retVal->integerValue = CreateInteger(theEnv, reinterpret_cast<uintptr_t>(sbase.thePRCB));
+    retVal->integerValue = CreateInteger(theEnv, reinterpret_cast<uintptr_t>(cortex::getPRCB()));
 }
 
 DefClipsFunction(GetSystemCounter) {
-    retVal->integerValue = CreateInteger(theEnv, cortex::getSystemCounter());
+    cortex::SplitWord64 tmp;
+    tmp.base = cortex::getSystemCounter();
+    retVal->integerValue = CreateInteger(theEnv, tmp.sbase);
 }
 
 #undef DefClipsFunction

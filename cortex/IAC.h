@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define HITAGIMON_IAC_H
 #include <stdint.h>
 #include "SysExamine.h"
+#include "ModernCpp.h"
 namespace cortex {
     struct IACMessage {
         uint16_t field2;
@@ -39,18 +40,21 @@ namespace cortex {
         uint32_t field4;
         uint32_t field5;
     } __attribute__((packed));
-   struct SystemBase {
-       SystemAddressTable* theSAT;
-       PRCB* thePRCB;
-   };
-   void triggerInterrupt(uint8_t interruptVector);
-   void purgeInstructionCache();
-   void reinitializeProcessor(SystemAddressTable* sat, PRCB* prcb, void (*start)());
-   void setBreakpointRegister(uint32_t first, uint32_t second);
-    __attribute__((unused)) void storeSystemBaseAddress(SystemBase* to);
-   void testPendingInterrupts();
-   uint32_t readInterruptState();
-   void setInterruptState(uint32_t);
+    struct SystemBase {
+        SystemAddressTable* theSAT;
+        PRCB* thePRCB;
+    };
+    void triggerInterrupt(uint8_t interruptVector) noexcept;
+    void purgeInstructionCache() noexcept;
+    void reinitializeProcessor(SystemAddressTable* sat, PRCB* prcb, void (*start)()) noexcept;
+    void setBreakpointRegister(uint32_t first, uint32_t second) noexcept;
+    __attribute__((unused)) void storeSystemBaseAddress(SystemBase* to) noexcept;
+    SystemAddressTable* getSystemAddressTable() noexcept;
+    PRCB* getPRCB() noexcept;
+    SystemBase getSystemBase() noexcept;
+    void testPendingInterrupts() noexcept;
+    uint32_t readInterruptState() noexcept;
+    void setInterruptState(uint32_t) noexcept;
     void sendIAC(uint8_t type, uint8_t field1 = 0, uint16_t field2 = 0, uint32_t field3 = 0, uint32_t field4 = 0, uint32_t field5 = 0);
 }
 #endif //HITAGIMON_IAC_H
