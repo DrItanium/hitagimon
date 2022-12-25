@@ -392,7 +392,7 @@ DefClipsFunction(GetPRCBAddress) {
 DefClipsFunction(GetSystemCounter) {
     cortex::SplitWord64 tmp;
     tmp.base = cortex::getSystemCounter();
-    retVal->integerValue = CreateInteger(theEnv, tmp.sbase);
+    retVal->integerValue = CreateInteger(theEnv, tmp.getSignedBase());
 }
 
 #undef DefClipsFunction
