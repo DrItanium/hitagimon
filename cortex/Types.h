@@ -15,6 +15,7 @@ namespace cortex {
         constexpr uint16_t getBase() const noexcept { return base; }
         constexpr int16_t getSignedBase() const noexcept { return sbase; }
     };
+    static_assert(sizeof(SplitWord16) == sizeof(uint16_t), "SplitWord16 must be 2 bytes in size");
     union __attribute((packed)) SplitWord32 {
         uint32_t base;
         int32_t sbase;
@@ -25,6 +26,7 @@ namespace cortex {
         constexpr uint32_t getBase() const noexcept { return base; }
         constexpr int32_t getSignedBase() const noexcept { return sbase; }
     };
+    static_assert(sizeof(SplitWord32) == sizeof(uint32_t), "SplitWord32 must be 4 bytes in size");
     union __attribute((packed)) SplitWord64 {
         uint64_t base;
         int64_t sbase;
@@ -37,6 +39,7 @@ namespace cortex {
         constexpr uint64_t getBase() const noexcept { return base; }
         constexpr int64_t getSignedBase() const noexcept { return sbase; }
     };
+    static_assert(sizeof(SplitWord64) == sizeof(uint64_t), "SplitWord64 must be 8 bytes in size");
 }
 
 #endif //HITAGIMON_TYPES_H
