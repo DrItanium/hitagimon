@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <unistd.h>
 #include <errno.h>
-#include "../cortex/IODevice.h"
+#include <cortex/IODevice.h>
 
 extern "C"
 int

@@ -177,7 +177,7 @@ void IOFunctionDefinitions(
    AllocateEnvironmentData(theEnv,IO_FUNCTION_DATA,sizeof(struct IOFunctionData),NULL);
 
 #if IO_FUNCTIONS
-   IOFunctionData(theEnv)->useFullCRLF = false;
+   IOFunctionData(theEnv)->useFullCRLF = true;
    IOFunctionData(theEnv)->locale = CreateSymbol(theEnv,setlocale(LC_ALL,NULL));
    IncrementLexemeCount(IOFunctionData(theEnv)->locale);
 #endif
