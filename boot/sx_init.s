@@ -77,6 +77,7 @@ system_address_table:
     InitializationWords system_address_table, 0x00fc00fb
     InitializationWords sys_proc_table, 0x304000fb
     InitializationWords fault_proc_table, 0x304000fb, 0
+.align 6
 # initial PRCB
 # this is our startup PRCB. After initialization.
 # this will be copied to RAM
@@ -239,6 +240,7 @@ _user_\()\name\()_core:
 	flushreg
 	ret
 .endm
+# We pass the fault data by grabbing it and passing it via g0 to the function itself
 DefFaultDispatcher reserved
 DefFaultDispatcher trace
 DefFaultDispatcher operation
