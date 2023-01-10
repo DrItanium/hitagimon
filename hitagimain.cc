@@ -25,9 +25,6 @@ void setupEnvironmentVariables() noexcept {
     cortex::EnvironmentInterface::set("HOME", "/home");
     cortex::EnvironmentInterface::set("DOOMWADDIR", "/home/wads");
 }
-void isr0Test() noexcept {
-    printf("INT0 Triggered!");
-}
 void banner() noexcept {
     cortex::ChipsetBasicFunctions::Console::writeLine("HITAGIMON");
     printf("Built on %s at %s\n", __DATE__, __TIME__);
