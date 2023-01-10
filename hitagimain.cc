@@ -65,11 +65,9 @@ void doTestDiagnostics() noexcept {
 }
 int main() noexcept {
     banner();
-    //doTestDiagnostics();
-#if 0
+    doTestDiagnostics();
     printf("Starting up CLIPS!\n");
     clipsMain(0, args);
-#endif
     exit(0);
     return 0;
 }
