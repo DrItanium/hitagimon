@@ -56,7 +56,6 @@ fault, and system procedure tables, and then vectors to a user defined routine. 
 
 .text
 
-system_address_table:
     .word system_address_table # SAT pointer
     .word prcb_ptr # prcb pointer
     .word 0
@@ -65,9 +64,10 @@ system_address_table:
     .word 0
     .word 0
     .word -1
-
+.org 0x1000
+system_address_table:
     # now reserve 88 more bytes
-    .space 88
+    .space 88+16
 .macro InitializationWords line0, line1, space=8
 .word \line0
 .word \line1
@@ -77,10 +77,10 @@ system_address_table:
     InitializationWords system_address_table, 0x00fc00fb
     InitializationWords sys_proc_table, 0x304000fb
     InitializationWords fault_proc_table, 0x304000fb, 0
+ .org 0x2000
 # initial PRCB
 # this is our startup PRCB. After initialization.
 # this will be copied to RAM
-
 prcb_ptr:
     .word 0x0 # 0 - reserved
     .word 0xc # 4 - initialize to 0xc
@@ -97,6 +97,7 @@ prcb_ptr:
     .space 32 # 48 - reserved
     .space 92 # 80 - scratch space
 
+.org 0x3000
 # the system procedure table will _only_ be used if the user make a supervisor procedure call
     .align 6
 
@@ -207,6 +208,7 @@ sys_proc_table:
 # this table is provided because the above table (supervisor table) will allow
 # tracing of trace-fault events (creating an endless loop), whereas this table will
 # not allow tracing of trace-fault events.
+.org 0x4000
 .macro FaultTableEntry name
 DefTableEntry _user_\()\name\()_core
 .endm
@@ -249,6 +251,8 @@ DefFaultDispatcher constraint
 DefFaultDispatcher protection
 DefFaultDispatcher machine
 DefFaultDispatcher type
+
+.org 0x5000
  # processor starts execution at this spot upon power-up after self-test.
  start_ip:
     clear_g14
