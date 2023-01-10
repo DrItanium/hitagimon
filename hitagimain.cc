@@ -65,11 +65,12 @@ void doTestDiagnostics() noexcept {
 }
 int main() noexcept {
     banner();
-    doTestDiagnostics();
-    setISR0Function(isr0Test);
+    //doTestDiagnostics();
+#if 0
     printf("Starting up CLIPS!\n");
     clipsMain(0, args);
-    (void)cortex::readInterruptState();
+#endif
+    exit(0);
     return 0;
 }
 

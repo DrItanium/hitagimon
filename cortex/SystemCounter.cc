@@ -41,6 +41,10 @@ namespace cortex {
         cortex::ChipsetBasicFunctions::Timer::setCompareValue(compareMatch);
         cortex::ChipsetBasicFunctions::Timer::setPrescalar(prescalar);
     }
+    void
+    disableSystemCounter() noexcept {
+        cortex::ChipsetBasicFunctions::Timer::setPrescalar(0);
+    }
 } // end namespace cortex
 
 void

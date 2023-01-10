@@ -25,11 +25,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 // Created by jwscoggins on 6/29/21.
 //
-#include <stdio.h>
+#include "cortex/SystemCounter.h"
 extern "C"
 void
 hitagi_exit(int status) {
-    printf("exit(%d)\n", status);
+    // deactivate any timers before halting
+    // disable the system timer since we are exiting and shutting down completely
+    cortex::disableSystemCounter();
     while (true) {
         // just hang here
     }
