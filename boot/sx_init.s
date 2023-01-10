@@ -249,6 +249,7 @@ DefFaultDispatcher protection
 DefFaultDispatcher machine
 DefFaultDispatcher type
 
+.org 0x2000 # start the ip at address 0x2000
  # processor starts execution at this spot upon power-up after self-test.
  start_ip:
     clear_g14
