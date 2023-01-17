@@ -55,7 +55,7 @@ fault, and system procedure tables, and then vectors to a user defined routine. 
 # 8 words
 
 .text
-
+system_address_table:
     .word system_address_table # SAT pointer
     .word prcb_ptr # prcb pointer
     .word 0
@@ -64,10 +64,8 @@ fault, and system procedure tables, and then vectors to a user defined routine. 
     .word 0
     .word 0
     .word -1
-.org 0x1000
-system_address_table:
     # now reserve 88 more bytes
-    .space 88+32
+    .space 88
 .macro InitializationWords line0, line1, space=8
 .word \line0
 .word \line1
@@ -251,7 +249,7 @@ DefFaultDispatcher protection
 DefFaultDispatcher machine
 DefFaultDispatcher type
 
-.org 0x2000 # start the ip at address 0x2000
+.text
  # processor starts execution at this spot upon power-up after self-test.
  start_ip:
     clear_g14
@@ -354,18 +352,6 @@ reinitialize_iac:
 
 defaultInterruptHandlerValue:
     .word 0xFCFDFEFF
-/* -- define RAM area to copy the PRCB and interrupt table
- *    to after initial bootup from EPROM/FLASH
- */
-    .bss intr_ram, 1028, 6
-    .bss _prcb_ram, 176, 6
- /* -- define RAM area for stacks; size is only a suggestion your actual
-  *    mileage may vary
-  */
-    .bss _user_stack, 0x10000, 6
-    .bss _intr_stack, 0x10000, 6
-    .bss _sup_stack, 0x10000, 6
-
 /* -- Below is a software loop to move data */
 
 move_data:
@@ -411,3 +397,30 @@ def_system_call 7, _sys_unlink
 #def_system_call 18, _sys_time
 def_system_call 19, _sys_gettimeofday
 def_system_call 20, _sys_setitimer
+
+/* -- define RAM area to copy the PRCB and interrupt table
+ *    to after initial bootup from EPROM/FLASH
+ */
+ .section .system_structures
+ .align 6
+ sat_ram:
+    .space 188
+ .align 6
+ _prcb_ram:
+    .space 176
+ .align 6
+ intr_ram:
+    .space 1028
+ .align 6
+_proc_table_ram:
+    .space 1088
+ .align 6
+    _user_stack:
+    .space 0x10000
+ .align 6
+    _intr_stack:
+    .space 0x10000
+ .align 6
+    _sup_stack:
+    .space 0x10000
+

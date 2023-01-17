@@ -10,6 +10,10 @@ MEMORY /* describe the partitioning of the memory space for the application */
 	 * the 32-bit address space and be 14 megs in size */
 	ram (!rx) : o = 0x00200000, l = 6M
 
+    /* An extra memory space that is directly mapped into the microcontroller
+       _up to_ 16 megabytes can be mapped into this space */
+	ram2 (!rx) : o = 0xF1000000, l = 16M
+
     /* This design will span the entire 64 megabyte space */
 	/* the rom section will start at address 0 and be up to 8 megs in
 	 * length*/
@@ -115,7 +119,12 @@ SECTIONS
 		__heap_end__ = .; 
 		/* __HeapLimit = __heap_end__; */ 
 	
-	} >ram 
+	} >ram
+	.system_structures : {
+	    __bss2_start__ = .;
+	    KEEP(*(.system_structures))
+	    __bss2_end__ = .;
+	} >ram2
 }
 
 /* these two locations are _very_ important for getting the program to startup correctly */ 
