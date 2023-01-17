@@ -403,18 +403,6 @@ def_system_call 20, _sys_setitimer
  */
  .section .system_structures
  .align 6
- sat_ram:
-    .space 188
- .align 6
- _prcb_ram:
-    .space 176
- .align 6
- intr_ram:
-    .space 1028
- .align 6
-_proc_table_ram:
-    .space 1088
- .align 6
     _user_stack:
     .space 0x10000
  .align 6
@@ -423,4 +411,10 @@ _proc_table_ram:
  .align 6
     _sup_stack:
     .space 0x10000
+ .align 6
+ intr_ram:
+    .space 1028
+ .align 6
+ _prcb_ram:
+    .space 176
 
