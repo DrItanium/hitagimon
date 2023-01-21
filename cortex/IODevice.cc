@@ -7,16 +7,25 @@
 namespace cortex
 {
     namespace ChipsetBasicFunctions {
+        namespace Opcodes {
+            enum {
+                Available = 0,
+                Size,
+                RW,
+                Flush,
+                Baud,
+            };
+        }
         namespace Console {
             uint16_t
             read() {
-                Opcode code(0, 1, 2, 0);
+                Opcode code(0, Devices::Serial, Opcodes::RW, 0);
                 return code.read16();
             }
 
             void
             write(uint16_t c) {
-                Opcode code(0, 1, 2, 0);
+                Opcode code(0, Devices::Serial, Opcodes::RW, 0);
                 code.write16(c);
             }
 
@@ -26,7 +35,7 @@ namespace cortex
             }
             void
             flush() {
-                Opcode code(0, 1, 3, 0);
+                Opcode code(0, Devices::Serial, Opcodes::Flush, 0);
                 // doesn't matter what you write as long as you write it
                 code.write16(0);
             }
@@ -78,33 +87,41 @@ namespace cortex
             }
         } // end namespace Console
         namespace Timer {
+            // this is a pre c++11 "hack" to support referencing enums by name
+            namespace Opcodes {
+                enum {
+                    Available = 0,
+                    Size,
+                    CompareValue,
+                    Prescalar,
+                };
+            }
             bool
             available() noexcept {
-                Opcode code(0, 2, 0, 0);
+                Opcode code(0, Devices::Timer, Opcodes::Available, 0);
                 return code.read16();
             }
             uint32_t
             unixtime() noexcept {
-                Opcode code(0, 2, 2, 0);
-                return code.read32();
+                return 0;
             }
             void
             setCompareValue(uint8_t value) noexcept {
-                Opcode code(0, 2, 3, 0);
+                Opcode code(0, Devices::Timer, Opcodes::CompareValue, 0);
                 code.write16(value);
             }
             uint8_t
             getCompareValue() noexcept {
-                Opcode code(0, 2, 3, 0);
+                Opcode code(0, Devices::Timer, Opcodes::CompareValue, 0);
                 return code.read16();
             }
             void
             setPrescalar(uint8_t value) noexcept {
-                Opcode code(0, 2, 4, 0);
+                Opcode code(0, Devices::Timer, Opcodes::Prescalar, 0);
                 code.write16(value);
             }
             uint8_t getPrescalar() noexcept {
-                Opcode code(0, 2, 4, 0);
+                Opcode code(0, Devices::Timer, Opcodes::Prescalar, 0);
                 return code.read16();
             }
         } // end namespace RTC

@@ -35,6 +35,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace cortex
 {
     namespace ChipsetBasicFunctions {
+        namespace Devices {
+            enum {
+                Info = 0,
+                Serial,
+                Timer,
+            };
+        }
         namespace Console
         {
             void flush();

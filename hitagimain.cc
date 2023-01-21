@@ -30,7 +30,6 @@ void banner() noexcept {
     printf("Built on %s at %s\n", __DATE__, __TIME__);
     printf("--------------------------------------------\n\n\n\n");
     printf("NEWLIB Version: %s\n", _NEWLIB_VERSION);
-    printf("unixtime: %lu\n", cortex::ChipsetBasicFunctions::Timer::unixtime());
     printf("Enabling system counter....");
     cortex::enableSystemCounter(97, 0x7);
     printf("done\n");
