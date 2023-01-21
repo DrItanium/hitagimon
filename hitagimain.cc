@@ -63,6 +63,16 @@ void doTestDiagnostics() noexcept {
 int main() noexcept {
     banner();
     doTestDiagnostics();
+    while (true) {
+        uint64_t start = cortex::getSystemCounter();
+        printf("Counter: %llu\n", start);
+        do {
+            uint64_t difference = cortex::getSystemCounter() - start;
+            if (difference >= 1000) {
+                break;
+            }
+        } while (true);
+    }
     //printf("Starting up CLIPS!\n");
     //clipsMain(0, args);
     exit(0);
