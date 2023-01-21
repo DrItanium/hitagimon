@@ -45,6 +45,7 @@ fault, and system procedure tables, and then vectors to a user defined routine. 
 .global _prcb_ram
 .global start_ip
 .global cs1
+.global STACK_SIZE
 
 .global _user_stack
 .global _sup_stack # supervisor stack
@@ -258,7 +259,7 @@ DefFaultDispatcher type
     # lda 0xFE000022, g8
     # lda 0x1, g9
     # st g9, 0(g8)
-    # copy the interrupt table to RAM space
+    # copy the interrupt table to RAM space, more like proper spaces
     lda 1028, g0 # load length of the interrupt table
     lda 0, g4 # initialize offset to 0
     lda intr_table, g1 # load source
@@ -401,20 +402,8 @@ def_system_call 20, _sys_setitimer
 /* -- define RAM area to copy the PRCB and interrupt table
  *    to after initial bootup from EPROM/FLASH
  */
- .section .system_structures
- .align 6
-    _user_stack:
-    .space 0x10000
- .align 6
-    _intr_stack:
-    .space 0x10000
- .align 6
-    _sup_stack:
-    .space 0x10000
- .align 6
- intr_ram:
-    .space 1028
- .align 6
- _prcb_ram:
-    .space 176
-
+ .bss _user_stack, 0x8000, 6
+ .bss _intr_stack, 0x8000, 6
+ .bss _sup_stack,  0x8000, 6
+ .bss intr_ram, 1028, 6
+ .bss _prcb_ram, 176, 6
