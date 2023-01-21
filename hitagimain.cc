@@ -64,7 +64,7 @@ int main() noexcept {
     doTestDiagnostics();
     while (true) {
         uint64_t start = cortex::getSystemCounter();
-        printf("Counter: %llu\n", start);
+        printf("Counter: %x%x\n", static_cast<unsigned int>(start), static_cast<unsigned int>(start >> 32));
         do {
             uint64_t difference = cortex::getSystemCounter() - start;
             if (difference >= 1000) {
