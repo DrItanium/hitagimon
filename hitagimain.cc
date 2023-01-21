@@ -4,13 +4,10 @@
 #include <stdint.h>
 #include <string>
 #include <cortex/IODevice.h>
-#include <cortex/EnvironmentInterface.h>
-#include <cortex/Interrupts.h>
 #include <cortex/IAC.h>
 #include <cortex/ModernCpp.h>
 #include <cortex/SystemCounter.h>
 #include <newlib.h>
-#include <time.h>
 //extern "C" int clipsMain(int argc, char *argv[]);
 union TestStorage {
     uint32_t value;
