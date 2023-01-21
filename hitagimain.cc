@@ -11,7 +11,7 @@
 #include <cortex/SystemCounter.h>
 #include <newlib.h>
 #include <time.h>
-extern "C" int clipsMain(int argc, char *argv[]);
+//extern "C" int clipsMain(int argc, char *argv[]);
 union TestStorage {
     uint32_t value;
     struct {
@@ -63,8 +63,8 @@ void doTestDiagnostics() noexcept {
 int main() noexcept {
     banner();
     doTestDiagnostics();
-    printf("Starting up CLIPS!\n");
-    clipsMain(0, args);
+    //printf("Starting up CLIPS!\n");
+    //clipsMain(0, args);
     exit(0);
     return 0;
 }
