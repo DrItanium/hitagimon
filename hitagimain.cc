@@ -20,11 +20,6 @@ union TestStorage {
         uint8_t high;
     }__attribute__((packed));
 } __attribute__((packed));
-char* args[] = { };
-void setupEnvironmentVariables() noexcept {
-    cortex::EnvironmentInterface::set("HOME", "/home");
-    cortex::EnvironmentInterface::set("DOOMWADDIR", "/home/wads");
-}
 void banner() noexcept {
     cortex::ChipsetBasicFunctions::Console::writeLine("HITAGIMON");
     printf("Built on %s at %s\n", __DATE__, __TIME__);
@@ -36,9 +31,6 @@ void banner() noexcept {
 }
 void doTestDiagnostics() noexcept {
     printf("Sizeof(int) = %lu\n", sizeof(int));
-    printf("Setting up Environment Variables....{\n");
-    setupEnvironmentVariables();
-    printf("}...Done\n");
     printf("Testing out unaligned accesses!\n");
     volatile TestStorage tu;
     tu.value = 0xFDED1234;
