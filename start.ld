@@ -2,46 +2,15 @@ GROUP(-lgcc -lm -lc -liberty -lc -lmon960) /* libraries to link in */
 
 MEMORY /* describe the partitioning of the memory space for the application */ 
 {
-    /* This design will two PSRAM Chips */
-	/* the rom section will start at address 0 and be up to 2 megs in
-	 * length*/ 
-	rom (rx)  : ORIGIN = 0, l = 2M
-	/* the "ram" section will start at 0x0020'0000 which comes immediately after the rom space
-	 * the 32-bit address space and be 14 megs in size */
-	ram (!rx) : o = 0x00200000, l = 6M
-
-    /* An extra memory space that is directly mapped into the microcontroller
-       _up to_ 16 megabytes can be mapped into this space */
-	ram2 (!rx) : o = 0xF1000000, l = 16M
-
-    /* This design will span the entire 64 megabyte space */
-	/* the rom section will start at address 0 and be up to 8 megs in
-	 * length*/
-	/* rom (rx)  : ORIGIN = 0, l = 8M */
-	/* the "ram" section will start at 0x0080'0000 which comes immediately after the rom space
-	 * the 32-bit address space and be 56 megs in size */
-	/* ram (!rx) : o = 0x00800000, l = 56M */
-
-	/* NOTE: do not uncomment these lines, this is here as a reference to the
-	 * design of the hitagi board */
-	/* primary io space starts at 0xFE00'0000 and is memory mapped io*/
-	/* io0 (!rx) : o = 0xFE000000, l = 16M  */
-	/* cpu_internal (!rwxail) : o = 0xFF000000, l = 16M - 1 */
-	/* NOTE: the chipset will catch any unmapped reads and writes, report them,
-	 * and either do nothing (on a write) or return zero (on a read)
-	 */
-
-
-	/* the format of a memory entry is: name (permissions) : <flags> 
-	ORIGIN or o is the starting location LENGTH or l is the length of the
-	memory section 
-	 */ 
-
-} 
+    /* In this redesigned type103 board we have access to 512k of sram, EVERYTHING must fit in there! */
+    /* The PSRAM has been removed due to the overhead it incurs */
+    ram (!rx) : ORIGIN = 0, l = 512K
+    /* Once I get the 32/8 bus up and running, I will be increasing this to significantly larger amount of ram */
+}
 
 /* Define a symbol that your code can reference. The linker adds the symbol. */ 
-
-STACK_SIZE = 0x10000; 
+/* I am reducing the stacks to 32k instead of 64k because I don't have much space in 512k anymore */
+STACK_SIZE = 0x8000;
 
 /* Layout the different ELF sections into memory using the above described
  * memory spaces */ 
@@ -87,7 +56,7 @@ SECTIONS
 	/* the arrow syntax tells the linker that the text section will go into the
 	 * memory location named "rom", it is sequential as we will see in the next
 	 * few sections*/ 
-	} >rom 
+	} >ram
 	/* setup the bss section, tag it's start and end positions to allow the
 	 * i960 to manually zero out the memory on the sdcard's ram.bin file */ 
 	.bss : 
@@ -120,11 +89,6 @@ SECTIONS
 		/* __HeapLimit = __heap_end__; */ 
 	
 	} >ram
-	.system_structures : {
-	    __bss2_start__ = .;
-	    KEEP(*(.system_structures))
-	    __bss2_end__ = .;
-	} >ram2
 }
 
 /* these two locations are _very_ important for getting the program to startup correctly */ 
