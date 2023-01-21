@@ -50,20 +50,18 @@ void doTestDiagnostics() noexcept {
 }
 int main() noexcept {
     banner();
-    doTestDiagnostics();
+    //doTestDiagnostics();
     while (true) {
         uint64_t start = cortex::getSystemCounter();
-        printf("Counter: %x%x\n", static_cast<unsigned int>(start), static_cast<unsigned int>(start >> 32));
         do {
-            uint64_t difference = cortex::getSystemCounter() - start;
+            uint64_t now = cortex::getSystemCounter();
+            uint64_t difference = now - start;
             if (difference >= 100) {
+                printf("Counter: %x%x\n", static_cast<unsigned int>(now >> 32), static_cast<unsigned int>(now));
                 break;
             }
         } while (true);
     }
-    //printf("Starting up CLIPS!\n");
-    //clipsMain(0, args);
-    exit(0);
     return 0;
 }
 
