@@ -56,7 +56,7 @@ int main() noexcept {
         printf("Counter: %x%x\n", static_cast<unsigned int>(start), static_cast<unsigned int>(start >> 32));
         do {
             uint64_t difference = cortex::getSystemCounter() - start;
-            if (difference >= 10) {
+            if (difference >= 100) {
                 break;
             }
         } while (true);
