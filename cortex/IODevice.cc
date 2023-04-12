@@ -101,6 +101,10 @@ namespace cortex
                 Opcode code(0, Devices::Timer, Opcodes::Available, 0);
                 return code.read16();
             }
+            uint32_t
+            unixtime() noexcept {
+                return 0;
+            }
             void
             setCompareValue(uint8_t value) noexcept {
                 Opcode code(0, Devices::Timer, Opcodes::CompareValue, 0);
