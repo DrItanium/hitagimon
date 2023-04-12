@@ -94,7 +94,6 @@ namespace cortex
                     Size,
                     CompareValue,
                     Prescalar,
-                    UnixTime,
                 };
             }
             bool
