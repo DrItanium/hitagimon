@@ -292,6 +292,12 @@ DefFaultDispatcher type
     lda reinitialize_iac, g6
     synmovq g5, g6
     /* FALLTHROUGH DOES NOT HAPPEN HERE!!!! */
+    .align 4 # Align BEFORE the label...holy crap
+reinitialize_iac:
+    .word 0x93000000    # reinitialize IAC message
+    .word system_address_table
+    .word _prcb_ram     # use newly copied PRCB
+    .word start_again_ip    # start here
 
   /*
    * The process will begin execution here after being reinitialized.
@@ -344,12 +350,6 @@ setupInterruptHandler:
     synmov g5, g6
     ret
 
-    .align 4 # Align BEFORE the label...holy crap
-reinitialize_iac:
-    .word 0x93000000    # reinitialize IAC message
-    .word system_address_table
-    .word _prcb_ram     # use newly copied PRCB
-    .word start_again_ip    # start here
 
 defaultInterruptHandlerValue:
     .word 0xFCFDFEFF
