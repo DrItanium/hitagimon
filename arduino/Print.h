@@ -65,11 +65,32 @@ public:
     virtual int availableForWrite() {
         return 0;
     }
+    virtual void flush() { }
+    /// @todo add support for __FlashStringHelper and String
+    size_t print(const char[]);
+    size_t print(char);
+    size_t print(unsigned char, int = DEC);
+    size_t print(int, int = DEC);
+    size_t print(unsigned int, int = DEC);
+    size_t print(long, int = DEC);
+    size_t print(unsigned long, int = DEC);
+    size_t print(double , int = 2);
+    size_t print(const Printable&);
+
+    size_t println(const char[]);
+    size_t println(char);
+    size_t println(unsigned char, int = DEC);
+    size_t println(int, int = DEC);
+    size_t println(unsigned int, int = DEC);
+    size_t println(long, int = DEC);
+    size_t println(unsigned long, int = DEC);
+    size_t println(double , int = 2);
+    size_t println(const Printable&);
+    size_t println();
 private:
     size_t printNumber(unsigned long, uint8_t);
     size_t printFloat(double, uint8_t);
 
-    /// @todo add support for __FlashStringHelper
 
 protected:
     void setWriteError(int err = 1) {
