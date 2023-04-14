@@ -9,6 +9,7 @@
 #include <cortex/SystemCounter.h>
 #include <arduino/Arduino.h>
 #include <arduino/WCharacter.h>
+#include <arduino/Print.h>
 #include <newlib.h>
 
 void setup() {
