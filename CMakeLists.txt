@@ -61,6 +61,9 @@ add_library(hitagicortex
 		cortex/IACImplementation.s
 		cortex/ModernCpp.h
 		cortex/Types.h cortex/SystemCounter.h cortex/SystemCounter.cc)
+add_library(hitagiarduino
+		arduino/Arduino.h
+		arduino/Arduino.cc)
 add_library(hitagiclips
 		clips/agenda.c
 		clips/agenda.h
@@ -439,6 +442,7 @@ target_link_libraries(hitagimon
 		m
 		hitagicortex
 		hitagisys
+		hitagiarduino
 		mon960
 		stdc++
 		c
