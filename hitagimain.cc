@@ -30,3 +30,9 @@ void loop() {
     } while (true);
 }
 
+void yield() {
+
+}
+void initVariant() {
+
+}

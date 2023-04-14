@@ -22,38 +22,12 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-// An emulated version of Arduino.h
-#ifndef HITAGIMON_ARDUINO_H
-#define HITAGIMON_ARDUINO_H
-#include <stdlib.h>
-#include <stdbool.h>
-#include <stdint.h>
-#ifdef __cplusplus
-extern "C" {
-#endif
-    void yield(void);
-    typedef unsigned int word;
-#define bit(b) (1UL << (b))
-    typedef bool boolean;
-    typedef uint8_t byte;
-//    int atexit(void(*func)()) __attribute__((weak));
-    void init(void);
-    void initVariant(void);
-    void setup(void);
-    void loop(void);
-#ifdef __cplusplus
+//
+// Created by jwscoggins on 4/13/23.
+//
+
+static void __empty() {
+    // empty
 }
-#endif
 
-#ifdef __cplusplus
-uint16_t makeWord(uint16_t w);
-uint16_t makeWord(byte h, byte l);
-#define word(...) makeWord(__VA_ARGS__)
-
-long map(long value, long fromLow, long fromHigh, long toLow, long toHigh);
-void randomSeed(unsigned long seed);
-long random(long max);
-long random(long min, long max);
-#endif
-
-#endif //HITAGIMON_ARDUINO_H
+void yield(void) __attribute__ ((weak, alias("__empty")));
