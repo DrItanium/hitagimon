@@ -18,19 +18,18 @@ void banner() noexcept {
     cortex::enableSystemCounter(97, 0x7);
     printf("done\n");
 }
-int main() noexcept {
-    banner();
-    while (true) {
-        uint64_t start = cortex::getSystemCounter();
-        do {
-            uint64_t now = cortex::getSystemCounter();
-            uint64_t difference = now - start;
-            if (difference >= 100) {
-                printf("Counter: %x%x\n", static_cast<unsigned int>(now >> 32), static_cast<unsigned int>(now));
-                break;
-            }
-        } while (true);
-    }
-    return 0;
+void setup() {
+
+}
+void loop() {
+    uint64_t start = cortex::getSystemCounter();
+    do {
+        uint64_t now = cortex::getSystemCounter();
+        uint64_t difference = now - start;
+        if (difference >= 100) {
+            printf("Counter: %x%x\n", static_cast<unsigned int>(now >> 32), static_cast<unsigned int>(now));
+            break;
+        }
+    } while (true);
 }
 

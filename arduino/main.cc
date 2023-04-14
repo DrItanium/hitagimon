@@ -25,5 +25,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 // Created by jwscoggins on 4/13/23.
 //
-
 #include "Arduino.h"
+void initVariant() __attribute__((weak));
+void initVariant() { }
+int main(void) {
+    init();
+    initVariant();
+    setup();
+    for (;;) {
+        loop();
+        /// @todo implement support for serialEventRun at some point
+    }
+    return 0;
+}

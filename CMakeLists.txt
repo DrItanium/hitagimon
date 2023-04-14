@@ -63,7 +63,8 @@ add_library(hitagicortex
 		cortex/Types.h cortex/SystemCounter.h cortex/SystemCounter.cc)
 add_library(hitagiarduino
 		arduino/Arduino.h
-		arduino/Arduino.cc)
+		arduino/Arduino.cc
+		arduino/main.cc arduino/wiring.c)
 add_library(hitagiclips
 		clips/agenda.c
 		clips/agenda.h
