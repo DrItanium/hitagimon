@@ -256,21 +256,13 @@ DefFaultDispatcher type
     clear_g14
 
 # enable address debugging
-    # lda 0xFE000022, g8
-    # lda 0x1, g9
-    # st g9, 0(g8)
     # copy the interrupt table to RAM space, more like proper spaces
     lda 1028, g0 # load length of the interrupt table
     lda 0, g4 # initialize offset to 0
     lda intr_table, g1 # load source
     lda intr_ram, g2    # load address of new table
     bal move_data # branch to move routine
-    # lda 0xFE000022, g8
-    # lda 0, g9
-    # st g9, 0(g8)
-
 # copy PRCB to RAM space, located at _prcb_ram
-
     lda 176,g0 # load length of PRCB
     lda 0, g4 # initialize offset to 0
     lda prcb_ptr, g1 # load source
@@ -312,9 +304,7 @@ reinitialize_iac:
    *    to cause an interrupt return to be executed.
    */
     ldconst 64, g0 # bump up stack to make
-    addo sp, g0, sp # room for simulated
-                    # interrupt frame
-
+    addo sp, g0, sp # room for simulated interrupt frame
     call fix_stack  # routine to turn off int state
 
     lda _user_stack, fp     # setup user stack space
@@ -325,22 +315,19 @@ reinitialize_iac:
  *    If any IO needs to be set up, you should do it here before your
  *    call to main. No opens have been done for STDIN, STDOUT, or STDERR
  */
-.ifdef __i960SB__
     callx _init_fp
-.endif
     callx setupInterruptHandler
-    #callx _activate_read_write_transactions
     c_callx _main # assume a main for startup
 
-.ifdef __i960SB__
 _init_fp:
-    # initialize the floating point registers
+    # initialize the floating point registers if it makes sense
+.ifdef __i960SB__
     cvtir   0, fp0
     movre   fp0, fp1
     movre   fp1, fp2
     movre   fp2, fp3
-    ret
 .endif
+    ret
 
 setupInterruptHandler:
     # setup the interrupt handlers to work correctly
