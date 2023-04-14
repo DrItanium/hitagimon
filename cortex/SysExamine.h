@@ -187,5 +187,9 @@ namespace cortex {
 #define GetProcessControls(pc) asm volatile ("modpc 0, 0, %0" : "=r" (pc.raw))
 #define GetArithmeticControls(ac) asm volatile ("modac 0, 0, %0" : "=r" (ac.raw))
 #define GetTraceControls(tc) asm volatile ("modtc 0, 0, %0" : "=r" (tc.raw))
+#define FlushRegisters asm volatile ("flushreg")
+#define GenerateBreakPointTraceEvent asm volatile ("mark")
+#define ForceGenerateBreakPointTraceEvent asm volatile ("fmark")
+#define SynchronizeFaults asm volatile ("syncf")
 }
 #endif //HITAGIMON_SYSEXAMINE_H
