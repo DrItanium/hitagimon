@@ -9,7 +9,7 @@
 #include <cortex/SystemCounter.h>
 #include <arduino/Arduino.h>
 #include <newlib.h>
-void banner() noexcept {
+void setup() {
     cortex::ChipsetBasicFunctions::Console::writeLine("HITAGIMON");
     printf("Built on %s at %s\n", __DATE__, __TIME__);
     printf("--------------------------------------------\n\n\n\n");
@@ -17,9 +17,6 @@ void banner() noexcept {
     printf("Enabling system counter....");
     cortex::enableSystemCounter(97, 0x7);
     printf("done\n");
-}
-void setup() {
-
 }
 void loop() {
     uint64_t start = cortex::getSystemCounter();
