@@ -115,3 +115,72 @@ size_t Print::println(long c, int base){ return print(c, base) + println(); }
 size_t Print::println(unsigned long c, int base){ return print(c, base) + println(); }
 size_t Print::println(double c, int digits){ return print(c, digits) + println(); }
 size_t Print::println(const Printable& x) { return print(x) + println();}
+
+size_t
+Print::printNumber(unsigned long n, uint8_t base) {
+    char buffer[8 * sizeof(long) + 1];
+    char* str = &buffer[sizeof(buffer) - 1];
+    *str = '\0';
+
+    if (base < 2)  {
+        base = 10;
+    }
+    do {
+        char c = n % base;
+        n /= base;
+        // taken directly from Print.cc
+        // blergs *--str
+        *--str = c < 10 ? c + '0' : c + 'A' - 10;
+    } while (n);
+    return write(str);
+}
+
+size_t
+Print::printFloat(double number,uint8_t digits) {
+    size_t n = 0;
+    if (isnan(number)) {
+        return print("nan");
+    }
+    if (isinf(number)) {
+        return print("inf");
+    }
+    if (number > 4294967040.0) {
+        // according to arduino impl, this is "determined empirically
+        return print ("ovf");
+    }
+    if (number < -4294967040.0) {
+        // according to arduino impl, this is "determined empirically
+        return print ("ovf");
+    }
+    // handle the negative sign
+    if (number < 0.0) {
+        n += print('-');
+        number = -number;
+    }
+    // round correctly so that print(1.999, 2) prints as "2.00"
+    double rounding = 0.5;
+    for (uint8_t i = 0; i < digits; ++i) {
+        rounding /= 10.0;
+    }
+    number += rounding;
+
+
+    // extrac the integer part of the number and print it
+    unsigned long integerPart = (unsigned long)number;
+    double remainder = number - (double)integerPart;
+    n += print(integerPart);
+
+    // print the decimal point, but only if there are digits beyond
+    if (digits > 0) {
+        n += print ('.');
+    }
+
+    // extract digits from the remainder one at a time
+    while (digits-- > 0) {
+        remainder *= 10.0;
+        unsigned int toPrint = (unsigned int)(remainder);
+        n += print(toPrint);
+        remainder -= toPrint;
+    }
+    return n;
+}
