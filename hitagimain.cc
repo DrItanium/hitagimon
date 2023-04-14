@@ -8,7 +8,9 @@
 #include <cortex/ModernCpp.h>
 #include <cortex/SystemCounter.h>
 #include <arduino/Arduino.h>
+#include <arduino/WCharacter.h>
 #include <newlib.h>
+
 void setup() {
     cortex::ChipsetBasicFunctions::Console::writeLine("HITAGIMON");
     printf("Built on %s at %s\n", __DATE__, __TIME__);
@@ -33,6 +35,7 @@ void loop() {
 void yield() {
 
 }
+
 void initVariant() {
 
 }

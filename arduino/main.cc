@@ -26,10 +26,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Created by jwscoggins on 4/13/23.
 //
 #include "Arduino.h"
-static void __empty() {
-
-}
-extern "C" void initVariant() __attribute__ ((weak, alias("__empty")));
 int main(void) {
     init();
     initVariant();

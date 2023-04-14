@@ -46,9 +46,6 @@ extern "C" {
 #endif
 
 #ifdef __cplusplus
-uint16_t makeWord(uint16_t w);
-uint16_t makeWord(byte h, byte l);
-#define word(...) makeWord(__VA_ARGS__)
 
 long map(long value, long fromLow, long fromHigh, long toLow, long toHigh);
 void randomSeed(unsigned long seed);

@@ -64,7 +64,7 @@ add_library(hitagicortex
 add_library(hitagiarduino
 		arduino/Arduino.h
 		arduino/Arduino.cc
-		arduino/main.cc arduino/wiring.c arduino/hooks.c)
+		arduino/main.cc arduino/wiring.c arduino/WCharacter.h)
 add_library(hitagiclips
 		clips/agenda.c
 		clips/agenda.h
