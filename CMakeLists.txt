@@ -64,7 +64,7 @@ add_library(hitagicortex
 add_library(hitagiarduino
 		arduino/Arduino.h
 		arduino/Arduino.cc
-		arduino/main.cc arduino/wiring.c arduino/WCharacter.h arduino/Printable.h arduino/Print.h arduino/Print.cc arduino/WString.h arduino/avr/pgmspace.h)
+		arduino/main.cc arduino/wiring.c arduino/WCharacter.h arduino/Printable.h arduino/Print.h arduino/Print.cc arduino/WString.h arduino/avr/pgmspace.h arduino/WString.cc)
 add_library(hitagiclips
 		clips/agenda.c
 		clips/agenda.h
