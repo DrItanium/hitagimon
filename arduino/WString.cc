@@ -29,61 +29,61 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "WString.h"
 #include "avr/dtostrf.h"
 
-String::String(const char* cstr) : buffer_(NULL), capacity_(0), len_(0) {
+String::String(const char* cstr) : buffer_(nullptr), capacity_(0), len_(0) {
     if (cstr) {
         copy(cstr, strlen(cstr));
     }
 }
 
-String::String(const String& value) : buffer_(NULL), capacity_(0), len_(0) {
+String::String(const String& value) : buffer_(nullptr), capacity_(0), len_(0) {
     *this = value;
 }
 
-String::String(const __FlashStringHelper* pstr) : buffer_(NULL), capacity_(0), len_(0){
+String::String(const __FlashStringHelper* pstr) : buffer_(nullptr), capacity_(0), len_(0){
     *this = pstr;
 }
 
-String::String(char c) : buffer_(NULL), capacity_(0), len_(0){
+String::String(char c) : buffer_(nullptr), capacity_(0), len_(0){
     char buf[2];
     buf[0] = c;
     buf[1] = 0;
     *this = buf;
 }
-String::String(unsigned char value, unsigned char base) : buffer_(NULL), capacity_(0), len_(0){
+String::String(unsigned char value, unsigned char base) : buffer_(nullptr), capacity_(0), len_(0){
     char buf[1 + 8 * sizeof(unsigned char)];
     utoa(value, buf, base);
     *this = buf;
 }
 
-String::String(int value, unsigned char base) : buffer_(NULL), capacity_(0), len_(0){
+String::String(int value, unsigned char base) : buffer_(nullptr), capacity_(0), len_(0){
     char buf[2 + 8 * sizeof(int)];
     itoa(value, buf, base);
     *this = buf;
 }
 
-String::String(unsigned int value, unsigned char base) : buffer_(NULL), capacity_(0), len_(0){
+String::String(unsigned int value, unsigned char base) : buffer_(nullptr), capacity_(0), len_(0){
     char buf[1 + 8 * sizeof(unsigned int)];
     utoa(value, buf, base);
     *this = buf;
 }
-String::String(long value, unsigned char base) : buffer_(NULL), capacity_(0), len_(0){
+String::String(long value, unsigned char base) : buffer_(nullptr), capacity_(0), len_(0){
     char buf[2 + 8 * sizeof(long)];
     itoa(value, buf, base);
     *this = buf;
 }
 
-String::String(unsigned long value, unsigned char base) : buffer_(NULL), capacity_(0), len_(0){
+String::String(unsigned long value, unsigned char base) : buffer_(nullptr), capacity_(0), len_(0){
     char buf[1 + 8 * sizeof(unsigned long)];
     utoa(value, buf, base);
     *this = buf;
 }
 
-String::String(float value, unsigned char places) : buffer_(NULL), capacity_(0), len_(0){
+String::String(float value, unsigned char places) : buffer_(nullptr), capacity_(0), len_(0){
     char buf[33];
     *this = dtostrf(value, (places + 2) , places, buf);
 }
 
-String::String(double value, unsigned char places) : buffer_(NULL), capacity_(0), len_(0){
+String::String(double value, unsigned char places) : buffer_(nullptr), capacity_(0), len_(0){
     char buf[33];
     *this = dtostrf(value, (places + 2) , places, buf);
 }
@@ -100,7 +100,7 @@ String::invalidate() noexcept {
     if (buffer_) {
         free(buffer_);
     }
-    buffer_ = NULL;
+    buffer_ = nullptr;
     capacity_ = 0;
     len_ = 0;
 }
@@ -151,14 +151,105 @@ String::copy(const __FlashStringHelper* cstr, unsigned int length) noexcept {
     strcpy_P(buffer_, (PGM_P)cstr);
     return *this;
 }
-#if 0
+// search
+int
+String::indexOf(char c) const noexcept {
+    return indexOf(c, 0);
+}
+int
+String::indexOf(char ch, unsigned int from) const noexcept {
+    if (from >= len_) {
+        return -1;
+    }
+    const char* temp = strchr(buffer_ + from, ch);
+    if (!temp) {
+        return -1;
+    } else {
+        return temp - buffer_;
+    }
+}
+int
+String::indexOf(const String& s2) const noexcept {
+    return indexOf(s2, 0);
+}
+int
+String::indexOf(const String& s2, unsigned int from) const noexcept {
+    if (from >= len_) {
+        return -1;
+    }
+    const char* found = strstr(buffer_ + from, s2.buffer_);
+    if (!found) {
+        return -1;
+    } else {
+        return found - buffer_;
+    }
+}
+int
+String::lastIndexOf(char ch) const noexcept {
+    return lastIndexOf(ch, len_ - 1);
+}
+int
+String::lastIndexOf(char ch, unsigned int fromIndex) const noexcept {
+    if (fromIndex >= len_) {
+        return -1;
+    }
+    char tempChar = buffer_[fromIndex + 1];
+    buffer_[fromIndex +1] = '\0';
+    char* temp = strrchr(buffer_, ch);
+    buffer_[fromIndex + 1] = tempChar;
+    if (!temp) {
+        return -1;
+    } else {
+        return temp - buffer_;
+    }
+
+}
+int
+String::lastIndexOf(const String &str) const noexcept {
+    return lastIndexOf(str, len_- str.len_);
+}
+int
+String::lastIndexOf(const String& s2, unsigned int fromIndex) const noexcept {
+    if (s2.len_ == 0 || len_ == 0 || s2.len_ > len_) {
+        return -1;
+    }
+    if (fromIndex >= len_) {
+        fromIndex = len_ - 1;
+    }
+    int found = -1;
+    for (char* p = buffer_; p <= buffer_; ++p) {
+        p = strstr(p, s2.buffer_);
+        if (!p) {
+            break;
+        }
+        if ((unsigned int)(p - buffer_) <= fromIndex) {
+            found = p - buffer_;
+        }
+    }
+    return found;
+}
 String
 String::substring(unsigned int left, unsigned int right) const noexcept {
     if (left > right) {
-
+        // swap the two elements and continue on
+        unsigned int temp = right;
+        right = left;
+        left = temp;
     }
+
+    String out;
+    if (left >= len_) {
+        return out;
+    }
+    if (right > len_) {
+        right = len_;
+    }
+    char temp = buffer_[right]; // save the replaced character
+    buffer_[right] = '\0';
+    out = buffer_ + left;
+    buffer_[right] = temp;
+    return out;
 }
-#endif
 // modification operations
 void
 String::replace(char find, char replace) noexcept {
@@ -178,15 +269,15 @@ String::replace(const String &find, const String &replace) noexcept {
     }
     int diff = replace.len_ - find.len_;
     char* readFrom = buffer_;
-    char* foundAt = NULL;
+    char* foundAt = nullptr;
     if (diff == 0) {
-        while ((foundAt = strstr(readFrom, find.buffer_)) != NULL)  {
+        while ((foundAt = strstr(readFrom, find.buffer_)) != nullptr)  {
             memcpy(foundAt, replace.buffer_, replace.len_);
             readFrom = foundAt + replace.len_;
         }
     } else if (diff < 0) {
         char* writeTo = buffer_;
-        while ((foundAt = strstr(readFrom, find.buffer_)) != NULL)  {
+        while ((foundAt = strstr(readFrom, find.buffer_)) != nullptr)  {
             unsigned int n = foundAt - readFrom;
             memcpy(writeTo, readFrom, n);
             writeTo += n;
@@ -198,7 +289,7 @@ String::replace(const String &find, const String &replace) noexcept {
         strcpy(writeTo, readFrom);
     } else {
         unsigned int size = len_; // compute size needed for the result
-        while ((foundAt = strstr(readFrom, find.buffer_)) != NULL)  {
+        while ((foundAt = strstr(readFrom, find.buffer_)) != nullptr)  {
             readFrom = foundAt + find.len_;
             size += diff;
         }

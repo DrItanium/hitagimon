@@ -69,7 +69,7 @@ public:
      */
     unsigned char reserve(unsigned int size);
 
-    inline unsigned int length() const noexcept { return len_; }
+    inline constexpr unsigned int length() const noexcept { return len_; }
     String& operator=(const String& rhs) noexcept;
     String& operator=(const char* cstr) noexcept;
     String& operator=(const __FlashStringHelper* str) noexcept;
@@ -129,7 +129,7 @@ public:
     inline void toCharArray(unsigned char* buf, unsigned int bufSize, unsigned int index = 0) const noexcept {
         getBytes((unsigned char*) buf, bufSize, index);
     }
-    const char* c_str() const noexcept { return buffer_; }
+    constexpr const char* c_str() const noexcept { return buffer_; }
     char* begin() noexcept { return buffer_; }
     char* end() noexcept { return buffer_ + length(); }
     const char* begin() const noexcept { return c_str(); }
