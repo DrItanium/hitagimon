@@ -1,6 +1,6 @@
 /*
 hitagimon
-Copyright (c) 2020-2022, Joshua Scoggins
+Copyright (c) 2023, Joshua Scoggins
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -23,19 +23,18 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 //
-// Created by jwscoggins on 7/13/22.
+// Created by jwscoggins on 4/14/23.
 //
 
-#ifndef HITAGIMON_MODERNCPP_H
-#define HITAGIMON_MODERNCPP_H
-#ifdef __cplusplus
-#if __cplusplus < 201103
-// pre c++11
-#define constexpr
-#define noexcept
-//#define explicit
-#define nullptr NULL
-#define static_assert(condition, msg)
-#endif
-#endif
-#endif //HITAGIMON_MODERNCPP_H
+#ifndef HITAGIMON_CLIENT_H
+#define HITAGIMON_CLIENT_H
+#include "Print.h"
+#include "Stream.h"
+#include "IPAddress.h"
+
+struct Client : public Stream {
+public:
+    virtual int connect(IPAddress ip, uint16_t port) = 0;
+};
+
+#endif //HITAGIMON_CLIENT_H

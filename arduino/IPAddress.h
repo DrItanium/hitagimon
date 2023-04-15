@@ -1,6 +1,6 @@
 /*
 hitagimon
-Copyright (c) 2020-2022, Joshua Scoggins
+Copyright (c) 2023, Joshua Scoggins
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -23,19 +23,46 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 //
-// Created by jwscoggins on 7/13/22.
+// Created by jwscoggins on 4/14/23.
 //
 
-#ifndef HITAGIMON_MODERNCPP_H
-#define HITAGIMON_MODERNCPP_H
-#ifdef __cplusplus
-#if __cplusplus < 201103
-// pre c++11
-#define constexpr
-#define noexcept
-//#define explicit
-#define nullptr NULL
-#define static_assert(condition, msg)
-#endif
-#endif
-#endif //HITAGIMON_MODERNCPP_H
+#ifndef HITAGIMON_IPADDRESS_H
+#define HITAGIMON_IPADDRESS_H
+#include <stdint.h>
+#include <cortex/ModernCpp.h>
+#include "Printable.h"
+#include "WString.h"
+
+class IPAddress : public Printable {
+public:
+    IPAddress();
+    IPAddress(uint8_t first, uint8_t second, uint8_t third, uint8_t fourth);
+    IPAddress(uint32_t address);
+    IPAddress(const uint8_t* address);
+
+    bool fromString(const char* address);
+    bool fromString(const String& address) { return fromString(address.c_str()); }
+
+    operator uint32_t() const { return address_.dword; }
+    bool operator==(const IPAddress& other) const { return address_.dword == other.address_.dword; }
+    bool operator==(const uint8_t* addr) const;
+
+    uint8_t operator[](int index) const { return address_.bytes[index]; }
+    uint8_t& operator[](int index) { return address_.bytes[index]; }
+
+    IPAddress& operator=(const uint8_t* address);
+    IPAddress& operator=(uint32_t address);
+
+    virtual size_t printTo(Print& p) const override;
+private:
+    uint8_t* rawAddress() noexcept {
+        return address_.bytes;
+    }
+private:
+    union {
+        uint8_t bytes[4];
+        uint32_t dword;
+    } address_;
+};
+
+#endif //HITAGIMON_IPADDRESS_H
