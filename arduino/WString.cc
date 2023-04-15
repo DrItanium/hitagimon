@@ -151,6 +151,86 @@ String::copy(const __FlashStringHelper* cstr, unsigned int length) noexcept {
     strcpy_P(buffer_, (PGM_P)cstr);
     return *this;
 }
+// comparison
+int
+String::compareTo(const String& s) const noexcept {
+    if (!buffer_ | !s.buffer_) {
+       if (s.buffer_ && s.len_ > 0)  {
+           return 0 - *((unsigned char*)s.buffer_);
+       }
+       if (buffer_ && len_ > 0) {
+           return *((unsigned char*)buffer_);
+       }
+       return 0;
+    }
+    return strcmp(buffer_, s.buffer_);
+}
+unsigned char
+String::equals(const String& s2) const noexcept {
+    return (len_ == s2.len_ && compareTo(s2) == 0);
+}
+
+unsigned char
+String::equals(const char* cstr) const noexcept {
+    if (len_ == 0) {
+        return (cstr == nullptr || *cstr == 0);
+    }
+    if (!cstr) {
+        return buffer_[0] == 0;
+    }
+    return strcmp(buffer_, cstr) == 0;
+}
+unsigned char String::operator<(const String& rhs) const noexcept { return compareTo(rhs) < 0;}
+unsigned char String::operator>(const String& rhs) const noexcept { return compareTo(rhs) > 0;}
+unsigned char String::operator<=(const String& rhs) const noexcept { return compareTo(rhs) <= 0;}
+unsigned char String::operator>=(const String& rhs) const noexcept { return compareTo(rhs) >= 0;}
+
+unsigned char
+String::equalsIgnoreCase(const String &s2) const noexcept {
+    if (this == &s2)  {
+        return 1;
+    }
+    if (len_ != s2.len_) {
+        return 0;
+    }
+    if (len_ == 0) {
+        return 1;
+    }
+    const char* p1 = buffer_;
+    const char* p2 = s2.buffer_;
+
+    while (*p1) {
+        if (tolower(*p1++) != tolower(*p2++)) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+unsigned char
+String::startsWith(const String &s2) const noexcept {
+    if (len_ < s2.len_)  {
+        return 0;
+    } else {
+        return startsWith(s2, 0);
+    }
+}
+unsigned char
+String::startsWith(const String &s, unsigned int offset) const noexcept {
+    if (offset > len_ - s.len_ || !buffer_ || !s.buffer_)  {
+        return 0;
+    } else {
+        return strncmp(&buffer_[offset], s.buffer_, s.len_) == 0;
+    }
+}
+unsigned char
+String::endsWith(const String &suffix) const noexcept {
+   if (len_ < suffix.len_ || !buffer_ || !suffix.buffer_)  {
+       return 0;
+   } else {
+       return strcmp(&buffer_[len_ - suffix.len_], suffix.buffer_) == 0;
+   }
+}
 // character access
 char
 String::charAt(unsigned int loc) const noexcept {
