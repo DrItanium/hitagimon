@@ -54,6 +54,13 @@ public:
     IPAddress& operator=(uint32_t address);
 
     virtual size_t printTo(Print& p) const override;
+
+    friend class EthernetClass;
+    friend class UDP;
+    friend class Client;
+    friend class Server;
+    friend class DhpClass;
+    friend class DNSClient;
 private:
     uint8_t* rawAddress() noexcept {
         return address_.bytes;
@@ -64,5 +71,7 @@ private:
         uint32_t dword;
     } address_;
 };
+
+const IPAddress INADDR_NONE(0,0,0,0);
 
 #endif //HITAGIMON_IPADDRESS_H
