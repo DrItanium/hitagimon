@@ -27,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
 #include "WString.h"
+#include "avr/dtostrf.h"
 
 String::String(const char* cstr) {
     init();
@@ -52,11 +53,53 @@ String::String(char c) {
     buf[1] = 0;
     *this = buf;
 }
-#if 0
 String::String(unsigned char value, unsigned char base) {
     init();
     char buf[1 + 8 * sizeof(unsigned char)];
     utoa(value, buf, base);
     *this = buf;
 }
-#endif
+
+String::String(int value, unsigned char base) {
+    init();
+    char buf[2 + 8 * sizeof(int)];
+    itoa(value, buf, base);
+    *this = buf;
+}
+
+String::String(unsigned int value, unsigned char base) {
+    init();
+    char buf[1 + 8 * sizeof(unsigned int)];
+    utoa(value, buf, base);
+    *this = buf;
+}
+String::String(long value, unsigned char base) {
+    init();
+    char buf[2 + 8 * sizeof(long)];
+    itoa(value, buf, base);
+    *this = buf;
+}
+
+String::String(unsigned long value, unsigned char base) {
+    init();
+    char buf[1 + 8 * sizeof(unsigned long)];
+    utoa(value, buf, base);
+    *this = buf;
+}
+
+String::String(float value, unsigned char places) {
+    init();
+    char buf[33];
+    *this = dtostrf(value, (places + 2) , places, buf);
+}
+
+String::String(double value, unsigned char places) {
+    init();
+    char buf[33];
+    *this = dtostrf(value, (places + 2) , places, buf);
+}
+
+String::~String()
+{
+    free(buffer_);
+}
