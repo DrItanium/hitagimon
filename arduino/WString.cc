@@ -153,6 +153,59 @@ String::copy(const __FlashStringHelper* cstr, unsigned int length) {
 }
 // modification operations
 void
+String::replace(char find, char replace) {
+    if (!buffer_) {
+        return;
+    }
+    for (char* p = buffer_; *p; ++p) {
+        if (*p == find) {
+            *p = replace;
+        }
+    }
+}
+void
+String::remove(unsigned int index) {
+    // pass the biggest integer as the count.
+    // This will force the other remove method to truncate the string
+    remove(index, (unsigned int)-1);
+}
+void
+String::remove(unsigned int index, unsigned int count) {
+    if (index >= len_) {
+        return;
+    }
+    if (count <= 0) {
+        return;
+    }
+    if (count > len_ - index) {
+        count = len_ - index;
+    }
+    char* writeTo = buffer_ + index;
+    len_ -= count;
+    strncpy(writeTo, buffer_ + index + count, len_ - index);
+    buffer_[len_] = 0;
+}
+void
+String::toLowerCase() {
+    if (!buffer_)  {
+        return;
+    } else {
+        for (char* p = buffer_; *p; ++p) {
+            *p = tolower(*p);
+        }
+    }
+}
+void
+String::toUpperCase() {
+   if (!buffer_)  {
+       return;
+   } else {
+       for (char* p = buffer_; *p; ++p) {
+           *p = toupper(*p);
+       }
+   }
+}
+void
 String::trim() {
     if (!buffer_ || len_ == 0) {
         return;
