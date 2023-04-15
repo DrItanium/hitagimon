@@ -525,28 +525,6 @@ String::toDouble() const noexcept {
     }
 }
 
-// concat methods
-unsigned char
-String::concat(const String& s) noexcept {
-    return concat(s.buffer_, s.len_);
-}
-
-unsigned char
-String::concat(const char* cstr, unsigned int length) noexcept {
-    unsigned int newLength = len_ + length;
-    if (!cstr) {
-        return 0;
-    }
-    if (length == 0) {
-        return 1;
-    }
-    if (!reserve(newLength)) {
-        return 0;
-    }
-    strcpy(buffer_ + len_, cstr);
-    len_ = newLength;
-    return 1;
-}
 
 // concatenation operators
 
@@ -587,3 +565,105 @@ X(double);
 X(const __FlashStringHelper*);
 #undef X
 
+// concat methods
+unsigned char
+String::concat(const String& s) noexcept {
+    return concat(s.buffer_, s.len_);
+}
+
+unsigned char
+String::concat(const char* cstr, unsigned int length) noexcept {
+    unsigned int newLength = len_ + length;
+    if (!cstr) {
+        return 0;
+    }
+    if (length == 0) {
+        return 1;
+    }
+    if (!reserve(newLength)) {
+        return 0;
+    }
+    strcpy(buffer_ + len_, cstr);
+    len_ = newLength;
+    return 1;
+}
+
+unsigned char
+String::concat(const char* cstr) noexcept {
+    if (!cstr) {
+        return 0;
+    } else {
+        return concat(cstr, strlen(cstr));
+    }
+}
+
+unsigned char
+String::concat(char c) noexcept {
+    char buf[2] = { c, 0 };
+    return concat(buf, 1);
+}
+unsigned char
+String::concat(unsigned char num) noexcept {
+    char buf[1 + 3 * sizeof(unsigned char)];
+    itoa(num, buf, 10);
+    return concat(buf, strlen(buf));
+}
+
+unsigned char
+String::concat(int num) noexcept {
+    char buf[2 + 3 * sizeof(int)];
+    itoa(num, buf, 10);
+    return concat(buf, strlen(buf));
+}
+
+unsigned char
+String::concat(unsigned int num) noexcept {
+    char buf[1 + 3 * sizeof(unsigned int)];
+    utoa(num, buf, 10);
+    return concat(buf, strlen(buf));
+}
+unsigned char
+String::concat(long num) noexcept {
+    char buf[2 + 3 * sizeof(long)];
+    itoa(num, buf, 10);
+    return concat(buf, strlen(buf));
+}
+
+unsigned char
+String::concat(unsigned long num) noexcept {
+    char buf[1 + 3 * sizeof(unsigned long)];
+    utoa(num, buf, 10);
+    return concat(buf, strlen(buf));
+}
+
+unsigned char
+String::concat(float num) noexcept {
+    char buf[20];
+    char* string = dtostrf(num, 4, 2, buf);
+    return concat(string, strlen(string));
+}
+
+unsigned char
+String::concat(double num) noexcept {
+    char buf[20];
+    char* string = dtostrf(num, 4, 2, buf);
+    return concat(string, strlen(string));
+}
+
+unsigned char
+String::concat(const __FlashStringHelper *str) noexcept {
+   if (!str)  {
+       return 0;
+   }
+   int length = strlen_P((const char*) str);
+   if (length == 0) {
+       return 1;
+   }
+   unsigned int newLength = len_ + length;
+   if (!reserve(newLength)) {
+       return 0;
+   }
+   strcpy_P(buffer_ + len_, (const char*)str);
+   len_ = newLength;
+   return 1;
+}

@@ -173,6 +173,7 @@ protected:
 
     String& copy(const char* cstr, unsigned int length) noexcept;
     String& copy(const __FlashStringHelper* pstr, unsigned int length) noexcept;
+
 };
 
 class StringSumHelper : public String {
