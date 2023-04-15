@@ -524,3 +524,66 @@ String::toDouble() const noexcept {
         return 0;
     }
 }
+
+// concat methods
+unsigned char
+String::concat(const String& s) noexcept {
+    return concat(s.buffer_, s.len_);
+}
+
+unsigned char
+String::concat(const char* cstr, unsigned int length) noexcept {
+    unsigned int newLength = len_ + length;
+    if (!cstr) {
+        return 0;
+    }
+    if (length == 0) {
+        return 1;
+    }
+    if (!reserve(newLength)) {
+        return 0;
+    }
+    strcpy(buffer_ + len_, cstr);
+    len_ = newLength;
+    return 1;
+}
+
+// concatenation operators
+
+StringSumHelper&
+operator+(const StringSumHelper& lhs, const String& rhs) noexcept {
+    StringSumHelper& a = const_cast<StringSumHelper&>(lhs);
+    if (!a.concat(rhs.buffer_, rhs.len_)) {
+        a.invalidate();
+    }
+    return a;
+}
+
+StringSumHelper&
+operator+(const StringSumHelper& lhs, const char* rhs) noexcept {
+    StringSumHelper& a = const_cast<StringSumHelper&>(lhs);
+    if (!a.concat(rhs, strlen(rhs))) {
+        a.invalidate();
+    }
+    return a;
+}
+#define X(type) \
+StringSumHelper& \
+operator+(const StringSumHelper& lhs, type rhs) noexcept { \
+    StringSumHelper& a = const_cast<StringSumHelper&>(lhs); \
+    if (!a.concat(rhs)) { \
+        a.invalidate(); \
+    } \
+    return a; \
+}
+X(char);
+X(unsigned char);
+X(int);
+X(unsigned int);
+X(long);
+X(unsigned long);
+X(float);
+X(double);
+X(const __FlashStringHelper*);
+#undef X
+
