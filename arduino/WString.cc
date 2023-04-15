@@ -151,6 +151,54 @@ String::copy(const __FlashStringHelper* cstr, unsigned int length) noexcept {
     strcpy_P(buffer_, (PGM_P)cstr);
     return *this;
 }
+// character access
+char
+String::charAt(unsigned int loc) const noexcept {
+    return operator[](loc);
+}
+
+void
+String::setCharAt(unsigned int loc, char c) noexcept {
+    if (loc < len_) {
+        buffer_[loc] = c;
+    }
+}
+char&
+String::operator[](unsigned int index) noexcept {
+    // provide a writable cell in the case where we are out of range of the actual string
+    // this includes the case where the buffer is non existent
+    static char dummyWritableChar;
+    // perform a range check
+    if (index >= len_ || !buffer_) {
+        dummyWritableChar = 0;
+        return dummyWritableChar;
+    }
+    return buffer_[index];
+}
+char
+String::operator[](unsigned int index) const noexcept {
+    if (index >= len_ || !buffer_) {
+        return 0;
+    }
+    return buffer_[index];
+}
+
+void
+String::getBytes(unsigned char* buf, unsigned int bufSize, unsigned int index) const noexcept {
+    if (!bufSize || !buf) {
+        return;
+    }
+    if (index >= len_) {
+        buf[0] = 0;
+        return;
+    }
+    unsigned int n = bufSize - 1;
+    if (n > len_ - index) {
+        n = len_ - index;
+    }
+    strncpy((char*)buf, buffer_ + index, n);
+    buf[n] = 0;
+}
 // search
 int
 String::indexOf(char c) const noexcept {
