@@ -93,9 +93,106 @@ String::~String()
     free(buffer_);
 }
 
-inline
-void String::init() {
-   buffer_ = NULL;
-   capacity_ = 0;
-   len_ = 0;
+
+// memory management related routines
+void
+String::invalidate() {
+    if (buffer_) {
+        free(buffer_);
+    }
+    buffer_ = NULL;
+    capacity_ = 0;
+    len_ = 0;
+}
+
+unsigned char
+String::reserve(unsigned int size) {
+    if (buffer_ && capacity_ >= size) {
+        return 1;
+    }
+    if (changeBuffer(size)) {
+        if (len_ == 0) {
+            buffer_[0] = 0;
+        }
+        return 1;
+    }
+    return 0;
+}
+
+unsigned char
+String::changeBuffer(unsigned int maxLen) {
+    char* newBuffer = (char*)realloc(buffer_, maxLen + 1);
+    if (newBuffer) {
+       buffer_ = newBuffer;
+       capacity_ = maxLen;
+       return 1;
+    }
+    return 0;
+}
+
+String&
+String::copy(const char* cstr, unsigned int length) {
+    if (!reserve(length)) {
+        invalidate();
+        return *this;
+    }
+    len_ = length;
+    strcpy(buffer_, cstr);
+    return *this;
+}
+
+String&
+String::copy(const __FlashStringHelper* cstr, unsigned int length) {
+    if (!reserve(length)) {
+        invalidate();
+        return *this;
+    }
+    len_ = length;
+    strcpy_P(buffer_, (PGM_P)cstr);
+    return *this;
+}
+// modification operations
+void
+String::trim() {
+    if (!buffer_ || len_ == 0) {
+        return;
+    } else {
+        char* start = buffer_;
+        while (isspace(*start)) {
+            ++start;
+        }
+        char* end = buffer_ + len_ - 1;
+        while (isspace(*end) && end >= start) {
+            --end;
+        }
+        len_ = end + 1 - start;
+        if (start > buffer_) {
+            memcpy(buffer_, start, len_);
+        }
+        buffer_[len_] = 0;
+    }
+
+}
+// conversion operations
+long
+String::toInt() const {
+   if (buffer_) {
+       return atol(buffer_);
+   } else {
+       return 0;
+   }
+}
+
+float
+String::toFloat() const {
+    return static_cast<float>(toDouble());
+}
+
+double
+String::toDouble() const {
+    if (buffer_) {
+        return atof(buffer_);
+    } else {
+        return 0;
+    }
 }

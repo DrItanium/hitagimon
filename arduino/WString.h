@@ -164,7 +164,6 @@ protected:
     unsigned int capacity_;
     unsigned int len_;
 protected:
-    void init();
     void invalidate();
     unsigned char changeBuffer(unsigned int maxStrLength);
     unsigned char concat(const char* cstr, unsigned int length);
