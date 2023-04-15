@@ -164,6 +164,54 @@ String::replace(char find, char replace) {
     }
 }
 void
+String::replace(const String &find, const String &replace) {
+    if (len_ == 0 || find.len_ == 0) {
+        return;
+    }
+    int diff = replace.len_ - find.len_;
+    char* readFrom = buffer_;
+    char* foundAt = NULL;
+    if (diff == 0) {
+        while ((foundAt = strstr(readFrom, find.buffer_)) != NULL)  {
+            memcpy(foundAt, replace.buffer_, replace.len_);
+            readFrom = foundAt + replace.len_;
+        }
+    } else if (diff < 0) {
+        char* writeTo = buffer_;
+        while ((foundAt = strstr(readFrom, find.buffer_)) != NULL)  {
+            unsigned int n = foundAt - readFrom;
+            memcpy(writeTo, readFrom, n);
+            writeTo += n;
+            memcpy(writeTo, replace.buffer_, replace.len_);
+            writeTo += replace.len_;
+            readFrom = foundAt + find.len_;
+            len_ += diff;
+        }
+        strcpy(writeTo, readFrom);
+    } else {
+        unsigned int size = len_; // compute size needed for the result
+        while ((foundAt = strstr(readFrom, find.buffer_)) != NULL)  {
+            readFrom = foundAt + find.len_;
+            size += diff;
+        }
+        if (size == len_) {
+            return;
+        }
+        if (size > capacity_ && !changeBuffer((size))) {
+            return;
+        }
+        int index = len_ - 1;
+        while (index >= 0 && (index = lastIndexOf(find, index)) >= 0) {
+            readFrom = buffer_ + index + find.len_;
+            memmove(readFrom + diff, readFrom, len_ - (readFrom - buffer_));
+            len_ += diff;
+            buffer_[len_] = 0;
+            memcpy(buffer_ + index, replace.buffer_, replace.len_);
+            --index;
+        }
+    }
+}
+void
 String::remove(unsigned int index) {
     // pass the biggest integer as the count.
     // This will force the other remove method to truncate the string
