@@ -29,72 +29,61 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "WString.h"
 #include "avr/dtostrf.h"
 
-String::String(const char* cstr) {
-    init();
+String::String(const char* cstr) : buffer_(NULL), capacity_(0), len_(0) {
     if (cstr) {
         copy(cstr, strlen(cstr));
     }
 }
 
-String::String(const String& value) {
-    init();
+String::String(const String& value) : buffer_(NULL), capacity_(0), len_(0) {
     *this = value;
 }
 
-String::String(const __FlashStringHelper* pstr) {
-    init();
+String::String(const __FlashStringHelper* pstr) : buffer_(NULL), capacity_(0), len_(0){
     *this = pstr;
 }
 
-String::String(char c) {
-    init();
+String::String(char c) : buffer_(NULL), capacity_(0), len_(0){
     char buf[2];
     buf[0] = c;
     buf[1] = 0;
     *this = buf;
 }
-String::String(unsigned char value, unsigned char base) {
-    init();
+String::String(unsigned char value, unsigned char base) : buffer_(NULL), capacity_(0), len_(0){
     char buf[1 + 8 * sizeof(unsigned char)];
     utoa(value, buf, base);
     *this = buf;
 }
 
-String::String(int value, unsigned char base) {
-    init();
+String::String(int value, unsigned char base) : buffer_(NULL), capacity_(0), len_(0){
     char buf[2 + 8 * sizeof(int)];
     itoa(value, buf, base);
     *this = buf;
 }
 
-String::String(unsigned int value, unsigned char base) {
-    init();
+String::String(unsigned int value, unsigned char base) : buffer_(NULL), capacity_(0), len_(0){
     char buf[1 + 8 * sizeof(unsigned int)];
     utoa(value, buf, base);
     *this = buf;
 }
-String::String(long value, unsigned char base) {
-    init();
+String::String(long value, unsigned char base) : buffer_(NULL), capacity_(0), len_(0){
     char buf[2 + 8 * sizeof(long)];
     itoa(value, buf, base);
     *this = buf;
 }
 
-String::String(unsigned long value, unsigned char base) {
-    init();
+String::String(unsigned long value, unsigned char base) : buffer_(NULL), capacity_(0), len_(0){
     char buf[1 + 8 * sizeof(unsigned long)];
     utoa(value, buf, base);
     *this = buf;
 }
 
-String::String(float value, unsigned char places) {
-    init();
+String::String(float value, unsigned char places) : buffer_(NULL), capacity_(0), len_(0){
     char buf[33];
     *this = dtostrf(value, (places + 2) , places, buf);
 }
 
-String::String(double value, unsigned char places) {
-    init();
+String::String(double value, unsigned char places) : buffer_(NULL), capacity_(0), len_(0){
     char buf[33];
     *this = dtostrf(value, (places + 2) , places, buf);
 }
@@ -102,4 +91,11 @@ String::String(double value, unsigned char places) {
 String::~String()
 {
     free(buffer_);
+}
+
+inline
+void String::init() {
+   buffer_ = NULL;
+   capacity_ = 0;
+   len_ = 0;
 }
