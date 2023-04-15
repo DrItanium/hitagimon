@@ -28,7 +28,7 @@ void loop() {
         uint64_t now = cortex::getSystemCounter();
         uint64_t difference = now - start;
         if (difference >= 100) {
-            printf("Counter: %x%x\n", static_cast<unsigned int>(now >> 32), static_cast<unsigned int>(now));
+            printf("Counter: %#llx\n", now);
             break;
         }
     } while (true);
