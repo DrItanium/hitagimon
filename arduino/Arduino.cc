@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 void
 randomSeed(unsigned long seed) {
     if (seed != 0) {
-        srand(seed);
+        srandom(seed);
     }
 }
 
@@ -41,7 +41,7 @@ random(long howbig) {
     if (howbig == 0) {
         return 0;
     }
-    return rand() % howbig;
+    return random() & howbig;
 }
 
 long
