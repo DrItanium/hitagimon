@@ -126,16 +126,16 @@ Stream::parseInt(LookaheadMode lookahead, char ignore) noexcept {
         return 0; // zero returned if timeout
     }
     do {
-       if (c == ignore) {
-           // do nothing
-       } else if (c == '-') {
-          isNegative = true;
-       } else if (c >= '0' && c <= '9') {
-           // c is a digit
-           value = value * 10 + c - '0';
-       }
-       read();
-       c = timedPeek();
+        if (c == ignore) {
+            // do nothing
+        } else if (c == '-') {
+            isNegative = true;
+        } else if (c >= '0' && c <= '9') {
+            // c is a digit
+            value = value * 10 + c - '0';
+        }
+        read();
+        c = timedPeek();
     } while ((c >= '0' && c <= '9') || c == ignore);
     if (isNegative) {
         value = -value;
@@ -145,14 +145,14 @@ Stream::parseInt(LookaheadMode lookahead, char ignore) noexcept {
 
 float
 Stream::parseFloat(LookaheadMode lookahead, char ignore) noexcept {
-   bool isNegative = false;
-   bool isFraction = false;
-   long value = 0;
-   float fraction = 1.0;
-   int c = peekNextDigit(lookahead, true);
-   if (c < 0) {
-       return 0; // zero returned if timeout
-   }
+    bool isNegative = false;
+    bool isFraction = false;
+    long value = 0;
+    float fraction = 1.0;
+    int c = peekNextDigit(lookahead, true);
+    if (c < 0) {
+        return 0; // zero returned if timeout
+    }
     do {
         if (c == ignore) {
             // do nothing
@@ -181,7 +181,7 @@ Stream::parseFloat(LookaheadMode lookahead, char ignore) noexcept {
 }
 
 size_t
-Stream::readBytes(char* buffer, size_t length) {
+Stream::readBytes(char* buffer, size_t length) noexcept {
     size_t count = 0;
     while (count < length)  {
         int c = timedRead();
@@ -192,4 +192,104 @@ Stream::readBytes(char* buffer, size_t length) {
         ++count;
     }
     return count;
+}
+
+size_t
+Stream::readBytesUntil(char terminator, char* buffer, size_t length) noexcept {
+    if (length < 1) {
+        return 0;
+    }
+    size_t count = 0;
+    while (count < length)  {
+        int c = timedRead();
+        if (c < 0 || c == terminator) {
+            break;
+        }
+        *buffer++ = (char)c;
+        ++count;
+    }
+    return count;
+}
+
+String
+Stream::readString() noexcept {
+    String ret;
+    int c = timedRead();
+    while (c >= 0) {
+        ret += (char)c;
+        c = timedRead();
+    }
+    return ret;
+}
+
+String
+Stream::readStringUntil(char terminator) noexcept {
+    String ret;
+    int c = timedRead();
+    while (c >= 0 && c != terminator) {
+        ret += (char)c;
+        c = timedRead();
+    }
+    return ret;
+}
+
+int
+Stream::findMulti(Stream::MultiTarget* targets, int tCount) noexcept {
+// any zero length target string automatically matches and would screw up the rest of the algorithm
+    for (MultiTarget* t = targets; t < (targets + tCount); ++t) {
+        if (t->len <= 0) {
+            return t - targets;
+        }
+    }
+
+    while (true) {
+        int c = timedRead();
+        if (c < 0) {
+            return -1;
+        }
+        for (MultiTarget* t = targets; t < (targets+tCount); ++t) {
+            // handle the case where we match first
+            if (c == t->str[t->index])  {
+                if (++t->index == t->len) {
+                    return t - targets;
+                } else {
+                    continue;
+                }
+            }
+            // if it is not a match then we walk back and see if we could have matched further down the stream.
+            // For example, '1112' doesn't match the first position in '11112' but it will match the second position so we
+            // cannot just reset the current index to 0 when we find a mismatch
+            if (t->index == 0)
+                continue;
+            int origIndex = t->index;
+            do {
+               --t->index;
+               // first check if current char works against the new current index
+               if (c != t->str[t->index]) {
+                   continue;
+               }
+               // if it is the only char then we are good, nothing more to check
+               if (t->index == 0) {
+                   t->index++;
+                   break;
+               }
+               // otherwise we need to check the rest of the found string
+               int diff = origIndex - t->index;
+               size_t i = 0;
+               for (i = 0; i < t->index; ++i) {
+                   if (t->str[i] != t->str[i + diff]) {
+                       break;
+                   }
+               }
+               // if we successfully got through the previous loop then our current index is good
+               if (i == t->index) {
+                   t->index++;
+                   break;
+               }
+               // since we got here, we are going to go to the next index
+            } while (t->index);
+        }
+    }
+    // supposedly unreachable but make sure
+    return -1;
 }
