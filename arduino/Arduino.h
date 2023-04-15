@@ -31,16 +31,29 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void yield(void);
-    typedef unsigned int word;
+void yield(void);
+typedef unsigned int word;
 #define bit(b) (1UL << (b))
-    typedef bool boolean;
-    typedef uint8_t byte;
+typedef bool boolean;
+typedef uint8_t byte;
 //    int atexit(void(*func)()) __attribute__((weak));
-    void init(void);
-    void initVariant(void);
-    void setup(void);
-    void loop(void);
+void init(void);
+void initVariant(void);
+
+unsigned long millis(void);
+unsigned long micros(void);
+void delay(unsigned long ms);
+void delayMicroseconds(unsigned int us) __attribute__((noinline));
+unsigned long pulseIn(uint8_t pin, uint8_t state, unsigned long timeout);
+unsigned long pulseInLong(uint8_t pin, uint8_t state, unsigned long timeout);
+void shiftOut(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t val);
+uint8_t shiftIn(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder);
+
+void attachInterrupt(uint8_t interruptNumber, void(*)(void), int mode);
+void detachInterrupt(uint8_t interruptNumber);
+
+void setup(void);
+void loop(void);
 #ifdef __cplusplus
 }
 #endif

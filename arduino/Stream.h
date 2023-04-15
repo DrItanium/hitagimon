@@ -62,7 +62,11 @@ public:
     Stream() : timeout_(1000), startMillis_(0) { }
     virtual ~Stream() { }
     // parsing methods
-    void setTimeout(unsigned long timeout) noexcept;
+    /**
+     * @brief Set the maximum number of milliseconds to wait
+     * @param timeout The new number of milliseconds to wait for
+     */
+    inline void setTimeout(unsigned long timeout) noexcept { timeout_ = timeout; }
     constexpr unsigned long getTimeout() const noexcept { return timeout_; }
     bool find(char* target) noexcept;
     bool find(uint8_t* target) noexcept { return find ((char*)target); }
