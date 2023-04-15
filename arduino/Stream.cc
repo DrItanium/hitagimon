@@ -85,3 +85,111 @@ Stream::peekNextDigit(LookaheadMode lookahead, bool detectDecimal) {
         read(); // discard non-numeric?
     }
 }
+
+// public methods
+
+bool
+Stream::find(char* target) noexcept {
+    return findUntil(target, strlen(target), nullptr, 0);
+}
+
+bool
+Stream::find(char* target, size_t length) noexcept {
+    return findUntil(target, length, nullptr, 0);
+}
+
+bool
+Stream::findUntil(char* target, char* terminator) noexcept {
+    return findUntil(target, strlen(target), terminator, strlen(terminator));
+}
+
+bool
+Stream::findUntil(char* target, size_t targetLen, char* terminator, size_t termLen) noexcept {
+    if (!terminator) {
+        MultiTarget t[1] = { { target, targetLen, 0 } };
+        // my guess is to make sure that we do the right thing with boolean convertibility
+        return findMulti(t, 1) == 0 ? true : false;
+    } else {
+        MultiTarget t[2] = { { target, targetLen, 0 }, { terminator, termLen, 0} };
+        // my guess is to make sure that we do the right thing with boolean convertibility
+        return findMulti(t, 2) == 0 ? true : false;
+    }
+}
+
+long
+Stream::parseInt(LookaheadMode lookahead, char ignore) noexcept {
+    bool isNegative = false;
+    long value = 0;
+    int c = peekNextDigit(lookahead, false);
+    // ignore non numeric leading characters
+    if (c < 0) {
+        return 0; // zero returned if timeout
+    }
+    do {
+       if (c == ignore) {
+           // do nothing
+       } else if (c == '-') {
+          isNegative = true;
+       } else if (c >= '0' && c <= '9') {
+           // c is a digit
+           value = value * 10 + c - '0';
+       }
+       read();
+       c = timedPeek();
+    } while ((c >= '0' && c <= '9') || c == ignore);
+    if (isNegative) {
+        value = -value;
+    }
+    return value;
+}
+
+float
+Stream::parseFloat(LookaheadMode lookahead, char ignore) noexcept {
+   bool isNegative = false;
+   bool isFraction = false;
+   long value = 0;
+   float fraction = 1.0;
+   int c = peekNextDigit(lookahead, true);
+   if (c < 0) {
+       return 0; // zero returned if timeout
+   }
+    do {
+        if (c == ignore) {
+            // do nothing
+        } else if (c == '-') {
+            isNegative = true;
+        } else if (c == '.') {
+            isFraction = true;
+        } else if (c >= '0' && c <= '9') {
+            // c is a digit
+            value = value * 10 + c - '0';
+            if (isFraction) {
+                fraction *= 0.1;
+            }
+        }
+        read(); // consume the character we got with peek
+        c = timedPeek();
+    } while ((c >= '0' && c <= '9') || (c == '.' && !isFraction) || c == ignore);
+    if (isNegative) {
+        value = -value;
+    }
+    if (isFraction) {
+        return value * fraction;
+    } else {
+        return value;
+    }
+}
+
+size_t
+Stream::readBytes(char* buffer, size_t length) {
+    size_t count = 0;
+    while (count < length)  {
+        int c = timedRead();
+        if (c < 0) {
+            break;
+        }
+        *buffer++ = (char)c;
+        ++count;
+    }
+    return count;
+}
