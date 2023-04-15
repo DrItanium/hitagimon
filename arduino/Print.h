@@ -32,7 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdarg.h>
-/// @todo add support for WString.h
+#include <cortex/ModernCpp.h>
+#include "WString.h"
 #include "Printable.h"
 
 #define DEC 10
@@ -66,7 +67,7 @@ public:
         return 0;
     }
     virtual void flush() { }
-    /// @todo add support for __FlashStringHelper and String
+    size_t print(const __FlashStringHelper*);
     size_t print(const char[]);
     size_t print(char);
     size_t print(unsigned char, int = DEC);
@@ -77,6 +78,7 @@ public:
     size_t print(double , int = 2);
     size_t print(const Printable&);
 
+    size_t println(const __FlashStringHelper*);
     size_t println(const char[]);
     size_t println(char);
     size_t println(unsigned char, int = DEC);

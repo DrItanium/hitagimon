@@ -104,17 +104,72 @@ size_t
 Print::print(double n, int digits) {
     return printFloat(n, digits);
 }
-
 size_t Print::println() { return write("\r\n"); }
-size_t Print::println(const char c[]){ return print(c) + println(); }
-size_t Print::println(char c){ return print(c) + println(); }
-size_t Print::println(unsigned char c, int base){ return print(c, base) + println(); }
-size_t Print::println(int c, int base){ return print(c, base) + println(); }
-size_t Print::println(unsigned int c, int base){ return print(c, base) + println(); }
-size_t Print::println(long c, int base){ return print(c, base) + println(); }
-size_t Print::println(unsigned long c, int base){ return print(c, base) + println(); }
-size_t Print::println(double c, int digits){ return print(c, digits) + println(); }
-size_t Print::println(const Printable& x) { return print(x) + println();}
+size_t
+Print::println(char c) {
+    size_t n = print(c);
+    n += println();
+    return n;
+}
+
+size_t
+Print::println(const Printable& x) {
+    size_t n = print(x);
+    n += println();
+    return n;
+}
+
+size_t
+Print::println(const char c[]) {
+    size_t n = print(c);
+    n += println();
+    return n;
+}
+// since this version of C++ doesn't actually explicitly describe the order of evaluation, we need to break the actions
+// up into separate lines. In later versions of C++, the evaluation order was specified so it was safe to do (for example):
+// return print(c, digits) + println();
+size_t
+Print::println(double c, int digits) {
+    size_t n = print(c, digits);
+    n += println();
+    return n;
+}
+
+size_t
+Print::println(unsigned char c, int base) {
+    size_t n = print(c, base);
+    n += println();
+    return n;
+}
+
+size_t
+Print::println(unsigned long c, int base) {
+    size_t n = print(c, base);
+    n += println();
+    return n;
+}
+
+size_t
+Print::println(long c, int base) {
+    size_t n = print(c, base);
+    n += println();
+    return n;
+}
+
+size_t
+Print::println(unsigned int c, int base) {
+    size_t n = print(c, base);
+    n += println();
+    return n;
+}
+
+size_t
+Print::println(int c, int base) {
+    size_t n = print(c, base);
+    n += println();
+    return n;
+}
+
 
 size_t
 Print::printNumber(unsigned long n, uint8_t base) {
@@ -182,5 +237,30 @@ Print::printFloat(double number,uint8_t digits) {
         n += print(toPrint);
         remainder -= toPrint;
     }
+    return n;
+}
+
+size_t
+Print::print(const __FlashStringHelper* str) {
+    PGM_P p = reinterpret_cast<PGM_P>(str);
+    size_t n = 0;
+    while (true) {
+        unsigned char c = pgm_read_byte(p++);
+        if (c == 0) {
+            break;
+        }
+        if (write(c)) {
+            ++n;
+        } else {
+            break;
+        }
+    }
+    return n;
+}
+
+size_t
+Print::println(const __FlashStringHelper* str) {
+    size_t n = print(str);
+    n += println();
     return n;
 }
