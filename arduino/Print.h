@@ -48,6 +48,7 @@ class Print
 {
 public:
     Print() : writeError_(0) { }
+    virtual ~Print()  { }
     inline int getWriteError() const { return writeError_; }
     inline void clearWriteError() { setWriteError(0); }
 
