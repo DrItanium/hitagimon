@@ -96,7 +96,7 @@ String::~String()
 
 // memory management related routines
 void
-String::invalidate() {
+String::invalidate() noexcept {
     if (buffer_) {
         free(buffer_);
     }
@@ -106,7 +106,7 @@ String::invalidate() {
 }
 
 unsigned char
-String::reserve(unsigned int size) {
+String::reserve(unsigned int size) noexcept {
     if (buffer_ && capacity_ >= size) {
         return 1;
     }
@@ -120,7 +120,7 @@ String::reserve(unsigned int size) {
 }
 
 unsigned char
-String::changeBuffer(unsigned int maxLen) {
+String::changeBuffer(unsigned int maxLen) noexcept {
     char* newBuffer = (char*)realloc(buffer_, maxLen + 1);
     if (newBuffer) {
        buffer_ = newBuffer;
@@ -131,7 +131,7 @@ String::changeBuffer(unsigned int maxLen) {
 }
 
 String&
-String::copy(const char* cstr, unsigned int length) {
+String::copy(const char* cstr, unsigned int length) noexcept {
     if (!reserve(length)) {
         invalidate();
         return *this;
@@ -142,7 +142,7 @@ String::copy(const char* cstr, unsigned int length) {
 }
 
 String&
-String::copy(const __FlashStringHelper* cstr, unsigned int length) {
+String::copy(const __FlashStringHelper* cstr, unsigned int length) noexcept {
     if (!reserve(length)) {
         invalidate();
         return *this;
@@ -151,9 +151,17 @@ String::copy(const __FlashStringHelper* cstr, unsigned int length) {
     strcpy_P(buffer_, (PGM_P)cstr);
     return *this;
 }
+#if 0
+String
+String::substring(unsigned int left, unsigned int right) const noexcept {
+    if (left > right) {
+
+    }
+}
+#endif
 // modification operations
 void
-String::replace(char find, char replace) {
+String::replace(char find, char replace) noexcept {
     if (!buffer_) {
         return;
     }
@@ -164,7 +172,7 @@ String::replace(char find, char replace) {
     }
 }
 void
-String::replace(const String &find, const String &replace) {
+String::replace(const String &find, const String &replace) noexcept {
     if (len_ == 0 || find.len_ == 0) {
         return;
     }
@@ -212,13 +220,13 @@ String::replace(const String &find, const String &replace) {
     }
 }
 void
-String::remove(unsigned int index) {
+String::remove(unsigned int index) noexcept {
     // pass the biggest integer as the count.
     // This will force the other remove method to truncate the string
     remove(index, (unsigned int)-1);
 }
 void
-String::remove(unsigned int index, unsigned int count) {
+String::remove(unsigned int index, unsigned int count) noexcept {
     if (index >= len_) {
         return;
     }
@@ -234,7 +242,7 @@ String::remove(unsigned int index, unsigned int count) {
     buffer_[len_] = 0;
 }
 void
-String::toLowerCase() {
+String::toLowerCase() noexcept {
     if (!buffer_)  {
         return;
     } else {
@@ -244,7 +252,7 @@ String::toLowerCase() {
     }
 }
 void
-String::toUpperCase() {
+String::toUpperCase() noexcept {
    if (!buffer_)  {
        return;
    } else {
@@ -254,7 +262,7 @@ String::toUpperCase() {
    }
 }
 void
-String::trim() {
+String::trim() noexcept {
     if (!buffer_ || len_ == 0) {
         return;
     } else {
@@ -276,7 +284,7 @@ String::trim() {
 }
 // conversion operations
 long
-String::toInt() const {
+String::toInt() const noexcept {
    if (buffer_) {
        return atol(buffer_);
    } else {
@@ -285,12 +293,12 @@ String::toInt() const {
 }
 
 float
-String::toFloat() const {
+String::toFloat() const noexcept {
     return static_cast<float>(toDouble());
 }
 
 double
-String::toDouble() const {
+String::toDouble() const noexcept {
     if (buffer_) {
         return atof(buffer_);
     } else {

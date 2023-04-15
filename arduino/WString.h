@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string.h>
 #include <ctype.h>
 #include "avr/pgmspace.h"
+#include <cortex/ModernCpp.h>
 
 class __FlashStringHelper;
 #define F(string_literal) (reinterpret_cast<const __FlashStringHelper*>(PSTR(string_literal)))
@@ -43,8 +44,8 @@ class StringSumHelper;
 class String {
    // use a function pointer ot allow for "if (s)" without the complications of operator bool().
 
-   typedef void (String::*StringIfHelperType)() const;
-   void StringIfHelper() const { };
+   typedef void (String::*StringIfHelperType)() const noexcept;
+   void StringIfHelper() const noexcept { };
 public:
     String(const char* cstr = "");
     String(const String& str);
@@ -68,26 +69,26 @@ public:
      */
     unsigned char reserve(unsigned int size);
 
-    inline unsigned int length() const { return len_; }
-    String& operator=(const String& rhs);
-    String& operator=(const char* cstr);
-    String& operator=(const __FlashStringHelper* str);
+    inline unsigned int length() const noexcept { return len_; }
+    String& operator=(const String& rhs) noexcept;
+    String& operator=(const char* cstr) noexcept;
+    String& operator=(const __FlashStringHelper* str) noexcept;
 
-    unsigned char concat(const String& str);
-    unsigned char concat(const char* str);
-    unsigned char concat(char c);
-    unsigned char concat(unsigned char c);
-    unsigned char concat(int num);
-    unsigned char concat(unsigned int num);
-    unsigned char concat(long num);
-    unsigned char concat(unsigned long num);
-    unsigned char concat(float num);
-    unsigned char concat(double num);
-    unsigned char concat(const __FlashStringHelper* str);
+    unsigned char concat(const String& str) noexcept;
+    unsigned char concat(const char* str) noexcept;
+    unsigned char concat(char c) noexcept;
+    unsigned char concat(unsigned char c) noexcept;
+    unsigned char concat(int num) noexcept;
+    unsigned char concat(unsigned int num) noexcept;
+    unsigned char concat(long num) noexcept;
+    unsigned char concat(unsigned long num) noexcept;
+    unsigned char concat(float num) noexcept;
+    unsigned char concat(double num) noexcept;
+    unsigned char concat(const __FlashStringHelper* str) noexcept;
 
 #define X(input) \
-    inline String& operator+=(input rhs) { concat(rhs); return (*this); } \
-    friend StringSumHelper& operator+(const StringSumHelper& lhs, input rhs )
+    inline String& operator+=(input rhs) noexcept { concat(rhs); return (*this); } \
+    friend StringSumHelper& operator+(const StringSumHelper& lhs, input rhs ) noexcept
 
     X(const String&);
     X(const char*);
@@ -102,74 +103,76 @@ public:
     X(const __FlashStringHelper*);
 #undef X
 
-    operator StringIfHelperType() const { return buffer_ ? &String::StringIfHelper : 0; }
-    int compareTo(const String& s) const;
-    unsigned char equals(const String& s) const;
-    unsigned char equals(const char* s) const;
-    unsigned char operator==(const String& rhs) const { return equals(rhs); }
-    unsigned char operator==(const char* rhs) const { return equals(rhs); }
-    unsigned char operator!=(const String& rhs) const { return !equals(rhs); }
-    unsigned char operator!=(const char* rhs) const { return !equals(rhs); }
-    unsigned char operator<(const String& rhs) const;
-    unsigned char operator>(const String& rhs) const;
-    unsigned char operator<=(const String& rhs) const;
-    unsigned char operator>=(const String& rhs) const;
-    unsigned char equalsIgnoreCase(const String& s) const ;
-    unsigned char startsWith(const String& s) const ;
-    unsigned char startsWith(const String& s, unsigned int offset) const ;
-    unsigned char endsWith(const String& suffix) const;
+    operator StringIfHelperType() const noexcept { return buffer_ ? &String::StringIfHelper : 0; }
+    int compareTo(const String& s) const noexcept;
+    unsigned char equals(const String& s) const noexcept;
+    unsigned char equals(const char* s) const noexcept;
+    unsigned char operator==(const String& rhs) const noexcept { return equals(rhs); }
+    unsigned char operator==(const char* rhs) const noexcept { return equals(rhs); }
+    unsigned char operator!=(const String& rhs) const noexcept { return !equals(rhs); }
+    unsigned char operator!=(const char* rhs) const noexcept { return !equals(rhs); }
+    unsigned char operator<(const String& rhs) const noexcept;
+    unsigned char operator>(const String& rhs) const noexcept;
+    unsigned char operator<=(const String& rhs) const noexcept;
+    unsigned char operator>=(const String& rhs) const noexcept;
+    unsigned char equalsIgnoreCase(const String& s) const  noexcept;
+    unsigned char startsWith(const String& s) const  noexcept;
+    unsigned char startsWith(const String& s, unsigned int offset) const  noexcept;
+    unsigned char endsWith(const String& suffix) const noexcept;
 
     // character accessors
-    char charAt(unsigned int index) const;
-    void setCharAt(unsigned int index, char c);
-    char operator[](unsigned int index) const;
-    char& operator[](unsigned int index);
-    void getBytes(unsigned char* buf, unsigned int bufSize, unsigned int index = 0) const;
-    inline void toCharArray(unsigned char* buf, unsigned int bufSize, unsigned int index = 0) const {
+    char charAt(unsigned int index) const noexcept;
+    void setCharAt(unsigned int index, char c) noexcept;
+    char operator[](unsigned int index) const noexcept;
+    char& operator[](unsigned int index) noexcept;
+    void getBytes(unsigned char* buf, unsigned int bufSize, unsigned int index = 0) const noexcept;
+    inline void toCharArray(unsigned char* buf, unsigned int bufSize, unsigned int index = 0) const noexcept {
         getBytes((unsigned char*) buf, bufSize, index);
     }
-    const char* c_str() const { return buffer_; }
-    char* begin() { return buffer_; }
-    char* end() { return buffer_ + length(); }
-    const char* begin() const { return c_str(); }
-    const char* end() const { return c_str() + length(); }
+    const char* c_str() const noexcept { return buffer_; }
+    char* begin() noexcept { return buffer_; }
+    char* end() noexcept { return buffer_ + length(); }
+    const char* begin() const noexcept { return c_str(); }
+    const char* end() const noexcept { return c_str() + length(); }
+    inline const char* cbegin() const noexcept { return begin(); }
+    inline const char* cend() const noexcept { return end(); }
 
     // search routines
-    int indexOf(char ch) const;
-    int indexOf(char ch, unsigned int fromIndex) const;
-    int indexOf(const String& str) const;
-    int indexOf(const String& str, unsigned int fromIndex) const;
-    int lastIndexOf(char ch) const;
-    int lastIndexOf(char ch, unsigned int fromIndex) const;
-    int lastIndexOf(const String& str) const;
-    int lastIndexOf(const String& str, unsigned int fromIndex) const;
-    String substring(unsigned int beginIndex) const { return substring(beginIndex, len_); }
-    String substring(unsigned int beginIndex, unsigned int endIndex) const;
+    int indexOf(char ch) const noexcept;
+    int indexOf(char ch, unsigned int fromIndex) const noexcept;
+    int indexOf(const String& str) const noexcept;
+    int indexOf(const String& str, unsigned int fromIndex) const noexcept;
+    int lastIndexOf(char ch) const noexcept;
+    int lastIndexOf(char ch, unsigned int fromIndex) const noexcept;
+    int lastIndexOf(const String& str) const noexcept;
+    int lastIndexOf(const String& str, unsigned int fromIndex) const noexcept;
+    String substring(unsigned int beginIndex) const noexcept { return substring(beginIndex, len_); }
+    String substring(unsigned int beginIndex, unsigned int endIndex) const noexcept;
 
 
     // modification
-    void replace(char find, char replace);
-    void replace(const String& find, const String& replace);
-    void remove(unsigned int index);
-    void remove(unsigned int index, unsigned int count);
-    void toLowerCase();
-    void toUpperCase();
-    void trim();
+    void replace(char find, char replace) noexcept;
+    void replace(const String& find, const String& replace) noexcept;
+    void remove(unsigned int index) noexcept;
+    void remove(unsigned int index, unsigned int count) noexcept;
+    void toLowerCase() noexcept;
+    void toUpperCase() noexcept;
+    void trim() noexcept;
 
-    long toInt() const;
-    float toFloat() const;
-    double toDouble() const;
+    long toInt() const noexcept;
+    float toFloat() const noexcept;
+    double toDouble() const noexcept;
 protected:
     char* buffer_;
     unsigned int capacity_;
     unsigned int len_;
 protected:
-    void invalidate();
-    unsigned char changeBuffer(unsigned int maxStrLength);
-    unsigned char concat(const char* cstr, unsigned int length);
+    void invalidate() noexcept;
+    unsigned char changeBuffer(unsigned int maxStrLength) noexcept;
+    unsigned char concat(const char* cstr, unsigned int length) noexcept;
 
-    String& copy(const char* cstr, unsigned int length);
-    String& copy(const __FlashStringHelper* pstr, unsigned int length);
+    String& copy(const char* cstr, unsigned int length) noexcept;
+    String& copy(const __FlashStringHelper* pstr, unsigned int length) noexcept;
 };
 
 class StringSumHelper : public String {
