@@ -29,20 +29,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ModernGCC.h"
 #ifndef __BUILTIN_MUL_OVERFLOW
 #include "SysExamine.h"
+#include "builtins.h"
 
 inline uint32_t setArithmeticControls(uint32_t mask, uint32_t src) {
-    uint32_t result = 0;
-    asm volatile ("modac %2, %1, %0" : "=r" (result) :  "r" (src) , "r" (mask));
-    return result;
+    return __builtin_i960_modac(mask, src);
 }
 inline uint32_t setArithmeticControls(uint32_t value) {
-    asm volatile ("modac %0, %0, %0" : "=&r" (value));
-    return value;
+    return __builtin_i960_setac(value);
 }
 inline uint32_t getArithmeticControls() {
-    uint32_t result = 0;
-    asm volatile ("modac 0, 0, %0" : "=r" (result));
-    return result;
+    return __builtin_i960_getac();
 }
 extern "C"
 bool

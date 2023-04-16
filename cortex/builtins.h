@@ -33,24 +33,63 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C" {
 #endif
 //#define SetArithmeticControls(ac) asm volatile ("modac %0, %0, %0" : "=&r" (ac.raw))
-#define __builtin_i960_synld(dest, src) asm volatile ("synld %1, %0" : "=&r" (dest) : "r" (src) : "cc")
 #define __builtin_i960_synmov(dest, src) asm volatile ("synmov %0, %1" : "=&r" (dest) : "r" (src) : "cc", "memory")
 #define __builtin_i960_synmovl(dest, src) asm volatile ("synmovl %0, %1" : "=&r" (dest) : "r" (src) : "cc", "memory")
 #define __builtin_i960_synmovq(dest, src) asm volatile ("synmovq %0, %1" : "=&r" (dest) : "r" (src) : "cc", "memory")
-#define __builtin_i960_syncf asm volatile ("syncf" : : "memory")
-#define __builtin_i960_mark asm volatile ("mark" : : "memory")
-#define __builtin_i960_fmark asm volatile ("fmark" : : "memory")
-#define __builtin_i960_flushreg asm volatile ("flushreg" : : "memory")
+inline uint32_t __builtin_i960_synld(uint32_t src) {
+    uint32_t dest = 0;
+    asm volatile ("synld %1, %0" : "=&r" (dest) : "r" (src) : "cc", "memory");
+    return dest;
+}
+inline uint32_t __builtin_i960_get_interrupt_control_reg(uint32_t value) { return __builtin_i960_synld(0xFF000004); }
+inline void __builtin_i960_flushreg(void) { asm volatile ("flushreg" : : : "memory"); }
+inline void __builtin_i960_mark(void) { asm volatile ("mark" ::: "memory"); }
+inline void __builtin_i960_fmark(void) { asm volatile ("fmark" ::: "memory"); }
+inline void __builtin_i960_syncf(void) { asm volatile ("syncf" ::: "memory"); }
+inline uint32_t __builtin_i960_modac(uint32_t mask, uint32_t src) {
+    uint32_t result = 0;
+    asm volatile ("modac %2, %1, %0" : "=r" (result) :  "r" (src) , "r" (mask) : "cc", "memory");
+    return result;
+}
+inline uint32_t __builtin_i960_setac(uint32_t value) {
+    asm volatile ("modac %0, %0, %0" : "=&r" (value) : : "cc", "memory");
+    return value;
+}
+inline uint32_t __builtin_i960_getac(void) {
+    uint32_t result = 0;
+    asm volatile ("modac 0, 0, %0" : "=&r" (result) :  : "memory");
+    return result;
+}
 
-uint32_t __builtin_i960_modac(uint32_t mask, uint32_t src);
-uint32_t __builtin_i960_setac(uint32_t value);
-uint32_t __builtin_i960_getac(void);
-uint32_t __builtin_i960_modtc(uint32_t mask, uint32_t src);
-uint32_t __builtin_i960_settc(uint32_t value);
-uint32_t __builtin_i960_gettc(void);
-uint32_t __builtin_i960_modpc(uint32_t mask, uint32_t src);
-uint32_t __builtin_i960_setpc(uint32_t value);
-uint32_t __builtin_i960_getpc(void);
+inline uint32_t __builtin_i960_modtc(uint32_t mask, uint32_t src) {
+    uint32_t result = 0;
+    asm volatile ("modtc %2, %1, %0" : "=r" (result) :  "r" (src) , "r" (mask) : "cc", "memory");
+    return result;
+}
+inline uint32_t __builtin_i960_settc(uint32_t value) {
+    asm volatile ("modtc %0, %0, %0" : "=&r" (value) : : "cc", "memory");
+    return value;
+}
+inline uint32_t __builtin_i960_gettc(void) {
+    uint32_t result = 0;
+    asm volatile ("modtc 0, 0, %0" : "=&r" (result) :  : "memory");
+    return result;
+}
+
+inline uint32_t __builtin_i960_modpc(uint32_t mask, uint32_t src) {
+    uint32_t result = 0;
+    asm volatile ("modpc %2, %1, %0" : "=r" (result) :  "r" (src) , "r" (mask) : "cc", "memory");
+    return result;
+}
+inline uint32_t __builtin_i960_setpc(uint32_t value) {
+    asm volatile ("modpc %0, %0, %0" : "=&r" (value) : : "cc", "memory");
+    return value;
+}
+inline uint32_t __builtin_i960_getpc(void) {
+    uint32_t result = 0;
+    asm volatile ("modpc 0, 0, %0" : "=&r" (result) :  : "memory");
+    return result;
+}
 #ifdef __cplusplus
 }
 #endif
