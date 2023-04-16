@@ -42,3 +42,14 @@ void yield() {
 void initVariant() {
 
 }
+
+extern "C"
+void
+vect_INT0(void) {
+
+}
+extern "C"
+void
+vect_INT1(void) {
+
+}

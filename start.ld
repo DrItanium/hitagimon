@@ -35,7 +35,7 @@ SECTIONS
 														  show up in the final
 														  executable */ 
 
-		*(.ctors)		/* Take the contents of the .ctors elf section and
+		KEEP(*(.ctors))		/* Take the contents of the .ctors elf section and
 						   place it here, this is how you can request custom
 						   sections to placed in specific locations */ 
 
@@ -49,7 +49,7 @@ SECTIONS
 		/* do the same thing again but for the destructors section */ 
 		___DTOR_LIST__ = .;  
 		LONG((___DTOR_END__ - ___DTOR_LIST__) / 4 - 2) 
-		*(.dtors) 
+		KEEP(*(.dtors))
 		LONG(0) 
 		___DTOR_END__ = .; 
 
@@ -61,7 +61,8 @@ SECTIONS
 	 * i960 to manually zero out the memory on the sdcard's ram.bin file */ 
 	.bss : 
 	{ 
-		__bss_start__ = .; 
+		__bss_start__ = .;
+		_bss_start = .;
 		*(.bss) 
 		*(COMMON) /* can't find much documentation on this but it is a good idea to have this here */ 
 		__bss_end__ = .; 

@@ -7,6 +7,13 @@
 namespace cortex
 {
     namespace ChipsetBasicFunctions {
+        namespace Devices {
+            enum {
+                Info = 0,
+                Serial,
+                Timer,
+            };
+        }
         namespace Opcodes {
             enum {
                 Available = 0,
