@@ -26,8 +26,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Created by jwscoggins on 4/13/23.
 //
 #include "Arduino.h"
-
+#include <cortex/builtins.h>
 void init()
 {
-
+    // first setup the interrupt control registers
+    __builtin_i960_set_interrupt_control_reg(0xFFFEFDFC);
 }

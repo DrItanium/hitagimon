@@ -100,6 +100,7 @@ inline uint32_t __builtin_i960_getpc(void) {
     asm volatile ("modpc 0, 0, %0" : "=&r" (result) :  : "memory");
     return result;
 }
+
 #ifdef __cplusplus
 }
 #endif

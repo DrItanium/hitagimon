@@ -185,13 +185,5 @@ namespace cortex {
         SysProcTable* traceTable;
         uint32_t magicNumber3;
     } __attribute((packed));
-#define GetProcessControls(pc) asm volatile ("modpc 0, 0, %0" : "=r" (pc.raw) : : "memory")
-#define GetArithmeticControls(ac) asm volatile ("modac 0, 0, %0" : "=r" (ac.raw) : : "memory")
-#define SetArithmeticControls(ac) asm volatile ("modac %0, %0, %0" : "=&r" (ac.raw) : : "memory")
-#define GetTraceControls(tc) asm volatile ("modtc 0, 0, %0" : "=r" (tc.raw) : : "memory")
-#define FlushRegisters __builtin_i960_flushreg
-#define GenerateBreakPointTraceEvent __builtin_i960_mark
-#define ForceGenerateBreakPointTraceEvent __builtin_i960_fmark
-#define SynchronizeFaults __builtin_i960_syncf
 }
 #endif //HITAGIMON_SYSEXAMINE_H
