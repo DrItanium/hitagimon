@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <unistd.h>
 #include <string>
 #include "ChipsetInteract.h"
+#include "IAC.h"
 namespace cortex
 {
     namespace ChipsetBasicFunctions {
@@ -75,6 +76,12 @@ namespace cortex
             void setPrescalar(uint8_t value) noexcept;
             uint8_t getPrescalar() noexcept;
         }
+        namespace Info {
+            bool available() noexcept;
+            IACMessage* getExternalMessage() noexcept;
+            uint32_t getCPUClockSpeed() noexcept;
+            uint32_t getChipsetClockSpeed() noexcept;
+        } // end namespace Info
     } // end namespace ChipsetBasicFunctions
     inline uint32_t
     makeOrdinal(uint16_t lower, uint16_t upper) {

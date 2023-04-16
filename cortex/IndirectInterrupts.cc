@@ -26,16 +26,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Created by jwscoggins on 4/16/23.
 //
 #include <cortex/IAC.h>
-#include <cortex/ChipsetInteract.h>
-void
-dispatchInterrupt(uint8_t value) noexcept {
-   cortex::triggerInterrupt(value);
-}
+#include <cortex/IODevice.h>
 /**
  * @brief indirect interrupt dispatch routine used to take advantage of the full interrupt table
  */
 extern "C"
 void
 vect_ISR1(void) {
-    // so this is a very important piece of code
+    // we let the chipset generate the IAC message that we read in, what's strange is that there is no
+    // mention of what to do when we get a _bad_ iac in.
+    cortex::sendIAC(cortex::ChipsetBasicFunctions::Info::getExternalMessage());
 }

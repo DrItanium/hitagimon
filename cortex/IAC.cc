@@ -32,6 +32,10 @@ extern "C" uint32_t hitagi_readInterruptState();
 extern "C" void hitagi_writeInterruptState(uint32_t value);
 namespace cortex {
     void
+    sendIAC(IACMessage* message) {
+        sendIACCommand(0, message);
+    }
+    void
     sendIAC(uint8_t type, uint8_t field1, uint16_t field2, uint32_t field3, uint32_t field4, uint32_t field5) {
         IACMessage theMessage;
         theMessage.type = type;
@@ -40,7 +44,7 @@ namespace cortex {
         theMessage.field3 = field3;
         theMessage.field4 = field4;
         theMessage.field5 = field5;
-        sendIACCommand(0, &theMessage);
+        sendIAC(&theMessage);
     }
 
     void

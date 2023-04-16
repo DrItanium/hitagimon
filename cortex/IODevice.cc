@@ -14,16 +14,16 @@ namespace cortex
                 Timer,
             };
         }
-        namespace Opcodes {
-            enum {
-                Available = 0,
-                Size,
-                RW,
-                Flush,
-                Baud,
-            };
-        }
         namespace Console {
+            namespace Opcodes {
+                enum {
+                    Available = 0,
+                    Size,
+                    RW,
+                    Flush,
+                    Baud,
+                };
+            }
             uint16_t
             read() {
                 Opcode code(0, Devices::Serial, Opcodes::RW, 0);
@@ -132,5 +132,36 @@ namespace cortex
                 return code.read8();
             }
         } // end namespace RTC
+        namespace Info {
+            namespace Opcodes {
+                enum {
+                    Available = 0,
+                    Size,
+                    GetCPUClockSpeed,
+                    GetChipsetClockSpeed,
+                    GetExternalIAC,
+                };
+            }
+            uint32_t
+            getCPUClockSpeed() noexcept {
+                Opcode code(0, Devices::Info, Opcodes::GetCPUClockSpeed, 0);
+                return code.read32();
+            }
+            uint32_t
+            getChipsetClockSpeed() noexcept {
+                Opcode code(0, Devices::Info, Opcodes::GetCPUClockSpeed, 0);
+                return code.read32();
+            }
+            bool
+            available() noexcept {
+                Opcode code(0, Devices::Info, Opcodes::Available, 0);
+                return code.read16();
+            }
+            IACMessage*
+            getExternalMessage() noexcept {
+                Opcode code(0, Devices::Info, Opcodes::GetExternalIAC, 0);
+                return reinterpret_cast<IACMessage*>(code.makeFullAddress());
+            }
+        }
     } // end namespace ChipsetBasicFunctions
 } // end namespace cortex

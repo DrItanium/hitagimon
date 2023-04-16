@@ -56,5 +56,6 @@ namespace cortex {
     uint32_t readInterruptState() noexcept;
     void setInterruptState(uint32_t) noexcept;
     void sendIAC(uint8_t type, uint8_t field1 = 0, uint16_t field2 = 0, uint32_t field3 = 0, uint32_t field4 = 0, uint32_t field5 = 0);
+    void sendIAC(IACMessage* msg) noexcept;
 }
 #endif //HITAGIMON_IAC_H
