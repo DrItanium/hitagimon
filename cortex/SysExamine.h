@@ -148,7 +148,7 @@ namespace cortex {
         }
         inline SATEntry::Kind getEntryKind(uint32_t index) noexcept {
             if (index > 259) {
-                return SATEntry::Reserved1;
+                return SATEntry::Invalid;
             } else {
                 return entries[index].getKind();
             }

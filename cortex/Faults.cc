@@ -5,10 +5,23 @@
 #include "Faults.h"
 #include "ChipsetInteract.h"
 #include <stdio.h>
+#include <stdint.h>
 namespace cortex
 {
+#if 0
+    volatile unsigned pc;
+        volatile unsigned ac;
+        volatile unsigned int fsubtype: 8,
+                freserved: 8,
+                ftype: 8,
+                fflags: 8;
+        volatile unsigned int *faddress;
+#endif
     void
     FaultData::display() {
+        uint8_t ftype = static_cast<uint8_t>(record.type >> 16);
+        uint8_t fsubtype = static_cast<uint8_t>(record.type) ;
+
         printf("Fault Type: %x\n", ftype);
         switch (ftype) {
             case 1: printf("\tTrace Fault\n"); break;
@@ -29,7 +42,7 @@ namespace cortex
             } else if (fsubtype == 4) {
                 printf("\tInvalid Operand\n");
             }
-            volatile unsigned int* ptr = faddress;
+            volatile uint32_t* ptr = record.addr;
             unsigned int container[8] = { 0 };
             for (int i = 0;i < 8; ++i, ++ptr) {
                 container[i] = *ptr;
@@ -39,9 +52,9 @@ namespace cortex
                printf("\t\t\t0x%x\n", container[i]);
             }
         }
-        printf("Faulting Address: %p\n", faddress);
-        printf("PC: %x\n", pc);
-        printf("AC: %x\n", ac);
+        printf("Faulting Address: %p\n", record.addr);
+        printf("PC: %#lx\n", record.pc);
+        printf("AC: %#lx\n", record.ac);
     }
     namespace {
         FaultHandler userReserved_ = 0;
