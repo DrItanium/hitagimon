@@ -32,14 +32,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef __cplusplus
 extern "C" {
 #endif
-//#define SetArithmeticControls(ac) asm volatile ("modac %0, %0, %0" : "=&r" (ac.raw))
-#define __builtin_i960_synmov(dest, src) asm volatile ("synmov %0, %1" : "=&r" (dest) : "r" (src) : "cc", "memory")
-#define __builtin_i960_synmovl(dest, src) asm volatile ("synmovl %0, %1" : "=&r" (dest) : "r" (src) : "cc", "memory")
-#define __builtin_i960_synmovq(dest, src) asm volatile ("synmovq %0, %1" : "=&r" (dest) : "r" (src) : "cc", "memory")
 inline uint32_t __builtin_i960_synld(uint32_t src) {
     uint32_t dest = 0;
     asm volatile ("synld %1, %0" : "=&r" (dest) : "r" (src) : "cc", "memory");
     return dest;
+}
+inline void __builtin_i960_synmov(uint32_t dest, uint32_t src) {
+    asm volatile ("synmov %0, %1" : "=&r" (dest) : "r" (src) : "cc", "memory");
+}
+inline void __builtin_i960_synmovl(uint32_t dest, uint32_t src) {
+    asm volatile ("synmovl %0, %1" : "=&r" (dest) : "r" (src) : "cc", "memory");
+}
+inline void __builtin_i960_synmovq(uint32_t dest, uint32_t src) {
+    asm volatile ("synmovq %0, %1" : "=&r" (dest) : "r" (src) : "cc", "memory");
 }
 inline uint32_t __builtin_i960_get_interrupt_control_reg(uint32_t value) { return __builtin_i960_synld(0xFF000004); }
 inline void __builtin_i960_flushreg(void) { asm volatile ("flushreg" : : : "memory"); }

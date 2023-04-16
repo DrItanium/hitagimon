@@ -69,29 +69,29 @@ namespace cortex
 
         inline void write32(uint32_t* value) {
             uint32_t destination = makeFullAddress();
-            __builtin_i960_synmov(destination, value);
+            __builtin_i960_synmov(destination, reinterpret_cast<uint32_t>(value));
         }
         inline void write64(uint32_t* value) {
             uint32_t destination = makeFullAddress();
-            __builtin_i960_synmovl(destination, value);
+            __builtin_i960_synmovl(destination, reinterpret_cast<uint32_t>(value));
         }
         inline void write128(uint32_t* value) {
             uint32_t destination = makeFullAddress();
-            __builtin_i960_synmovq(destination, value);
+            __builtin_i960_synmovq(destination, reinterpret_cast<uint32_t>(value));
         }
 
         inline void read32(uint32_t* destination) {
             uint32_t value = makeFullAddress();
-            __builtin_i960_synmov(destination, value);
+            __builtin_i960_synmov(reinterpret_cast<uint32_t>(destination), value);
         }
 
         inline void read64(uint32_t* destination) {
             uint32_t value = makeFullAddress();
-            __builtin_i960_synmovl(destination, value);
+            __builtin_i960_synmovl(reinterpret_cast<uint32_t>(destination), value);
         }
         inline void read128(uint32_t* destination) {
             uint32_t value = makeFullAddress();
-            __builtin_i960_synmovq(destination, value);
+            __builtin_i960_synmovq(reinterpret_cast<uint32_t>(destination), value);
         }
         inline void write8(uint8_t value) { memory<uint8_t>() = value; }
         inline void write16(uint16_t value) { memory<uint16_t>() = value; }
