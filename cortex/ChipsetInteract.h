@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define I960SXCHIPSET_PERIPHERALS_H
 #include <stdint.h>
 #include "ModernCpp.h"
+#include "builtins.h"
 namespace cortex
 {
     template<typename T>
@@ -66,6 +67,32 @@ namespace cortex
             return *reinterpret_cast<T*>(makeFullAddress());
         }
 
+        inline void write32(uint32_t* value) {
+            uint32_t destination = makeFullAddress();
+            __builtin_i960_synmov(destination, value);
+        }
+        inline void write64(uint32_t* value) {
+            uint32_t destination = makeFullAddress();
+            __builtin_i960_synmovl(destination, value);
+        }
+        inline void write128(uint32_t* value) {
+            uint32_t destination = makeFullAddress();
+            __builtin_i960_synmovq(destination, value);
+        }
+
+        inline void read32(uint32_t* destination) {
+            uint32_t value = makeFullAddress();
+            __builtin_i960_synmov(destination, value);
+        }
+
+        inline void read64(uint32_t* destination) {
+            uint32_t value = makeFullAddress();
+            __builtin_i960_synmovl(destination, value);
+        }
+        inline void read128(uint32_t* destination) {
+            uint32_t value = makeFullAddress();
+            __builtin_i960_synmovq(destination, value);
+        }
         inline void write8(uint8_t value) { memory<uint8_t>() = value; }
         inline void write16(uint16_t value) { memory<uint16_t>() = value; }
         inline void write32(uint32_t value) { memory<uint32_t>() = value; }

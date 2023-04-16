@@ -118,11 +118,11 @@ namespace cortex
             void
             setPrescalar(uint8_t value) noexcept {
                 Opcode code(0, Devices::Timer, Opcodes::Prescalar, 0);
-                code.write16(value);
+                code.write8(value);
             }
             uint8_t getPrescalar() noexcept {
                 Opcode code(0, Devices::Timer, Opcodes::Prescalar, 0);
-                return code.read16();
+                return code.read8();
             }
         } // end namespace RTC
     } // end namespace ChipsetBasicFunctions
