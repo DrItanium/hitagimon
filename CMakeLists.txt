@@ -51,8 +51,6 @@ add_library(hitagicortex
 		cortex/IODevice.cc
 		cortex/IODevice.h
 		cortex/ChipsetInteract.h
-		cortex/Interrupts.cc
-		cortex/Interrupts.h
 		cortex/EnvironmentInterface.cc
 		cortex/EnvironmentInterface.h
 		cortex/Faults.cc
@@ -416,7 +414,6 @@ add_executable(hitagimon
 		boot/i_table.s
 		boot/f_handle.cc
 		boot/macros.s
-		boot/ISR.cc
 		hitagimain.cc
 		)
 

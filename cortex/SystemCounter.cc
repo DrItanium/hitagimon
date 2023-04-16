@@ -51,3 +51,9 @@ void
 IncrementSystemCounter() {
     ++cortex::coreSystemCounter_;
 }
+
+extern "C"
+void
+ISR0(void) {
+    IncrementSystemCounter();
+}
