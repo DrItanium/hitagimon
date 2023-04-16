@@ -1,6 +1,6 @@
 /*
-hitagimon
-Copyright (c) 2020-2022, Joshua Scoggins
+i960SxChipset
+Copyright (c) 2020-2023, Joshua Scoggins
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -23,38 +23,19 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 //
-// Created by jwscoggins on 7/10/22.
+// Created by jwscoggins on 4/16/23.
 //
-
-#ifndef HITAGIMON_IAC_H
-#define HITAGIMON_IAC_H
-#include <stdint.h>
-#include "SysExamine.h"
-#include "ModernCpp.h"
-namespace cortex {
-    struct IACMessage {
-        uint16_t field2;
-        uint8_t field1;
-        uint8_t type;
-        uint32_t field3;
-        uint32_t field4;
-        uint32_t field5;
-    } __attribute__((packed));
-    struct SystemBase {
-        SystemAddressTable* theSAT;
-        PRCB* thePRCB;
-    };
-    void triggerInterrupt(uint8_t interruptVector) noexcept;
-    void purgeInstructionCache() noexcept;
-    void reinitializeProcessor(SystemAddressTable* sat, PRCB* prcb, void (*start)()) noexcept;
-    void setBreakpointRegister(uint32_t first, uint32_t second) noexcept;
-    void storeSystemBaseAddress(SystemBase* to) noexcept;
-    SystemAddressTable* getSystemAddressTable() noexcept;
-    PRCB* getPRCB() noexcept;
-    SystemBase getSystemBase() noexcept;
-    void testPendingInterrupts() noexcept;
-    uint32_t readInterruptState() noexcept;
-    void setInterruptState(uint32_t) noexcept;
-    void sendIAC(uint8_t type, uint8_t field1 = 0, uint16_t field2 = 0, uint32_t field3 = 0, uint32_t field4 = 0, uint32_t field5 = 0);
+#include <cortex/IAC.h>
+#include <cortex/ChipsetInteract.h>
+void
+dispatchInterrupt(uint8_t value) noexcept {
+   cortex::triggerInterrupt(value);
 }
-#endif //HITAGIMON_IAC_H
+/**
+ * @brief indirect interrupt dispatch routine used to take advantage of the full interrupt table
+ */
+extern "C"
+void
+vect_ISR1(void) {
+    // so this is a very important piece of code
+}

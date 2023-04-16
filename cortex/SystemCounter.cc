@@ -54,6 +54,6 @@ IncrementSystemCounter() {
 
 extern "C"
 void
-ISR0(void) {
+vect_ISR0(void) {
     IncrementSystemCounter();
 }

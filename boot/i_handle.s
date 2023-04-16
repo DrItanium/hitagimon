@@ -30,22 +30,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .global _isr3
 _isr0:
     save_globals
-    c_call _ISR0
+    c_call _vect_ISR0
     restore_globals
     ret
 _isr1:
     save_globals
-    c_call _ISR1
+    c_call _vect_ISR1
     restore_globals
     ret
 _isr2:
     save_globals
-    c_call _ISR2
+    c_call _vect_INT0
     restore_globals
     ret
 _isr3:
     save_globals
-    c_call _ISR3
+    c_call _vect_INT1
     restore_globals
     ret
 .global _do_nothing_isr

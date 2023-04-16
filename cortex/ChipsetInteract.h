@@ -37,6 +37,18 @@ namespace cortex
     inline volatile T &
     memory(const uint32_t address) { return *reinterpret_cast<T *>(address); }
 
+    namespace Devices {
+        enum {
+            Info = 0,
+            Serial,
+            Timer,
+        };
+    }
+    namespace Groups {
+        enum {
+            Group0 = 0,
+        };
+    }
 
     /**
      * @brief 28-bit opcode that is converted to an address and sent to the microcontroller to be interepreted as an action
@@ -76,5 +88,21 @@ namespace cortex
         inline uint32_t read32() { return memory<uint32_t>(); }
         inline uint64_t read64() { return memory<uint64_t>(); }
     };
+
+#define DefRegister(name, group, device, function, subminor) const Opcode Register_ ## name ( group, device, function, subminor)
+#define Group0Register(name, device, function, subminor) DefRegister(name, Groups::Group0, device, function, subminor)
+#define Group0AvailableRegister(name, device) Group0Register(name ## Available, device, 0, 0)
+#define Group0SizeRegister(name, device) Group0Register(name ## Size, device, 1, 0)
+#define Group0BuiltinDeviceRegisters(name, device)  \
+    Group0AvailableRegister(name, device);    \
+    Group0SizeRegister(name, device)
+    Group0BuiltinDeviceRegisters(Info, Devices::Info);
+    Group0BuiltinDeviceRegisters(Serial, Devices::Serial);
+    Group0BuiltinDeviceRegisters(Timer, Devices::Timer);
+#undef Group0BuiltinDeviceRegisters
+#undef Group0SizeRegister
+#undef Group0AvailableRegister
+#undef Group0Register
+#undef DefRegister
 }
 #endif //I960SXCHIPSET_PERIPHERALS_H
