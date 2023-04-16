@@ -53,7 +53,7 @@ namespace cortex
             case UserFaultKind::Protection: return getUserProtectionFaultHandler();
             case UserFaultKind::Machine: return getUserMachineFaultHandler();
             case UserFaultKind::Type: return getUserTypeFaultHandler();
-            default: return 0;
+            default: return nullptr;
         }
     }
 
