@@ -14,7 +14,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -DBARE_METAL --std=gnu99")
 unset(CMAKE_COLOR_DIAGNOSTICS CACHE)
 set(LINKER_SCRIPT "start.ld")
 add_compile_options(-Wall)
-add_link_options(-Wl,--as-needed -static -T ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT} -ffreestanding)
+add_link_options(-Wl,--as-needed -nostdlib -static -T ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT} -ffreestanding)
 if (DEFINED i960SB)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msb -mnumerics")
 	set(CMAKE_ASM-ATT_FLAGS "${CMAKE_ASM_FLAGS} -ASB -I${CMAKE_SOURCE_DIR}/boot")
@@ -449,5 +449,4 @@ target_link_libraries(hitagimon
 		m
 		gcc # necessary for soft float support, will need to provide my own custom routines ahead of this point to access the fpu
 		mon960
-		hitagicortex
 		)
