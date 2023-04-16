@@ -32,21 +32,26 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef __cplusplus
 extern "C" {
 #endif
-inline uint32_t __builtin_i960_synld(uint32_t src) {
+inline uint32_t __builtin_i960_synld(void* src) {
     uint32_t dest = 0;
     asm volatile ("synld %1, %0" : "=&r" (dest) : "r" (src) : "cc", "memory");
     return dest;
 }
-inline void __builtin_i960_synmov(uint32_t dest, uint32_t src) {
+inline void __builtin_i960_synmov(void* dest, void* src) {
     asm volatile ("synmov %0, %1" : "=&r" (dest) : "r" (src) : "cc", "memory");
 }
-inline void __builtin_i960_synmovl(uint32_t dest, uint32_t src) {
+inline void __builtin_i960_synmovl(void* dest, void* src) {
     asm volatile ("synmovl %0, %1" : "=&r" (dest) : "r" (src) : "cc", "memory");
 }
-inline void __builtin_i960_synmovq(uint32_t dest, uint32_t src) {
+inline void __builtin_i960_synmovq(void* dest, void* src) {
     asm volatile ("synmovq %0, %1" : "=&r" (dest) : "r" (src) : "cc", "memory");
 }
-inline uint32_t __builtin_i960_get_interrupt_control_reg(uint32_t value) { return __builtin_i960_synld(0xFF000004); }
+inline uint32_t __builtin_i960_get_interrupt_control_reg() { return __builtin_i960_synld((void*)0xFF000004); }
+inline void __builtin_i960_set_interrupt_control_reg(uint32_t value) {
+    // stash the value on the stack
+    uint32_t copy = value;
+    __builtin_i960_synmov((void*)0xFF000004, (void*)&copy);
+}
 inline void __builtin_i960_flushreg(void) { asm volatile ("flushreg" : : : "memory"); }
 inline void __builtin_i960_mark(void) { asm volatile ("mark" ::: "memory"); }
 inline void __builtin_i960_fmark(void) { asm volatile ("fmark" ::: "memory"); }
