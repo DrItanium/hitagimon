@@ -23,37 +23,50 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 //
-// Created by jwscoggins on 4/14/23.
+// Created by jwscoggins on 4/16/23.
 //
-
-#include "ModernGCC.h"
-#ifndef __BUILTIN_MUL_OVERFLOW
-#include "SysExamine.h"
-
-inline uint32_t setArithmeticControls(uint32_t mask, uint32_t src) {
+#include "builtins.h"
+uint32_t
+__builtin_i960_modac(uint32_t mask, uint32_t src) {
     uint32_t result = 0;
-    asm volatile ("modac %2, %1, %0" : "=r" (result) :  "r" (src) , "r" (mask));
+    asm volatile ("modac %2, %1, %0" : "=r" (result) :  "r" (src) , "r" (mask) : "cc", "memory");
     return result;
 }
-inline uint32_t setArithmeticControls(uint32_t value) {
-    asm volatile ("modac %0, %0, %0" : "=&r" (value));
+uint32_t __builtin_i960_setac(uint32_t value) {
+    asm volatile ("modac %0, %0, %0" : "=&r" (value) : : "cc", "memory");
     return value;
 }
-inline uint32_t getArithmeticControls() {
-    uint32_t result = 0;
-    asm volatile ("modac 0, 0, %0" : "=r" (result));
-    return result;
-}
-extern "C"
-bool
-__builtin_mul_overflow(size_t a, size_t b, size_t* res) {
-    uint32_t save = setArithmeticControls(0x500, 0x400);
-    do {
-        *res = a * b;
-    } while (false);
-    uint32_t result = getArithmeticControls();
-    setArithmeticControls(save);
-    return (result & 0x100);
+uint32_t
+__builtin_i960_getac() {
+    return __builtin_i960_modac(0, 0);
 }
 
-#endif
+uint32_t
+__builtin_i960_modtc(uint32_t mask, uint32_t src) {
+    uint32_t result = 0;
+    asm volatile ("modtc %2, %1, %0" : "=r" (result) :  "r" (src) , "r" (mask) : "cc", "memory");
+    return result;
+}
+uint32_t __builtin_i960_settc(uint32_t value) {
+    asm volatile ("modtc %0, %0, %0" : "=&r" (value) : : "cc", "memory");
+    return value;
+}
+uint32_t
+__builtin_i960_gettc() {
+    return __builtin_i960_modtc(0, 0);
+}
+
+uint32_t
+__builtin_i960_modpc(uint32_t mask, uint32_t src) {
+    uint32_t result = 0;
+    asm volatile ("modpc %2, %1, %0" : "=r" (result) :  "r" (src) , "r" (mask) : "cc", "memory");
+    return result;
+}
+uint32_t __builtin_i960_setpc(uint32_t value) {
+    asm volatile ("modpc %0, %0, %0" : "=&r" (value) : : "cc", "memory");
+    return value;
+}
+uint32_t
+__builtin_i960_getpc() {
+    return __builtin_i960_modpc(0, 0);
+}

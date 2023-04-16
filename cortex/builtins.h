@@ -28,6 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef HITAGIMON_BUILTINS_H
 #define HITAGIMON_BUILTINS_H
+#include <stdint.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 //#define SetArithmeticControls(ac) asm volatile ("modac %0, %0, %0" : "=&r" (ac.raw))
 #define __builtin_i960_synld(dest, src) asm volatile ("synld %1, %0" : "=&r" (dest) : "r" (src) : "cc")
 #define __builtin_i960_synmov(dest, src) asm volatile ("synmov %0, %1" : "=&r" (dest) : "r" (src) : "cc", "memory")
@@ -38,4 +42,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define __builtin_i960_fmark asm volatile ("fmark" : : "memory")
 #define __builtin_i960_flushreg asm volatile ("flushreg" : : "memory")
 
+uint32_t __builtin_i960_modac(uint32_t mask, uint32_t src);
+uint32_t __builtin_i960_setac(uint32_t value);
+uint32_t __builtin_i960_getac(void);
+uint32_t __builtin_i960_modtc(uint32_t mask, uint32_t src);
+uint32_t __builtin_i960_settc(uint32_t value);
+uint32_t __builtin_i960_gettc(void);
+uint32_t __builtin_i960_modpc(uint32_t mask, uint32_t src);
+uint32_t __builtin_i960_setpc(uint32_t value);
+uint32_t __builtin_i960_getpc(void);
+#ifdef __cplusplus
+}
+#endif
 #endif //HITAGIMON_BUILTINS_H

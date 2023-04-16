@@ -61,7 +61,7 @@ add_library(hitagicortex
 		cortex/IAC.cc
 		cortex/IACImplementation.s
 		cortex/ModernCpp.h
-		cortex/Types.h cortex/SystemCounter.h cortex/SystemCounter.cc cortex/ModernGCC.h cortex/ModernGCC.cc cortex/builtins.h)
+		cortex/Types.h cortex/SystemCounter.h cortex/SystemCounter.cc cortex/ModernGCC.h cortex/ModernGCC.cc cortex/builtins.h cortex/builtins.c)
 add_library(hitagiarduino
 		arduino/Arduino.h
 		arduino/Arduino.cc
