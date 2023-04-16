@@ -11,6 +11,7 @@
 #include <arduino/WCharacter.h>
 #include <arduino/WString.h>
 #include <arduino/Print.h>
+#include <arduino/HardwareSerial.h>
 #include <newlib.h>
 
 void setup() {

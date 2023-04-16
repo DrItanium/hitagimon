@@ -93,8 +93,6 @@ public:
 private:
     size_t printNumber(unsigned long, uint8_t);
     size_t printFloat(double, uint8_t);
-
-
 protected:
     void setWriteError(int err = 1) {
         writeError_ = err;
