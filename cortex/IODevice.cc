@@ -113,7 +113,7 @@ namespace cortex
                 return 0;
             }
             void
-            setCompareValue(uint8_t value) noexcept {
+            setCompareValue(uint16_t value) noexcept {
                 Opcode code(0, Devices::Timer, Opcodes::CompareValue, 0);
                 code.write16(value);
             }

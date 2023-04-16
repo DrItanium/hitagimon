@@ -71,10 +71,11 @@ namespace cortex
              */
             uint32_t unixtime() noexcept;
 
-            void setCompareValue(uint8_t value) noexcept;
+            void setCompareValue(uint16_t value) noexcept;
             uint8_t getCompareValue() noexcept;
             void setPrescalar(uint8_t value) noexcept;
             uint8_t getPrescalar() noexcept;
+
         }
         namespace Info {
             bool available() noexcept;

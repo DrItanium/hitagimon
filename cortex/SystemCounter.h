@@ -29,10 +29,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef HITAGIMON_SYSTEMCOUNTER_H
 #define HITAGIMON_SYSTEMCOUNTER_H
 #include <stdint.h>
-#include "ModernCpp.h"
+#include <cortex/ModernCpp.h>
 namespace cortex {
+    void clearSystemCounter() noexcept;
     uint64_t getSystemCounter() noexcept;
-    void enableSystemCounter(uint8_t compareMatch, uint8_t prescalar) noexcept;
+    void enableSystemCounter(uint16_t compareMatch, uint8_t prescalar) noexcept;
     void disableSystemCounter() noexcept;
     /// @todo add support for installing handlers when the system timer is incremented
 } // end namespace cortex

@@ -31,12 +31,16 @@ namespace cortex {
     namespace {
         uint64_t coreSystemCounter_ = 0;
     } // end namespace
+    void
+    clearSystemCounter() noexcept {
+        coreSystemCounter_ = 0;
+    }
     uint64_t
     getSystemCounter() noexcept {
         return coreSystemCounter_;
     }
     void
-    enableSystemCounter(uint8_t compareMatch, uint8_t prescalar) noexcept
+    enableSystemCounter(uint16_t compareMatch, uint8_t prescalar) noexcept
     {
         cortex::ChipsetBasicFunctions::Timer::setCompareValue(compareMatch);
         cortex::ChipsetBasicFunctions::Timer::setPrescalar(prescalar);
