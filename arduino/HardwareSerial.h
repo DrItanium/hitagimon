@@ -36,9 +36,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 struct HardwareSerial : public Stream
 {
-    virtual void begin(unsigned long) { }
-    virtual void begin(unsigned long, uint16_t) { }
-    virtual void end() { }
+    virtual void begin(unsigned long);
+    virtual void begin(unsigned long, uint16_t);
+    virtual void end();
     virtual int available() = 0;
     virtual int peek() = 0;
     virtual int read() = 0;

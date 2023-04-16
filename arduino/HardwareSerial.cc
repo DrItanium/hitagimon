@@ -27,3 +27,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
 #include "HardwareSerial.h"
+void
+HardwareSerial::begin(unsigned long) {
+
+}
+void
+HardwareSerial::begin(unsigned long, uint16_t) {
+
+}
+void
+HardwareSerial::end() {
+
+}
