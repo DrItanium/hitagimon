@@ -22,14 +22,14 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+//
+// Created by jwscoggins on 4/16/23.
+//
 
-/* use synld to perform a memory to memory copy! */
-/* void ioLoad32(void* src, uint32_t* dest); */
-.text
-.global _ioLoad32
-_ioLoad32:
-/* g0 is the source address */
-/* g1 is the destination address */
-synld g0, r3 ; load from an address in an aligned fashion (aligned to 4 bytes!)
-st r3, (g1) ; save the contents of r3 to *g1
-ret ; we're done
+#ifndef HITAGIMON_BUILTINS_H
+#define HITAGIMON_BUILTINS_H
+//#define SetArithmeticControls(ac) asm volatile ("modac %0, %0, %0" : "=&r" (ac.raw))
+#define __builtin_i960_synld(dest, src) asm volatile ("synld %1, %0" : "=&r" (dest) : "r" (src) : "cc")
+#define __builtin_i960_synmov(dest, src) asm volatile ("synmov %0, %1" : : "r" (dest), "r" (src) : "cc", "memory")
+
+#endif //HITAGIMON_BUILTINS_H
