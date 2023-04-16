@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "ModernCpp.h"
+#include "builtins.h"
 namespace cortex {
     /**
      * @brief i960 specific arithmetic controls
@@ -184,13 +185,13 @@ namespace cortex {
         SysProcTable* traceTable;
         uint32_t magicNumber3;
     } __attribute((packed));
-#define GetProcessControls(pc) asm volatile ("modpc 0, 0, %0" : "=r" (pc.raw))
-#define GetArithmeticControls(ac) asm volatile ("modac 0, 0, %0" : "=r" (ac.raw))
-#define SetArithmeticControls(ac) asm volatile ("modac %0, %0, %0" : "=&r" (ac.raw))
-#define GetTraceControls(tc) asm volatile ("modtc 0, 0, %0" : "=r" (tc.raw))
-#define FlushRegisters asm volatile ("flushreg")
-#define GenerateBreakPointTraceEvent asm volatile ("mark")
-#define ForceGenerateBreakPointTraceEvent asm volatile ("fmark")
-#define SynchronizeFaults asm volatile ("syncf")
+#define GetProcessControls(pc) asm volatile ("modpc 0, 0, %0" : "=r" (pc.raw) : : "memory")
+#define GetArithmeticControls(ac) asm volatile ("modac 0, 0, %0" : "=r" (ac.raw) : : "memory")
+#define SetArithmeticControls(ac) asm volatile ("modac %0, %0, %0" : "=&r" (ac.raw) : : "memory")
+#define GetTraceControls(tc) asm volatile ("modtc 0, 0, %0" : "=r" (tc.raw) : : "memory")
+#define FlushRegisters __builtin_i960_flushreg
+#define GenerateBreakPointTraceEvent __builtin_i960_mark
+#define ForceGenerateBreakPointTraceEvent __builtin_i960_fmark
+#define SynchronizeFaults __builtin_i960_syncf
 }
 #endif //HITAGIMON_SYSEXAMINE_H

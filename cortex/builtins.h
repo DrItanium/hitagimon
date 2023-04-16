@@ -30,6 +30,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define HITAGIMON_BUILTINS_H
 //#define SetArithmeticControls(ac) asm volatile ("modac %0, %0, %0" : "=&r" (ac.raw))
 #define __builtin_i960_synld(dest, src) asm volatile ("synld %1, %0" : "=&r" (dest) : "r" (src) : "cc")
-#define __builtin_i960_synmov(dest, src) asm volatile ("synmov %0, %1" : : "r" (dest), "r" (src) : "cc", "memory")
+#define __builtin_i960_synmov(dest, src) asm volatile ("synmov %0, %1" : "=&r" (dest) : "r" (src) : "cc", "memory")
+#define __builtin_i960_synmovl(dest, src) asm volatile ("synmovl %0, %1" : "=&r" (dest) : "r" (src) : "cc", "memory")
+#define __builtin_i960_synmovq(dest, src) asm volatile ("synmovq %0, %1" : "=&r" (dest) : "r" (src) : "cc", "memory")
+#define __builtin_i960_syncf asm volatile ("syncf" : : "memory")
+#define __builtin_i960_mark asm volatile ("mark" : : "memory")
+#define __builtin_i960_fmark asm volatile ("fmark" : : "memory")
+#define __builtin_i960_flushreg asm volatile ("flushreg" : : "memory")
 
 #endif //HITAGIMON_BUILTINS_H
