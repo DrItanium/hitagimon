@@ -65,6 +65,9 @@ namespace cortex
              * @return the number of bytes written
              */
             ssize_t write(char *buffer, size_t nbyte);
+
+            void end();
+            void begin(unsigned long baud, uint8_t config);
         } // end namespace Console
         namespace Timer {
             bool available() noexcept;

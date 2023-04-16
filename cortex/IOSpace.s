@@ -1,6 +1,6 @@
 /*
 hitagimon
-Copyright (c) 2023, Joshua Scoggins
+Copyright (c) 2020-2023, Joshua Scoggins
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -22,21 +22,14 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-//
-// Created by jwscoggins on 4/15/23.
-//
 
-#include "HardwareSerial.h"
-
-void
-HardwareSerial::begin(unsigned long baud, uint8_t) {
-
-}
-void
-HardwareSerial::begin(unsigned long baud) {
-    begin(baud, SERIAL_8N1);
-}
-void
-HardwareSerial::end() {
-
-}
+/* use synld to perform a memory to memory copy! */
+/* void ioLoad32(void* src, uint32_t* dest); */
+.text
+.global _ioLoad32
+_ioLoad32:
+/* g0 is the source address */
+/* g1 is the destination address */
+synld g0, r3 ; load from an address in an aligned fashion (aligned to 4 bytes!)
+st r3, (g1) ; save the contents of r3 to *g1
+ret ; we're done
