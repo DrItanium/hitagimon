@@ -199,12 +199,7 @@ namespace cortex
             void
             drawPixel(int16_t x, int16_t y, uint16_t color) noexcept {
                 static volatile uint64_t& address = Opcode(0, Devices::Display, Operations::DrawPixel, 0).memory<uint64_t>();
-                static SplitWord64 args;
-                args.quarters[0] = x;
-                args.quarters[1] = y;
-                args.quarters[2] = color;
-                args.quarters[3] = 0;
-                address = args.getBase();
+                address = makeLongOrdinal(x, y, color, 0);
             }
             void startWrite() noexcept {
                 static volatile uint8_t& address = Opcode(0, Devices::Display, Operations::StartWrite, 0).memory<uint8_t>();
@@ -213,12 +208,7 @@ namespace cortex
             void
             writePixel(int16_t x, int16_t y, uint16_t color) noexcept {
                 static volatile uint64_t& address = Opcode(0, Devices::Display, Operations::WritePixel, 0).memory<uint64_t>();
-                static SplitWord64 args;
-                args.quarters[0] = x;
-                args.quarters[1] = y;
-                args.quarters[2] = color;
-                args.quarters[3] = 0;
-                address = args.getBase();
+                address = makeLongOrdinal(x, y, color, 0);
             }
             void
             writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) noexcept {
@@ -234,22 +224,12 @@ namespace cortex
             void
             writeFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color) noexcept {
                 static volatile uint64_t& address = Opcode(0, Devices::Display, Operations::WriteFastVLine, 0).memory<uint64_t>();
-                static SplitWord64 args;
-                args.quarters[0] = x;
-                args.quarters[1] = y;
-                args.quarters[2] = h;
-                args.quarters[3] = color;
-                address = args.getBase();
+                address = makeLongOrdinal(x, y, h, color);
             }
             void
             writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color) noexcept {
                 static volatile uint64_t& address = Opcode(0, Devices::Display, Operations::WriteFastHLine, 0).memory<uint64_t>();
-                static SplitWord64 args;
-                args.quarters[0] = x;
-                args.quarters[1] = y;
-                args.quarters[2] = w;
-                args.quarters[3] = color;
-                address = args.getBase();
+                address = makeLongOrdinal(x, y, w, color);
             }
             void
             writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) noexcept {
