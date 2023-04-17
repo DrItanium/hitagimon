@@ -198,40 +198,32 @@ namespace cortex
             }
             void
             drawPixel(int16_t x, int16_t y, uint16_t color) noexcept {
-                static Opcode op(0, Devices::Display, Operations::DrawPixel, 0);
+                static volatile uint64_t& address = Opcode(0, Devices::Display, Operations::DrawPixel, 0).memory<uint64_t>();
                 static SplitWord64 args;
                 args.quarters[0] = x;
                 args.quarters[1] = y;
                 args.quarters[2] = color;
                 args.quarters[3] = 0;
-                op.write64(args.getBase());
+                address = args.getBase();
             }
             void startWrite() noexcept {
-                static Opcode op(0, Devices::Display, Operations::StartWrite, 0);
-                op.write8(0);
+                static volatile uint8_t& address = Opcode(0, Devices::Display, Operations::StartWrite, 0).memory<uint8_t>();
+                address = 0;
             }
             void
             writePixel(int16_t x, int16_t y, uint16_t color) noexcept {
-                static Opcode op(0, Devices::Display, Operations::WritePixel, 0);
+                static volatile uint64_t& address = Opcode(0, Devices::Display, Operations::WritePixel, 0).memory<uint64_t>();
                 static SplitWord64 args;
                 args.quarters[0] = x;
                 args.quarters[1] = y;
                 args.quarters[2] = color;
                 args.quarters[3] = 0;
-                op.write64(args.getBase());
+                address = args.getBase();
             }
             void
             writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) noexcept {
-                static bool initialized_ = false;
-                static uint32_t address;
-                static uint16_t args[8];
-                if (!initialized_) {
-                    initialized_ = true;
-                    address = Opcode(0, Devices::Display, Operations::WriteFillRect, 0).makeFullAddress();
-                    for (int i = 0; i < 8; ++i) {
-                        args[i] = 0;
-                    }
-                }
+                static uint32_t address = Opcode(0, Devices::Display, Operations::WriteFillRect, 0).makeFullAddress();
+                static uint16_t args[8] = { 0 };
                 args[0] = x;
                 args[1] = y;
                 args[2] = w;
@@ -241,38 +233,38 @@ namespace cortex
             }
             void
             writeFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color) noexcept {
-                static Opcode op(0, Devices::Display, Operations::WriteFastVLine, 0);
+                static volatile uint64_t& address = Opcode(0, Devices::Display, Operations::WriteFastVLine, 0).memory<uint64_t>();
                 static SplitWord64 args;
                 args.quarters[0] = x;
                 args.quarters[1] = y;
                 args.quarters[2] = h;
                 args.quarters[3] = color;
-                op.write64(args.getBase());
+                address = args.getBase();
             }
             void
             writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color) noexcept {
-                static Opcode op(0, Devices::Display, Operations::WriteFastHLine, 0);
+                static volatile uint64_t& address = Opcode(0, Devices::Display, Operations::WriteFastHLine, 0).memory<uint64_t>();
                 static SplitWord64 args;
                 args.quarters[0] = x;
                 args.quarters[1] = y;
                 args.quarters[2] = w;
                 args.quarters[3] = color;
-                op.write64(args.getBase());
+                address = args.getBase();
             }
             void
             writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) noexcept {
-                static Opcode op(0, Devices::Display, Operations::WriteLine, 0);
+                static uint32_t address = Opcode(0, Devices::Display, Operations::WriteLine, 0).makeFullAddress();
                 static uint16_t args[8] = { 0 };
                 args[0] = x0;
                 args[1] = y0;
                 args[2] = x1;
                 args[3] = y1;
                 args[4] = color;
-                __builtin_i960_synmovq(reinterpret_cast<void*>(op.makeFullAddress()), args);
+                __builtin_i960_synmovq(reinterpret_cast<void*>(address), args);
             }
             void endWrite() noexcept {
-                static Opcode op(0, Devices::Display, Operations::EndWrite, 0);
-                op.write8(0);
+                static volatile uint8_t& address = Opcode(0, Devices::Display, Operations::EndWrite, 0).memory<uint8_t>();
+                address = 0;
             }
             uint16_t
             color565(uint8_t red, uint8_t green, uint8_t blue) noexcept {
