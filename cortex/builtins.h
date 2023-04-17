@@ -38,13 +38,13 @@ inline uint32_t __builtin_i960_synld(void* src) {
     return dest;
 }
 inline void __builtin_i960_synmov(void* dest, void* src) {
-    asm volatile ("synmov %0, %1" : "=&r" (dest) : "r" (src) : "cc", "memory");
+    asm volatile ("synmov %0, %1" : : "r" (dest) , "r" (src) : "cc", "memory");
 }
 inline void __builtin_i960_synmovl(void* dest, void* src) {
-    asm volatile ("synmovl %0, %1" : "=&r" (dest) : "r" (src) : "cc", "memory");
+    asm volatile ("synmovl %0, %1" : : "r" (dest) , "r" (src) : "cc", "memory");
 }
 inline void __builtin_i960_synmovq(void* dest, void* src) {
-    asm volatile ("synmovq %0, %1" : "=&r" (dest) : "r" (src) : "cc", "memory");
+    asm volatile ("synmovq %0, %1" : : "r" (dest) , "r" (src) : "cc", "memory");
 }
 inline uint32_t __builtin_i960_get_interrupt_control_reg() { return __builtin_i960_synld((void*)0xFF000004); }
 inline void __builtin_i960_set_interrupt_control_reg(uint32_t value) {

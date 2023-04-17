@@ -237,7 +237,7 @@ namespace cortex
                 args[2] = w;
                 args[3] = h;
                 args[4] = color;
-                __builtin_i960_synmovq(reinterpret_cast<void*>(address), args);
+                __builtin_i960_synmovq((void*)(address), args);
             }
             void
             writeFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color) noexcept {
