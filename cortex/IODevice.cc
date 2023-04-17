@@ -16,6 +16,13 @@ namespace cortex
                 Display,
             };
         }
+        namespace {
+            template<uint8_t DeviceKind>
+            inline bool available() noexcept {
+                static volatile uint16_t& address = Opcode(0, DeviceKind, 0, 0).memory<uint16_t>();
+                return address;
+            }
+        }
         namespace Console {
             namespace Opcodes {
                 enum {
@@ -26,16 +33,17 @@ namespace cortex
                     Baud,
                 };
             }
+            bool available() noexcept { return cortex::ChipsetBasicFunctions::available<Devices::Serial>(); }
             uint16_t
             read() {
-                static Opcode code(0, Devices::Serial, Opcodes::RW, 0);
-                return code.read16();
+                static volatile uint16_t& address = Opcode(0, Devices::Serial, Opcodes::RW, 0).memory<uint16_t>();
+                return address;
             }
 
             void
             write(uint16_t c) {
-                static Opcode code(0, Devices::Serial, Opcodes::RW, 0);
-                code.write16(c);
+                static volatile uint16_t& address = Opcode(0, Devices::Serial, Opcodes::RW, 0).memory<uint16_t>();
+                address = c;
             }
 
             void
@@ -44,9 +52,8 @@ namespace cortex
             }
             void
             flush() {
-                static Opcode code(0, Devices::Serial, Opcodes::Flush, 0);
-                // doesn't matter what you write as long as you write it
-                code.write16(0);
+                static volatile uint16_t& address = Opcode(0, Devices::Serial, Opcodes::Flush, 0).memory<uint16_t>();
+                address = 0;
             }
             void
             write(const char *ptr) {
@@ -105,33 +112,31 @@ namespace cortex
                     Prescalar,
                 };
             }
-            bool
-            available() noexcept {
-                static Opcode code(0, Devices::Timer, Opcodes::Available, 0);
-                return code.read16();
-            }
+            bool available() noexcept { return cortex::ChipsetBasicFunctions::available<Devices::Timer>(); }
             uint32_t
             unixtime() noexcept {
                 return 0;
             }
             void
             setCompareValue(uint16_t value) noexcept {
-                static Opcode code(0, Devices::Timer, Opcodes::CompareValue, 0);
-                code.write16(value);
+                static volatile uint16_t& address = Opcode(0, Devices::Timer, Opcodes::CompareValue, 0).memory<uint16_t>();
+                address = value;
             }
-            uint8_t
+
+            uint16_t
             getCompareValue() noexcept {
-                static Opcode code(0, Devices::Timer, Opcodes::CompareValue, 0);
-                return code.read16();
+                static volatile uint16_t& address = Opcode(0, Devices::Timer, Opcodes::CompareValue, 0).memory<uint16_t>();
+                return address;
             }
             void
             setPrescalar(uint8_t value) noexcept {
-                static Opcode code(0, Devices::Timer, Opcodes::Prescalar, 0);
-                code.write8(value);
+                static volatile uint8_t& address = Opcode(0, Devices::Timer, Opcodes::Prescalar, 0).memory<uint8_t>();
+                address = value;
             }
-            uint8_t getPrescalar() noexcept {
-                static Opcode code(0, Devices::Timer, Opcodes::Prescalar, 0);
-                return code.read8();
+            uint8_t
+            getPrescalar() noexcept {
+                static volatile uint8_t& address = Opcode(0, Devices::Timer, Opcodes::Prescalar, 0).memory<uint8_t>();
+                return address;
             }
         } // end namespace RTC
         namespace Info {
@@ -154,11 +159,7 @@ namespace cortex
                 static Opcode code(0, Devices::Info, Opcodes::GetCPUClockSpeed, 0);
                 return code.read32();
             }
-            bool
-            available() noexcept {
-                static Opcode code(0, Devices::Info, Opcodes::Available, 0);
-                return code.read16();
-            }
+            bool available() noexcept { return cortex::ChipsetBasicFunctions::available<Devices::Info>(); }
             IACMessage*
             getExternalMessage() noexcept {
                 static Opcode code(0, Devices::Info, Opcodes::GetExternalIAC, 0);
@@ -196,6 +197,7 @@ namespace cortex
                 };
 
             }
+            bool available() noexcept { return cortex::ChipsetBasicFunctions::available<Devices::Display>(); }
             void
             drawPixel(int16_t x, int16_t y, uint16_t color) noexcept {
                 static volatile uint64_t& address = Opcode(0, Devices::Display, Operations::DrawPixel, 0).memory<uint64_t>();
