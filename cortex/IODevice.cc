@@ -222,14 +222,22 @@ namespace cortex
             }
             void
             writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) noexcept {
-                static Opcode op(0, Devices::Display, Operations::WriteFillRect, 0);
-                static uint16_t args[8] = { 0 };
+                static bool initialized_ = false;
+                static uint32_t address;
+                static uint16_t args[8];
+                if (!initialized_) {
+                    initialized_ = true;
+                    address = Opcode(0, Devices::Display, Operations::WriteFillRect, 0).makeFullAddress();
+                    for (int i = 0; i < 8; ++i) {
+                        args[i] = 0;
+                    }
+                }
                 args[0] = x;
                 args[1] = y;
                 args[2] = w;
                 args[3] = h;
                 args[4] = color;
-                __builtin_i960_synmovq(reinterpret_cast<void*>(op.makeFullAddress()), args);
+                __builtin_i960_synmovq(reinterpret_cast<void*>(address), args);
             }
             void
             writeFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color) noexcept {
@@ -253,7 +261,7 @@ namespace cortex
             }
             void
             writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) noexcept {
-                static Opcode op(0, Devices::Display, Operations::WriteFillRect, 0);
+                static Opcode op(0, Devices::Display, Operations::WriteLine, 0);
                 static uint16_t args[8] = { 0 };
                 args[0] = x0;
                 args[1] = y0;
@@ -271,6 +279,10 @@ namespace cortex
                 return (static_cast<uint16_t>(red & 0xF8) << 8) |
                        (static_cast<uint16_t>(green & 0xFC) << 3) | static_cast<uint16_t>(blue >> 3);
             }
+        }
+        void
+        begin() noexcept {
+
         }
     } // end namespace ChipsetBasicFunctions
 } // end namespace cortex
