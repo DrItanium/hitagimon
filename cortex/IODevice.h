@@ -36,17 +36,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace cortex
 {
     namespace ChipsetBasicFunctions {
-        void begin() noexcept;
-        inline void genericWrite8(uint32_t address, uint8_t a) noexcept { memory<uint8_t>(address) = a; }
-        inline void genericWrite16(uint32_t address, uint16_t a) noexcept{ memory<uint16_t>(address) = a; }
-        inline void genericWrite32(uint32_t address, uint32_t a) noexcept{ memory<uint32_t>(address) = a; }
-        inline void genericWrite64(uint32_t address, uint64_t value) noexcept { memory<uint64_t>(address) = value; }
-        void genericWrite96(uint32_t address, uint32_t a, uint32_t b, uint32_t c) noexcept;
-        void genericWrite128(uint32_t address, uint64_t a, uint64_t b) noexcept;
-        inline uint8_t genericRead8(uint32_t address) noexcept { return memory<uint8_t>(address); }
-        inline uint16_t genericRead16(uint32_t address) noexcept { return memory<uint16_t>(address); }
-        inline uint32_t genericRead32(uint32_t address) noexcept { return memory<uint32_t>(address); }
-        inline uint64_t genericRead64(uint64_t address) noexcept { return memory<uint64_t>(address); }
 
         namespace Console {
             void flush();

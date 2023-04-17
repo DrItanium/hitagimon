@@ -280,9 +280,5 @@ namespace cortex
                        (static_cast<uint16_t>(green & 0xFC) << 3) | static_cast<uint16_t>(blue >> 3);
             }
         }
-        void
-        begin() noexcept {
-
-        }
     } // end namespace ChipsetBasicFunctions
 } // end namespace cortex
