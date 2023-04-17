@@ -13,6 +13,16 @@ void setup() {
     printf("--------------------------------------------\n\n\n\n");
     printf("NEWLIB Version: %s\n", _NEWLIB_VERSION);
     printf("Staring counter: %#llx\n", cortex::getSystemCounter());
+    for (int16_t x = 0; x < 240; ++x) {
+        for (int16_t y = 0; y < 320; ++y) {
+            cortex::ChipsetBasicFunctions::Display::drawPixel(
+                    x, y,
+                    cortex::ChipsetBasicFunctions::Display::color565(
+                            static_cast<uint8_t>(random()),
+                            static_cast<uint8_t>(random()),
+                            static_cast<uint8_t>(random())));
+        }
+    }
 }
 void loop() {
     uint64_t start = cortex::getSystemCounter();
