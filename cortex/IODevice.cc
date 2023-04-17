@@ -22,6 +22,11 @@ namespace cortex
                 static volatile uint16_t& address = Opcode(0, DeviceKind, 0, 0).memory<uint16_t>();
                 return address;
             }
+            template<uint8_t DeviceKind>
+            inline uint8_t size() noexcept {
+                static volatile uint8_t& address = Opcode(0, DeviceKind, 1, 0).memory<uint8_t>();
+                return address;
+            }
         }
         namespace Console {
             namespace Opcodes {
