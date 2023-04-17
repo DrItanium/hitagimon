@@ -12,6 +12,7 @@ void setup() {
     printf("Built on %s at %s\n", __DATE__, __TIME__);
     printf("--------------------------------------------\n\n\n\n");
     printf("NEWLIB Version: %s\n", _NEWLIB_VERSION);
+    printf("Staring counter: %#llx\n", cortex::getSystemCounter());
 }
 void loop() {
     uint64_t start = cortex::getSystemCounter();
