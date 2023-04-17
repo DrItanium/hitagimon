@@ -239,7 +239,7 @@ namespace cortex
                 args.quarters[1] = y;
                 args.quarters[2] = h;
                 args.quarters[3] = color;
-                __builtin_i960_synmovl(reinterpret_cast<void*>(op.makeFullAddress()), &args);
+                op.write64(args.getBase());
             }
             void
             writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color) noexcept {
@@ -249,7 +249,7 @@ namespace cortex
                 args.quarters[1] = y;
                 args.quarters[2] = w;
                 args.quarters[3] = color;
-                __builtin_i960_synmovl(reinterpret_cast<void*>(op.makeFullAddress()), &args);
+                op.write64(args.getBase());
             }
             void
             writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) noexcept {
