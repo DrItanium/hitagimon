@@ -151,19 +151,19 @@ namespace cortex
             }
             uint32_t
             getCPUClockSpeed() noexcept {
-                static Opcode code(0, Devices::Info, Opcodes::GetCPUClockSpeed, 0);
-                return code.read32();
+                static volatile uint32_t& address = Opcode(0, Devices::Info, Opcodes::GetCPUClockSpeed,0).memory<uint32_t>();
+                return address;
             }
             uint32_t
             getChipsetClockSpeed() noexcept {
-                static Opcode code(0, Devices::Info, Opcodes::GetCPUClockSpeed, 0);
-                return code.read32();
+                static volatile uint32_t& address = Opcode(0, Devices::Info, Opcodes::GetChipsetClockSpeed,0).memory<uint32_t>();
+                return address;
             }
             bool available() noexcept { return cortex::ChipsetBasicFunctions::available<Devices::Info>(); }
             IACMessage*
             getExternalMessage() noexcept {
-                static Opcode code(0, Devices::Info, Opcodes::GetExternalIAC, 0);
-                return reinterpret_cast<IACMessage*>(code.makeFullAddress());
+                static volatile IACMessage* address = &Opcode(0, Devices::Info, Opcodes::GetExternalIAC,0).memory<IACMessage>();
+                return const_cast<IACMessage*>(address);
             }
         }
         namespace Display {
