@@ -204,7 +204,7 @@ namespace cortex
                 args.quarters[1] = y;
                 args.quarters[2] = color;
                 args.quarters[3] = 0;
-                __builtin_i960_synmovl(reinterpret_cast<void*>(op.makeFullAddress()), &args);
+                op.write64(args.getBase());
             }
             void startWrite() noexcept {
                 static Opcode op(0, Devices::Display, Operations::StartWrite, 0);
@@ -218,7 +218,7 @@ namespace cortex
                 args.quarters[1] = y;
                 args.quarters[2] = color;
                 args.quarters[3] = 0;
-                __builtin_i960_synmovl(reinterpret_cast<void*>(op.makeFullAddress()), &args);
+                op.write64(args.getBase());
             }
             void
             writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) noexcept {
