@@ -8,14 +8,6 @@
 namespace cortex
 {
     namespace ChipsetBasicFunctions {
-        template<typename T>
-        inline volatile T* computeRegisterBasePointer(uint8_t group, uint8_t device, uint8_t opcode, uint8_t subminor = 0) noexcept {
-            return &Opcode(group, device, opcode, subminor).memory<T>();
-        }
-        template<typename T>
-        inline volatile T& computeRegisterBaseReference(uint8_t group, uint8_t device, uint8_t opcode, uint8_t subminor = 0) noexcept {
-            return Opcode(group, device, opcode, subminor).memory<T>();
-        }
 
         namespace Devices {
             enum {
@@ -24,18 +16,6 @@ namespace cortex
                 Timer,
                 Display,
             };
-        }
-        namespace {
-            template<uint8_t DeviceKind>
-            inline bool available() noexcept {
-                static volatile uint16_t& address = computeRegisterBaseReference<uint16_t>(0, DeviceKind, 0, 0);
-                return address;
-            }
-            template<uint8_t DeviceKind>
-            inline uint8_t size() noexcept {
-                static volatile uint8_t & address = computeRegisterBaseReference<uint8_t>(0, DeviceKind, 0, 0);
-                return address;
-            }
         }
 
         namespace Console {
@@ -249,7 +229,7 @@ namespace cortex
 
             }
 #undef makeAddress
-            bool available() noexcept { return cortex::ChipsetBasicFunctions::available<Devices::Display>(); }
+            bool available() noexcept { return memory<uint32_t>(Operations::Available) != 0; }
             void
             drawPixel(int16_t x, int16_t y, uint16_t color) noexcept {
                 memory<uint64_t>(Operations::DrawPixel) = makeLongOrdinal(x, y, color, 0);
