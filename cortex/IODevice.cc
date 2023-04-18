@@ -230,8 +230,9 @@ namespace cortex
             }
 #undef makeAddress
             bool available() noexcept { return memory<uint32_t>(Operations::Available) != 0; }
-            void
-            drawPixel(int16_t x, int16_t y, uint16_t color) noexcept {
+            void flush() noexcept { memory<uint8_t>(Operations::Flush) = 0; }
+            void write(uint8_t value) noexcept { memory<uint8_t>(Operations::RW) = value; }
+            void drawPixel(int16_t x, int16_t y, uint16_t color) noexcept {
                 memory<uint64_t>(Operations::DrawPixel) = makeLongOrdinal(x, y, color, 0);
             }
             void startWrite() noexcept {
@@ -276,6 +277,23 @@ namespace cortex
             color565(uint8_t red, uint8_t green, uint8_t blue) noexcept {
                 return (static_cast<uint16_t>(red & 0xF8) << 8) |
                        (static_cast<uint16_t>(green & 0xFC) << 3) | static_cast<uint16_t>(blue >> 3);
+            }
+            uint32_t getDisplayWidthHeight() noexcept {
+                return memory<uint32_t>(Operations::DisplayWidthHeight);
+            }
+            uint16_t getDisplayWidth() noexcept { return static_cast<uint16_t>(getDisplayWidthHeight()); }
+            uint16_t getDisplayHeight() noexcept { return static_cast<uint16_t>(getDisplayWidthHeight() >> 16); }
+            uint8_t getRotation() noexcept { return memory<uint8_t>(Operations::Rotation); }
+            void setRotation(uint8_t value) noexcept { memory<uint8_t>(Operations::Rotation) = value; }
+            void setAddressWindow(uint16_t a, uint16_t b, uint16_t c, uint16_t d) noexcept { memory<uint64_t>(Operations::SetAddressWindow) = makeLongOrdinal(a, b, c, d); }
+            void invertDisplay(bool value) noexcept {
+                memory<uint8_t>(Operations::InvertDisplay) = value ? 0xFF : 0;
+            }
+            void setScrollMargins(uint16_t a, uint16_t b) noexcept {
+                memory<uint32_t>(Operations::SetScrollMargins) = makeOrdinal(a, b);
+            }
+            void scrollTo(uint16_t a) noexcept {
+                memory<uint16_t>(Operations::ScrollTo) = a;
             }
         } // end namespace Display
         void
