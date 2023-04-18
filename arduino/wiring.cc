@@ -32,7 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 void init()
 {
     // first setup the interrupt control registers
-    __builtin_i960_set_interrupt_control_reg(0xFFFEFDFC);
+    // it is int0 is lowest byte and so on
+    __builtin_i960_set_interrupt_control_reg(0xFCFDFEFF);
     // setup the chipset basic functions as one of the first things we actually do
     cortex::ChipsetBasicFunctions::begin();
     // then setup the system clock to be 200 hz so that we trigger every 10 ms

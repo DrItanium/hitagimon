@@ -22,7 +22,7 @@ namespace cortex
             namespace Opcodes {
 #define makeAddress(func) \
                     ((static_cast<uint32_t>(0xF0) << 24) | \
-                            (static_cast<uint32_t>(Devices::Timer) << 16) | \
+                            (static_cast<uint32_t>(Devices::Serial) << 16) | \
                             (static_cast<uint32_t>(func) << 8) | \
                             (static_cast<uint32_t>(0)))
                 enum {
