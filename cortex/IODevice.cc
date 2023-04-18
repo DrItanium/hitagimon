@@ -125,81 +125,77 @@ namespace cortex
             }
         } // end namespace Console
         namespace Timer {
-            // this is a pre c++11 "hack" to support referencing enums by name
+#define makeAddress(func) \
+                    ((static_cast<uint32_t>(0xF0) << 24) | \
+                            (static_cast<uint32_t>(Devices::Timer) << 16) | \
+                            (static_cast<uint32_t>(func) << 8) | \
+                            (static_cast<uint32_t>(0)))
             namespace Opcodes {
                 enum {
-                    Available = 0,
-                    Size,
-                    CompareValue,
-                    Prescalar,
+                    Available = makeAddress(0),
+                    Size = makeAddress(1),
+                    CompareValue = makeAddress(2),
+                    Prescalar = makeAddress(3),
                 };
             }
-            namespace {
-                volatile uint16_t* compareValueRegister = nullptr;
-                volatile uint8_t* prescalarRegister = nullptr;
-                void
-                configure() noexcept {
-                    compareValueRegister = computeRegisterBasePointer<uint16_t>(0, Devices::Timer, Opcodes::CompareValue, 0);
-                    prescalarRegister = computeRegisterBasePointer<uint8_t>(0, Devices::Timer, Opcodes::Prescalar, 0);
-                }
+#undef makeAddress
+            bool
+            available() noexcept {
+                return memory<uint32_t>(Opcodes::Available) != 0;
             }
-            bool available() noexcept { return cortex::ChipsetBasicFunctions::available<Devices::Timer>(); }
             uint32_t
             unixtime() noexcept {
                 return 0;
             }
             void
             setCompareValue(uint16_t value) noexcept {
-                *compareValueRegister = value;
+                memory<uint16_t>(Opcodes::CompareValue) = value;
             }
 
             uint16_t
             getCompareValue() noexcept {
-                return *compareValueRegister;
+                return memory<uint16_t>(Opcodes::CompareValue);
             }
             void
             setPrescalar(uint8_t value) noexcept {
-                *prescalarRegister = value;
+                memory<uint8_t>(Opcodes::Prescalar) = value;
             }
             uint8_t
             getPrescalar() noexcept {
-                return *prescalarRegister;
+                return memory<uint8_t>(Opcodes::Prescalar);
             }
         } // end namespace RTC
         namespace Info {
             namespace Opcodes {
+#define makeAddress(func) \
+                    ((static_cast<uint32_t>(0xF0) << 24) | \
+                            (static_cast<uint32_t>(Devices::Info) << 16) | \
+                            (static_cast<uint32_t>(func) << 8) | \
+                            (static_cast<uint32_t>(0)))
                 enum {
-                    Available = 0,
-                    Size,
-                    GetCPUClockSpeed,
-                    GetChipsetClockSpeed,
-                    GetExternalIAC,
+                    Available = makeAddress(0),
+                    Size = makeAddress(1),
+                    GetCPUClockSpeed = makeAddress(2),
+                    GetChipsetClockSpeed = makeAddress(3),
+                    GetExternalIAC = makeAddress(4),
                 };
+#undef makeAddress
             }
-            namespace {
-                volatile uint32_t* cpuClockSpeedRegister = nullptr;
-                volatile uint32_t* chipsetClockSpeedRegister = nullptr;
-                volatile IACMessage* externalIACMessageRegister = nullptr;
-
-                void
-                configure() noexcept {
-                    cpuClockSpeedRegister = computeRegisterBasePointer<uint32_t>(0, Devices::Info, Opcodes::GetCPUClockSpeed, 0);
-                    chipsetClockSpeedRegister = computeRegisterBasePointer<uint32_t>(0, Devices::Info, Opcodes::GetChipsetClockSpeed, 0);
-                    externalIACMessageRegister = computeRegisterBasePointer<IACMessage>(0, Devices::Info, Opcodes::GetExternalIAC, 0);
-                }
+            bool
+            available() noexcept {
+                return memory<uint32_t>(Opcodes::Available) != 0;
             }
-            bool available() noexcept { return cortex::ChipsetBasicFunctions::available<Devices::Info>(); }
             uint32_t
             getCPUClockSpeed() noexcept {
-                return *cpuClockSpeedRegister;
+                return memory<uint32_t>(Opcodes::GetCPUClockSpeed);
             }
             uint32_t
             getChipsetClockSpeed() noexcept {
-                return *chipsetClockSpeedRegister;
+                return memory<uint32_t>(Opcodes::GetChipsetClockSpeed);
             }
             IACMessage*
             getExternalMessage() noexcept {
-                return const_cast<IACMessage*>(externalIACMessageRegister);
+                return reinterpret_cast<IACMessage*>(Opcodes::GetExternalIAC);
             }
         }
         namespace Display {
@@ -256,24 +252,17 @@ namespace cortex
 
             }
 #undef makeAddress
-            namespace {
-                //volatile void* drawRegisters[Operations::Count];
-
-                void
-                configure() noexcept {
-                }
-            } // end namespace
             bool available() noexcept { return cortex::ChipsetBasicFunctions::available<Devices::Display>(); }
             void
             drawPixel(int16_t x, int16_t y, uint16_t color) noexcept {
-                *reinterpret_cast<volatile uint64_t*>(Operations::DrawPixel) = makeLongOrdinal(x, y, color, 0);
+                memory<uint64_t>(Operations::DrawPixel) = makeLongOrdinal(x, y, color, 0);
             }
             void startWrite() noexcept {
-                *reinterpret_cast<volatile uint8_t*>(Operations::StartWrite) = 0;
+                memory<uint8_t>(Operations::StartWrite) = 0;
             }
             void
             writePixel(int16_t x, int16_t y, uint16_t color) noexcept {
-                *reinterpret_cast<volatile uint64_t*>(Operations::WritePixel) = makeLongOrdinal(x, y, color, 0);
+                memory<uint64_t>(Operations::WritePixel) = makeLongOrdinal(x, y, color, 0);
             }
             void
             writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) noexcept {
@@ -287,11 +276,11 @@ namespace cortex
             }
             void
             writeFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color) noexcept {
-                *reinterpret_cast<volatile uint64_t*>(Operations::WriteFastVLine) = makeLongOrdinal(x, y, h, color);
+                memory<uint64_t>(Operations::WriteFastVLine) = makeLongOrdinal(x, y, h, color);
             }
             void
             writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color) noexcept {
-                *reinterpret_cast<volatile uint64_t*>(Operations::WriteFastHLine) = makeLongOrdinal(x, y, w, color);
+                memory<uint64_t>(Operations::WriteFastHLine) = makeLongOrdinal(x, y, w, color);
             }
             void
             writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) noexcept {
@@ -304,7 +293,7 @@ namespace cortex
                 __builtin_i960_synmovq((void*)Operations::WriteLine, args);
             }
             void endWrite() noexcept {
-                *reinterpret_cast<volatile uint8_t*>(Operations::EndWrite) = 0;
+                memory<uint8_t>(Operations::EndWrite) = 0;
             }
             uint16_t
             color565(uint8_t red, uint8_t green, uint8_t blue) noexcept {
@@ -315,9 +304,6 @@ namespace cortex
         void
         begin() noexcept {
             Console::configure();
-            Timer::configure();
-            Info::configure();
-            Display::configure();
         }
     } // end namespace ChipsetBasicFunctions
 } // end namespace cortex
