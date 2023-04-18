@@ -40,33 +40,30 @@ namespace cortex
 
         namespace Console {
             namespace Opcodes {
+#define makeAddress(func) \
+                    ((static_cast<uint32_t>(0xF0) << 24) | \
+                            (static_cast<uint32_t>(Devices::Timer) << 16) | \
+                            (static_cast<uint32_t>(func) << 8) | \
+                            (static_cast<uint32_t>(0)))
                 enum {
-                    Available = 0,
-                    Size,
-                    RW,
-                    Flush,
-                    Baud,
+                    Available = makeAddress(0),
+                    Size = makeAddress(1),
+                    RW = makeAddress(2),
+                    Flush = makeAddress(3),
+                    Baud = makeAddress(4),
                 };
+#undef makeAddress
             }
-            namespace {
-                volatile uint16_t* rwAddress = nullptr;
-                volatile uint16_t* flushAddress = nullptr;
-                void
-                configure() noexcept {
-                    rwAddress = computeRegisterBasePointer<uint16_t>(0, Devices::Serial, Opcodes::RW, 0);
-                    flushAddress = computeRegisterBasePointer<uint16_t>(0, Devices::Serial, Opcodes::Flush, 0);
-                }
-            }
-            bool available() noexcept { return cortex::ChipsetBasicFunctions::available<Devices::Serial>(); }
+            bool available() noexcept { return memory<uint32_t>(Opcodes::Available) != 0; }
 
             uint16_t
             read() {
-                return *rwAddress;
+                return memory<uint16_t>(Opcodes::RW);
             }
 
             void
             write(uint16_t c) {
-                *rwAddress = c;
+                memory<uint16_t>(Opcodes::RW) = c;
             }
 
             void
@@ -75,7 +72,7 @@ namespace cortex
             }
             void
             flush() {
-                *flushAddress = 0;
+                memory<uint8_t>(Opcodes::Flush) = 0;
             }
             void
             write(const char *ptr) {
@@ -303,7 +300,6 @@ namespace cortex
         } // end namespace Display
         void
         begin() noexcept {
-            Console::configure();
         }
     } // end namespace ChipsetBasicFunctions
 } // end namespace cortex
