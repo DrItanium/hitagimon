@@ -85,8 +85,8 @@ namespace cortex
         } // end namespace Info
         namespace Display {
             bool available() noexcept;
-#if 0
             void flush();
+#if 0
             uint64_t getDisplayWidthHeight() noexcept;
             uint32_t getDisplayWidth() noexcept;
             uint32_t getDisplayHeight() noexcept;
@@ -300,6 +300,7 @@ namespace cortex
 
         }
 #endif
+        void begin() noexcept;
     } // end namespace ChipsetBasicFunctions
     inline uint32_t
     makeOrdinal(uint16_t lower, uint16_t upper) {

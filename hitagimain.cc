@@ -28,13 +28,13 @@ void setup() {
     }
     for (int16_t x = 0; x < 240; ++x) {
         for (int16_t y = 0; y < 320; ++y) {
+            cortex::ChipsetBasicFunctions::Display::startWrite();
             for (int16_t h = 0; h < 320; ++h) {
-                cortex::ChipsetBasicFunctions::Display::startWrite();
                 for (int16_t w = 0; w < 240; ++w) {
                     cortex::ChipsetBasicFunctions::Display::writeFillRect(x, y, w, h, colors[static_cast<uint8_t>(random())]);
                 }
-                cortex::ChipsetBasicFunctions::Display::endWrite();
             }
+            cortex::ChipsetBasicFunctions::Display::endWrite();
         }
     }
 }

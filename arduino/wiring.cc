@@ -28,10 +28,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Arduino.h"
 #include <cortex/builtins.h>
 #include <cortex/SystemCounter.h>
+#include <cortex/IODevice.h>
 void init()
 {
     // first setup the interrupt control registers
     __builtin_i960_set_interrupt_control_reg(0xFFFEFDFC);
+    // setup the chipset basic functions as one of the first things we actually do
+    cortex::ChipsetBasicFunctions::begin();
     // then setup the system clock to be 200 hz so that we trigger every 10 ms
     // we have a 16-bit counter so the prescalar is 8 (0b010) and the compare is 624
     // this is directly configuring timer 1 on the 2560 acting as chipset

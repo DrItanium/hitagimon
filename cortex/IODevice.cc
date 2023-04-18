@@ -8,6 +8,15 @@
 namespace cortex
 {
     namespace ChipsetBasicFunctions {
+        template<typename T>
+        inline volatile T* computeRegisterBasePointer(uint8_t group, uint8_t device, uint8_t opcode, uint8_t subminor = 0) noexcept {
+            return &Opcode(group, device, opcode, subminor).memory<T>();
+        }
+        template<typename T>
+        inline volatile T& computeRegisterBaseReference(uint8_t group, uint8_t device, uint8_t opcode, uint8_t subminor = 0) noexcept {
+            return Opcode(group, device, opcode, subminor).memory<T>();
+        }
+
         namespace Devices {
             enum {
                 Info = 0,
@@ -19,15 +28,16 @@ namespace cortex
         namespace {
             template<uint8_t DeviceKind>
             inline bool available() noexcept {
-                static volatile uint16_t& address = Opcode(0, DeviceKind, 0, 0).memory<uint16_t>();
+                static volatile uint16_t& address = computeRegisterBaseReference<uint16_t>(0, DeviceKind, 0, 0);
                 return address;
             }
             template<uint8_t DeviceKind>
             inline uint8_t size() noexcept {
-                static volatile uint8_t& address = Opcode(0, DeviceKind, 1, 0).memory<uint8_t>();
+                static volatile uint8_t & address = computeRegisterBaseReference<uint8_t>(0, DeviceKind, 0, 0);
                 return address;
             }
         }
+
         namespace Console {
             namespace Opcodes {
                 enum {
@@ -38,17 +48,25 @@ namespace cortex
                     Baud,
                 };
             }
+            namespace {
+                volatile uint16_t* rwAddress = nullptr;
+                volatile uint16_t* flushAddress = nullptr;
+                void
+                configure() noexcept {
+                    rwAddress = computeRegisterBasePointer<uint16_t>(0, Devices::Serial, Opcodes::RW, 0);
+                    flushAddress = computeRegisterBasePointer<uint16_t>(0, Devices::Serial, Opcodes::Flush, 0);
+                }
+            }
             bool available() noexcept { return cortex::ChipsetBasicFunctions::available<Devices::Serial>(); }
+
             uint16_t
             read() {
-                static volatile uint16_t& address = Opcode(0, Devices::Serial, Opcodes::RW, 0).memory<uint16_t>();
-                return address;
+                return *rwAddress;
             }
 
             void
             write(uint16_t c) {
-                static volatile uint16_t& address = Opcode(0, Devices::Serial, Opcodes::RW, 0).memory<uint16_t>();
-                address = c;
+                *rwAddress = c;
             }
 
             void
@@ -57,8 +75,7 @@ namespace cortex
             }
             void
             flush() {
-                static volatile uint16_t& address = Opcode(0, Devices::Serial, Opcodes::Flush, 0).memory<uint16_t>();
-                address = 0;
+                *flushAddress = 0;
             }
             void
             write(const char *ptr) {
@@ -117,6 +134,15 @@ namespace cortex
                     Prescalar,
                 };
             }
+            namespace {
+                volatile uint16_t* compareValueRegister = nullptr;
+                volatile uint8_t* prescalarRegister = nullptr;
+                void
+                configure() noexcept {
+                    compareValueRegister = computeRegisterBasePointer<uint16_t>(0, Devices::Timer, Opcodes::CompareValue, 0);
+                    prescalarRegister = computeRegisterBasePointer<uint8_t>(0, Devices::Timer, Opcodes::Prescalar, 0);
+                }
+            }
             bool available() noexcept { return cortex::ChipsetBasicFunctions::available<Devices::Timer>(); }
             uint32_t
             unixtime() noexcept {
@@ -124,24 +150,20 @@ namespace cortex
             }
             void
             setCompareValue(uint16_t value) noexcept {
-                static volatile uint16_t& address = Opcode(0, Devices::Timer, Opcodes::CompareValue, 0).memory<uint16_t>();
-                address = value;
+                *compareValueRegister = value;
             }
 
             uint16_t
             getCompareValue() noexcept {
-                static volatile uint16_t& address = Opcode(0, Devices::Timer, Opcodes::CompareValue, 0).memory<uint16_t>();
-                return address;
+                return *compareValueRegister;
             }
             void
             setPrescalar(uint8_t value) noexcept {
-                static volatile uint8_t& address = Opcode(0, Devices::Timer, Opcodes::Prescalar, 0).memory<uint8_t>();
-                address = value;
+                *prescalarRegister = value;
             }
             uint8_t
             getPrescalar() noexcept {
-                static volatile uint8_t& address = Opcode(0, Devices::Timer, Opcodes::Prescalar, 0).memory<uint8_t>();
-                return address;
+                return *prescalarRegister;
             }
         } // end namespace RTC
         namespace Info {
@@ -154,21 +176,30 @@ namespace cortex
                     GetExternalIAC,
                 };
             }
+            namespace {
+                volatile uint32_t* cpuClockSpeedRegister = nullptr;
+                volatile uint32_t* chipsetClockSpeedRegister = nullptr;
+                volatile IACMessage* externalIACMessageRegister = nullptr;
+
+                void
+                configure() noexcept {
+                    cpuClockSpeedRegister = computeRegisterBasePointer<uint32_t>(0, Devices::Info, Opcodes::GetCPUClockSpeed, 0);
+                    chipsetClockSpeedRegister = computeRegisterBasePointer<uint32_t>(0, Devices::Info, Opcodes::GetChipsetClockSpeed, 0);
+                    externalIACMessageRegister = computeRegisterBasePointer<IACMessage>(0, Devices::Info, Opcodes::GetExternalIAC, 0);
+                }
+            }
+            bool available() noexcept { return cortex::ChipsetBasicFunctions::available<Devices::Info>(); }
             uint32_t
             getCPUClockSpeed() noexcept {
-                static volatile uint32_t& address = Opcode(0, Devices::Info, Opcodes::GetCPUClockSpeed,0).memory<uint32_t>();
-                return address;
+                return *cpuClockSpeedRegister;
             }
             uint32_t
             getChipsetClockSpeed() noexcept {
-                static volatile uint32_t& address = Opcode(0, Devices::Info, Opcodes::GetChipsetClockSpeed,0).memory<uint32_t>();
-                return address;
+                return *chipsetClockSpeedRegister;
             }
-            bool available() noexcept { return cortex::ChipsetBasicFunctions::available<Devices::Info>(); }
             IACMessage*
             getExternalMessage() noexcept {
-                static volatile IACMessage* address = &Opcode(0, Devices::Info, Opcodes::GetExternalIAC,0).memory<IACMessage>();
-                return const_cast<IACMessage*>(address);
+                return const_cast<IACMessage*>(externalIACMessageRegister);
             }
         }
         namespace Display {
@@ -199,65 +230,77 @@ namespace cortex
                     SetTextColor0, SetTextColor1,
                     // Transaction parts
                     StartWrite, WritePixel, WriteFillRect, WriteFastVLine, WriteFastHLine, WriteLine, EndWrite,
+                    // always last
+                    Count,
                 };
 
             }
+            namespace {
+                volatile void* drawRegisters[Operations::Count];
+
+                void
+                configure() noexcept {
+                    // setup all of the registers as needed
+                    for (int i = 0 ; i < Operations::Count; ++i) {
+                        drawRegisters[i] = reinterpret_cast<volatile void*>(computeRegisterBasePointer<uint8_t>(0, Devices::Display, static_cast<uint8_t>(i), 0));
+                    }
+                }
+            } // end namespace
             bool available() noexcept { return cortex::ChipsetBasicFunctions::available<Devices::Display>(); }
             void
             drawPixel(int16_t x, int16_t y, uint16_t color) noexcept {
-                static volatile uint64_t& address = Opcode(0, Devices::Display, Operations::DrawPixel, 0).memory<uint64_t>();
-                address = makeLongOrdinal(x, y, color, 0);
+                *reinterpret_cast<volatile uint64_t*>(drawRegisters[Operations::DrawPixel]) = makeLongOrdinal(x, y, color, 0);
             }
             void startWrite() noexcept {
-                static volatile uint8_t& address = Opcode(0, Devices::Display, Operations::StartWrite, 0).memory<uint8_t>();
-                address = 0;
+                *reinterpret_cast<volatile uint8_t*>(drawRegisters[Operations::StartWrite]) = 0;
             }
             void
             writePixel(int16_t x, int16_t y, uint16_t color) noexcept {
-                static volatile uint64_t& address = Opcode(0, Devices::Display, Operations::WritePixel, 0).memory<uint64_t>();
-                address = makeLongOrdinal(x, y, color, 0);
+                *reinterpret_cast<volatile uint64_t*>(drawRegisters[Operations::WritePixel]) = makeLongOrdinal(x, y, color, 0);
             }
             void
             writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) noexcept {
-                static uint32_t address = Opcode(0, Devices::Display, Operations::WriteFillRect, 0).makeFullAddress();
                 static uint16_t args[8] = { 0 };
                 args[0] = x;
                 args[1] = y;
                 args[2] = w;
                 args[3] = h;
                 args[4] = color;
-                __builtin_i960_synmovq((void*)(address), args);
+                __builtin_i960_synmovq((void*)drawRegisters[Operations::WriteFillRect], args);
             }
             void
             writeFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color) noexcept {
-                static volatile uint64_t& address = Opcode(0, Devices::Display, Operations::WriteFastVLine, 0).memory<uint64_t>();
-                address = makeLongOrdinal(x, y, h, color);
+                *reinterpret_cast<volatile uint64_t*>(drawRegisters[Operations::WriteFastVLine]) = makeLongOrdinal(x, y, h, color);
             }
             void
             writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color) noexcept {
-                static volatile uint64_t& address = Opcode(0, Devices::Display, Operations::WriteFastHLine, 0).memory<uint64_t>();
-                address = makeLongOrdinal(x, y, w, color);
+                *reinterpret_cast<volatile uint64_t*>(drawRegisters[Operations::WriteFastHLine]) = makeLongOrdinal(x, y, w, color);
             }
             void
             writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) noexcept {
-                static uint32_t address = Opcode(0, Devices::Display, Operations::WriteLine, 0).makeFullAddress();
                 static uint16_t args[8] = { 0 };
                 args[0] = x0;
                 args[1] = y0;
                 args[2] = x1;
                 args[3] = y1;
                 args[4] = color;
-                __builtin_i960_synmovq(reinterpret_cast<void*>(address), args);
+                __builtin_i960_synmovq((void*)drawRegisters[Operations::WriteLine], args);
             }
             void endWrite() noexcept {
-                static volatile uint8_t& address = Opcode(0, Devices::Display, Operations::EndWrite, 0).memory<uint8_t>();
-                address = 0;
+                *reinterpret_cast<volatile uint8_t*>(drawRegisters[Operations::EndWrite]) = 0;
             }
             uint16_t
             color565(uint8_t red, uint8_t green, uint8_t blue) noexcept {
                 return (static_cast<uint16_t>(red & 0xF8) << 8) |
                        (static_cast<uint16_t>(green & 0xFC) << 3) | static_cast<uint16_t>(blue >> 3);
             }
+        } // end namespace Display
+        void
+        begin() noexcept {
+            Console::configure();
+            Timer::configure();
+            Info::configure();
+            Display::configure();
         }
     } // end namespace ChipsetBasicFunctions
 } // end namespace cortex
