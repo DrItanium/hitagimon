@@ -204,59 +204,75 @@ namespace cortex
         }
         namespace Display {
             namespace Operations {
+#define makeAddress(func) \
+                    ((static_cast<uint32_t>(0xF0) << 24) | \
+                            (static_cast<uint32_t>(Devices::Display) << 16) | \
+                            (static_cast<uint32_t>(func) << 8) | \
+                            (static_cast<uint32_t>(0)))
                 enum {
-                    Available,
-                    Size,
-                    RW, // for the "serial" aspect so we can print out to the screen
-                    Flush,
-                    DisplayWidthHeight,
-                    Rotation,
-                    InvertDisplay,
-                    ScrollTo,
-                    SetScrollMargins,
-                    SetAddressWindow,
-                    ReadCommand8,
-                    CursorX, CursorY, CursorXY,
-                    DrawPixel,
-                    DrawFastVLine, DrawFastHLine,
-                    FillRect, FillScreen,
-                    DrawLine, DrawRect,
-                    DrawCircle, FillCircle,
-                    DrawTriangle, FillTriangle,
-                    DrawRoundRect, FillRoundRect,
-                    SetTextWrap,
-                    DrawChar_Square, DrawChar_Rectangle,
-                    SetTextSize_Square, SetTextSize_Rectangle,
-                    SetTextColor0, SetTextColor1,
+                    Available = makeAddress(0),
+                    Size = makeAddress(1),
+                    RW = makeAddress(2),
+                    Flush = makeAddress(3),
+                    DisplayWidthHeight = makeAddress(4),
+                    Rotation = makeAddress(5),
+                    InvertDisplay = makeAddress(6),
+                    ScrollTo = makeAddress(7),
+                    SetScrollMargins = makeAddress(8),
+                    SetAddressWindow = makeAddress(9),
+                    ReadCommand8 = makeAddress(10),
+                    CursorX = makeAddress(11),
+                    CursorY = makeAddress(12),
+                    CursorXY = makeAddress(13),
+                    DrawPixel = makeAddress(14),
+                    DrawFastVLine = makeAddress(15),
+                    DrawFastHLine = makeAddress(16),
+                    FillRect = makeAddress(17),
+                    FillScreen = makeAddress(18),
+                    DrawLine = makeAddress(19),
+                    DrawRect = makeAddress(20),
+                    DrawCircle = makeAddress(21),
+                    FillCircle = makeAddress(22),
+                    DrawTriangle = makeAddress(23),
+                    FillTriangle = makeAddress(24),
+                    DrawRoundRect = makeAddress(25),
+                    FillRoundRect = makeAddress(26),
+                    SetTextWrap = makeAddress(27),
+                    DrawChar_Square = makeAddress(28),
+                    DrawChar_Rectangle = makeAddress(29),
+                    SetTextSize_Square = makeAddress(30),
+                    SetTextSize_Rectangle = makeAddress(31),
+                    SetTextColor0 = makeAddress(32),
+                    SetTextColor1 = makeAddress(33),
                     // Transaction parts
-                    StartWrite, WritePixel, WriteFillRect, WriteFastVLine, WriteFastHLine, WriteLine, EndWrite,
-                    // always last
-                    Count,
+                    StartWrite = makeAddress(34),
+                    WritePixel = makeAddress(35),
+                    WriteFillRect = makeAddress(36),
+                    WriteFastVLine = makeAddress(37),
+                    WriteFastHLine = makeAddress(38),
+                    WriteLine = makeAddress(39),
+                    EndWrite = makeAddress(40),
                 };
 
             }
             namespace {
-                volatile void* drawRegisters[Operations::Count];
+                //volatile void* drawRegisters[Operations::Count];
 
                 void
                 configure() noexcept {
-                    // setup all of the registers as needed
-                    for (int i = 0 ; i < Operations::Count; ++i) {
-                        drawRegisters[i] = reinterpret_cast<volatile void*>(computeRegisterBasePointer<uint8_t>(0, Devices::Display, static_cast<uint8_t>(i), 0));
-                    }
                 }
             } // end namespace
             bool available() noexcept { return cortex::ChipsetBasicFunctions::available<Devices::Display>(); }
             void
             drawPixel(int16_t x, int16_t y, uint16_t color) noexcept {
-                *reinterpret_cast<volatile uint64_t*>(drawRegisters[Operations::DrawPixel]) = makeLongOrdinal(x, y, color, 0);
+                *reinterpret_cast<volatile uint64_t*>(Operations::DrawPixel) = makeLongOrdinal(x, y, color, 0);
             }
             void startWrite() noexcept {
-                *reinterpret_cast<volatile uint8_t*>(drawRegisters[Operations::StartWrite]) = 0;
+                *reinterpret_cast<volatile uint8_t*>(Operations::StartWrite) = 0;
             }
             void
             writePixel(int16_t x, int16_t y, uint16_t color) noexcept {
-                *reinterpret_cast<volatile uint64_t*>(drawRegisters[Operations::WritePixel]) = makeLongOrdinal(x, y, color, 0);
+                *reinterpret_cast<volatile uint64_t*>(Operations::WritePixel) = makeLongOrdinal(x, y, color, 0);
             }
             void
             writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) noexcept {
@@ -266,15 +282,15 @@ namespace cortex
                 args[2] = w;
                 args[3] = h;
                 args[4] = color;
-                __builtin_i960_synmovq((void*)drawRegisters[Operations::WriteFillRect], args);
+                __builtin_i960_synmovq((void*)Operations::WriteFillRect, args);
             }
             void
             writeFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color) noexcept {
-                *reinterpret_cast<volatile uint64_t*>(drawRegisters[Operations::WriteFastVLine]) = makeLongOrdinal(x, y, h, color);
+                *reinterpret_cast<volatile uint64_t*>(Operations::WriteFastVLine) = makeLongOrdinal(x, y, h, color);
             }
             void
             writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color) noexcept {
-                *reinterpret_cast<volatile uint64_t*>(drawRegisters[Operations::WriteFastHLine]) = makeLongOrdinal(x, y, w, color);
+                *reinterpret_cast<volatile uint64_t*>(Operations::WriteFastHLine) = makeLongOrdinal(x, y, w, color);
             }
             void
             writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) noexcept {
@@ -284,10 +300,10 @@ namespace cortex
                 args[2] = x1;
                 args[3] = y1;
                 args[4] = color;
-                __builtin_i960_synmovq((void*)drawRegisters[Operations::WriteLine], args);
+                __builtin_i960_synmovq((void*)Operations::WriteLine, args);
             }
             void endWrite() noexcept {
-                *reinterpret_cast<volatile uint8_t*>(drawRegisters[Operations::EndWrite]) = 0;
+                *reinterpret_cast<volatile uint8_t*>(Operations::EndWrite) = 0;
             }
             uint16_t
             color565(uint8_t red, uint8_t green, uint8_t blue) noexcept {
