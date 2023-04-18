@@ -255,6 +255,7 @@ namespace cortex
                 };
 
             }
+#undef makeAddress
             namespace {
                 //volatile void* drawRegisters[Operations::Count];
 
