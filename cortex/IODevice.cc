@@ -7,6 +7,111 @@
 #include <cortex/ChipsetInteract.h>
 namespace cortex
 {
+    namespace Operations {
+#define X(x) ((static_cast<uint32_t>(0xFE) << 24) | ((static_cast<uint32_t>(x) << 4) & 0x00FFFFF0))
+        enum {
+            Code_Serial_RW = 0,
+            Code_Serial_Flush,
+            Code_Serial_Baud,
+
+            Code_Timer_CompareValue = 0x10,
+            Code_Timer_Prescalar,
+
+            // display opcodes begin
+            Code_Display_RW = 0x20,
+            Code_Display_Flush,
+            Code_Display_WidthHeight,
+            Code_Display_Rotation,
+            Code_Display_InvertDisplay,
+            Code_Display_ScrollTo,
+            Code_Display_SetScrollMargins,
+            Code_Display_SetAddressWindow,
+            Code_Display_ReadCommand8,
+            Code_Display_CursorX,
+            Code_Display_CursorY,
+            Code_Display_CursorXY,
+            Code_Display_DrawPixel,
+            Code_Display_DrawFastVLine,
+            Code_Display_DrawFastHLine,
+            Code_Display_FillRect,
+            Code_Display_FillScreen,
+            Code_Display_DrawLine,
+            Code_Display_DrawRect,
+            Code_Display_DrawCircle,
+            Code_Display_FillCircle,
+            Code_Display_DrawTriangle,
+            Code_Display_FillTriangle,
+            Code_Display_DrawRoundRect,
+            Code_Display_FillRoundRect,
+            Code_Display_SetTextWrap,
+            Code_Display_DrawChar_Square,
+            Code_Display_DrawChar_Rectangle,
+            Code_Display_SetTextSize_Square,
+            Code_Display_SetTextSize_Rectangle,
+            Code_Display_SetTextColor0,
+            Code_Display_SetTextColor1,
+            Code_Display_StartWrite,
+            Code_Display_WritePixel,
+            Code_Display_WriteFillRect,
+            Code_Display_WriteFastVLine,
+            Code_Display_WriteFastHLine,
+            Code_Display_WriteLine,
+            Code_Display_EndWrite,
+
+#define Y(opcode) opcode = X( Code_ ## opcode )
+            // serial operations begin
+            Y(Serial_RW),
+            Y(Serial_Flush),
+            Y(Serial_Baud),
+            // timer operations begin
+            Y(Timer_CompareValue),
+            Y(Timer_Prescalar),
+            // Display Operations begin
+            Y(Display_RW),
+            Y(Display_Flush),
+            Y(Display_WidthHeight),
+            Y(Display_Rotation),
+            Y(Display_InvertDisplay),
+            Y(Display_ScrollTo),
+            Y(Display_SetScrollMargins),
+            Y(Display_SetAddressWindow),
+            Y(Display_ReadCommand8),
+            Y(Display_CursorX),
+            Y(Display_CursorY),
+            Y(Display_CursorXY),
+            Y(Display_DrawPixel),
+            Y(Display_DrawFastVLine),
+            Y(Display_DrawFastHLine),
+            Y(Display_FillRect),
+            Y(Display_FillScreen),
+            Y(Display_DrawLine),
+            Y(Display_DrawRect),
+            Y(Display_DrawCircle),
+            Y(Display_FillCircle),
+            Y(Display_DrawTriangle),
+            Y(Display_FillTriangle),
+            Y(Display_DrawRoundRect),
+            Y(Display_FillRoundRect),
+            Y(Display_SetTextWrap),
+            Y(Display_DrawChar_Square),
+            Y(Display_DrawChar_Rectangle),
+            Y(Display_SetTextSize_Square),
+            Y(Display_SetTextSize_Rectangle),
+            Y(Display_SetTextColor0),
+            Y(Display_SetTextColor1),
+            Y(Display_StartWrite),
+            Y(Display_WritePixel),
+            Y(Display_WriteFillRect),
+            Y(Display_WriteFastVLine),
+            Y(Display_WriteFastHLine),
+            Y(Display_WriteLine),
+            Y(Display_EndWrite),
+
+
+        };
+#undef Y
+#undef X
+    } // end namespace Operations
     namespace ChipsetBasicFunctions {
 
         namespace Devices {
