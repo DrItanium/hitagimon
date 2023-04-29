@@ -14,22 +14,18 @@ clearScreen() noexcept {
     cortex::ChipsetBasicFunctions::Display::fillScreen(colorBlack);
 }
 // code adapted from graphicstest.ino from the Adafruit_GFX arduino library
-void screenFillTest() noexcept {
+uint64_t screenFillTest() noexcept {
+    uint64_t start = cortex::getSystemCounter();
     cortex::ChipsetBasicFunctions::Console::writeLine("screenFillTest");
     for (int i = 0; i < 256; ++i) {
         cortex::ChipsetBasicFunctions::Display::fillScreen(colors[i]);
     }
+    uint64_t end = cortex::getSystemCounter();
+    return end - start;
 }
-void screenFillTest2() noexcept {
-    cortex::ChipsetBasicFunctions::Console::writeLine("screenFillTest2");
-    int16_t width = static_cast<int16_t>(cortex::ChipsetBasicFunctions::Display::getDisplayWidth());
-    int16_t height = static_cast<int16_t>(cortex::ChipsetBasicFunctions::Display::getDisplayHeight());
-    for (int i = 0; i < 256; ++i) {
-        cortex::ChipsetBasicFunctions::Display::fillRect(0, 0, width, height, colors[i]);
-    }
-}
-void
+uint64_t
 pixelFillTest() noexcept {
+    uint64_t start = cortex::getSystemCounter();
     cortex::ChipsetBasicFunctions::Console::writeLine("pixelFillTest");
     int16_t width = static_cast<int16_t>(cortex::ChipsetBasicFunctions::Display::getDisplayWidth());
     int16_t height = static_cast<int16_t>(cortex::ChipsetBasicFunctions::Display::getDisplayHeight());
@@ -40,9 +36,12 @@ pixelFillTest() noexcept {
         }
         cortex::ChipsetBasicFunctions::Display::endWrite();
     }
+    uint64_t end = cortex::getSystemCounter();
+    return end - start;
 }
-void
+uint64_t
 squareFillTest() noexcept {
+    uint64_t start = cortex::getSystemCounter();
     cortex::ChipsetBasicFunctions::Console::writeLine("squareFillTest");
     int16_t width = static_cast<int16_t>(cortex::ChipsetBasicFunctions::Display::getDisplayWidth());
     int16_t height = static_cast<int16_t>(cortex::ChipsetBasicFunctions::Display::getDisplayHeight());
@@ -57,9 +56,13 @@ squareFillTest() noexcept {
             }
         }
     }
+    uint64_t end = cortex::getSystemCounter();
+    return end - start;
 }
-void
+
+uint64_t
 roundRectTest() noexcept {
+    uint64_t start = cortex::getSystemCounter();
     cortex::ChipsetBasicFunctions::Console::writeLine("roundRectTest");
     int16_t width = static_cast<int16_t>(cortex::ChipsetBasicFunctions::Display::getDisplayWidth());
     int16_t height = static_cast<int16_t>(cortex::ChipsetBasicFunctions::Display::getDisplayHeight());
@@ -75,9 +78,13 @@ roundRectTest() noexcept {
                 i, i, i / 8,
                 cortex::ChipsetBasicFunctions::Display::color565(i, 0, 0) );
     }
+    uint64_t end = cortex::getSystemCounter();
+    return end - start;
 }
-void
+
+uint64_t
 testTriangles() {
+    uint64_t start = cortex::getSystemCounter();
     cortex::ChipsetBasicFunctions::Console::writeLine("testTriangles");
     clearScreen();
     int16_t width = static_cast<int16_t>(cortex::ChipsetBasicFunctions::Display::getDisplayWidth());
@@ -93,13 +100,17 @@ testTriangles() {
                 cortex::ChipsetBasicFunctions::Display::color565(i,i,i)
                 );
     }
+    uint64_t end = cortex::getSystemCounter();
+    return end - start;
 }
 void setup() {
     cortex::ChipsetBasicFunctions::Console::writeLine("HITAGIMON");
     printf("Built on %s at %s\n", __DATE__, __TIME__);
     printf("--------------------------------------------\n\n\n\n");
     printf("NEWLIB Version: %s\n", _NEWLIB_VERSION);
-    printf("Staring counter: %#llx\n", cortex::getSystemCounter());
+    uint64_t start = cortex::getSystemCounter();
+    printf("Staring counter: %#llx\n", start);
+
     colorBlack = cortex::ChipsetBasicFunctions::Display::color565(0,0,0);
     for (int i = 0; i < 256; ++i) {
         colors[i] = cortex::ChipsetBasicFunctions::Display::color565(
@@ -107,14 +118,14 @@ void setup() {
                 static_cast<uint8_t>(random()),
                 static_cast<uint8_t>(random()));
     }
-    screenFillTest();
-    screenFillTest2();
-    pixelFillTest();
-    squareFillTest();
-    roundRectTest();
-    testTriangles();
+    printf("screenFillTest took: %llu\n", screenFillTest());
+    printf("pixelFillTest took: %llu\n", pixelFillTest());
+    printf("squareFillTest took: %llu\n", squareFillTest());
+    printf("roundRectTest took: %llu\n", roundRectTest());
+    printf("testTriangles took: %llu\n", testTriangles());
     cortex::ChipsetBasicFunctions::Console::writeLine("done");
-
+    uint64_t end = cortex::getSystemCounter();
+    printf("All tests took: %llu\n", (end - start));
 }
 void loop() {
     uint64_t start = cortex::getSystemCounter();
