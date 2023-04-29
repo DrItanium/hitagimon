@@ -818,6 +818,28 @@ namespace cortex
             getDisplayRegister(uint8_t index) noexcept {
                 return memory<uint8_t[256]>(Operations::Display_ReadCommand8_RegistersBase)[index];
             }
+            void
+            fillScreen(uint16_t color) noexcept {
+                // this puts strain on the chipset instead of having the i960 handle it since it is doing it anyway
+                memory<uint16_t>(Operations::Display_FillScreen) = color;
+            }
+            void
+            drawRoundRect(int16_t x,
+                               int16_t y,
+                               int16_t w,
+                               int16_t h,
+                               int16_t r,
+                               uint16_t color) noexcept {
+                // have the AVR do the computation
+                static uint16_t args[8] = { 0 };
+                args[0] = x;
+                args[1] = y;
+                args[2] = w;
+                args[3] = h;
+                args[4] = r;
+                args[5] = color;
+                __builtin_i960_synmovq((void*)Operations::Display_DrawRoundRect, args);
+            }
         } // end namespace Display
         void
         begin() noexcept {

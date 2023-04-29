@@ -40,6 +40,24 @@ typedef uint8_t byte;
 void init(void);
 void initVariant(void);
 
+// undefine stdlib's abs if encountered
+#ifdef abs
+#undef abs
+#endif
+
+#define abs(x)       ({ typeof (x) _x = (x); _x > 0 ? _x : -_x; })
+//#define sq(x)        ({ typeof (x) _x = (x); _x * _x; })
+#define min(a,b)     ({ typeof (a) _a = (a); typeof (b) _b = (b); _a < _b ? _a : _b; })
+#define max(a,b)     ({ typeof (a) _a = (a); typeof (b) _b = (b); _a > _b ? _a : _b; })
+//#define round(x)     ({ typeof (x) _x = (x); _x >= 0 ? (long)(_x + 0.5) : (long)(_x - 0.5); })
+//#define radians(deg) ((deg) * DEG_TO_RAD)
+//#define degrees(rad) ((rad) * RAD_TO_DEG)
+#define constrain(x,low,high)     ({ \
+  typeof (x) _x = (x);               \
+  typeof (low) _l = (low);           \
+  typeof (high) _h = (high);         \
+  _x < _l ? _l : _x > _h ? _h : _x; })
+
 unsigned long millis(void);
 unsigned long micros(void);
 void delay(unsigned long ms);
@@ -64,6 +82,8 @@ long map(long value, long fromLow, long fromHigh, long toLow, long toHigh);
 void randomSeed(unsigned long seed);
 long random(long max);
 long random(long min, long max);
+
 #endif
+
 
 #endif //HITAGIMON_ARDUINO_H
