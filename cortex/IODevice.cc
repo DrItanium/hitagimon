@@ -842,8 +842,8 @@ namespace cortex
             uint32_t getDisplayWidthHeight() noexcept {
                 return memory<uint32_t>(Operations::Display_WidthHeight);
             }
-            uint16_t getDisplayWidth() noexcept { return static_cast<uint16_t>(getDisplayWidthHeight() >> 16); }
-            uint16_t getDisplayHeight() noexcept { return static_cast<uint16_t>(getDisplayWidthHeight()); }
+            uint16_t getDisplayHeight() noexcept { return static_cast<uint16_t>(getDisplayWidthHeight() >> 16); }
+            uint16_t getDisplayWidth() noexcept { return static_cast<uint16_t>(getDisplayWidthHeight()); }
             uint8_t getRotation() noexcept { return memory<uint8_t>(Operations::Display_Rotation); }
             void setRotation(uint8_t value) noexcept { memory<uint8_t>(Operations::Display_Rotation) = value; }
             void setAddressWindow(uint16_t a, uint16_t b, uint16_t c, uint16_t d) noexcept { memory<uint64_t>(Operations::Display_SetAddressWindow) = makeLongOrdinal(a, b, c, d); }
