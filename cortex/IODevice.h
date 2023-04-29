@@ -102,6 +102,7 @@ namespace cortex
             void invertDisplay(bool value) noexcept;
             void setScrollMargins(uint16_t a, uint16_t b) noexcept;
             void scrollTo(uint16_t a) noexcept;
+            uint8_t getDisplayRegister(uint8_t index) noexcept;
         }
 #if 0
 
