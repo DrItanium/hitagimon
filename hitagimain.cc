@@ -56,7 +56,12 @@ roundRectTest() noexcept {
     cortex::ChipsetBasicFunctions::Display::fillScreen(colorBlack);
     int w = min(width, height);
     for (int i = 0; i < w; i+= 6) {
-
+        int i2 = i / 2;
+        cortex::ChipsetBasicFunctions::Display::drawRoundRect(
+                cx - i2,
+                cy - i2,
+                i, i, i / 8,
+                cortex::ChipsetBasicFunctions::Display::color565(i, 0, 0) );
     }
 }
 void setup() {
@@ -75,6 +80,7 @@ void setup() {
     screenFillTest();
     pixelFillTest();
     squareFillTest();
+    roundRectTest();
     cortex::ChipsetBasicFunctions::Console::writeLine("done");
 
 }
