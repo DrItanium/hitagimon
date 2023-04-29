@@ -9,12 +9,16 @@
 #include <math.h>
 uint16_t colors[256];
 uint16_t colorBlack = 0;
+void
+clearScreen() noexcept {
+    cortex::ChipsetBasicFunctions::Display::fillScreen(colorBlack);
+}
+// code adapted from graphicstest.ino from the Adafruit_GFX arduino library
 void screenFillTest() noexcept {
     cortex::ChipsetBasicFunctions::Console::writeLine("screenFillTest");
     for (int i = 0; i < 256; ++i) {
         cortex::ChipsetBasicFunctions::Display::fillScreen(colors[i]);
     }
-    cortex::ChipsetBasicFunctions::Display::fillScreen(colorBlack);
 }
 void
 pixelFillTest() noexcept {
@@ -64,6 +68,24 @@ roundRectTest() noexcept {
                 cortex::ChipsetBasicFunctions::Display::color565(i, 0, 0) );
     }
 }
+void
+testTriangles() {
+    cortex::ChipsetBasicFunctions::Console::writeLine("testTriangles");
+    clearScreen();
+    int16_t width = static_cast<int16_t>(cortex::ChipsetBasicFunctions::Display::getDisplayWidth());
+    int16_t height = static_cast<int16_t>(cortex::ChipsetBasicFunctions::Display::getDisplayHeight());
+    int cx = width / 2 - 1;
+    int cy = height / 2 - 1;
+    int n = min(cx, cy);
+    for (int i = 0; i < n; i+=5) {
+        cortex::ChipsetBasicFunctions::Display::drawTriangle(
+                cx, cy - i,
+                cx - i, cy + i,
+                cx + i, cy + i,
+                cortex::ChipsetBasicFunctions::Display::color565(i,i,i)
+                );
+    }
+}
 void setup() {
     cortex::ChipsetBasicFunctions::Console::writeLine("HITAGIMON");
     printf("Built on %s at %s\n", __DATE__, __TIME__);
@@ -81,6 +103,7 @@ void setup() {
     pixelFillTest();
     squareFillTest();
     roundRectTest();
+    testTriangles();
     cortex::ChipsetBasicFunctions::Console::writeLine("done");
 
 }

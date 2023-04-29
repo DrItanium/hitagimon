@@ -840,6 +840,17 @@ namespace cortex
                 args[5] = color;
                 __builtin_i960_synmovq((void*)Operations::Display_DrawRoundRect, args);
             }
+            void drawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color) noexcept {
+                static uint16_t args[8] = { 0 };
+                args[0] = x0;
+                args[1] = y0;
+                args[2] = x1;
+                args[3] = y1;
+                args[4] = x2;
+                args[5] = y2;
+                args[6] = color;
+                __builtin_i960_synmovq((void*)Operations::Display_DrawTriangle, args);
+            }
         } // end namespace Display
         void
         begin() noexcept {
