@@ -4,7 +4,7 @@
 #include <cortex/IODevice.h>
 #include <cortex/IAC.h>
 #include <cortex/SystemCounter.h>
-#include <arduino/Arduino.h>
+#include <arduino/cores/i960/Arduino.h>
 #include <newlib.h>
 #include <math.h>
 uint16_t colors[256];

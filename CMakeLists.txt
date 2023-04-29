@@ -61,9 +61,26 @@ add_library(hitagicortex
 		cortex/ModernCpp.h
 		cortex/Types.h cortex/SystemCounter.h cortex/SystemCounter.cc cortex/ModernGCC.h cortex/ModernGCC.cc cortex/builtins.h cortex/builtins.c cortex/IndirectInterrupts.cc)
 add_library(hitagiarduino
-		arduino/Arduino.h
-		arduino/Arduino.cc
-		arduino/main.cc arduino/wiring.cc arduino/WCharacter.h arduino/Printable.h arduino/Print.h arduino/Print.cc arduino/WString.h arduino/avr/pgmspace.h arduino/WString.cc arduino/avr/dtostrf.h arduino/avr/dtostrf.c arduino/Stream.h arduino/Server.h arduino/Client.h arduino/IPAddress.h arduino/Stream.cc arduino/HardwareSerial.cc arduino/HardwareSerial.h)
+		arduino/cores/i960/Arduino.h
+		arduino/cores/i960/Arduino.cc
+		arduino/cores/i960/main.cc
+		arduino/cores/i960/wiring.cc
+		arduino/cores/i960/WCharacter.h
+		arduino/cores/i960/Printable.h
+		arduino/cores/i960/Print.h
+		arduino/cores/i960/Print.cc
+		arduino/cores/i960/WString.h
+		arduino/cores/i960/avr/pgmspace.h
+		arduino/cores/i960/WString.cc
+		arduino/cores/i960/avr/dtostrf.h
+		arduino/cores/i960/avr/dtostrf.c
+		arduino/cores/i960/Stream.h
+		arduino/cores/i960/Server.h
+		arduino/cores/i960/Client.h
+		arduino/cores/i960/IPAddress.h
+		arduino/cores/i960/Stream.cc
+		arduino/cores/i960/HardwareSerial.cc
+		arduino/cores/i960/HardwareSerial.h)
 add_library(hitagiclips
 		clips/agenda.c
 		clips/agenda.h
