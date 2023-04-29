@@ -773,17 +773,15 @@ namespace cortex
             }
             void
             writeFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color) noexcept {
-                writeLine(x, y, x, y+h -1, color);
-                //memory<uint64_t>(Operations::Display_WriteFastVLine) = makeLongOrdinal(x, y, h, color);
+                memory<uint64_t>(Operations::Display_WriteFastVLine) = makeLongOrdinal(x, y, h, color);
             }
             void
             writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color) noexcept {
-                //memory<uint64_t>(Operations::Display_WriteFastHLine) = makeLongOrdinal(x, y, w, color);
-                writeLine(x, y, x+w - 1, y, color);
+                memory<uint64_t>(Operations::Display_WriteFastHLine) = makeLongOrdinal(x, y, w, color);
             }
             void
             writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) noexcept {
-#if 0
+#if 1
                 static uint16_t args[8] = { 0 };
                 args[0] = x0;
                 args[1] = y0;
@@ -894,17 +892,6 @@ namespace cortex
                 args[5] = y2;
                 args[6] = color;
                 __builtin_i960_synmovq((void*)Operations::Display_DrawTriangle, args);
-            }
-            void
-            fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) noexcept {
-                // have the i960 handle this instead of the AVR
-                // taken from the fillRect implementation in Adafruit_GFX
-                startWrite();
-                for (int i = x; i < x + w; ++i) {
-                    writeFastVLine(i, y, h, color);
-                }
-                endWrite();
-
             }
         } // end namespace Display
         void
