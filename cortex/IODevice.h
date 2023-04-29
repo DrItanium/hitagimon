@@ -64,7 +64,6 @@ namespace cortex
             void begin(unsigned long baud, uint8_t config);
         } // end namespace Console
         namespace Timer {
-            bool available() noexcept;
             /**
              * @brief Get the unixtime of the system
              * @return the unixtime as an unsigned 32-bit number
@@ -78,13 +77,11 @@ namespace cortex
 
         }
         namespace Info {
-            bool available() noexcept;
             IACMessage* getExternalMessage() noexcept;
             uint32_t getCPUClockSpeed() noexcept;
             uint32_t getChipsetClockSpeed() noexcept;
         } // end namespace Info
         namespace Display {
-            bool available() noexcept;
             void flush();
             uint8_t getRotation() noexcept;
             void setRotation(uint8_t value) noexcept;
