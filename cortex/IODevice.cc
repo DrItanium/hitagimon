@@ -773,14 +773,17 @@ namespace cortex
             }
             void
             writeFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color) noexcept {
-                memory<uint64_t>(Operations::Display_WriteFastVLine) = makeLongOrdinal(x, y, h, color);
+                writeLine(x, y, x, y+h -1, color);
+                //memory<uint64_t>(Operations::Display_WriteFastVLine) = makeLongOrdinal(x, y, h, color);
             }
             void
             writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color) noexcept {
-                memory<uint64_t>(Operations::Display_WriteFastHLine) = makeLongOrdinal(x, y, w, color);
+                //memory<uint64_t>(Operations::Display_WriteFastHLine) = makeLongOrdinal(x, y, w, color);
+                writeLine(x, y, x+w - 1, y, color);
             }
             void
             writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) noexcept {
+#if 0
                 static uint16_t args[8] = { 0 };
                 args[0] = x0;
                 args[1] = y0;
@@ -788,6 +791,47 @@ namespace cortex
                 args[3] = y1;
                 args[4] = color;
                 __builtin_i960_synmovq((void*)Operations::Display_WriteLine, args);
+#else
+                // this is a port of the Adafruit_GFX routine over to see if we can't accelerate things
+                int steep = abs(y1 - y0) > abs(x1 - x0);
+                if (steep) {
+                    int tmp = x0;
+                    x0 = y0;
+                    y0 = tmp;
+                    tmp = x1;
+                    x1 = y1;
+                    y1 = tmp;
+                }
+                if (x0 > x1) {
+                    int tmp = x0;
+                    x0 = x1;
+                    x1 = tmp;
+                    tmp = y0;
+                    y0 = y1;
+                    y1 = tmp;
+                }
+                int dx = x1 - x0;
+                int dy = abs(y1 - y0);
+                int err = dx / 2;
+                int ystep = 0;
+                if (y0 < y1) {
+                    ystep = 1;
+                } else {
+                    ystep = -1;
+                }
+                for (; x0 <= x1; ++x0) {
+                    if (steep) {
+                        writePixel(y0, x0, color);
+                    } else {
+                        writePixel(x0, y0, color);
+                    }
+                    err -= dy;
+                    if (err < 0) {
+                        y0 += ystep;
+                        err += dx;
+                    }
+                }
+#endif
             }
             void endWrite() noexcept {
                 memory<uint8_t>(Operations::Display_EndWrite) = 0;
