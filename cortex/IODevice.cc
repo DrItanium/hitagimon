@@ -800,8 +800,8 @@ namespace cortex
             uint32_t getDisplayWidthHeight() noexcept {
                 return memory<uint32_t>(Operations::Display_WidthHeight);
             }
-            uint16_t getDisplayWidth() noexcept { return static_cast<uint16_t>(getDisplayWidthHeight()); }
-            uint16_t getDisplayHeight() noexcept { return static_cast<uint16_t>(getDisplayWidthHeight() >> 16); }
+            uint16_t getDisplayWidth() noexcept { return static_cast<uint16_t>(getDisplayWidthHeight() >> 16); }
+            uint16_t getDisplayHeight() noexcept { return static_cast<uint16_t>(getDisplayWidthHeight()); }
             uint8_t getRotation() noexcept { return memory<uint8_t>(Operations::Display_Rotation); }
             void setRotation(uint8_t value) noexcept { memory<uint8_t>(Operations::Display_Rotation) = value; }
             void setAddressWindow(uint16_t a, uint16_t b, uint16_t c, uint16_t d) noexcept { memory<uint64_t>(Operations::Display_SetAddressWindow) = makeLongOrdinal(a, b, c, d); }
@@ -850,6 +850,17 @@ namespace cortex
                 args[5] = y2;
                 args[6] = color;
                 __builtin_i960_synmovq((void*)Operations::Display_DrawTriangle, args);
+            }
+            void
+            fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) noexcept {
+                // have the i960 handle this instead of the AVR
+                // taken from the fillRect implementation in Adafruit_GFX
+                startWrite();
+                for (int i = x; i < x + w; ++i) {
+                    writeFastVLine(i, y, h, color);
+                }
+                endWrite();
+
             }
         } // end namespace Display
         void

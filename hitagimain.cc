@@ -20,6 +20,14 @@ void screenFillTest() noexcept {
         cortex::ChipsetBasicFunctions::Display::fillScreen(colors[i]);
     }
 }
+void screenFillTest2() noexcept {
+    cortex::ChipsetBasicFunctions::Console::writeLine("screenFillTest2");
+    int16_t width = static_cast<int16_t>(cortex::ChipsetBasicFunctions::Display::getDisplayWidth());
+    int16_t height = static_cast<int16_t>(cortex::ChipsetBasicFunctions::Display::getDisplayHeight());
+    for (int i = 0; i < 256; ++i) {
+        cortex::ChipsetBasicFunctions::Display::fillRect(0, 0, width, height, colors[i]);
+    }
+}
 void
 pixelFillTest() noexcept {
     cortex::ChipsetBasicFunctions::Console::writeLine("pixelFillTest");
@@ -100,6 +108,7 @@ void setup() {
                 static_cast<uint8_t>(random()));
     }
     screenFillTest();
+    screenFillTest2();
     pixelFillTest();
     squareFillTest();
     roundRectTest();
