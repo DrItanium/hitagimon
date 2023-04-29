@@ -34,10 +34,8 @@ extern "C"
 int
 hitagi_gettimeofday(struct timeval* tv, void*) {
     // read the unix time from the rtc connected to the microcontroller
-    if (cortex::ChipsetBasicFunctions::Timer::available()) {
-        uint32_t theTime = cortex::ChipsetBasicFunctions::Timer::unixtime();
-        tv->tv_sec = theTime;
-        tv->tv_usec = theTime * 1000000;
-    }
+    uint32_t theTime = cortex::ChipsetBasicFunctions::Timer::unixtime();
+    tv->tv_sec = theTime;
+    tv->tv_usec = theTime * 1000000;
     return 0;
 }
