@@ -81,33 +81,6 @@ namespace cortex
             uint32_t getCPUClockSpeed() noexcept;
             uint32_t getChipsetClockSpeed() noexcept;
         } // end namespace Info
-        namespace Display {
-            void flush();
-            uint8_t getRotation() noexcept;
-            void setRotation(uint8_t value) noexcept;
-            void write(uint8_t value) noexcept;
-            void drawPixel(int16_t x, int16_t y, uint16_t color) noexcept;
-            void startWrite() noexcept;
-            void writePixel(int16_t x, int16_t y, uint16_t color) noexcept;
-            void writeFillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) noexcept;
-            void writeFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color) noexcept;
-            void writeFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color) noexcept;
-            void writeLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) noexcept;
-            void endWrite() noexcept;
-            uint16_t color565(uint8_t r, uint8_t g, uint8_t b) noexcept;
-            uint32_t getDisplayWidthHeight() noexcept;
-            uint16_t getDisplayWidth() noexcept;
-            uint16_t getDisplayHeight() noexcept;
-            void setAddressWindow(uint16_t a, uint16_t b, uint16_t c, uint16_t d) noexcept;
-            void invertDisplay(bool value) noexcept;
-            void setScrollMargins(uint16_t a, uint16_t b) noexcept;
-            void scrollTo(uint16_t a) noexcept;
-            uint8_t getDisplayRegister(uint8_t index) noexcept;
-            void fillScreen(uint16_t color) noexcept;
-            void drawRoundRect(int16_t x, int16_t y, int16_t w, int16_t h, int16_t r, uint16_t color) noexcept;
-            void drawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color) noexcept;
-            void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) noexcept;
-        }
         namespace DualPortedRam {
             inline void* getDualPortedRamBase() noexcept {
                 return (void*)0xFE002000;
