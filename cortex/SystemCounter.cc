@@ -30,34 +30,26 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace cortex {
     namespace {
         uint64_t coreSystemCounter_ = 0;
-        bool systemCounterEnabled_ = false;
     } // end namespace
     void
     clearSystemCounter() noexcept {
-        if (systemCounterEnabled_) {
-            coreSystemCounter_ = 0;
-        }
+        coreSystemCounter_ = 0;
     }
     uint64_t
     getSystemCounter() noexcept {
         return coreSystemCounter_;
     }
     void
-    enableSystemCounter() noexcept
-    {
-        systemCounterEnabled_ = true;
+    enableSystemCounter() noexcept {
     }
     void
     disableSystemCounter() noexcept {
-        systemCounterEnabled_ = false;
     }
 } // end namespace cortex
 
 void
 IncrementSystemCounter() {
-    if (cortex::systemCounterEnabled_) {
-        ++cortex::coreSystemCounter_;
-    }
+    ++cortex::coreSystemCounter_;
 }
 
 extern "C"
