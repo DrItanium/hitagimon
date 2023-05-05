@@ -39,7 +39,44 @@ namespace cortex
  * @brief Exposure of a chipset timer to the i960, since the chipset is an AVR timer this is a modelling of an AVR 16 bit timer
  */
     struct Timer16 {
-        union {
+    public:
+        enum WavefrontGenerationMode {
+            Normal = 0,
+            PhaseCorrectPWM_8bit,
+            PhaseCorrectPWM_9bit,
+            PhaseCorrectPWM_10bit,
+            CTC_OCRA,
+            FastPWM_8bit,
+            FastPWM_9bit,
+            FastPWM_10bit,
+            PhaseAndFrequencyCorrectPWM_ICR,
+            PhaseAndFrequencyCorrectPWM_OCRA,
+            PhaseCorrectPWM_ICR,
+            PhaseCorrectPWM_OCRA,
+            CTC_ICR,
+            Reserved,
+            FastPWM_ICR,
+            FastPWM_OCRA,
+        };
+        void begin() volatile noexcept;
+        inline void setCounter(uint16_t value) volatile noexcept { counter_ = value; }
+        inline uint16_t getCounter() const volatile noexcept { return counter_; }
+        inline void setWaveformGenerationMode(WavefrontGenerationMode mode) volatile noexcept {
+            ctl_.bits.wgm0 = (mode >> 0) & 0x1;
+            ctl_.bits.wgm1 = (mode >> 1) & 0x1;
+            ctl_.bits.wgm2 = (mode >> 2) & 0x1;
+            ctl_.bits.wgm3 = (mode >> 3) & 0x1;
+        }
+        inline WavefrontGenerationMode getWaveformGenerationMode() const volatile noexcept {
+            uint8_t result = 0;
+            if (ctl_.bits.wgm0) { result |= (1 << 0); }
+            if (ctl_.bits.wgm1) { result |= (1 << 1); }
+            if (ctl_.bits.wgm2) { result |= (1 << 2); }
+            if (ctl_.bits.wgm3) { result |= (1 << 3); }
+            return static_cast<WavefrontGenerationMode>(result);
+        }
+    private:
+        union ConfigurationRegister {
             uint32_t whole;
             struct {
                 uint32_t wgm0 : 1;
@@ -59,14 +96,13 @@ namespace cortex
                 uint32_t foc_a : 1;
                 uint32_t unused2 : 8;
             } bits;
-        } ctl;
-        uint16_t counter;
-        uint16_t inputCapture;
-        uint16_t outputCompareA;
-        uint16_t outputCompareB;
-        uint16_t outputCompareC;
-        uint16_t unused;
-        void begin() volatile noexcept;
+        } ctl_;
+        uint16_t counter_;
+        uint16_t inputCapture_;
+        uint16_t outputCompareA_;
+        uint16_t outputCompareB_;
+        uint16_t outputCompareC_;
+        uint16_t unused_;
     } __attribute__((packed));
     namespace ChipsetBasicFunctions {
 

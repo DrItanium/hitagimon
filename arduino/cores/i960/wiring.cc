@@ -47,6 +47,6 @@ void init()
     t1.begin();
     t2.begin();
     t3.begin();
-
     cortex::enableSystemCounter();
+    // setup the prescalar values (6249, 0x2)
 }
