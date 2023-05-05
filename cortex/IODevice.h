@@ -165,25 +165,12 @@ namespace cortex
                 volatile uint8_t unused2 : 8;
             } bits;
         } ctl_;
-        volatile uint8_t cfga_;
-        volatile uint8_t cfgb_;
-        volatile uint8_t cfgc_;
-        volatile uint8_t unsued0_;
         volatile uint16_t counter_;
         volatile uint16_t inputCapture_;
         volatile uint16_t outputCompareA_;
         volatile uint16_t outputCompareB_;
         volatile uint16_t outputCompareC_;
         volatile uint16_t unused_;
-    } __attribute__((packed));
-    struct AVRInterface {
-        Port8 portA;
-        Port8 portB;
-        Port8 portC;
-        Port8 portD;
-        Port8 portE;
-        Port8 portF;
-        Port8 portG;
     } __attribute__((packed));
     namespace ChipsetBasicFunctions {
 
