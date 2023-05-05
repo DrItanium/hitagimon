@@ -174,7 +174,6 @@ namespace cortex
         Port8 portE;
         Port8 portF;
         Port8 portG;
-        uint8_t
     } __attribute__((packed));
     namespace ChipsetBasicFunctions {
 
