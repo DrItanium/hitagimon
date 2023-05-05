@@ -6,8 +6,6 @@
 #include <cortex/SystemCounter.h>
 #include <Arduino.h>
 #include <newlib.h>
-#include <SPI.h>
-#include <math.h>
 
 void
 setup() {

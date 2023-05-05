@@ -12,44 +12,28 @@ namespace cortex
         enum {
             Code_Info_GetCPUClockSpeed = 0,
             Code_Info_GetChipsetClockSpeed,
-            Code_Info_GetExternalIAC,
 
             Code_Serial_RW = 0x10,
             Code_Serial_Flush,
-            Code_Serial_Baud,
 
             Code_Timer_CompareValue = 0x20,
             Code_Timer_Prescalar,
-            Code_Timer_Unixtime,
 
 
 #define Y(opcode) opcode = X( Code_ ## opcode )
             Y(Info_GetCPUClockSpeed),
             Y(Info_GetChipsetClockSpeed),
-            Y(Info_GetExternalIAC),
             // serial operations begin
             Y(Serial_RW),
             Y(Serial_Flush),
-            Y(Serial_Baud),
             // timer operations begin
             Y(Timer_CompareValue),
             Y(Timer_Prescalar),
-            Y(Timer_Unixtime),
         };
 #undef Y
 #undef X
     } // end namespace Operations
     namespace ChipsetBasicFunctions {
-
-        namespace Devices {
-            enum {
-                Info = 0,
-                Serial,
-                Timer,
-                Display,
-            };
-        }
-
         namespace Console {
 
             uint16_t
@@ -148,10 +132,6 @@ namespace cortex
             uint32_t
             getChipsetClockSpeed() noexcept {
                 return memory<uint32_t>(Operations::Info_GetChipsetClockSpeed);
-            }
-            IACMessage*
-            getExternalMessage() noexcept {
-                return reinterpret_cast<IACMessage*>(Operations::Info_GetExternalIAC);
             }
         }
         void

@@ -59,9 +59,6 @@ namespace cortex
              * @return the number of bytes written
              */
             ssize_t write(char *buffer, size_t nbyte);
-
-            void end();
-            void begin(unsigned long baud, uint8_t config);
         } // end namespace Console
         namespace Timer {
             /**
@@ -77,15 +74,9 @@ namespace cortex
 
         }
         namespace Info {
-            IACMessage* getExternalMessage() noexcept;
             uint32_t getCPUClockSpeed() noexcept;
             uint32_t getChipsetClockSpeed() noexcept;
         } // end namespace Info
-        namespace DualPortedRam {
-            inline void* getDualPortedRamBase() noexcept {
-                return (void*)0xFE002000;
-            }
-        }
         void begin() noexcept;
     } // end namespace ChipsetBasicFunctions
     inline uint32_t

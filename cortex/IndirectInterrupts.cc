@@ -36,5 +36,5 @@ vect_ISR1(void) {
     // we let the chipset generate the IAC message that we read in, what's strange is that there is no
     // mention of what to do when we get a _bad_ iac in.
 
-    cortex::sendIAC(cortex::ChipsetBasicFunctions::Info::getExternalMessage());
+    //cortex::sendIAC(cortex::ChipsetBasicFunctions::Info::getExternalMessage());
 }
