@@ -166,6 +166,16 @@ namespace cortex
         uint16_t outputCompareC_;
         uint16_t unused_;
     } __attribute__((packed));
+    struct AVRInterface {
+        Port8 portA;
+        Port8 portB;
+        Port8 portC;
+        Port8 portD;
+        Port8 portE;
+        Port8 portF;
+        Port8 portG;
+        uint8_t
+    } __attribute__((packed));
     namespace ChipsetBasicFunctions {
 
         namespace Console {
