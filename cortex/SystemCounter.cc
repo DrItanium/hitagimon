@@ -40,10 +40,13 @@ namespace cortex {
         return coreSystemCounter_;
     }
     void
-    enableSystemCounter() noexcept {
+    enableSystemCounter(uint16_t compare, uint8_t prescalar) noexcept {
+        cortex::ChipsetBasicFunctions::Timer::getTimer0().setOutputCompareA(compare);
+        cortex::ChipsetBasicFunctions::Timer::getTimer0().setClockPrescaler(prescalar);
     }
     void
     disableSystemCounter() noexcept {
+        cortex::ChipsetBasicFunctions::Timer::getTimer0().setClockPrescaler(0);
     }
 } // end namespace cortex
 
