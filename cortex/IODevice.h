@@ -35,6 +35,27 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "IAC.h"
 namespace cortex
 {
+    struct Port8 {
+        uint8_t input;
+        uint8_t direction;
+        uint8_t output;
+    } __attribute__((packed));
+
+    struct EEPROMInterface {
+        union {
+           uint8_t reg;
+           struct {
+               uint8_t re : 1;
+               uint8_t pe : 1;
+               uint8_t mpe : 1;
+               uint8_t rie : 1;
+               uint8_t pm : 2;
+               uint8_t unused : 2;
+           } bits;
+        } config;
+        uint8_t dataRegister;
+        uint16_t addressRegister : 12;
+    } __attribute__((packed));
 /**
  * @brief Exposure of a chipset timer to the i960, since the chipset is an AVR timer this is a modelling of an AVR 16 bit timer
  */
