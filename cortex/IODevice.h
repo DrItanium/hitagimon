@@ -93,6 +93,14 @@ namespace cortex
         inline void forceOutputCompareOnChannelC(bool enabled) volatile noexcept { ctl_.bits.foc_c = enabled; }
         inline void setConfiguration(uint32_t value) volatile noexcept { ctl_.whole = value; }
         inline uint32_t getConfiguration() const volatile noexcept { return ctl_.whole; }
+        inline void setClockPrescaler(uint8_t value) volatile noexcept {
+            ctl_.bits.cs = value;
+        }
+        inline uint8_t getClockPrescaler() const volatile noexcept { return ctl_.bits.cs; }
+        inline void stop() volatile noexcept { setClockPrescaler(0); }
+        inline void start(uint8_t prescalar) volatile noexcept {
+            setClockPrescaler(prescalar);
+        }
     private:
         union ConfigurationRegister {
             uint32_t whole;
