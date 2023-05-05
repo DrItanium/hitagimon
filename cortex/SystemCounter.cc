@@ -41,8 +41,11 @@ namespace cortex {
     }
     void
     enableSystemCounter(uint16_t compare, uint8_t prescalar) noexcept {
-        cortex::ChipsetBasicFunctions::Timer::getTimer0().setOutputCompareA(compare);
-        cortex::ChipsetBasicFunctions::Timer::getTimer0().setClockPrescaler(prescalar);
+        volatile cortex::Timer16& t0 = cortex::ChipsetBasicFunctions::Timer::getTimer0();
+        t0.setWaveformGenerationMode(cortex::Timer16::CTC_OCRA);
+        t0.setCompareOutputModeA(cortex::Timer16::CompareOutputMode_ToggleOutputComparePinOnMatch);
+        t0.setOutputCompareA(compare);
+        t0.start(prescalar);
     }
     void
     disableSystemCounter() noexcept {

@@ -39,7 +39,6 @@ void init()
     // then setup the system clock to be 200 hz so that we trigger every 10 ms
     // we have a 16-bit counter so the prescalar is 8 (0b010) and the compare is 624
     // this is directly configuring timer 1 on the 2560 acting as chipset
-    volatile cortex::Timer16& t0 = cortex::ChipsetBasicFunctions::Timer::getTimer0();
     //volatile cortex::Timer16& t1 = cortex::ChipsetBasicFunctions::Timer::getTimer1();
     //volatile cortex::Timer16& t2 = cortex::ChipsetBasicFunctions::Timer::getTimer2();
     //volatile cortex::Timer16& t3 = cortex::ChipsetBasicFunctions::Timer::getTimer3();
@@ -47,8 +46,7 @@ void init()
     //t1.begin();
     //t2.begin();
     //t3.begin();
-    t0.setWaveformGenerationMode(cortex::Timer16::CTC_OCRA);
-    t0.setCompareOutputModeA(cortex::Timer16::CompareOutputMode_ToggleOutputComparePinOnMatch);
+    cortex::clearSystemCounter();
     cortex::enableSystemCounter(6249, 0x2);
     // setup the prescalar values (6249, 0x2)
 }
