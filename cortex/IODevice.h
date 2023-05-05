@@ -97,10 +97,10 @@ namespace cortex
         inline void setOutputCompareC(uint16_t value) volatile noexcept { outputCompareC_ = value; }
         inline uint16_t getOutputCompareC() const volatile noexcept { return outputCompareC_ ; }
         inline void setWaveformGenerationMode(WavefrontGenerationMode mode) volatile noexcept {
-            ctl_.bits.wgm0 = (mode >> 0) & 0x1;
-            ctl_.bits.wgm1 = (mode >> 1) & 0x1;
-            ctl_.bits.wgm2 = (mode >> 2) & 0x1;
-            ctl_.bits.wgm3 = (mode >> 3) & 0x1;
+            ctl_.bits.wgm0 = (mode & 0x1) != 0;
+            ctl_.bits.wgm1 = (mode & 0x2) != 0;
+            ctl_.bits.wgm2 = (mode & 0x4) != 0;
+            ctl_.bits.wgm3 = (mode & 0x8) != 0;
         }
         inline WavefrontGenerationMode getWaveformGenerationMode() const volatile noexcept {
             uint8_t result = 0;
@@ -129,42 +129,52 @@ namespace cortex
             setClockPrescaler(prescalar);
         }
         inline void setCompareOutputModeA(CompareOutputMode mode) volatile noexcept {
-            ctl_.bits.coma = mode;
+            ctl_.bits.coma0 = mode & 0x1;
+            ctl_.bits.coma1 = (mode & 0x2) != 0;
         }
         inline void setCompareOutputModeB(CompareOutputMode mode) volatile noexcept {
-            ctl_.bits.comb = mode;
+            ctl_.bits.comb0 = mode & 0x1;
+            ctl_.bits.comb1 = (mode & 0x2) != 0;
         }
         inline void setCompareOutputModeC(CompareOutputMode mode) volatile noexcept {
-            ctl_.bits.comc = mode;
+            ctl_.bits.comc0 = mode & 0x1;
+            ctl_.bits.comc1 = (mode & 0x2) != 0;
         }
     private:
-        union ConfigurationRegister {
-            uint32_t whole;
+        volatile union {
+            volatile uint32_t whole;
             struct {
-                uint32_t wgm0 : 1;
-                uint32_t wgm1 : 1;
-                uint32_t comc : 2;
-                uint32_t comb : 2;
-                uint32_t coma : 2;
-                uint32_t cs : 3;
-                uint32_t wgm2 : 1;
-                uint32_t wgm3 : 1;
-                uint32_t unused0 : 1;
-                uint32_t ices : 1;
-                uint32_t icnc : 1;
-                uint32_t unused1 : 5;
-                uint32_t foc_c : 1;
-                uint32_t foc_b : 1;
-                uint32_t foc_a : 1;
-                uint32_t unused2 : 8;
+                volatile uint8_t wgm0 : 1;
+                volatile uint8_t wgm1 : 1;
+                volatile uint8_t comc0 : 1;
+                volatile uint8_t comc1 : 1;
+                volatile uint8_t comb0 : 1;
+                volatile uint8_t comb1 : 1;
+                volatile uint8_t coma0 : 1;
+                volatile uint8_t coma1 : 1;
+                volatile uint8_t cs : 3;
+                volatile uint8_t wgm2 : 1;
+                volatile uint8_t wgm3 : 1;
+                volatile uint8_t unused0 : 1;
+                volatile uint8_t ices : 1;
+                volatile uint8_t icnc : 1;
+                volatile uint8_t unused1 : 5;
+                volatile uint8_t foc_c : 1;
+                volatile uint8_t foc_b : 1;
+                volatile uint8_t foc_a : 1;
+                volatile uint8_t unused2 : 8;
             } bits;
         } ctl_;
-        uint16_t counter_;
-        uint16_t inputCapture_;
-        uint16_t outputCompareA_;
-        uint16_t outputCompareB_;
-        uint16_t outputCompareC_;
-        uint16_t unused_;
+        volatile uint8_t cfga_;
+        volatile uint8_t cfgb_;
+        volatile uint8_t cfgc_;
+        volatile uint8_t unsued0_;
+        volatile uint16_t counter_;
+        volatile uint16_t inputCapture_;
+        volatile uint16_t outputCompareA_;
+        volatile uint16_t outputCompareB_;
+        volatile uint16_t outputCompareC_;
+        volatile uint16_t unused_;
     } __attribute__((packed));
     struct AVRInterface {
         Port8 portA;
