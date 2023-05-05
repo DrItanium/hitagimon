@@ -61,6 +61,14 @@ namespace cortex
         void begin() volatile noexcept;
         inline void setCounter(uint16_t value) volatile noexcept { counter_ = value; }
         inline uint16_t getCounter() const volatile noexcept { return counter_; }
+        inline void setInputCapture(uint16_t value) volatile noexcept { inputCapture_ = value; }
+        inline uint16_t getInputCapture() const volatile noexcept { return inputCapture_ ; }
+        inline void setOutputCompareA(uint16_t value) volatile noexcept { outputCompareA_ = value; }
+        inline uint16_t getOutputCompareA() const volatile noexcept { return outputCompareA_ ; }
+        inline void setOutputCompareB(uint16_t value) volatile noexcept { outputCompareB_ = value; }
+        inline uint16_t getOutputCompareB() const volatile noexcept { return outputCompareB_ ; }
+        inline void setOutputCompareC(uint16_t value) volatile noexcept { outputCompareC_ = value; }
+        inline uint16_t getOutputCompareC() const volatile noexcept { return outputCompareC_ ; }
         inline void setWaveformGenerationMode(WavefrontGenerationMode mode) volatile noexcept {
             ctl_.bits.wgm0 = (mode >> 0) & 0x1;
             ctl_.bits.wgm1 = (mode >> 1) & 0x1;
@@ -75,6 +83,16 @@ namespace cortex
             if (ctl_.bits.wgm3) { result |= (1 << 3); }
             return static_cast<WavefrontGenerationMode>(result);
         }
+        inline bool inputCaptureNoiseCancelerEnabled() const volatile noexcept { return ctl_.bits.icnc != 0; }
+        inline bool inputCaptureEdgeSelectOnFallingEdge() const volatile noexcept { return ctl_.bits.ices == 0; }
+        inline bool inputCaptureEdgeSelectOnRisingEdge() const volatile noexcept { return ctl_.bits.ices != 0; }
+        inline void setInputCaptureEdgeSelect(bool onRisingEdge) volatile noexcept { ctl_.bits.ices = onRisingEdge; }
+        inline void setInputCaptureNoiseCanceler(bool enabled) volatile noexcept { ctl_.bits.icnc = enabled; }
+        inline void forceOutputCompareOnChannelA(bool enabled) volatile noexcept { ctl_.bits.foc_a = enabled; }
+        inline void forceOutputCompareOnChannelB(bool enabled) volatile noexcept { ctl_.bits.foc_b = enabled; }
+        inline void forceOutputCompareOnChannelC(bool enabled) volatile noexcept { ctl_.bits.foc_c = enabled; }
+        inline void setConfiguration(uint32_t value) volatile noexcept { ctl_.whole = value; }
+        inline uint32_t getConfiguration() const volatile noexcept { return ctl_.whole; }
     private:
         union ConfigurationRegister {
             uint32_t whole;

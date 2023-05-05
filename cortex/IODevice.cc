@@ -132,11 +132,12 @@ namespace cortex
     } // end namespace ChipsetBasicFunctions
     void
     Timer16::begin() volatile noexcept {
-        ctl_.bits.wgm0 = 0;
-        ctl_.bits.wgm1 = 0;
-        ctl_.bits.wgm2 = 1;
-        ctl_.bits.wgm3 = 0;
-        ctl_.bits.cs = 0;
+        ctl_.whole = 0;
         counter_ = 0;
+        inputCapture_ = 0;
+        outputCompareA_ = 0;
+        outputCompareB_ = 0;
+        outputCompareC_ = 0;
+        unused_ = 0;
     }
 } // end namespace cortex
