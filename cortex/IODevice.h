@@ -29,44 +29,45 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef I960SXCHIPSET_IODEVICE_H
 #define I960SXCHIPSET_IODEVICE_H
 #include <stdint.h>
-/**
- * @brief Exposure of a chipset timer to the i960, since the chipset is an AVR timer this is a modelling of an AVR 16 bit timer
- */
-struct Timer16 {
-    union {
-        uint32_t whole;
-        struct {
-            uint32_t wgm0 : 1;
-            uint32_t wgm1 : 1;
-            uint32_t comc : 2;
-            uint32_t comb : 2;
-            uint32_t coma : 2;
-            uint32_t cs : 3;
-            uint32_t wgm2 : 1;
-            uint32_t wgm3 : 1;
-            uint32_t unused0 : 1;
-            uint32_t ices : 1;
-            uint32_t icnc : 1;
-            uint32_t unused1 : 5;
-            uint32_t foc_c : 1;
-            uint32_t foc_b : 1;
-            uint32_t foc_a : 1;
-            uint32_t unused2 : 8;
-        } bits;
-    } ctl;
-    uint16_t counter;
-    uint16_t inputCapture;
-    uint16_t outputCompareA;
-    uint16_t outputCompareB;
-    uint16_t outputCompareC;
-    uint16_t unused;
-} __attribute__((packed));
 #include <unistd.h>
 #include <string>
 #include "ChipsetInteract.h"
 #include "IAC.h"
 namespace cortex
 {
+/**
+ * @brief Exposure of a chipset timer to the i960, since the chipset is an AVR timer this is a modelling of an AVR 16 bit timer
+ */
+    struct Timer16 {
+        union {
+            uint32_t whole;
+            struct {
+                uint32_t wgm0 : 1;
+                uint32_t wgm1 : 1;
+                uint32_t comc : 2;
+                uint32_t comb : 2;
+                uint32_t coma : 2;
+                uint32_t cs : 3;
+                uint32_t wgm2 : 1;
+                uint32_t wgm3 : 1;
+                uint32_t unused0 : 1;
+                uint32_t ices : 1;
+                uint32_t icnc : 1;
+                uint32_t unused1 : 5;
+                uint32_t foc_c : 1;
+                uint32_t foc_b : 1;
+                uint32_t foc_a : 1;
+                uint32_t unused2 : 8;
+            } bits;
+        } ctl;
+        uint16_t counter;
+        uint16_t inputCapture;
+        uint16_t outputCompareA;
+        uint16_t outputCompareB;
+        uint16_t outputCompareC;
+        uint16_t unused;
+        void begin() volatile noexcept;
+    } __attribute__((packed));
     namespace ChipsetBasicFunctions {
 
         namespace Console {
