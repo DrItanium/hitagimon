@@ -5,6 +5,7 @@
 #include <cortex/Types.h>
 #include <cortex/IODevice.h>
 #include <cortex/ChipsetInteract.h>
+
 namespace cortex
 {
     namespace Operations {
@@ -16,8 +17,10 @@ namespace cortex
             Code_Serial_RW = 0x10,
             Code_Serial_Flush,
 
-            Code_Timer_CompareValue = 0x20,
-            Code_Timer_Prescalar,
+            Code_Timer0 = 0x20,
+            Code_Timer1,
+            Code_Timer2,
+            Code_Timer3,
 
 
 #define Y(opcode) opcode = X( Code_ ## opcode )
@@ -27,8 +30,10 @@ namespace cortex
             Y(Serial_RW),
             Y(Serial_Flush),
             // timer operations begin
-            Y(Timer_CompareValue),
-            Y(Timer_Prescalar),
+            Y(Timer0),
+            Y(Timer1),
+            Y(Timer2),
+            Y(Timer3),
         };
 #undef Y
 #undef X
@@ -106,23 +111,10 @@ namespace cortex
             unixtime() noexcept {
                 return 0;
             }
-            void
-            setCompareValue(uint16_t value) noexcept {
-                memory<uint16_t>(Operations::Timer_CompareValue) = value;
-            }
-
-            uint16_t
-            getCompareValue() noexcept {
-                return memory<uint16_t>(Operations::Timer_CompareValue);
-            }
-            void
-            setPrescalar(uint8_t value) noexcept {
-                memory<uint8_t>(Operations::Timer_Prescalar) = value;
-            }
-            uint8_t
-            getPrescalar() noexcept {
-                return memory<uint8_t>(Operations::Timer_Prescalar);
-            }
+            volatile Timer16& getTimer0() noexcept { return memory<Timer16>(Operations::Timer0); }
+            volatile Timer16& getTimer1() noexcept { return memory<Timer16>(Operations::Timer1); }
+            volatile Timer16& getTimer2() noexcept { return memory<Timer16>(Operations::Timer2); }
+            volatile Timer16& getTimer3() noexcept { return memory<Timer16>(Operations::Timer3); }
         } // end namespace RTC
         namespace Info {
             uint32_t
