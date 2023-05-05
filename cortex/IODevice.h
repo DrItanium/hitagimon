@@ -58,6 +58,12 @@ namespace cortex
             FastPWM_ICR,
             FastPWM_OCRA,
         };
+        enum CompareOutputMode {
+            CompareOutputMode_NormalPortOperation = 0,
+            CompareOutputMode_ToggleOutputComparePinOnMatch,
+            CompareOutputMode_ClearOutputComparePinOnMatch,
+            CompareOutputMode_SetOutputComparePinOnMatch,
+        };
         void begin() volatile noexcept;
         inline void setCounter(uint16_t value) volatile noexcept { counter_ = value; }
         inline uint16_t getCounter() const volatile noexcept { return counter_; }
@@ -100,6 +106,15 @@ namespace cortex
         inline void stop() volatile noexcept { setClockPrescaler(0); }
         inline void start(uint8_t prescalar) volatile noexcept {
             setClockPrescaler(prescalar);
+        }
+        inline void setCompareOutputModeA(CompareOutputMode mode) volatile noexcept {
+            ctl_.bits.coma = mode;
+        }
+        inline void setCompareOutputModeB(CompareOutputMode mode) volatile noexcept {
+            ctl_.bits.comb = mode;
+        }
+        inline void setCompareOutputModeC(CompareOutputMode mode) volatile noexcept {
+            ctl_.bits.comc = mode;
         }
     private:
         union ConfigurationRegister {

@@ -48,5 +48,9 @@ void init()
     t2.begin();
     t3.begin();
     cortex::enableSystemCounter();
+    t0.setWaveformGenerationMode(cortex::Timer16::CTC_OCRA);
+    t0.setCompareOutputModeA(cortex::Timer16::CompareOutputMode_ToggleOutputComparePinOnMatch);
+    t0.setOutputCompareA(6249);
+    t0.start(0x2);
     // setup the prescalar values (6249, 0x2)
 }
