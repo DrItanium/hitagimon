@@ -141,36 +141,36 @@ namespace cortex
             ctl_.bits.comc1 = (mode & 0x2) != 0;
         }
     private:
-        volatile union {
-            volatile uint32_t whole;
+        union {
+            uint32_t whole;
             struct {
-                volatile uint8_t wgm0 : 1;
-                volatile uint8_t wgm1 : 1;
-                volatile uint8_t comc0 : 1;
-                volatile uint8_t comc1 : 1;
-                volatile uint8_t comb0 : 1;
-                volatile uint8_t comb1 : 1;
-                volatile uint8_t coma0 : 1;
-                volatile uint8_t coma1 : 1;
-                volatile uint8_t cs : 3;
-                volatile uint8_t wgm2 : 1;
-                volatile uint8_t wgm3 : 1;
-                volatile uint8_t unused0 : 1;
-                volatile uint8_t ices : 1;
-                volatile uint8_t icnc : 1;
-                volatile uint8_t unused1 : 5;
-                volatile uint8_t foc_c : 1;
-                volatile uint8_t foc_b : 1;
-                volatile uint8_t foc_a : 1;
-                volatile uint8_t unused2 : 8;
+                uint8_t wgm0 : 1;
+                uint8_t wgm1 : 1;
+                uint8_t comc0 : 1;
+                uint8_t comc1 : 1;
+                uint8_t comb0 : 1;
+                uint8_t comb1 : 1;
+                uint8_t coma0 : 1;
+                uint8_t coma1 : 1;
+                uint8_t cs : 3;
+                uint8_t wgm2 : 1;
+                uint8_t wgm3 : 1;
+                uint8_t unused0 : 1;
+                uint8_t ices : 1;
+                uint8_t icnc : 1;
+                uint8_t unused1 : 5;
+                uint8_t foc_c : 1;
+                uint8_t foc_b : 1;
+                uint8_t foc_a : 1;
+                uint8_t unused2 : 8;
             } bits;
         } ctl_;
-        volatile uint16_t counter_;
-        volatile uint16_t inputCapture_;
-        volatile uint16_t outputCompareA_;
-        volatile uint16_t outputCompareB_;
-        volatile uint16_t outputCompareC_;
-        volatile uint16_t unused_;
+        uint16_t counter_;
+        uint16_t inputCapture_;
+        uint16_t outputCompareA_;
+        uint16_t outputCompareB_;
+        uint16_t outputCompareC_;
+        uint16_t unused_;
     } __attribute__((packed));
     namespace ChipsetBasicFunctions {
 
