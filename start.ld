@@ -26,33 +26,6 @@ SECTIONS
 		_etext = .; /* define a symbol named _etext and assign it to the
 					   address following the end of the text section data */ 
 
-		___CTOR_LIST__ = .; /* put a symbol __CTOR_LIST__ at this point */ 
-
-		LONG((___CTOR_END__ - ___CTOR_LIST__) / 4 - 2) /* reserve a block of
-														  memory and save the
-														  result of end minus
-														  list start. This will
-														  show up in the final
-														  executable */ 
-
-		KEEP(*(.ctors))		/* Take the contents of the .ctors elf section and
-						   place it here, this is how you can request custom
-						   sections to placed in specific locations */ 
-
-		LONG(0) /* allocate a long's worth of space (4 bytes in this case) and
-				   assign it zero (padding) */ 
-
-		___CTOR_END__ = .; /* define the symbol __CTOR_END__ to be the point
-							  after the previous padding */ 
-
-
-		/* do the same thing again but for the destructors section */ 
-		___DTOR_LIST__ = .;  
-		LONG((___DTOR_END__ - ___DTOR_LIST__) / 4 - 2) 
-		KEEP(*(.dtors))
-		LONG(0) 
-		___DTOR_END__ = .; 
-
 	/* the arrow syntax tells the linker that the text section will go into the
 	 * memory location named "rom", it is sequential as we will see in the next
 	 * few sections*/ 
