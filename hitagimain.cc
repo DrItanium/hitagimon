@@ -4,15 +4,18 @@
 #include <cortex/IODevice.h>
 #include <cortex/IAC.h>
 #include <cortex/SystemCounter.h>
-#include <Arduino.h>
 #include <newlib.h>
+#include <iostream>
+// incompatible with libstdc++!
+// min and max macros must come last
+#include <Arduino.h>
 
 void
 setup() {
     cortex::ChipsetBasicFunctions::Console::writeLine("HITAGIMON");
     printf("Built on %s at %s\n", __DATE__, __TIME__);
     printf("--------------------------------------------\n\n\n\n");
-    printf("NEWLIB Version: %s\n", _NEWLIB_VERSION);
+    std::cout << "NEWLIB Version: " << _NEWLIB_VERSION << std::endl;
     uint64_t start = cortex::getSystemCounter();
     printf("Staring counter: %#llx\n", start);
 }
