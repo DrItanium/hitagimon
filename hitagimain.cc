@@ -4,12 +4,32 @@
 #include <cortex/IODevice.h>
 #include <cortex/IAC.h>
 #include <cortex/SystemCounter.h>
+#include <cortex/builtins.h>
 #include <newlib.h>
 #include <iostream>
-// incompatible with libstdc++!
-// min and max macros must come last
-#include <Arduino.h>
 
+void
+init()
+{
+    // first setup the interrupt control registers
+    // it is int0 is lowest byte and so on
+    __builtin_i960_set_interrupt_control_reg(0xFCFDFEFF);
+    // setup the chipset basic functions as one of the first things we actually do
+    cortex::ChipsetBasicFunctions::begin();
+    // then setup the system clock to be 200 hz so that we trigger every 10 ms
+    // we have a 16-bit counter so the prescalar is 8 (0b010) and the compare is 624
+    // this is directly configuring timer 1 on the 2560 acting as chipset
+    //volatile cortex::Timer16& t1 = cortex::ChipsetBasicFunctions::Timer::getTimer1();
+    //volatile cortex::Timer16& t2 = cortex::ChipsetBasicFunctions::Timer::getTimer2();
+    //volatile cortex::Timer16& t3 = cortex::ChipsetBasicFunctions::Timer::getTimer3();
+    //t0.begin();
+    //t1.begin();
+    //t2.begin();
+    //t3.begin();
+    cortex::clearSystemCounter();
+    cortex::enableSystemCounter(6249, 0x2);
+    // setup the prescalar values (6249, 0x2)
+}
 void
 setup() {
     cortex::ChipsetBasicFunctions::Console::writeLine("HITAGIMON");
@@ -31,12 +51,13 @@ void loop() {
     } while (true);
 }
 
-void yield() {
-
-}
-
-void initVariant() {
-
+int main(void) {
+    init();
+    setup();
+    for (;;) {
+        loop();
+    }
+    return 0;
 }
 
 extern "C"

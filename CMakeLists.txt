@@ -60,27 +60,6 @@ add_library(hitagicortex
 		cortex/IACImplementation.s
 		cortex/ModernCpp.h
 		cortex/Types.h cortex/SystemCounter.h cortex/SystemCounter.cc cortex/ModernGCC.h cortex/ModernGCC.cc cortex/builtins.h cortex/builtins.c cortex/IndirectInterrupts.cc)
-add_library(hitagiarduino
-		arduino/cores/i960/Arduino.h
-		arduino/cores/i960/Arduino.cc
-		arduino/cores/i960/main.cc
-		arduino/cores/i960/wiring.cc
-		arduino/cores/i960/WCharacter.h
-		arduino/cores/i960/Printable.h
-		arduino/cores/i960/Print.h
-		arduino/cores/i960/Print.cc
-		arduino/cores/i960/WString.h
-		arduino/cores/i960/avr/pgmspace.h
-		arduino/cores/i960/WString.cc
-		arduino/cores/i960/avr/dtostrf.h
-		arduino/cores/i960/avr/dtostrf.c
-		arduino/cores/i960/Stream.h
-		arduino/cores/i960/Server.h
-		arduino/cores/i960/Client.h
-		arduino/cores/i960/IPAddress.h
-		arduino/cores/i960/Stream.cc
-		arduino/cores/i960/HardwareSerial.cc
-		arduino/cores/i960/HardwareSerial.h)
 add_library(hitagiclips
 		clips/agenda.c
 		clips/agenda.h
@@ -435,25 +414,12 @@ add_executable(hitagimon
 		)
 
 
-#add_executable(embeddedboot
-#		boot/sx_init.s # this must ALWAYS be first!
-#		boot/f_table.s
-#		boot/i_handle.s
-#		boot/i_table.s
-#		boot/f_handle.cc
-#		boot/macros.s
-#		boot/ISR.cc
-#		hitagimain.cc
-#		)
 
 
 target_include_directories(hitagicortex PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagisys PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagiclips PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagimon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_include_directories(hitagiarduino PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
-		${CMAKE_CURRENT_SOURCE_DIR}/arduino/cores/i960
-		)
 #set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT})
 target_link_libraries(hitagimon
 		#hitagiclips
@@ -462,7 +428,6 @@ target_link_libraries(hitagimon
 		m
 		hitagicortex
 		hitagisys
-		hitagiarduino
 		mon960
 		stdc++
 		c
