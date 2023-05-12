@@ -74,12 +74,6 @@ namespace cortex {
     void testPendingInterrupts() {
         sendIAC(0x41);
     }
-    uint32_t readInterruptState() {
-        return hitagi_readInterruptState();
-    }
-    void setInterruptState(uint32_t value) {
-        hitagi_writeInterruptState(value);
-    }
 
     SystemBase
     getSystemBase() noexcept {

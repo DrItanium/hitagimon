@@ -49,16 +49,3 @@ _sendIACCommand:
 	synmovq g0, g2
 3:	ret
 
-#extern "C" uint32_t hitagi_readInterruptState();
-#extern "C" void hitagi_writeInterruptState(uint32_t value);
-.global _hitagi_readInterruptState
-.global _hitagi_writeInterruptState
-_hitagi_readInterruptState:
-    lda 0xFF000004, r5
-    synld r5, g0
-    ret
-
-_hitagi_writeInterruptState:
-    lda 0xFF000004, r5
-    synmov r5, g0
-    ret
