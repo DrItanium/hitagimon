@@ -4,7 +4,7 @@ enable_language(CXX C ASM-ATT)
 set(CMAKE_CXX_STANDARD 98)
 
 #set(tools /home/jwscoggins/sys/i960-elf-gcc-3.4.6)
-set(tools /home/jwscoggins/dev/i960/i960-elf-gcc-3.4.6_newlib_4.1.0)
+set(tools /home/jwscoggins/dev/i960/i960-elf-gcc-3.4.6_newlib_4.1.0_v2)
 set(CMAKE_C_COMPILER ${tools}/bin/i960-elf-gcc)
 set(CMAKE_CXX_COMPILER ${tools}/bin/i960-elf-g++)
 set(CMAKE_ASM-ATT_COMPILER ${tools}/bin/i960-elf-as)
