@@ -81,10 +81,6 @@ add_library(hitagiarduino
 		arduino/cores/i960/Stream.cc
 		arduino/cores/i960/HardwareSerial.cc
 		arduino/cores/i960/HardwareSerial.h)
-add_library(hitagiSPI
-		arduino/libraries/SPI/SPI.h
-		arduino/libraries/SPI/SPI.cc
-		arduino/libraries/SPI/SPI.h arduino/libraries/SPI/SPI.cc)
 add_library(hitagiclips
 		clips/agenda.c
 		clips/agenda.h
@@ -458,18 +454,12 @@ target_include_directories(hitagimon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagiarduino PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 		${CMAKE_CURRENT_SOURCE_DIR}/arduino/cores/i960
 		)
-target_include_directories(hitagiSPI PUBLIC
-		${CMAKE_CURRENT_SOURCE_DIR}
-		${CMAKE_CURRENT_SOURCE_DIR}/arduino/cores/i960
-		${CMAKE_CURRENT_SOURCE_DIR}/arduino/libraries/SPI
-		)
 #set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT})
 target_link_libraries(hitagimon
 		#hitagiclips
 		gcc
 		c
 		m
-		hitagiSPI
 		hitagicortex
 		hitagisys
 		hitagiarduino
