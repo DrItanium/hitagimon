@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdint.h>
 #include "SysExamine.h"
 #include "ModernCpp.h"
-#include "builtins.h"
 namespace cortex {
     struct IACMessage {
         uint16_t field2;
@@ -54,12 +53,6 @@ namespace cortex {
     PRCB* getPRCB() noexcept;
     SystemBase getSystemBase() noexcept;
     void testPendingInterrupts() noexcept;
-    inline uint32_t readInterruptState() noexcept {
-        return __builtin_i960_get_interrupt_control_reg();
-    }
-    inline void setInterruptState(uint32_t value) noexcept {
-        __builtin_i960_set_interrupt_control_reg(value);
-    }
     void sendIAC(uint8_t type, uint8_t field1 = 0, uint16_t field2 = 0, uint32_t field3 = 0, uint32_t field4 = 0, uint32_t field5 = 0);
     void sendIAC(IACMessage* msg) noexcept;
 }

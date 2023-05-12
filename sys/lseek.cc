@@ -29,13 +29,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <unistd.h>
 #include <errno.h>
 #include <sys/time.h>
-#include "../cortex/IODevice.h"
+#include <cortex/IODevice.h>
 
 extern "C"
 off_t
 hitagi_lseek(int fd, off_t offset, int whence) {
-    //printf("lseek(%d, %ld, %d)\n", fd, offset, whence);
-    /// @todo implement this using an SD Card interface
     if (fd >= 3) {
         errno = EBADF;
         return -1;
