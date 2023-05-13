@@ -71,7 +71,7 @@ add_executable(hitagimon
 
 add_library(hitagiemul
 
-		emulation/m6502.cc emulation/m6502.h)
+		emulation/m6502.cc emulation/m6502.h emulation/Segment.cc emulation/Segment.h)
 
 target_include_directories(hitagiemul PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
