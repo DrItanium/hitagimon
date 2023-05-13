@@ -26,23 +26,4 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Created by jwscoggins on 5/13/23.
 //
 
-#ifndef HITAGIMON_SEGMENT_H
-#define HITAGIMON_SEGMENT_H
-#include <stdint.h>
-/**
- * @brief Describes a block of memory that can be shared between protection domains (like Opal)
- */
-class Segment
-{
-public:
-    Segment(uint32_t size);
-    ~Segment();
-    uint32_t getSize() const { return size_; }
-    inline const uint8_t& operator[](int index) const { return memorySpace_[index]; }
-    inline uint8_t& operator[](int index) { return memorySpace_[index]; }
-private:
-    uint32_t size_;
-    uint8_t* memorySpace_;
-};
-
-#endif //HITAGIMON_SEGMENT_H
+#include "Domain.h"
