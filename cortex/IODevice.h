@@ -57,7 +57,7 @@ namespace cortex
         uint16_t addressRegister : 12;
     } __attribute__((packed));
 /**
- * @brief Exposure of a chipset timer to the i960, since the chipset is an AVR timer this is a modelling of an AVR 16 bit timer
+ * @brief Exposure of a chipset timer to the i960, since the chipset is an m6502 timer this is a modelling of an m6502 16 bit timer
  */
     struct Timer16 {
     public:

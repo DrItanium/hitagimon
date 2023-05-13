@@ -23,19 +23,22 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 //
-// Created by jwscoggins on 7/13/22.
+// Created by jwscoggins on 5/13/23.
 //
 
-#ifndef HITAGIMON_MODERNCPP_H
-#define HITAGIMON_MODERNCPP_H
-#ifdef __cplusplus
-#if __cplusplus < 201103
-// pre c++11
-#define constexpr
-#define noexcept
-//#define explicit
-#define nullptr NULL
-#define static_assert(condition, msg)
-#endif
-#endif
-#endif //HITAGIMON_MODERNCPP_H
+#ifndef HITAGIMON_M6502_H
+#define HITAGIMON_M6502_H
+#include <stdint.h>
+/**
+ * @brief Describes the base m6502 core for example purposes
+ */
+class m6502
+{
+public:
+private:
+    uint32_t code[0x10000];
+    uint16_t data[0x10000];
+    uint16_t stack[0x10000];
+};
+
+#endif //HITAGIMON_M6502_H
