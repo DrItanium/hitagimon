@@ -34,11 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 class m6502
 {
-public:
-private:
-    uint32_t code[0x10000];
-    uint16_t data[0x10000];
-    uint16_t stack[0x10000];
 };
 
 #endif //HITAGIMON_M6502_H
