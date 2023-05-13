@@ -52,8 +52,6 @@ add_library(hitagicortex
 		cortex/IODevice.cc
 		cortex/IODevice.h
 		cortex/ChipsetInteract.h
-		cortex/EnvironmentInterface.cc
-		cortex/EnvironmentInterface.h
 		cortex/Faults.cc
 		cortex/Faults.h
 		cortex/IAC.h
