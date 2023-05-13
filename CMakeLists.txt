@@ -69,8 +69,11 @@ add_executable(hitagimon
 		hitagimain.cc
 		)
 
-
-
+#add_library(hitagiemul
+#
+#		)
+#
+#target_include_directories(hitagiemul PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_include_directories(hitagicortex PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagisys PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
