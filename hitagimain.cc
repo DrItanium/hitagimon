@@ -19,25 +19,17 @@ init()
     // then setup the system clock to be 200 hz so that we trigger every 10 ms
     // we have a 16-bit counter so the prescalar is 8 (0b010) and the compare is 624
     // this is directly configuring timer 1 on the 2560 acting as chipset
-    //volatile cortex::Timer16& t1 = cortex::ChipsetBasicFunctions::Timer::getTimer1();
-    //volatile cortex::Timer16& t2 = cortex::ChipsetBasicFunctions::Timer::getTimer2();
-    //volatile cortex::Timer16& t3 = cortex::ChipsetBasicFunctions::Timer::getTimer3();
-    //t0.begin();
-    //t1.begin();
-    //t2.begin();
-    //t3.begin();
     cortex::clearSystemCounter();
     cortex::enableSystemCounter(6249, 0x2);
-    // setup the prescalar values (6249, 0x2)
 }
 void
 setup() {
-    cortex::ChipsetBasicFunctions::Console::writeLine("HITAGIMON");
-    printf("Built on %s at %s\n", __DATE__, __TIME__);
-    printf("--------------------------------------------\n\n\n\n");
-    std::cout << "NEWLIB Version: " << _NEWLIB_VERSION << std::endl;
-    uint64_t start = cortex::getSystemCounter();
-    printf("Staring counter: %#llx\n", start);
+    std::cout << "HITAGIMON" << std::endl
+              << "Built on " << __DATE__ << " at " << __TIME__ << std::endl
+              << "--------------------------------------------" << std::endl << std::endl << std::endl << std::endl
+              << "NEWLIB Version: " << _NEWLIB_VERSION << std::endl
+              << "Starting counter: 0x" << std::hex << cortex::getSystemCounter() << std::endl;
+
 }
 void loop() {
     uint64_t start = cortex::getSystemCounter();
