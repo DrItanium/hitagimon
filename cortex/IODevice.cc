@@ -8,47 +8,30 @@
 
 namespace cortex
 {
-    namespace Operations {
-#define X(x) ((static_cast<uint32_t>(0xFE) << 24) | ((static_cast<uint32_t>(x) << 4) & 0x00FFFFF0))
-        enum {
-            Code_Info_GetCPUClockSpeed = 0,
-            Code_Info_GetChipsetClockSpeed,
-
-            Code_Serial_RW = 0x10,
-            Code_Serial_Flush,
-
-            Code_Timer0 = 0x20,
-            Code_Timer1,
-            Code_Timer2,
-            Code_Timer3,
-
-
-#define Y(opcode) opcode = X( Code_ ## opcode )
-            Y(Info_GetCPUClockSpeed),
-            Y(Info_GetChipsetClockSpeed),
-            // serial operations begin
-            Y(Serial_RW),
-            Y(Serial_Flush),
-            // timer operations begin
-            Y(Timer0),
-            Y(Timer1),
-            Y(Timer2),
-            Y(Timer3),
-        };
-#undef Y
-#undef X
-    } // end namespace Operations
+    struct IOSpace {
+        uint32_t cpuClockSpeed;
+        uint32_t chipsetClockSpeed;
+        uint32_t SerialRW;
+        uint32_t SerialFlush;
+        Timer16 timer0;
+        Timer16 timer1;
+        Timer16 timer2;
+        Timer16 timer3;
+    } __attribute__((packed));
+    volatile IOSpace& getIOSpace() noexcept {
+        return memory<IOSpace>(0xFE000000);
+    }
     namespace ChipsetBasicFunctions {
         namespace Console {
 
             uint16_t
             read() {
-                return memory<uint16_t>(Operations::Serial_RW);
+                return getIOSpace().SerialRW;
             }
 
             void
             write(uint16_t c) {
-                memory<uint16_t>(Operations::Serial_RW) = c;
+                getIOSpace().SerialRW = c;
             }
 
             void
@@ -57,7 +40,7 @@ namespace cortex
             }
             void
             flush() {
-                memory<uint8_t>(Operations::Serial_Flush) = 0;
+                getIOSpace().SerialFlush = 0;
             }
             void
             write(const char *ptr) {
@@ -111,19 +94,19 @@ namespace cortex
             unixtime() noexcept {
                 return 0;
             }
-            volatile Timer16& getTimer0() noexcept { return memory<Timer16>(Operations::Timer0); }
-            volatile Timer16& getTimer1() noexcept { return memory<Timer16>(Operations::Timer1); }
-            volatile Timer16& getTimer2() noexcept { return memory<Timer16>(Operations::Timer2); }
-            volatile Timer16& getTimer3() noexcept { return memory<Timer16>(Operations::Timer3); }
+            volatile Timer16& getTimer0() noexcept { return getIOSpace().timer0; }
+            volatile Timer16& getTimer1() noexcept { return getIOSpace().timer1; }
+            volatile Timer16& getTimer2() noexcept { return getIOSpace().timer2; }
+            volatile Timer16& getTimer3() noexcept { return getIOSpace().timer3; }
         } // end namespace RTC
         namespace Info {
             uint32_t
             getCPUClockSpeed() noexcept {
-                return memory<uint32_t>(Operations::Info_GetCPUClockSpeed);
+                return getIOSpace().cpuClockSpeed;
             }
             uint32_t
             getChipsetClockSpeed() noexcept {
-                return memory<uint32_t>(Operations::Info_GetChipsetClockSpeed);
+                return getIOSpace().chipsetClockSpeed;
             }
         }
         void

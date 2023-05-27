@@ -46,7 +46,9 @@ inline void __builtin_i960_synmovl(void* dest, void* src) {
 inline void __builtin_i960_synmovq(void* dest, void* src) {
     asm volatile ("synmovq %0, %1" : : "r" (dest) , "r" (src) : "cc", "memory");
 }
-inline uint32_t __builtin_i960_get_interrupt_control_reg() { return __builtin_i960_synld((void*)0xFF000004); }
+inline uint32_t __builtin_i960_get_interrupt_control_reg(void) {
+    return __builtin_i960_synld((void*)0xFF000004);
+}
 inline void __builtin_i960_set_interrupt_control_reg(uint32_t value) {
     // stash the value on the stack
     uint32_t copy = value;
