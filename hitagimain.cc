@@ -30,10 +30,8 @@ setup() {
               << "--------------------------------------------" << std::endl << std::endl << std::endl << std::endl
               << "NEWLIB Version: " << _NEWLIB_VERSION << std::endl
               << "Starting counter: 0x" << std::hex << cortex::getSystemCounter() << std::endl;
-    std::cout << "Enabling Special Space Testing!" << std::endl;
 }
 void loop() {
-#if 0
     uint64_t start = cortex::getSystemCounter();
     do {
         uint64_t now = cortex::getSystemCounter();
@@ -43,9 +41,6 @@ void loop() {
             break;
         }
     } while (true);
-#endif
-    // test out the special space trigger
-    __builtin_i960_synmovq((void*)0xE0000000, (void*)0xEE000000);
 }
 
 int main(void) {
