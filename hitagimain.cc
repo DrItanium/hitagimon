@@ -8,6 +8,7 @@
 #include <newlib.h>
 #include <iostream>
 #include <cortex/ModernGCC.h>
+#include <cortex/ChipsetInteract.h>
 
 void
 init()
@@ -31,23 +32,30 @@ setup() {
               << "NEWLIB Version: " << _NEWLIB_VERSION << std::endl
               << "Starting counter: 0x" << std::hex << cortex::getSystemCounter() << std::endl;
 }
+template<bool specialSpaceIdentification>
 void loop() {
-    uint64_t start = cortex::getSystemCounter();
-    do {
-        uint64_t now = cortex::getSystemCounter();
-        uint64_t difference = now - start;
-        if (difference >= 100) {
-            printf("Counter: %#llx\n", now);
-            break;
-        }
-    } while (true);
+    if (specialSpaceIdentification) {
+        __builtin_i960_syncf();
+        cortex::memory<uint32_t>(0xE0000000) = 0xABCDEF01;
+    } else {
+        uint64_t start = cortex::getSystemCounter();
+        do {
+            uint64_t now = cortex::getSystemCounter();
+            uint64_t difference = now - start;
+            if (difference >= 100) {
+                printf("Counter: %#llx\n", now);
+                break;
+            }
+        } while (true);
+
+    }
 }
 
 int main(void) {
     init();
     setup();
     for (;;) {
-        loop();
+        loop<false>();
     }
     return 0;
 }
