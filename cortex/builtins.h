@@ -106,6 +106,16 @@ inline uint32_t __builtin_i960_getpc(void) {
     asm volatile ("modpc 0, 0, %0" : "=&r" (result) :  : "memory");
     return result;
 }
+#ifdef __HAS_PROTECTED_ARCHITECTURE_EXTENSIONS__
+#define __BUILTIN_I960_MOVSTR
+inline void __builtin_i960_movstr(char* srcBytes, char* destBytes, uint32_t length) {
+    asm volatile ("movstr %0, %1, %2" : : "r" (destBytes) , "r" (srcBytes), "r" (length) : "cc", "memory");
+}
+#define __BUILTIN_I960_MOVQSTR
+inline void __builtin_i960_movqstr(char* srcBytes, char* destBytes, uint32_t length) {
+    asm volatile ("movqstr %0, %1, %2" : : "r" (destBytes) , "r" (srcBytes), "r" (length) : "cc", "memory");
+}
+#endif
 
 #ifdef __cplusplus
 }

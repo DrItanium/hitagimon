@@ -321,12 +321,10 @@ reinitialize_iac:
 
 _init_fp:
     # initialize the floating point registers if it makes sense
-.ifdef __i960SB__
     cvtir   0, fp0
     movre   fp0, fp1
     movre   fp1, fp2
     movre   fp2, fp3
-.endif
     ret
 
 setupInterruptHandler:
