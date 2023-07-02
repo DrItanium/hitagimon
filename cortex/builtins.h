@@ -32,6 +32,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef __cplusplus
 extern "C" {
 #endif
+#if defined(__i960MC__) || defined(__i960SB__) || defined(__i960KB__) || defined(__i960KA__) || defined(__i960XA__)
+#define __HAS_PROTECTED_ARCHITECTURE_EXTENSIONS__ 1
+#define __HAS_NUMERICS_ARCHITECTURE_EXTENSIONS__ 1
+#endif
 inline uint32_t __builtin_i960_synld(void* src) {
     uint32_t dest = 0;
     asm volatile ("synld %1, %0" : "=&r" (dest) : "r" (src) : "cc", "memory");

@@ -16,7 +16,7 @@ namespace cortex {
         uint32_t raw;
         struct {
             uint32_t cc : 3;
-#ifdef __i960SB__
+#ifdef __HAS_NUMERICS_ARCHITECTURE_EXTENSIONS__
             uint32_t arithmeticStatus : 4;
             uint32_t unused0 : 1;
 #else
@@ -27,7 +27,7 @@ namespace cortex {
             uint32_t integerOverflowMask : 1;
             uint32_t unused2 : 2;
             uint32_t noImpreciseFaults : 1;
-#ifdef __i960SB__
+#ifdef __HAS_NUMERICS_ARCHITECTURE_EXTENSIONS__
             uint32_t floatingOverflowFlag : 1;
             uint32_t floatingUnderflowFlag : 1;
             uint32_t floatingInvalidOpFlag : 1;
