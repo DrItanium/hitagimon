@@ -106,16 +106,38 @@ inline uint32_t __builtin_i960_getpc(void) {
     asm volatile ("modpc 0, 0, %0" : "=&r" (result) :  : "memory");
     return result;
 }
+#define __BUILTIN_I960_SYNLD 1
+#define __BUILTIN_I960_SYNMOV 1
+#define __BUILTIN_I960_SYNMOVL 1
+#define __BUILTIN_I960_SYNMOVQ 1
+#define __BUILTIN_I960_GET_INTERRUPT_CONTROL_REG 1
+#define __BUILTIN_I960_SET_INTERRUPT_CONTROL_REG 1
+#define __BUILTIN_I960_FLUSHREG 1
+#define __BUILTIN_I960_MARK 1
+#define __BUILTIN_I960_FMARK 1
+#define __BUILTIN_I960_SYNCF 1
+#define __BUILTIN_I960_GETAC 1
+#define __BUILTIN_I960_SETAC 1
+#define __BUILTIN_I960_MODAC 1
+#define __BUILTIN_I960_MODTC 1
+#define __BUILTIN_I960_SETTC 1
+#define __BUILTIN_I960_GETTC 1
+#define __BUILTIN_I960_MODPC 1
+#define __BUILTIN_I960_SETPC 1
+#define __BUILTIN_I960_GETPC 1
 #ifdef __HAS_PROTECTED_ARCHITECTURE_EXTENSIONS__
-#define __BUILTIN_I960_MOVSTR
+#define __BUILTIN_I960_MOVSTR 1
 inline void __builtin_i960_movstr(char* srcBytes, char* destBytes, uint32_t length) {
     asm volatile ("movstr %0, %1, %2" : : "r" (destBytes) , "r" (srcBytes), "r" (length) : "cc", "memory");
 }
-#define __BUILTIN_I960_MOVQSTR
+#define __BUILTIN_I960_MOVQSTR 1
 inline void __builtin_i960_movqstr(char* srcBytes, char* destBytes, uint32_t length) {
     asm volatile ("movqstr %0, %1, %2" : : "r" (destBytes) , "r" (srcBytes), "r" (length) : "cc", "memory");
 }
-#endif
+#endif // end defined(__HAS_PROTECTED_ARCHITECTURE_EXTENSIONS__)
+#ifdef __HAS_NUMERICS_ARCHITECTURE_EXTENSIONS__
+#endif // end defined(__HAS_NUMERICS_ARCHITECTURE_EXTENSIONS__)
+
 
 #ifdef __cplusplus
 }
