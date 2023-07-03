@@ -68,7 +68,7 @@ user_arithmetic(cortex::FaultData* record) {
 extern "C"
 void
 user_real_arithmetic(cortex::FaultData* record) {
-    basicOperation("USER REAL ARITHMETIC", record, cortex::getUserRealArithmeticFaultHandler());
+    basicOperation("USER FLOATING POINT", record, cortex::getUserFloatingPointFaultHandler());
 }
 extern "C"
 void

@@ -40,16 +40,24 @@ namespace cortex
             RealArithmetic = FloatingPoint,
         };
     }
+#define X(kind) \
+FaultHandler getUser ## kind ## FaultHandler (); \
+                void setUser ## kind ## FaultHandler (FaultHandler)
+    X(Reserved);
+    X(Trace);
+    X(Operation);
+    X(Arithmetic);
+    X(FloatingPoint);
+    X(Constraint);
+    X(Protection);
+    X(VirtualMemory);
+    X(Machine);
+    X(Type);
+    X(Process);
+    X(Descriptor);
+    X(Event);
+#undef X
 
-    FaultHandler getUserReservedFaultHandler();
-    FaultHandler getUserTraceFaultHandler();
-    FaultHandler getUserOperationFaultHandler();
-    FaultHandler getUserArithmeticFaultHandler();
-    FaultHandler getUserRealArithmeticFaultHandler();
-    FaultHandler getUserConstraintFaultHandler();
-    FaultHandler getUserProtectionFaultHandler();
-    FaultHandler getUserMachineFaultHandler();
-    FaultHandler getUserTypeFaultHandler();
     template<UserFaultKind::UserFaultKind kind>
     inline FaultHandler getUserFaultHandler() {
         switch (kind) {
@@ -57,7 +65,7 @@ namespace cortex
             case UserFaultKind::Trace: return getUserTraceFaultHandler();
             case UserFaultKind::Operation: return getUserOperationFaultHandler();
             case UserFaultKind::Arithmetic: return getUserArithmeticFaultHandler();
-            case UserFaultKind::RealArithmetic: return getUserRealArithmeticFaultHandler();
+            case UserFaultKind::FloatingPoint: return getUserFloatingPointFaultHandler();
             case UserFaultKind::Constraint: return getUserConstraintFaultHandler();
             case UserFaultKind::Protection: return getUserProtectionFaultHandler();
             case UserFaultKind::Machine: return getUserMachineFaultHandler();
@@ -66,15 +74,7 @@ namespace cortex
         }
     }
 
-    void setUserReservedFaultHandler(FaultHandler);
-    void setUserTraceFaultHandler(FaultHandler);
-    void setUserOperationFaultHandler(FaultHandler);
-    void setUserArithmeticFaultHandler(FaultHandler);
-    void setUserRealArithmeticFaultHandler(FaultHandler);
-    void setUserConstraintFaultHandler(FaultHandler);
-    void setUserProtectionFaultHandler(FaultHandler);
-    void setUserMachineFaultHandler(FaultHandler);
-    void setUserTypeFaultHandler(FaultHandler);
+
 
     template<UserFaultKind::UserFaultKind kind>
     inline void setUserFaultHandler(FaultHandler handler) {
@@ -83,7 +83,7 @@ namespace cortex
             case UserFaultKind::Trace: setUserTraceFaultHandler(handler); break;
             case UserFaultKind::Operation: setUserOperationFaultHandler(handler); break;
             case UserFaultKind::Arithmetic: setUserArithmeticFaultHandler(handler); break;
-            case UserFaultKind::RealArithmetic: setUserRealArithmeticFaultHandler(handler); break;
+            case UserFaultKind::FloatingPoint: setUserFloatingPointFaultHandler(handler); break;
             case UserFaultKind::Constraint: setUserConstraintFaultHandler(handler); break;
             case UserFaultKind::Protection: setUserProtectionFaultHandler(handler); break;
             case UserFaultKind::Machine: setUserMachineFaultHandler(handler); break;

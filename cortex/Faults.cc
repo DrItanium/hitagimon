@@ -2,21 +2,13 @@
 // Created by jwscoggins on 8/28/21.
 //
 
+#include "ModernGCC.h"
 #include "Faults.h"
 #include "ChipsetInteract.h"
 #include <stdio.h>
 #include <stdint.h>
 namespace cortex
 {
-#if 0
-    volatile unsigned pc;
-        volatile unsigned ac;
-        volatile unsigned int fsubtype: 8,
-                freserved: 8,
-                ftype: 8,
-                fflags: 8;
-        volatile unsigned int *faddress;
-#endif
     void
     FaultData::display() {
         uint8_t ftype = static_cast<uint8_t>(record.type >> 16);
@@ -57,21 +49,20 @@ namespace cortex
         printf("AC: %#lx\n", record.ac);
     }
     namespace {
-        FaultHandler userReserved_ = 0;
-        FaultHandler userTrace_ = 0;
-        FaultHandler userOperation_ = 0;
-        FaultHandler userArithmetic_ = 0;
-        FaultHandler userRealArithmetic_ = 0;
-        FaultHandler userConstraint_ = 0;
-        FaultHandler userProtection_ = 0;
-        FaultHandler userMachine_ = 0;
-        FaultHandler userType_ = 0;
+        FaultHandler userReserved_ = nullptr;
+        FaultHandler userTrace_ = nullptr;
+        FaultHandler userOperation_ = nullptr;
+        FaultHandler userArithmetic_ = nullptr;
+        FaultHandler userFloatingPoint_ = nullptr;
+        FaultHandler userConstraint_ = nullptr;
+        FaultHandler userProtection_ = nullptr;
+        FaultHandler userMachine_ = nullptr;
+        FaultHandler userType_ = nullptr;
     }
     FaultHandler getUserReservedFaultHandler() { return userReserved_; }
     FaultHandler getUserTraceFaultHandler() { return userTrace_; }
     FaultHandler getUserOperationFaultHandler() { return userOperation_; }
     FaultHandler getUserArithmeticFaultHandler() { return userArithmetic_; }
-    FaultHandler getUserRealArithmeticFaultHandler() { return userRealArithmetic_; }
     FaultHandler getUserConstraintFaultHandler() { return userConstraint_; }
     FaultHandler getUserProtectionFaultHandler() { return userProtection_; }
     FaultHandler getUserMachineFaultHandler() { return userMachine_; }
@@ -80,9 +71,11 @@ namespace cortex
     void setUserTraceFaultHandler(FaultHandler handler) { userTrace_ = handler; }
     void setUserOperationFaultHandler(FaultHandler handler) { userOperation_ = handler; }
     void setUserArithmeticFaultHandler(FaultHandler handler) { userArithmetic_ = handler; }
-    void setUserRealArithmeticFaultHandler(FaultHandler handler) { userRealArithmetic_ = handler; }
     void setUserConstraintFaultHandler(FaultHandler handler) { userConstraint_ = handler; }
     void setUserProtectionFaultHandler(FaultHandler handler) { userProtection_ = handler; }
     void setUserMachineFaultHandler(FaultHandler handler) { userMachine_ = handler; }
     void setUserTypeFaultHandler(FaultHandler handler) { userType_ = handler; }
+
+    FaultHandler getUserFloatingPointFaultHandler() { return userFloatingPoint_; }
+    void setUserFloatingPointFaultHandler(FaultHandler handler) { userFloatingPoint_ = handler; }
 }
