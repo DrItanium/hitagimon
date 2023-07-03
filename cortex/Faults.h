@@ -24,11 +24,20 @@ namespace cortex
             Trace,
             Operation,
             Arithmetic,
-            RealArithmetic,
+            FloatingPoint,
             Constraint,
+            VirtualMemory,
             Protection,
             Machine,
+            Structural,
             Type,
+            Reserved1,
+            Process,
+            Descriptor,
+            Event,
+
+            // aliases
+            RealArithmetic = FloatingPoint,
         };
     }
 
