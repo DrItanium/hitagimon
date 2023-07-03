@@ -63,3 +63,47 @@ lda \index, g13
 calls g13
 ret
 .endm
+
+.macro DeclareSegment a, b, c, d
+.word \a
+.word \b
+.word \c
+.word \d
+.endm
+.macro NullSegment
+.space 16
+.endm
+
+.macro SegmentSelector base
+.word ((\base)<<6) | 0x3f
+.endm
+
+.macro SimpleRegion address
+DeclareSegment 0, 0, \address, 0x00fc00a3
+.endm
+
+.macro PagedRegion address, size
+.space 8
+.word \address
+.word ((\size) << 18) | 0x5
+.endm
+
+.macro BipagedRegion address, size
+.space 8
+.word \address
+.word ((\size) << 18) | 0x7
+.endm
+
+.macro PageEntry addr
+.word ((\addr) | 0xc7)
+.endm
+
+.macro SmallSeg addr
+.space 8
+.word \addr
+.word (0x3f << 18) | 0xfb
+.endm
+
+.macro PortSegment addr
+DeclareSegment 0, 0, \addr, 0x204000fb
+.endm

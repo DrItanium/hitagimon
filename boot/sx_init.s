@@ -66,15 +66,6 @@ fault, and system procedure tables, and then vectors to a user defined routine. 
     .word -1
 .align 6
 system_address_table:
-.macro DeclareSegment a, b, c, d
-.word \a
-.word \b
-.word \c
-.word \d
-.endm
-.macro NullSegment
-DeclareSegment 0, 0, 0, 0
-.endm
     NullSegment # 0
     NullSegment # 1
     NullSegment # 2
