@@ -84,19 +84,24 @@ system_address_table:
 # this will be copied to RAM
 prcb_ptr:
     .word 0x0 # 0 - reserved
-    .word 0xc # 4 - initialize to 0xc
+    .word 0xc # 4 - processor state = executing (no virtual address translation)
     .word 0x0 # 8 - reserved
     .word 0x0 # 12 - current process
     .word 0x0 # 16 - dispatch port
-    .word intr_table # 20 - interrupt table address
+    .word intr_table # 20 - interrupt table physical address
     .word _intr_stack # 24 - interrupt stack pointer
     .word 0x0 # 28 - reserved
-    .word 0x000001ff  # 32 - pointer to offset zero
+    .word 0x000001ff  # 32 - pointer to offset zero (region 3 segment selector)
     .word 0x0000027f  # 36 - system procedure table pointer
     .word fault_table # 40 - fault table
     .word 0x0 # 44 - reserved
-    .space 32 # 48 - reserved
-    .space 92 # 80 - scratch space
+    .space 12 # 48 -reserved
+    .word 0   # 60 -reserved
+    .space 8  # 64 - idle time
+    .word 0   # 72 - system error fault
+    .word 0   # 76 - reserved
+    .space 48 # 80 - resumption record
+    .space 44 # 128 - system  error fault record
 
 # the system procedure table will _only_ be used if the user make a supervisor procedure call
     .align 6
