@@ -74,7 +74,8 @@ system_address_table:
     NullSegment # 5
     NullSegment # 6
     DeclareSegment 0, 0, sys_proc_table, 0x304000fb # 7
-    DeclareSegment 0, 0, system_address_table, 0x00fc00fb # 8
+    SimpleRegion system_address_table # 8
+    #DeclareSegment 0, 0, system_address_table, 0x00fc00fb # 8
     DeclareSegment 0, 0, sys_proc_table, 0x304000fb # 9
     DeclareSegment 0, 0, fault_proc_table, 0x304000fb # 10
 .align 6
@@ -85,8 +86,8 @@ prcb_ptr:
     .word 0x0 # 0 - reserved
     .word 0xc # 4 - initialize to 0xc
     .word 0x0 # 8 - reserved
-    .word 0x0 # 12 - reserved
-    .word 0x0 # 16 - reserved
+    .word 0x0 # 12 - current process
+    .word 0x0 # 16 - dispatch port
     .word intr_table # 20 - interrupt table address
     .word _intr_stack # 24 - interrupt stack pointer
     .word 0x0 # 28 - reserved
