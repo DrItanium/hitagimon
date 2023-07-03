@@ -56,7 +56,6 @@ fault, and system procedure tables, and then vectors to a user defined routine. 
 # 8 words
 
 .text
-system_address_table:
     .word system_address_table # SAT pointer
     .word prcb_ptr # prcb pointer
     .word 0
@@ -65,17 +64,28 @@ system_address_table:
     .word 0
     .word 0
     .word -1
-    # now reserve 88 more bytes
-    .space 88
-.macro InitializationWords line0, line1, space=8
-.word \line0
-.word \line1
-.space \space
+.align 6
+system_address_table:
+.macro DeclareSegment a, b, c, d
+.word \a
+.word \b
+.word \c
+.word \d
 .endm
-    InitializationWords sys_proc_table, 0x304000fb
-    InitializationWords system_address_table, 0x00fc00fb
-    InitializationWords sys_proc_table, 0x304000fb
-    InitializationWords fault_proc_table, 0x304000fb, 0
+.macro NullSegment
+DeclareSegment 0, 0, 0, 0
+.endm
+    NullSegment # 0
+    NullSegment # 1
+    NullSegment # 2
+    NullSegment # 3
+    NullSegment # 4
+    NullSegment # 5
+    NullSegment # 6
+    DeclareSegment 0, 0, sys_proc_table, 0x304000fb # 7
+    DeclareSegment 0, 0, system_address_table, 0x00fc00fb # 8
+    DeclareSegment 0, 0, sys_proc_table, 0x304000fb # 9
+    DeclareSegment 0, 0, fault_proc_table, 0x304000fb # 10
 .align 6
 # initial PRCB
 # this is our startup PRCB. After initialization.
