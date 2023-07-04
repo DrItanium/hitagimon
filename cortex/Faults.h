@@ -20,7 +20,7 @@ namespace cortex
     typedef void (*FaultHandler)(FaultData *data);
     namespace UserFaultKind {
         enum UserFaultKind {
-            Reserved,
+            Override,
             Trace,
             Operation,
             Arithmetic,
@@ -43,7 +43,7 @@ namespace cortex
 #define X(kind) \
 FaultHandler getUser ## kind ## FaultHandler (); \
                 void setUser ## kind ## FaultHandler (FaultHandler)
-    X(Reserved);
+    X(Override);
     X(Trace);
     X(Operation);
     X(Arithmetic);
@@ -63,7 +63,7 @@ FaultHandler getUser ## kind ## FaultHandler (); \
     inline FaultHandler getUserFaultHandler() {
         switch (kind) {
 #define X(name) case UserFaultKind:: name : return getUser ## name ## FaultHandler ()
-            X(Reserved);
+            X(Override);
             X(Trace);
             X(Operation);
             X(Arithmetic);
@@ -88,7 +88,7 @@ FaultHandler getUser ## kind ## FaultHandler (); \
     inline void setUserFaultHandler(FaultHandler handler) {
         switch (kind) {
 #define X(name) case UserFaultKind:: name : setUser ## name ## FaultHandler (handler)
-            X(Reserved);
+            X(Override);
             X(Trace);
             X(Operation);
             X(Arithmetic);

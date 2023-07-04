@@ -61,7 +61,7 @@ namespace {     \
 }               \
 FaultHandler getUser ## kind ## FaultHandler () { return user ## kind ## _ ; } \
 void setUser ## kind ## FaultHandler (FaultHandler handler) { user ## kind ## _ = handler; }
-    X(Reserved);
+    X(Override);
     X(Trace);
     X(Operation);
     X(Arithmetic);

@@ -230,7 +230,7 @@ fault_proc_table:
     .word 0 # Preserved
     .word 0 # Preserved
     .word 0 # Preserved
-    FaultTableEntry reserved # entry 0
+    FaultTableEntry override # entry 0
     FaultTableEntry trace
     FaultTableEntry operation
     FaultTableEntry arithmetic
@@ -247,7 +247,7 @@ _user_\()\name\()_core:
 	ret
 .endm
 # We pass the fault data by grabbing it and passing it via g0 to the function itself
-DefFaultDispatcher reserved
+DefFaultDispatcher override
 DefFaultDispatcher trace
 DefFaultDispatcher operation
 DefFaultDispatcher arithmetic

@@ -48,7 +48,7 @@ void                            \
 user_ ## locase (cortex::FaultData* record) { \
     basicOperation( "USER " #hicase , record, cortex::getUser ## kind ## FaultHandler ()); \
 }
-X(Reserved, reserved, RESERVED);
+X(Override, override, OVERRIDE);
 X(Trace, trace, TRACE);
 X(Operation, operation, OPERATION);
 X(Arithmetic, arithmetic, ARITHMETIC);
@@ -61,7 +61,6 @@ X(Process, process, PROCESS);
 X(Descriptor, descriptor, DESCRIPTOR);
 X(Event, event, EVENT);
 #undef X
-
 
 extern "C"
 void
