@@ -48,34 +48,25 @@ namespace cortex
         printf("PC: %#lx\n", record.pc);
         printf("AC: %#lx\n", record.ac);
     }
-    namespace {
-        FaultHandler userReserved_ = nullptr;
-        FaultHandler userTrace_ = nullptr;
-        FaultHandler userOperation_ = nullptr;
-        FaultHandler userArithmetic_ = nullptr;
-        FaultHandler userFloatingPoint_ = nullptr;
-        FaultHandler userConstraint_ = nullptr;
-        FaultHandler userProtection_ = nullptr;
-        FaultHandler userMachine_ = nullptr;
-        FaultHandler userType_ = nullptr;
-    }
-    FaultHandler getUserReservedFaultHandler() { return userReserved_; }
-    FaultHandler getUserTraceFaultHandler() { return userTrace_; }
-    FaultHandler getUserOperationFaultHandler() { return userOperation_; }
-    FaultHandler getUserArithmeticFaultHandler() { return userArithmetic_; }
-    FaultHandler getUserConstraintFaultHandler() { return userConstraint_; }
-    FaultHandler getUserProtectionFaultHandler() { return userProtection_; }
-    FaultHandler getUserMachineFaultHandler() { return userMachine_; }
-    FaultHandler getUserTypeFaultHandler() { return userType_; }
-    void setUserReservedFaultHandler(FaultHandler handler) { userReserved_ = handler; }
-    void setUserTraceFaultHandler(FaultHandler handler) { userTrace_ = handler; }
-    void setUserOperationFaultHandler(FaultHandler handler) { userOperation_ = handler; }
-    void setUserArithmeticFaultHandler(FaultHandler handler) { userArithmetic_ = handler; }
-    void setUserConstraintFaultHandler(FaultHandler handler) { userConstraint_ = handler; }
-    void setUserProtectionFaultHandler(FaultHandler handler) { userProtection_ = handler; }
-    void setUserMachineFaultHandler(FaultHandler handler) { userMachine_ = handler; }
-    void setUserTypeFaultHandler(FaultHandler handler) { userType_ = handler; }
-
-    FaultHandler getUserFloatingPointFaultHandler() { return userFloatingPoint_; }
-    void setUserFloatingPointFaultHandler(FaultHandler handler) { userFloatingPoint_ = handler; }
+#define X(kind) \
+namespace {     \
+    FaultHandler user ## kind ## _ ; \
+}               \
+FaultHandler getUser ## kind ## FaultHandler () { return user ## kind ## _ ; } \
+void setUser ## kind ## FaultHandler (FaultHandler handler) { user ## kind ## _ = handler; }
+    X(Reserved);
+    X(Trace);
+    X(Operation);
+    X(Arithmetic);
+    X(FloatingPoint);
+    X(Constraint);
+    X(VirtualMemory);
+    X(Protection);
+    X(Machine);
+    X(Structural);
+    X(Type);
+    X(Process);
+    X(Descriptor);
+    X(Event);
+#undef X
 }
