@@ -42,51 +42,35 @@ basicOperation(const std::string& kind, cortex::FaultData* record, cortex::Fault
         basicDisplay(kind, record);
     }
 }
+#define X(kind, locase, hicase) \
+extern "C"                      \
+void                            \
+user_ ## locase (cortex::FaultData* record) { \
+    basicOperation( "USER " #hicase , record, cortex::getUser ## kind ## FaultHandler ()); \
+}
+X(Reserved, reserved, RESERVED);
+X(Trace, trace, TRACE);
+X(Operation, operation, OPERATION);
+X(Arithmetic, arithmetic, ARITHMETIC);
+X(Constraint, constraint, CONSTRAINT);
+X(Protection, protection, PROTECTION);
+X(Machine, machine, MACHINE);
+X(Structural, structural, STRUCTURAL);
+X(Type, type, TYPE);
+X(Process, process, PROCESS);
+X(Descriptor, descriptor, DESCRIPTOR);
+X(Event, event, EVENT);
+#undef X
 
-extern "C"
-void
-user_reserved(cortex::FaultData* record) {
-    basicOperation("USER RESERVED", record, cortex::getUserReservedFaultHandler());
-}
 
-extern "C"
-void
-user_trace(cortex::FaultData* record) {
-    basicOperation("USER TRACE", record, cortex::getUserTraceFaultHandler());
-}
-
-extern "C"
-void
-user_operation(cortex::FaultData* record) {
-    basicOperation("USER OPERATION", record, cortex::getUserOperationFaultHandler());
-}
-extern "C"
-void
-user_arithmetic(cortex::FaultData* record) {
-    basicOperation("USER ARITHMETIC", record, cortex::getUserArithmeticFaultHandler());
-}
 extern "C"
 void
 user_real_arithmetic(cortex::FaultData* record) {
     basicOperation("USER FLOATING POINT", record, cortex::getUserFloatingPointFaultHandler());
 }
+
 extern "C"
 void
-user_constraint(cortex::FaultData* record) {
-    basicOperation("USER CONSTRAINT", record, cortex::getUserConstraintFaultHandler());
-}
-extern "C"
-void
-user_protection(cortex::FaultData* record) {
-    basicOperation("USER PROTECTION", record, cortex::getUserProtectionFaultHandler());
-}
-extern "C"
-void
-user_machine(cortex::FaultData* record) {
-    basicOperation("USER MACHINE", record, cortex::getUserMachineFaultHandler());
-}
-extern "C"
-void
-user_type(cortex::FaultData* record) {
-    basicOperation("USER TYPE", record, cortex::getUserTypeFaultHandler());
+user_virtual_memory(cortex::FaultData* record) {
+    basicOperation("USER VIRTUAL MEMORY", record, cortex::getUserVirtualMemoryFaultHandler());
 }

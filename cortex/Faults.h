@@ -56,20 +56,28 @@ FaultHandler getUser ## kind ## FaultHandler (); \
     X(Process);
     X(Descriptor);
     X(Event);
+    X(Structural);
 #undef X
 
     template<UserFaultKind::UserFaultKind kind>
     inline FaultHandler getUserFaultHandler() {
         switch (kind) {
-            case UserFaultKind::Reserved: return getUserReservedFaultHandler();
-            case UserFaultKind::Trace: return getUserTraceFaultHandler();
-            case UserFaultKind::Operation: return getUserOperationFaultHandler();
-            case UserFaultKind::Arithmetic: return getUserArithmeticFaultHandler();
-            case UserFaultKind::FloatingPoint: return getUserFloatingPointFaultHandler();
-            case UserFaultKind::Constraint: return getUserConstraintFaultHandler();
-            case UserFaultKind::Protection: return getUserProtectionFaultHandler();
-            case UserFaultKind::Machine: return getUserMachineFaultHandler();
-            case UserFaultKind::Type: return getUserTypeFaultHandler();
+#define X(name) case UserFaultKind:: name : return getUser ## name ## FaultHandler ()
+            X(Reserved);
+            X(Trace);
+            X(Operation);
+            X(Arithmetic);
+            X(FloatingPoint);
+            X(Constraint);
+            X(VirtualMemory);
+            X(Protection);
+            X(Machine);
+            X(Structural);
+            X(Type);
+            X(Process);
+            X(Descriptor);
+            X(Event);
+#undef X
             default: return nullptr;
         }
     }
@@ -79,15 +87,22 @@ FaultHandler getUser ## kind ## FaultHandler (); \
     template<UserFaultKind::UserFaultKind kind>
     inline void setUserFaultHandler(FaultHandler handler) {
         switch (kind) {
-            case UserFaultKind::Reserved: setUserReservedFaultHandler(handler); break;
-            case UserFaultKind::Trace: setUserTraceFaultHandler(handler); break;
-            case UserFaultKind::Operation: setUserOperationFaultHandler(handler); break;
-            case UserFaultKind::Arithmetic: setUserArithmeticFaultHandler(handler); break;
-            case UserFaultKind::FloatingPoint: setUserFloatingPointFaultHandler(handler); break;
-            case UserFaultKind::Constraint: setUserConstraintFaultHandler(handler); break;
-            case UserFaultKind::Protection: setUserProtectionFaultHandler(handler); break;
-            case UserFaultKind::Machine: setUserMachineFaultHandler(handler); break;
-            case UserFaultKind::Type: setUserTypeFaultHandler(handler); break;
+#define X(name) case UserFaultKind:: name : setUser ## name ## FaultHandler (handler)
+            X(Reserved);
+            X(Trace);
+            X(Operation);
+            X(Arithmetic);
+            X(FloatingPoint);
+            X(Constraint);
+            X(VirtualMemory);
+            X(Protection);
+            X(Machine);
+            X(Structural);
+            X(Type);
+            X(Process);
+            X(Descriptor);
+            X(Event);
+#undef X
             default: break;
         }
     }
