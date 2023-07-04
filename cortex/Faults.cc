@@ -16,13 +16,20 @@ namespace cortex
 
         printf("Fault Type: %x\n", ftype);
         switch (ftype) {
+            case 0: printf("\tOverride Fault\n"); break;
             case 1: printf("\tTrace Fault\n"); break;
             case 2: printf("\tOperation Fault\n"); break;
             case 3: printf("\tArithmetic Fault\n"); break;
             case 4: printf("\tFloating-Point Fault\n"); break;
             case 5: printf("\tConstraint Fault\n"); break;
+            case 6: printf("\tVirtual Memory Fault\n"); break;
             case 7: printf("\tProtection Fault\n"); break;
+            case 8: printf("\tMachine Fault\n"); break;
+            case 9: printf("\tStructural Fault\n"); break;
             case 0xa: printf("\tType Fault\n"); break;
+            case 0xc: printf("\tProcess Fault\n"); break;
+            case 0xd: printf("\tDescriptor Fault\n"); break;
+            case 0xe: printf("\tEvent Fault\n"); break;
             default:
                 break;
         }
