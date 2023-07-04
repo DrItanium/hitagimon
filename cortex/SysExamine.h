@@ -156,34 +156,39 @@ namespace cortex {
     } __attribute((packed));
     struct PRCB {
         uint32_t reserved0;
-        uint32_t magicNumber;
-        uint32_t reserved1[3];
+        union {
+            uint32_t raw;
+            struct {
+
+            };
+
+        } processorState;
+        uint32_t reserved1;
+        uint32_t currentProcess;
+        uint32_t dispatchPort;
         InterruptTable* theInterruptTable;
         void* interruptStack;
         uint32_t reserved2;
-        uint32_t magicNumber1;
-        uint32_t magicNumber2;
+        uint32_t region3SegmentSelector;
+        uint32_t systemProcedureTablePointer;
         FaultTable* theFaultTable;
-        uint32_t reserved3[32];
+        uint32_t reserved3;
+        uint32_t reserved4[3];
+        uint64_t idleTime;
+        uint32_t systemErrorFault;
+        uint32_t reserved5;
+        uint32_t resumptionRecord[12];
+        uint32_t systemErrorFaultRecord[11];
     } __attribute((packed));
     struct SystemAddressTable {
-        SystemAddressTable* satPtr;
+        /// @todo populate once I figure out how to represent it
+    } __attribute((packed));
+    struct BootWords {
+        SystemAddressTable* sat;
         PRCB* thePRCB;
         uint32_t checkWord;
         void (*firstInstruction)();
         uint32_t checkWords[4];
-        uint32_t preserved0[22];
-        SysProcTable* theProcTable0;
-        uint32_t magicNumber0;
-        uint32_t preserved1[2];
-        SystemAddressTable* offset0;
-        uint32_t magicNumber1;
-        uint32_t preserved2[2];
-        SysProcTable* theProcTable1;
-        uint32_t magicNumber2;
-        uint32_t preserved3[2];
-        SysProcTable* traceTable;
-        uint32_t magicNumber3;
     } __attribute((packed));
 }
 #endif //HITAGIMON_SYSEXAMINE_H
