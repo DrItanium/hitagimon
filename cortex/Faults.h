@@ -20,63 +20,22 @@ namespace cortex
     typedef void (*FaultHandler)(FaultData *data);
     namespace UserFaultKind {
         enum UserFaultKind {
-            Override,
-            Trace,
-            Operation,
-            Arithmetic,
-            FloatingPoint,
-            Constraint,
-            VirtualMemory,
-            Protection,
-            Machine,
-            Structural,
-            Type,
-            Reserved1,
-            Process,
-            Descriptor,
-            Event,
-
-            // aliases
-            RealArithmetic = FloatingPoint,
+#define X(name) name ,
+#include "cortex/Faults.def"
+#undef X
         };
     }
 #define X(kind) \
 FaultHandler getUser ## kind ## FaultHandler (); \
-                void setUser ## kind ## FaultHandler (FaultHandler)
-    X(Override);
-    X(Trace);
-    X(Operation);
-    X(Arithmetic);
-    X(FloatingPoint);
-    X(Constraint);
-    X(Protection);
-    X(VirtualMemory);
-    X(Machine);
-    X(Type);
-    X(Process);
-    X(Descriptor);
-    X(Event);
-    X(Structural);
+                void setUser ## kind ## FaultHandler (FaultHandler);
+#include "cortex/Faults.def"
 #undef X
 
     template<UserFaultKind::UserFaultKind kind>
     inline FaultHandler getUserFaultHandler() {
         switch (kind) {
-#define X(name) case UserFaultKind:: name : return getUser ## name ## FaultHandler ()
-            X(Override);
-            X(Trace);
-            X(Operation);
-            X(Arithmetic);
-            X(FloatingPoint);
-            X(Constraint);
-            X(VirtualMemory);
-            X(Protection);
-            X(Machine);
-            X(Structural);
-            X(Type);
-            X(Process);
-            X(Descriptor);
-            X(Event);
+#define X(name) case UserFaultKind:: name : return getUser ## name ## FaultHandler ();
+#include "cortex/Faults.def"
 #undef X
             default: return nullptr;
         }
@@ -87,21 +46,8 @@ FaultHandler getUser ## kind ## FaultHandler (); \
     template<UserFaultKind::UserFaultKind kind>
     inline void setUserFaultHandler(FaultHandler handler) {
         switch (kind) {
-#define X(name) case UserFaultKind:: name : setUser ## name ## FaultHandler (handler)
-            X(Override);
-            X(Trace);
-            X(Operation);
-            X(Arithmetic);
-            X(FloatingPoint);
-            X(Constraint);
-            X(VirtualMemory);
-            X(Protection);
-            X(Machine);
-            X(Structural);
-            X(Type);
-            X(Process);
-            X(Descriptor);
-            X(Event);
+#define X(name) case UserFaultKind:: name : setUser ## name ## FaultHandler (handler);
+#include "cortex/Faults.def"
 #undef X
             default: break;
         }

@@ -44,6 +44,7 @@ add_library(hitagisys
 		sys/link.cc
 		sys/unlink.cc sys/linkage.cc)
 add_library(hitagicortex
+		cortex/Faults.def
 		cortex/IODevice.cc
 		cortex/IODevice.h
 		cortex/ChipsetInteract.h

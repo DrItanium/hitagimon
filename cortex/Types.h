@@ -31,6 +31,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdint.h>
 #include <cortex/ModernCpp.h>
 namespace cortex {
+    union __attribute((packed)) SplitWord8 {
+        uint8_t base;
+        int8_t sbase;
+        uint8_t bytes[1];
+        int8_t sbytes[1];
+        struct {
+            uint32_t p0 : 1;
+            uint32_t p1 : 1;
+            uint32_t p2 : 1;
+            uint32_t p3 : 1;
+            uint32_t p4 : 1;
+            uint32_t p5 : 1;
+            uint32_t p6 : 1;
+            uint32_t p7 : 1;
+        } bits;
+    };
     union __attribute((packed)) SplitWord16 {
         uint16_t base;
         int16_t sbase;
