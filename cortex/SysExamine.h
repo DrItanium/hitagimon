@@ -9,6 +9,12 @@
 #include "ModernCpp.h"
 #include "builtins.h"
 namespace cortex {
+    union ExtendedReal {
+        long double fp;
+        uint8_t byteOrdinals[12];
+        uint16_t shortOrdinals[6];
+        uint32_t ordinals[3];
+    };
     inline uint32_t getSegmentIndex(uint32_t ss) noexcept { return (ss & (~0x3f)) >> 6; }
     /**
      * @brief i960 specific arithmetic controls
@@ -203,7 +209,7 @@ namespace cortex {
         uint32_t nextTimeSlice;
         uint64_t executionTime;
         uint8_t resumptionRecord[44];
-        uint8_t floatingPointRegisters[48]; // 12 bytes * 4
+        ExtendedReal fp[4];
         uint32_t globalRegisters[16];
     } __attribute((packed));
     struct Semaphore {
@@ -267,6 +273,7 @@ namespace cortex {
             uint32_t reserved1 : 4;
             uint32_t segmentType : 4;
         } generic;
+        uint32_t getSegmentLength() const noexcept { return 64 * (generic.size + 1); }
         struct {
             Semaphore data;
             uint32_t reserved1;
