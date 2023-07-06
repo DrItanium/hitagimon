@@ -184,5 +184,8 @@ namespace cortex {
         void (*firstInstruction)();
         uint32_t checkWords[4];
     } __attribute((packed));
+    inline volatile const BootWords& getBootWords() noexcept {
+        return *reinterpret_cast<volatile const BootWords* >(0);
+    }
 }
 #endif //HITAGIMON_SYSEXAMINE_H
