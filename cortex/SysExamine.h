@@ -197,5 +197,26 @@ namespace cortex {
     inline volatile const BootWords& getBootWords() noexcept {
         return *reinterpret_cast<volatile const BootWords* >(0);
     }
+    struct ProcessControlBlock {
+        uint64_t queueRecord;
+        uint32_t receiveMessage;
+        uint32_t dispatchPortSS;
+        uint32_t residualTimeSlice;
+        uint32_t processControls;
+        uint8_t lock;
+        uint32_t processNotice : 24;
+        uint32_t traceControls;
+        uint32_t reserved0[4];
+        uint32_t region0SS;
+        uint32_t region1SS;
+        uint32_t region2SS;
+        uint32_t arithmeticControls;
+        uint32_t reserved1;
+        uint32_t nextTimeSlice;
+        uint64_t executionTime;
+        uint8_t resumptionRecord[44];
+        uint8_t floatingPointRegisters[48]; // 12 bytes * 4
+        uint32_t globalRegisters[16];
+    } __attribute((packed));
 }
 #endif //HITAGIMON_SYSEXAMINE_H
