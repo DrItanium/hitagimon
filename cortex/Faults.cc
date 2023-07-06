@@ -56,24 +56,9 @@ namespace cortex
         printf("AC: %#lx\n", record.ac);
     }
 #define X(kind) \
-namespace {     \
-    FaultHandler user ## kind ## _ ; \
-}               \
+namespace { FaultHandler user ## kind ## _ ; } \
 FaultHandler getUser ## kind ## FaultHandler () { return user ## kind ## _ ; } \
 void setUser ## kind ## FaultHandler (FaultHandler handler) { user ## kind ## _ = handler; }
-    X(Override);
-    X(Trace);
-    X(Operation);
-    X(Arithmetic);
-    X(FloatingPoint);
-    X(Constraint);
-    X(VirtualMemory);
-    X(Protection);
-    X(Machine);
-    X(Structural);
-    X(Type);
-    X(Process);
-    X(Descriptor);
-    X(Event);
+#include "cortex/Faults.def"
 #undef X
 }
