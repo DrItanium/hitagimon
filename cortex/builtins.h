@@ -134,6 +134,13 @@ inline void __builtin_i960_movstr(char* srcBytes, char* destBytes, uint32_t leng
 inline void __builtin_i960_movqstr(char* srcBytes, char* destBytes, uint32_t length) {
     asm volatile ("movqstr %0, %1, %2" : : "r" (destBytes) , "r" (srcBytes), "r" (length) : "cc", "memory");
 }
+
+#define __BUILTIN_I960_INSPACC 1
+inline uint32_t __builtin_i960_inspacc(void* src) {
+    uint32_t dest = 0;
+    asm volatile ("synld %1, %0" : "=&r" (dest) : "r" (src) : "cc", "memory");
+    return dest;
+}
 #endif // end defined(__HAS_PROTECTED_ARCHITECTURE_EXTENSIONS__)
 #ifdef __HAS_NUMERICS_ARCHITECTURE_EXTENSIONS__
 #endif // end defined(__HAS_NUMERICS_ARCHITECTURE_EXTENSIONS__)
