@@ -31,6 +31,12 @@ setup() {
               << "--------------------------------------------" << std::endl << std::endl << std::endl << std::endl
               << "NEWLIB Version: " << _NEWLIB_VERSION << std::endl
               << "Starting counter: 0x" << std::hex << cortex::getSystemCounter() << std::endl;
+
+    std::cout << "Boot Words information: " << std::endl;
+    const volatile cortex::BootWords& theWords = cortex::getBootWords();
+    std::cout << "\tSegment Table Start: 0x" << std::hex << theWords.sat << std::endl;
+    std::cout << "\tBoot PRCB Start: 0x" << std::hex << theWords.thePRCB << std::endl;
+    std::cout << "\tFirst Instruction starts at: 0x" << std::hex << theWords.firstInstruction << std::endl;
 }
 template<bool specialSpaceIdentification>
 void loop() {
