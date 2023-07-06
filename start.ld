@@ -4,7 +4,8 @@ MEMORY /* describe the partitioning of the memory space for the application */
 {
     /* In this redesigned type103 board we have access to 512k of sram, EVERYTHING must fit in there! */
     /* The PSRAM has been removed due to the overhead it incurs */
-    ram (!rx) : ORIGIN = 0, l = 1M
+    rom (!r) : ORIGIN = 0, l = 1M,
+    ram (!rx) : ORIGIN = 1M, l = 1M
     /* Once I get the 32/8 bus up and running, I will be increasing this to significantly larger amount of ram */
 }
 
