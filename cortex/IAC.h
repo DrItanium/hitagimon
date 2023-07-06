@@ -32,7 +32,40 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SysExamine.h"
 #include "ModernCpp.h"
 namespace cortex {
-    struct IACMessage {
+    class IACMessage {
+    public:
+        enum IACMessageKind {
+            Interrupt = 0x40,
+            TestPendingInterrupts = 0x41,
+            StoreSystemBase = 0x80,
+            RestartProcessor = 0x81,
+            StopProcessor = 0x83,
+            FlushLocalRegisters = 0x84,
+            PreemptProcess = 0x85,
+            StoreProcessor = 0x86,
+            FlushProcess = 0x87,
+            FlushTLBPhysicalPage = 0x88,
+            PurgeInstructionCache = 0x89,
+            FlushTLB = 0x8a,
+            FlushTLBSegmentEntry = 0x8b,
+            FlushTLBPageTableEntry = 0x8c,
+            ModifyProcessorControls = 0x8d,
+            WarmstartProcessor = 0x8e,
+            SetBreakpointRegister = 0x8f,
+            CheckProcessNotice = 0x90,
+            Freeze = 0x91,
+            ContinueInitialization = 0x92,
+            ReinitializeProcessor = 0x93,
+        };
+    public:
+        IACMessage(uint8_t t = 0, uint8_t f1 = 0, uint16_t f2 = 0, uint32_t f3 = 0, uint32_t f4 = 0, uint32_t f5 = 0) : field2(f2), field1(f1), type(t), field3(f3), field4(f4), field5(f5) { }
+        inline uint8_t getType() const noexcept { return type; }
+        inline uint8_t getField1() const noexcept { return field1; }
+        inline uint16_t getField2() const noexcept { return field2; }
+        inline uint32_t getField3() const noexcept { return field3; }
+        inline uint32_t getField4() const noexcept { return field4; }
+        inline uint32_t getField5() const noexcept { return field5; }
+    private:
         uint16_t field2;
         uint8_t field1;
         uint8_t type;
@@ -44,47 +77,64 @@ namespace cortex {
         SystemAddressTable* theSAT;
         PRCB* thePRCB;
     };
-    void triggerInterrupt(uint8_t interruptVector) noexcept;
-    void purgeInstructionCache() noexcept;
-    void reinitializeProcessor(SystemAddressTable* sat, PRCB* prcb, void (*start)()) noexcept;
-    void setBreakpointRegister(uint32_t first, uint32_t second) noexcept;
-    void storeSystemBaseAddress(SystemBase* to) noexcept;
     SystemAddressTable* getSystemAddressTable() noexcept;
     PRCB* getPRCB() noexcept;
     SystemBase getSystemBase() noexcept;
-    void testPendingInterrupts() noexcept;
     void sendIAC(uint8_t type, uint8_t field1 = 0, uint16_t field2 = 0, uint32_t field3 = 0, uint32_t field4 = 0, uint32_t field5 = 0);
     void sendIAC(IACMessage* msg) noexcept;
+    inline void triggerInterrupt(uint8_t interruptVector) noexcept {
+        sendIAC(IACMessage::Interrupt, interruptVector);
+    }
+    inline void reinitializeProcessor(SystemAddressTable* sat, PRCB* prcb, void (*start)()) noexcept {
+        sendIAC(IACMessage::ReinitializeProcessor,
+                0,
+                0,
+                reinterpret_cast<uint32_t>(sat),
+                reinterpret_cast<uint32_t>(prcb),
+                reinterpret_cast<uint32_t>(start));
+    }
+    inline void setBreakpointRegister(uint32_t first, uint32_t second) noexcept {
+        sendIAC(IACMessage::SetBreakpointRegister, 0, 0, first, second);
+    }
+    inline void storeSystemBaseAddress(SystemBase* to) noexcept {
+        sendIAC(IACMessage::StoreSystemBase, 0, 0, reinterpret_cast<uint32_t>(to));
+    }
+    inline void purgeInstructionCache() noexcept {
+        sendIAC(IACMessage::PurgeInstructionCache);
+    }
+    inline void testPendingInterrupts() noexcept {
+        sendIAC(IACMessage::TestPendingInterrupts);
+    }
     inline void checkProcessNotice(uint32_t pcbSS) noexcept {
-        sendIAC(0x90, 0, 0, pcbSS);
+        sendIAC(IACMessage::CheckProcessNotice, 0, 0, pcbSS);
     }
     inline void continueInitialization() noexcept {
-        sendIAC(0x92);
+        sendIAC(IACMessage::ContinueInitialization);
     }
     inline void flushLocalRegisters(uint32_t physicalStackPageAddress) noexcept {
-        sendIAC(0x84, 0, 0, physicalStackPageAddress);
+        sendIAC(IACMessage::FlushLocalRegisters, 0, 0, physicalStackPageAddress);
     }
-    inline void flushProcess() noexcept { sendIAC(0x87); }
-    inline void flushTLB() noexcept { sendIAC(0x8a); }
+    inline void flushProcess() noexcept { sendIAC(IACMessage::FlushProcess); }
+    inline void flushTLB() noexcept { sendIAC(IACMessage::FlushTLB); }
     inline void flushTLBPageTableEntry(uint32_t offsetFromSegmentBase, uint32_t ssOfSegmentThatContainsPage) noexcept {
-        sendIAC(0x8C, 0, 0, offsetFromSegmentBase, ssOfSegmentThatContainsPage);
+        sendIAC(IACMessage::FlushTLBPageTableEntry, 0, 0, offsetFromSegmentBase, ssOfSegmentThatContainsPage);
     }
     inline void flushTLBPhysicalPage(uint32_t basePhysicalAddressOfPage) noexcept {
-        sendIAC(0x88, 0, 0, basePhysicalAddressOfPage);
+        sendIAC(IACMessage::FlushTLBPhysicalPage, 0, 0, basePhysicalAddressOfPage);
     }
     inline void flushTLBSegmentEntry(uint32_t ssForSegment) noexcept {
-        sendIAC(0x8B, 0, 0, ssForSegment);
+        sendIAC(IACMessage::FlushTLBSegmentEntry, 0, 0, ssForSegment);
     }
-    inline void freeze() noexcept { sendIAC(0x91); }
-    inline void modifyProcessorControls(uint32_t newProcessorControls, uint32_t mask) noexcept { sendIAC(0x8D, 0,0, newProcessorControls, mask); }
-    inline void preemptProcess() noexcept { sendIAC(0x85); }
+    inline void freeze() noexcept { sendIAC(IACMessage::Freeze); }
+    inline void modifyProcessorControls(uint32_t newProcessorControls, uint32_t mask) noexcept { sendIAC(IACMessage::ModifyProcessorControls, 0,0, newProcessorControls, mask); }
+    inline void preemptProcess() noexcept { sendIAC(IACMessage::PreemptProcess); }
     inline void restartProcessor(uint32_t physicalAddressOfSegmentTable, uint32_t physicalAddressOfPRCB) noexcept {
-        sendIAC(0x81, 0, 0, physicalAddressOfSegmentTable, physicalAddressOfPRCB);
+        sendIAC(IACMessage::RestartProcessor, 0, 0, physicalAddressOfSegmentTable, physicalAddressOfPRCB);
     }
-    inline void stopProcessor() noexcept { sendIAC(0x83); }
-    inline void storeProcessor() noexcept { sendIAC(0x86); }
+    inline void stopProcessor() noexcept { sendIAC(IACMessage::StopProcessor); }
+    inline void storeProcessor() noexcept { sendIAC(IACMessage::StoreProcessor); }
     inline void warmstartProcessor(uint32_t physicalAddressOfSegmentTable, uint32_t physicalAddressOfPRCB) noexcept {
-        sendIAC(0x8e, 0, 0, physicalAddressOfSegmentTable, physicalAddressOfPRCB);
+        sendIAC(IACMessage::WarmstartProcessor, 0, 0, physicalAddressOfSegmentTable, physicalAddressOfPRCB);
     }
 
 }

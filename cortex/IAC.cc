@@ -35,42 +35,8 @@ namespace cortex {
     }
     void
     sendIAC(uint8_t type, uint8_t field1, uint16_t field2, uint32_t field3, uint32_t field4, uint32_t field5) {
-        IACMessage theMessage;
-        theMessage.type = type;
-        theMessage.field1 = field1;
-        theMessage.field2 = field2;
-        theMessage.field3 = field3;
-        theMessage.field4 = field4;
-        theMessage.field5 = field5;
+        IACMessage theMessage(type, field1, field2, field3, field4, field5);
         sendIAC(&theMessage);
-    }
-
-    void
-    triggerInterrupt(uint8_t interruptVector) {
-        sendIAC(0x40, interruptVector);
-    }
-    void
-    purgeInstructionCache() {
-        sendIAC(0x89);
-    }
-    void
-    reinitializeProcessor(SystemAddressTable* sat, PRCB* prcb, void (*start)()) {
-        sendIAC(0x93, 0,
-                      0,
-                      reinterpret_cast<uint32_t>(sat),
-                      reinterpret_cast<uint32_t>(prcb),
-                      reinterpret_cast<uint32_t>(start));
-    }
-    void
-    setBreakpointRegister(uint32_t first, uint32_t second) {
-        sendIAC(0x8F, 0, 0, first, second);
-    }
-    void
-    storeSystemBaseAddress(SystemBase* to) {
-        sendIAC(0x80, 0, 0, reinterpret_cast<uint32_t>(to));
-    }
-    void testPendingInterrupts() {
-        sendIAC(0x41);
     }
 
     SystemBase
