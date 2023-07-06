@@ -218,6 +218,12 @@ namespace cortex {
         uint8_t floatingPointRegisters[48]; // 12 bytes * 4
         uint32_t globalRegisters[16];
     } __attribute((packed));
+    struct Semaphore {
+        uint8_t lock;
+        uint8_t reserved;
+        uint16_t count;
+        uint32_t queueTailSS;
+    };
     union SegmentDescriptor {
         uint32_t backingStorage[4];
         struct {
@@ -232,10 +238,7 @@ namespace cortex {
             uint32_t segmentType : 4;
         } generic;
         struct {
-            uint32_t lock : 8;
-            uint32_t reserved0 : 8;
-            uint32_t count : 16;
-            uint32_t sempahoreQueueTailSS;
+            Semaphore data;
             uint32_t reserved1;
             uint32_t type : 3;
             uint32_t reserved : 25;
@@ -320,13 +323,41 @@ namespace cortex {
             uint32_t size : 6;
             uint32_t reserved2 : 8;
         } largeSegment;
-        uint8_t getTypeCode() const noexcept { return backingStorage[3] & 0x7; }
-        bool valid() const noexcept { return getTypeCode() != 0; }
-        operator bool() const noexcept { return valid(); }
-        bool isSemaphore() const noexcept { return backingStorage[3] == 0x40000001; }
-        bool isLargeSegmentTable() const noexcept { return backingStorage[3] == 0x00FC0005; }
-        bool isSmallSegmentTable() const noexcept { return (backingStorage[3] & 0xFFFFFFBF) == 0x00FC00BB; }
-        bool isProcedureTable() const noexcept { return (backingStorage[3] & 0xFFFFFFBF) == 0x304000BB; }
+        inline uint8_t getTypeCode() const noexcept { return backingStorage[3] & 0x7; }
+        inline bool valid() const noexcept { return getTypeCode() != 0; }
+        inline operator bool() const noexcept { return valid(); }
+        inline bool isSemaphore() const noexcept { return backingStorage[3] == 0x40000001; }
+        inline bool isLargeSegmentTable() const noexcept { return backingStorage[3] == 0x00FC0005; }
+        inline bool isSmallSegmentTable() const noexcept { return (backingStorage[3] & 0xFFFFFFBF) == 0x00FC00BB; }
+        inline bool isProcedureTable() const noexcept { return (backingStorage[3] & 0xFFFFFFBF) == 0x304000BB; }
     } __attribute((packed));
+    union PageEntry {
+        uint32_t raw;
+        struct {
+            uint32_t valid : 1;
+            uint32_t pageRights : 2;
+            uint32_t preserved : 9;
+            uint32_t address : 20;
+        } pageTableDirectoryEntry;
+        struct {
+            uint32_t valid : 1;
+            uint32_t pageRights : 2;
+            uint32_t accessed : 1;
+            uint32_t altered : 1;
+            uint32_t reserved : 1;
+            uint32_t cacheable : 1;
+            uint32_t p7 : 1;
+            uint32_t preserved : 4;
+            uint32_t address : 20;
+        } pageTableEntry;
+        inline uint32_t getBaseAddress() const noexcept { return raw & 0xFFFFF000; }
+        inline bool valid() const noexcept { return (raw&1) != 0;  }
+        inline operator bool() const noexcept { return valid(); }
+        inline bool cacheable() const noexcept { return pageTableEntry.cacheable; }
+        inline bool accessed() const noexcept { return pageTableEntry.accessed; }
+        inline bool altered() const noexcept { return pageTableEntry.altered; }
+        inline uint8_t getPageRights() const noexcept { return pageTableDirectoryEntry.pageRights; }
+
+    };
 }
 #endif //HITAGIMON_SYSEXAMINE_H
