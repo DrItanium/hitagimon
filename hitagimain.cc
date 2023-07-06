@@ -34,9 +34,9 @@ setup() {
 
     std::cout << "Boot Words information: " << std::endl;
     const volatile cortex::BootWords& theWords = cortex::getBootWords();
-    std::cout << "\tSegment Table Start: 0x" << std::hex << theWords.sat << std::endl;
-    std::cout << "\tBoot PRCB Start: 0x" << std::hex << theWords.thePRCB << std::endl;
-    std::cout << "\tFirst Instruction starts at: 0x" << std::hex << theWords.firstInstruction << std::endl;
+    std::cout << "\tSegment Table Start: " << std::hex << theWords.sat << std::endl;
+    std::cout << "\tBoot PRCB Start: " << std::hex << theWords.thePRCB << std::endl;
+    std::cout << "\tFirst Instruction starts at: 0x" << std::hex << reinterpret_cast<uintptr_t>(theWords.firstInstruction) << std::endl;
 }
 template<bool specialSpaceIdentification>
 void loop() {
