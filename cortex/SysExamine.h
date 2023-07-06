@@ -218,5 +218,111 @@ namespace cortex {
         uint8_t floatingPointRegisters[48]; // 12 bytes * 4
         uint32_t globalRegisters[16];
     } __attribute((packed));
+    union SegmentDescriptor {
+        uint32_t backingStorage[4];
+        struct {
+            uint32_t preserved[2];
+            uint32_t baseAddress;
+            uint32_t valid : 1;
+            uint32_t pagingMethod : 2;
+            uint32_t accessStatus : 5;
+            uint32_t reserved0 : 10;
+            uint32_t size : 6;
+            uint32_t reserved1 : 4;
+            uint32_t segmentType : 4;
+        } generic;
+        struct {
+            uint32_t lock : 8;
+            uint32_t reserved0 : 8;
+            uint32_t count : 16;
+            uint32_t sempahoreQueueTailSS;
+            uint32_t reserved1;
+            uint32_t type : 3;
+            uint32_t reserved : 25;
+            uint32_t segmentType : 4;
+        } semaphore;
+        struct {
+            uint32_t preserved[2];
+            uint32_t baseAddress;
+            uint32_t valid : 1;
+            uint32_t pagingMethod : 2;
+            uint32_t accessed : 1;
+            uint32_t altered : 1;
+            uint32_t reserved0 : 1;
+            uint32_t cacheable : 1;
+            uint32_t reserved1 : 11;
+            uint32_t size : 6;
+            uint32_t reserved2 : 8;
+        } simpleRegion;
+        struct {
+            uint32_t preserved[2];
+            uint32_t baseAddress;
+            uint32_t valid : 1;
+            uint32_t pagingMethod : 2;
+            uint32_t reserved1 : 15;
+            uint32_t size : 6;
+            uint32_t reserved2 : 8;
+        } pagedRegion;
+        struct {
+            uint32_t preserved[2];
+            uint32_t baseAddress;
+            uint32_t valid : 1;
+            uint32_t pagingMethod : 2;
+            uint32_t reserved1 : 15;
+            uint32_t size : 6;
+            uint32_t reserved2 : 8;
+        } bipagedRegion;
+        struct {
+            uint32_t preserved[2];
+            uint32_t blockAddress;
+            uint32_t reserved0 : 6;
+            uint32_t cacheable : 1;
+            uint32_t reserved1 : 11;
+            uint32_t size : 6;
+            uint32_t reserved2 : 4;
+            uint32_t segmentType : 4;
+        } pcb;
+        struct {
+            uint32_t preserved[2];
+            uint32_t portAddress;
+            uint32_t reserved0 : 6;
+            uint32_t cacheable : 1;
+            uint32_t reserved1 : 11;
+            uint32_t size : 6;
+            uint32_t reserved2 : 4;
+            uint32_t segmentType : 4;
+        } port;
+        struct {
+            uint32_t preserved[2];
+            uint32_t portAddress;
+            uint32_t reserved0 : 6;
+            uint32_t cacheable : 1;
+            uint32_t reserved1 : 11;
+            uint32_t size : 6;
+            uint32_t reserved2 : 4;
+            uint32_t segmentType : 4;
+        } procedureTable;
+        struct {
+            uint32_t preserved[2];
+            uint32_t segmentTableAddress;
+            uint32_t reserved0 : 6;
+            uint32_t cacheable : 1;
+            uint32_t reserved1 : 11;
+            uint32_t size : 6;
+            uint32_t reserved2 : 4;
+            uint32_t segmentType : 4;
+        } smallSegment;
+        struct {
+            uint32_t preserved[2];
+            uint32_t pageTableAddress;
+            uint32_t type : 3;
+            uint32_t reserved1 : 15;
+            uint32_t size : 6;
+            uint32_t reserved2 : 8;
+        } largeSegment;
+        uint8_t getTypeCode() const noexcept { return backingStorage[3] & 0x7; }
+        bool valid() const noexcept { return getTypeCode() != 0; }
+        operator bool() const noexcept { return valid(); }
+    } __attribute((packed));
 }
 #endif //HITAGIMON_SYSEXAMINE_H
