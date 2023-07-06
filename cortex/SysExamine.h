@@ -323,6 +323,10 @@ namespace cortex {
         uint8_t getTypeCode() const noexcept { return backingStorage[3] & 0x7; }
         bool valid() const noexcept { return getTypeCode() != 0; }
         operator bool() const noexcept { return valid(); }
+        bool isSemaphore() const noexcept { return backingStorage[3] == 0x40000001; }
+        bool isLargeSegmentTable() const noexcept { return backingStorage[3] == 0x00FC0005; }
+        bool isSmallSegmentTable() const noexcept { return (backingStorage[3] & 0xFFFFFFBF) == 0x00FC00BB; }
+        bool isProcedureTable() const noexcept { return (backingStorage[3] & 0xFFFFFFBF) == 0x304000BB; }
     } __attribute((packed));
 }
 #endif //HITAGIMON_SYSEXAMINE_H
