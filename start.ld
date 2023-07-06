@@ -30,7 +30,7 @@ SECTIONS
 	/* the arrow syntax tells the linker that the text section will go into the
 	 * memory location named "rom", it is sequential as we will see in the next
 	 * few sections*/ 
-	} >ram
+	} >rom
 	/* setup the bss section, tag it's start and end positions to allow the
 	 * i960 to manually zero out the memory on the sdcard's ram.bin file */ 
 	.bss : 
