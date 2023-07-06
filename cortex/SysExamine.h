@@ -9,6 +9,7 @@
 #include "ModernCpp.h"
 #include "builtins.h"
 namespace cortex {
+    inline uint32_t getSegmentIndex(uint32_t ss) noexcept { return (ss & (~0x3f)) >> 6; }
     /**
      * @brief i960 specific arithmetic controls
      */
@@ -375,5 +376,12 @@ namespace cortex {
         inline bool isSimpleRegion() const noexcept { return (backingStorage[3] & 0xFFFFFFA1) == 0x00FC00A1; }
         inline bool cacheable() const noexcept { return smallSegment.cacheable; }
     } __attribute((packed));
+    struct SmallSegmentTable {
+        SegmentDescriptor entries[256];
+    };
+    struct LargeSegmentTable {
+        // up to this many entries
+        SegmentDescriptor entries[262144];
+    };
 }
 #endif //HITAGIMON_SYSEXAMINE_H
