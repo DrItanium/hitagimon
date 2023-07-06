@@ -98,7 +98,7 @@ DeclareSegment 0, 0, \address, 0x00fc00a3
 .word ((\addr) | 0xc7)
 .endm
 
-.macro SmallSeg addr
+.macro SmallSegmentTable addr
 .space 8
 .word \addr
 .word (0x3f << 18) | 0xfb
