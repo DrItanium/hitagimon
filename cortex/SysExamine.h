@@ -224,6 +224,48 @@ namespace cortex {
         uint16_t count;
         uint32_t queueTailSS;
     };
+    union PageTableEntry {
+        uint32_t raw;
+        struct {
+            uint32_t valid : 1;
+            uint32_t pageRights : 2;
+            uint32_t accessed : 1;
+            uint32_t altered : 1;
+            uint32_t reserved : 1;
+            uint32_t cacheable : 1;
+            uint32_t p7 : 1;
+            uint32_t preserved : 4;
+            uint32_t address : 20;
+        } bits;
+        inline uint32_t getBaseAddress() const noexcept { return raw & 0xFFFFF000; }
+        inline volatile uint8_t* baseAddress() const noexcept { return reinterpret_cast<volatile uint8_t*>(getBaseAddress()); }
+        inline bool valid() const noexcept { return (raw&1) != 0;  }
+        inline operator bool() const noexcept { return valid(); }
+        inline bool cacheable() const noexcept { return bits.cacheable; }
+        inline bool accessed() const noexcept { return bits.accessed; }
+        inline bool altered() const noexcept { return bits.altered; }
+        inline uint8_t getPageRights() const noexcept { return bits.pageRights; }
+    };
+    struct PageTable {
+        PageTableEntry entries[1024];
+    };
+    union PageTableDirectoryEntry {
+        uint32_t raw;
+        struct {
+            uint32_t valid : 1;
+            uint32_t pageRights : 2;
+            uint32_t preserved : 9;
+            uint32_t address : 20;
+        } bits;
+        inline uint32_t getBaseAddress() const noexcept { return raw & 0xFFFFF000; }
+        inline volatile PageTable* getPageTable() const noexcept { return reinterpret_cast<volatile PageTable*>(getBaseAddress()); }
+        inline bool valid() const noexcept { return (raw&1) != 0;  }
+        inline operator bool() const noexcept { return valid(); }
+        inline uint8_t getPageRights() const noexcept { return bits.pageRights; }
+    };
+    struct PageTableDirectory {
+        PageTableDirectoryEntry entries[1024];
+    };
     union SegmentDescriptor {
         uint32_t backingStorage[4];
         struct {
@@ -330,48 +372,8 @@ namespace cortex {
         inline bool isLargeSegmentTable() const noexcept { return backingStorage[3] == 0x00FC0005; }
         inline bool isSmallSegmentTable() const noexcept { return (backingStorage[3] & 0xFFFFFFBF) == 0x00FC00BB; }
         inline bool isProcedureTable() const noexcept { return (backingStorage[3] & 0xFFFFFFBF) == 0x304000BB; }
+        inline bool isSimpleRegion() const noexcept { return (backingStorage[3] & 0xFFFFFFA1) == 0x00FC00A1; }
+        inline bool cacheable() const noexcept { return smallSegment.cacheable; }
     } __attribute((packed));
-    union PageTableEntry {
-        uint32_t raw;
-        struct {
-            uint32_t valid : 1;
-            uint32_t pageRights : 2;
-            uint32_t accessed : 1;
-            uint32_t altered : 1;
-            uint32_t reserved : 1;
-            uint32_t cacheable : 1;
-            uint32_t p7 : 1;
-            uint32_t preserved : 4;
-            uint32_t address : 20;
-        } bits;
-        inline uint32_t getBaseAddress() const noexcept { return raw & 0xFFFFF000; }
-        inline volatile uint8_t* baseAddress() const noexcept { return reinterpret_cast<volatile uint8_t*>(getBaseAddress()); }
-        inline bool valid() const noexcept { return (raw&1) != 0;  }
-        inline operator bool() const noexcept { return valid(); }
-        inline bool cacheable() const noexcept { return bits.cacheable; }
-        inline bool accessed() const noexcept { return bits.accessed; }
-        inline bool altered() const noexcept { return bits.altered; }
-        inline uint8_t getPageRights() const noexcept { return bits.pageRights; }
-    };
-    struct PageTable {
-        PageTableEntry entries[1024];
-    };
-    union PageTableDirectoryEntry {
-        uint32_t raw;
-        struct {
-            uint32_t valid : 1;
-            uint32_t pageRights : 2;
-            uint32_t preserved : 9;
-            uint32_t address : 20;
-        } bits;
-        inline uint32_t getBaseAddress() const noexcept { return raw & 0xFFFFF000; }
-        inline volatile PageTable* getPageTable() const noexcept { return reinterpret_cast<volatile PageTable*>(getBaseAddress()); }
-        inline bool valid() const noexcept { return (raw&1) != 0;  }
-        inline operator bool() const noexcept { return valid(); }
-        inline uint8_t getPageRights() const noexcept { return bits.pageRights; }
-    };
-    struct PageTableDirectory {
-        PageTableDirectoryEntry entries[1024];
-    };
 }
 #endif //HITAGIMON_SYSEXAMINE_H
