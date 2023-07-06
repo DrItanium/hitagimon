@@ -16,7 +16,7 @@ namespace cortex
 
         printf("Fault Type: %x\n", ftype);
         switch (getFaultKind()) {
-#define X(kind, index) case UserFaultKind:: kind : printf ("\t" #kind " Fault\n" ); break;
+#define X(kind, index, locase, hicase) case UserFaultKind:: kind : printf ("\t" #kind " Fault\n" ); break;
 #include "cortex/Faults.def"
 #undef X
             default:
@@ -44,7 +44,7 @@ namespace cortex
         printf("PC: %#lx\n", pc.raw);
         printf("AC: %#lx\n", ac.raw);
     }
-#define X(kind, index) \
+#define X(kind, index, locase, hicase) \
 namespace { FaultHandler user ## kind ## _ ; } \
 FaultHandler getUser ## kind ## FaultHandler () { return user ## kind ## _ ; } \
 void setUser ## kind ## FaultHandler (FaultHandler handler) { user ## kind ## _ = handler; }

@@ -42,34 +42,11 @@ basicOperation(const std::string& kind, cortex::FaultData* record, cortex::Fault
         basicDisplay(kind, record);
     }
 }
-#define X(kind, locase, hicase) \
+#define X(kind, code, locase, hicase) \
 extern "C"                      \
 void                            \
 user_ ## locase (cortex::FaultData* record) { \
     basicOperation( "USER " #hicase , record, cortex::getUser ## kind ## FaultHandler ()); \
 }
-X(Override, override, OVERRIDE);
-X(Trace, trace, TRACE);
-X(Operation, operation, OPERATION);
-X(Arithmetic, arithmetic, ARITHMETIC);
-X(Constraint, constraint, CONSTRAINT);
-X(Protection, protection, PROTECTION);
-X(Machine, machine, MACHINE);
-X(Structural, structural, STRUCTURAL);
-X(Type, type, TYPE);
-X(Process, process, PROCESS);
-X(Descriptor, descriptor, DESCRIPTOR);
-X(Event, event, EVENT);
+#include "cortex/Faults.def"
 #undef X
-
-extern "C"
-void
-user_real_arithmetic(cortex::FaultData* record) {
-    basicOperation("USER FLOATING POINT", record, cortex::getUserFloatingPointFaultHandler());
-}
-
-extern "C"
-void
-user_virtual_memory(cortex::FaultData* record) {
-    basicOperation("USER VIRTUAL MEMORY", record, cortex::getUserVirtualMemoryFaultHandler());
-}

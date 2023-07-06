@@ -9,7 +9,7 @@ namespace cortex
 {
     namespace UserFaultKind {
         enum UserFaultKind {
-#define X(name, index) name = index,
+#define X(name, index, locase, hicase) name = index,
 #include "cortex/Faults.def"
 #undef X
         };
@@ -36,7 +36,7 @@ namespace cortex
         void display();
         inline UserFaultKind::UserFaultKind getFaultKind() const noexcept {
                 switch (faultInfo.type) {
-#define X(kind, index) case index : return UserFaultKind :: kind ;
+#define X(kind, index, locase, hicase) case index : return UserFaultKind :: kind ;
 #include "cortex/Faults.def"
 #undef X
                     default:
@@ -46,7 +46,7 @@ namespace cortex
     } __attribute__((packed));
 
     typedef void (*FaultHandler)(FaultData *data);
-#define X(kind, index) \
+#define X(kind, index, locase, hicase) \
 FaultHandler getUser ## kind ## FaultHandler (); \
                 void setUser ## kind ## FaultHandler (FaultHandler);
 #include "cortex/Faults.def"
@@ -55,7 +55,7 @@ FaultHandler getUser ## kind ## FaultHandler (); \
     template<UserFaultKind::UserFaultKind kind>
     inline FaultHandler getUserFaultHandler() {
         switch (kind) {
-#define X(name, index) case UserFaultKind:: name : return getUser ## name ## FaultHandler ();
+#define X(name, index, locase, hicase) case UserFaultKind:: name : return getUser ## name ## FaultHandler ();
 #include "cortex/Faults.def"
 #undef X
             default: return nullptr;
@@ -67,7 +67,7 @@ FaultHandler getUser ## kind ## FaultHandler (); \
     template<UserFaultKind::UserFaultKind kind>
     inline void setUserFaultHandler(FaultHandler handler) {
         switch (kind) {
-#define X(name, index) case UserFaultKind:: name : setUser ## name ## FaultHandler (handler);
+#define X(name, index, locase, hicase) case UserFaultKind:: name : setUser ## name ## FaultHandler (handler);
 #include "cortex/Faults.def"
 #undef X
             default: break;

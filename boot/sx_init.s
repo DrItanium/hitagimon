@@ -234,11 +234,17 @@ fault_proc_table:
     FaultTableEntry trace
     FaultTableEntry operation
     FaultTableEntry arithmetic
-    FaultTableEntry real_arithmetic
+    FaultTableEntry floating_point
     FaultTableEntry constraint
+    FaultTableEntry virtual_memory
     FaultTableEntry protection
     FaultTableEntry machine
+    FaultTableEntry structural
     FaultTableEntry type
+    FaultTableEntry process # process
+    FaultTableEntry descriptor
+    FaultTableEntry event
+    FaultTableEntry reserved
 .macro DefFaultDispatcher name
 _user_\()\name\()_core:
 	lda	-48(fp), g0	/* pass fault data */
@@ -251,12 +257,17 @@ DefFaultDispatcher override
 DefFaultDispatcher trace
 DefFaultDispatcher operation
 DefFaultDispatcher arithmetic
-DefFaultDispatcher real_arithmetic
+DefFaultDispatcher floating_point
 DefFaultDispatcher constraint
 DefFaultDispatcher protection
 DefFaultDispatcher machine
 DefFaultDispatcher type
-
+DefFaultDispatcher virtual_memory
+DefFaultDispatcher structural
+DefFaultDispatcher process
+DefFaultDispatcher descriptor
+DefFaultDispatcher event
+DefFaultDispatcher reserved
 .text
  # processor starts execution at this spot upon power-up after self-test.
  start_ip:

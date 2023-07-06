@@ -23,70 +23,45 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 /* fault table */
+.macro FaultEntry index, code=0x2, table=0x2bf
+.word (\index << 2) | \code
+.word \table
+.endm
+.macro ReservedFaultEntry
+FaultEntry 0x10
+.endm
     .globl  fault_table
     .align  8
 fault_table:
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (1 << 2) | 0x2
-    .word   0x2bf               # Trace fault           entry 1 => _user_trace
-    .word   (2 << 2) | 0x2
-    .word   0x2bf               # Operation fault       entry 2 => _user_operation
-    .word   (3 << 2) | 0x2
-    .word   0x2bf               # Arithmetic fault      entry 3 => _user_arithmetic
-    .word   (4 << 2) | 0x2
-    .word   0x2bf               # Floating Point fault  entry 4 => _user_real_arithmetic
-    .word   (5 << 2) | 0x2
-    .word   0x2bf               # Constraint fault      entry 5 => _user_constraint
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (6 << 2) | 0x2
-    .word   0x2bf               # Protection fault      entry 6 => _user_protection
-    .word   (7 << 2) | 0x2
-    .word   0x2bf               # Machine fault         entry 7 => _user_machine
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (8 << 2) | 0x2
-    .word   0x2bf               # Type fault            entry 8 => _user_type
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
-    .word   (0 << 2) | 0x2
-    .word   0x2bf               # Reserved fault        entry 0 => _user_reserved
+    FaultEntry 0  # override
+    FaultEntry 1  # trace
+    FaultEntry 2  # Operation
+    FaultEntry 3  # arithmetic
+    FaultEntry 4  # floating point
+    FaultEntry 5  # constraint
+    FaultEntry 6  # virtual memory
+    FaultEntry 7  # protection
+    FaultEntry 8  # Machine
+    FaultEntry 9  # structural
+    FaultEntry 0xa # type
+    ReservedFaultEntry
+    FaultEntry 0xb # process
+    FaultEntry 0xc # descriptor
+    FaultEntry 0xd # event
+    ReservedFaultEntry
+    ReservedFaultEntry
+    ReservedFaultEntry
+    ReservedFaultEntry
+    ReservedFaultEntry
+    ReservedFaultEntry
+    ReservedFaultEntry
+    ReservedFaultEntry
+    ReservedFaultEntry
+    ReservedFaultEntry
+    ReservedFaultEntry
+    ReservedFaultEntry
+    ReservedFaultEntry
+    ReservedFaultEntry
+    ReservedFaultEntry
+    ReservedFaultEntry
+    ReservedFaultEntry
