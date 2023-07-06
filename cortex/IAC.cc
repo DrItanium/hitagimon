@@ -45,7 +45,7 @@ namespace cortex {
         storeSystemBaseAddress(&sbase);
         return sbase;
     }
-    SystemAddressTable*
+    SegmentTable*
     getSystemAddressTable() noexcept {
         return getSystemBase().theSAT;
     }

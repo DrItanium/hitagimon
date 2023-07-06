@@ -185,19 +185,6 @@ namespace cortex {
         uint32_t systemErrorFaultRecord[11];
         bool virtualMemoryEnabled() const noexcept { return processorState.addressingMode != 0; }
     } __attribute((packed));
-    struct SystemAddressTable {
-        /// @todo populate once I figure out how to represent it
-    } __attribute((packed));
-    struct BootWords {
-        SystemAddressTable* sat;
-        PRCB* thePRCB;
-        uint32_t checkWord;
-        void (*firstInstruction)();
-        uint32_t checkWords[4];
-    } __attribute((packed));
-    inline volatile const BootWords& getBootWords() noexcept {
-        return *reinterpret_cast<volatile const BootWords* >(0);
-    }
     struct ProcessControlBlock {
         uint64_t queueRecord;
         uint32_t receiveMessage;
@@ -376,12 +363,25 @@ namespace cortex {
         inline bool isSimpleRegion() const noexcept { return (backingStorage[3] & 0xFFFFFFA1) == 0x00FC00A1; }
         inline bool cacheable() const noexcept { return smallSegment.cacheable; }
     } __attribute((packed));
-    struct SmallSegmentTable {
-        SegmentDescriptor entries[256];
+    struct SegmentTable {
+        inline SegmentDescriptor& getDescriptor(size_t index) noexcept { return base[index]; }
+        inline const SegmentDescriptor& getDescriptor(size_t index) const noexcept { return base[index]; }
+        inline SegmentDescriptor& getTableDescriptor() noexcept { return getDescriptor(8); }
+        inline const SegmentDescriptor& getTableDescriptor() const noexcept { return getDescriptor(8); }
+        inline bool isLargeSegmentTable() const noexcept { return getTableDescriptor().isLargeSegmentTable(); }
+        inline bool isSmallSegmentTable() const noexcept { return getTableDescriptor().isSmallSegmentTable(); }
+    private:
+        SegmentDescriptor base[0];
     };
-    struct LargeSegmentTable {
-        // up to this many entries
-        SegmentDescriptor entries[262144];
-    };
+    struct BootWords {
+        SegmentTable* sat;
+        PRCB* thePRCB;
+        uint32_t checkWord;
+        void (*firstInstruction)();
+        uint32_t checkWords[4];
+    } __attribute((packed));
+    inline volatile const BootWords& getBootWords() noexcept {
+        return *reinterpret_cast<volatile const BootWords* >(0);
+    }
 }
 #endif //HITAGIMON_SYSEXAMINE_H

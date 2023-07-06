@@ -74,10 +74,10 @@ namespace cortex {
         uint32_t field5;
     } __attribute__((packed));
     struct SystemBase {
-        SystemAddressTable* theSAT;
+        SegmentTable* theSAT;
         PRCB* thePRCB;
     };
-    SystemAddressTable* getSystemAddressTable() noexcept;
+    SegmentTable* getSystemAddressTable() noexcept;
     PRCB* getPRCB() noexcept;
     SystemBase getSystemBase() noexcept;
     void sendIAC(uint8_t type, uint8_t field1 = 0, uint16_t field2 = 0, uint32_t field3 = 0, uint32_t field4 = 0, uint32_t field5 = 0);
@@ -85,7 +85,7 @@ namespace cortex {
     inline void triggerInterrupt(uint8_t interruptVector) noexcept {
         sendIAC(IACMessage::Interrupt, interruptVector);
     }
-    inline void reinitializeProcessor(SystemAddressTable* sat, PRCB* prcb, void (*start)()) noexcept {
+    inline void reinitializeProcessor(SegmentTable* sat, PRCB* prcb, void (*start)()) noexcept {
         sendIAC(IACMessage::ReinitializeProcessor,
                 0,
                 0,
