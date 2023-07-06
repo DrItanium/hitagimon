@@ -153,9 +153,18 @@ namespace cortex {
         union {
             uint32_t raw;
             struct {
-
+                uint32_t reserved0 : 1;
+                uint32_t multiProcessorPreempt : 1;
+                uint32_t state : 2;
+                uint32_t reserved1 : 1;
+                uint32_t nonPreemptLimit : 5;
+                uint32_t addressingMode : 1;
+                uint32_t checkDispatchPort : 1;
+                uint32_t reserved2 : 4;
+                uint32_t interimPriority : 5;
+                uint32_t reserved3 : 10;
+                uint32_t writeExternalPriority : 1;
             };
-
         } processorState;
         uint32_t reserved1;
         uint32_t currentProcess;
@@ -173,6 +182,7 @@ namespace cortex {
         uint32_t reserved5;
         uint32_t resumptionRecord[12];
         uint32_t systemErrorFaultRecord[11];
+        bool virtualMemoryEnabled() const noexcept { return processorState.addressingMode != 0; }
     } __attribute((packed));
     struct SystemAddressTable {
         /// @todo populate once I figure out how to represent it
