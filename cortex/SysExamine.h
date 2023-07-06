@@ -84,12 +84,6 @@ namespace cortex {
             uint32_t unused2 : 8;
         };
     } __attribute((packed));
-    struct FaultRecord {
-        uint32_t pc;
-        uint32_t ac;
-        uint32_t type;
-        uint32_t* addr;
-    } __attribute((packed));
     struct FaultTableEntry {
         typedef void(*FaultOperation)();
         uint32_t handlerRaw;

@@ -11,37 +11,26 @@ namespace cortex
 {
     void
     FaultData::display() {
-        uint8_t ftype = static_cast<uint8_t>(record.type >> 16);
-        uint8_t fsubtype = static_cast<uint8_t>(record.type) ;
+        uint8_t ftype = faultInfo.type;
+        uint8_t fsubtype = faultInfo.subtype;
 
         printf("Fault Type: %x\n", ftype);
-        switch (ftype) {
-            case 0: printf("\tOverride Fault\n"); break;
-            case 1: printf("\tTrace Fault\n"); break;
-            case 2: printf("\tOperation Fault\n"); break;
-            case 3: printf("\tArithmetic Fault\n"); break;
-            case 4: printf("\tFloating-Point Fault\n"); break;
-            case 5: printf("\tConstraint Fault\n"); break;
-            case 6: printf("\tVirtual Memory Fault\n"); break;
-            case 7: printf("\tProtection Fault\n"); break;
-            case 8: printf("\tMachine Fault\n"); break;
-            case 9: printf("\tStructural Fault\n"); break;
-            case 0xa: printf("\tType Fault\n"); break;
-            case 0xc: printf("\tProcess Fault\n"); break;
-            case 0xd: printf("\tDescriptor Fault\n"); break;
-            case 0xe: printf("\tEvent Fault\n"); break;
+        switch (getFaultKind()) {
+#define X(kind) case UserFaultKind:: kind : printf ("\t" #kind " Fault\n" ); break;
+#include "cortex/Faults.def"
+#undef X
             default:
                 break;
         }
         printf("Fault Subtype: %x\n", fsubtype);
-        if (ftype == 2) {
+        if (getFaultKind() == UserFaultKind::Operation) {
             // load and display the operation in question
             if (fsubtype == 1) {
                 printf("\tInvalid Opcode\n");
             } else if (fsubtype == 4) {
                 printf("\tInvalid Operand\n");
             }
-            volatile uint32_t* ptr = record.addr;
+            volatile uint32_t* ptr = addressOfFaultingInstruction;
             unsigned int container[8] = { 0 };
             for (int i = 0;i < 8; ++i, ++ptr) {
                 container[i] = *ptr;
@@ -51,9 +40,9 @@ namespace cortex
                printf("\t\t\t0x%x\n", container[i]);
             }
         }
-        printf("Faulting Address: %p\n", record.addr);
-        printf("PC: %#lx\n", record.pc);
-        printf("AC: %#lx\n", record.ac);
+        printf("Faulting Address: %p\n", addressOfFaultingInstruction);
+        printf("PC: %#lx\n", pc.raw);
+        printf("AC: %#lx\n", ac.raw);
     }
 #define X(kind) \
 namespace { FaultHandler user ## kind ## _ ; } \
