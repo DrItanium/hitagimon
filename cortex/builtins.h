@@ -155,6 +155,15 @@ inline uint32_t __builtin_i960_ldphy(char* src) {
     asm volatile ("ldphy %1, %0" : "=&r" (dest) : "r" (src) : "cc", "memory");
     return dest;
 }
+
+#define __BUILTIN_I960_SAVEPRCS 1
+inline void __builtin_i960_saveprcs(void) {
+    asm volatile ("saveprcs" ::: "memory" );
+}
+#define __BUILTIN_I960_WAIT 1
+inline void __builtin_i960_wait(void) {
+    asm volatile ("wait" ::: "memory" );
+}
 #endif // end defined(__HAS_PROTECTED_ARCHITECTURE_EXTENSIONS__)
 #ifdef __HAS_NUMERICS_ARCHITECTURE_EXTENSIONS__
 #endif // end defined(__HAS_NUMERICS_ARCHITECTURE_EXTENSIONS__)
