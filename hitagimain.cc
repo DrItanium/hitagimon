@@ -25,6 +25,32 @@ init()
     cortex::enableSystemCounter(6249, 0x2);
 }
 void
+printSegmentDescriptor(std::ostream& out, cortex::SegmentDescriptor& curr) {
+    out << "\t\t\tValid: " << std::boolalpha << curr.operator bool() << std::endl;
+    if (curr) {
+        out << "\t\t\tKind: ";
+        if (curr.isSmallSegmentTable()) {
+            out << "small segment" << std::endl;
+        } else if (curr.isLargeSegmentTable()) {
+            out << "large segment" << std::endl;
+        } else if (curr.isSimpleRegion()) {
+            out << "simple region" << std::endl;
+        } else if (curr.isProcedureTable()) {
+            out << "procedure table" << std::endl;
+        } else {
+            out << "unknown" << std::endl;
+        }
+    }
+    out << "\t\t\tData:" << std::endl;
+    for (int j = 0; j < 4; ++j) {
+        out << "\t\t\t\t" << std::dec << j << ": 0x" << std::hex << curr.backingStorage[j] << std::endl;
+    }
+}
+int
+computeSegmentSelector(int index) noexcept {
+    return static_cast<int>((index << 6) | 0x3f);
+}
+void
 printBaseSegmentTable(std::ostream& out, cortex::SegmentTable& segTable, int count) {
     out << "\tKind: ";
     if (segTable.isSmallSegmentTable()) {
@@ -37,13 +63,8 @@ printBaseSegmentTable(std::ostream& out, cortex::SegmentTable& segTable, int cou
     // print out the first eight entries
     out << "\tFirst " << std::dec << count << " Entries:" << std::endl;
     for (int i = 0; i < count; ++i) {
-        cortex::SegmentDescriptor& curr = segTable.getDescriptor(i);
-        out << "\t\t" << std::dec << i << ":" << std::endl;
-        out << "\t\t\tValid: " << std::boolalpha << curr.operator bool() << std::endl;
-        out << "\t\t\tData:" << std::endl;
-        for (int j = 0; j < 4; ++j) {
-            out << "\t\t\t\t" << std::dec << j << ": 0x" << std::hex << curr.backingStorage[j] << std::endl;
-        }
+        out << "\t\t" << std::dec << i << " (0x" << std::hex << computeSegmentSelector(i) << "):" << std::endl;
+        printSegmentDescriptor(out, segTable.getDescriptor(i));
     }
 }
 void
@@ -62,6 +83,9 @@ setup() {
     cortex::SegmentTable& segTable = *theWords.sat;
     std::cout << "Boot Segment Table Information: " << std::endl;
     printBaseSegmentTable(std::cout, segTable, 12);
+    cortex::SegmentTable& currTable = *cortex::getSystemAddressTable();
+    std::cout << "Current Segment Table Information: " << std::endl;
+    printBaseSegmentTable(std::cout, currTable, 12);
 }
 template<bool specialSpaceIdentification>
 void loop() {
