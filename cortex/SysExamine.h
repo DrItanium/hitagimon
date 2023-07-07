@@ -390,5 +390,28 @@ namespace cortex {
     inline volatile const BootWords& getBootWords() noexcept {
         return *reinterpret_cast<volatile const BootWords* >(0);
     }
+    union PortHeader {
+        uint32_t whole;
+        struct {
+            uint8_t lock;
+            uint8_t preserved;
+            uint32_t type : 1;
+            uint32_t q : 1;
+            uint32_t reserved : 14;
+        };
+    };
+    struct QueueHeader {
+        uint32_t headSS;
+        uint32_t tailSS;
+    };
+    struct FIFOPort {
+        PortHeader header;
+        QueueHeader queue;
+    } __attribute((packed));
+    struct PriorityPort {
+        PortHeader header;
+        uint32_t queueStatus;
+        QueueHeader priorityQueues[32];
+    };
 }
 #endif //HITAGIMON_SYSEXAMINE_H
