@@ -25,6 +25,28 @@ init()
     cortex::enableSystemCounter(6249, 0x2);
 }
 void
+printBaseSegmentTable(std::ostream& out, cortex::SegmentTable& segTable, int count) {
+    out << "\tKind: ";
+    if (segTable.isSmallSegmentTable()) {
+        out << "Small" << std::endl;
+    } else if (segTable.isLargeSegmentTable()) {
+        out << "Large" << std::endl;
+    } else {
+        out << "Unknown!" << std::endl;
+    }
+    // print out the first eight entries
+    out << "\tFirst " << std::dec << count << " Entries:" << std::endl;
+    for (int i = 0; i < count; ++i) {
+        cortex::SegmentDescriptor& curr = segTable.getDescriptor(i);
+        out << "\t\t" << std::dec << i << ":" << std::endl;
+        out << "\t\t\tValid: " << std::boolalpha << curr.operator bool() << std::endl;
+        out << "\t\t\tData:" << std::endl;
+        for (int j = 0; j < 4; ++j) {
+            out << "\t\t\t\t" << std::dec << j << ": 0x" << std::hex << curr.backingStorage[j] << std::endl;
+        }
+    }
+}
+void
 setup() {
     std::cout << "HITAGIMON" << std::endl
               << "Built on " << __DATE__ << " at " << __TIME__ << std::endl
@@ -38,24 +60,8 @@ setup() {
     std::cout << "\tBoot PRCB Start: " << std::hex << theWords.thePRCB << std::endl;
     std::cout << "\tFirst Instruction starts at: 0x" << std::hex << reinterpret_cast<uintptr_t>(theWords.firstInstruction) << std::endl;
     cortex::SegmentTable& segTable = *theWords.sat;
-    std::cout << "Segment Table Information: " << std::endl;
-    std::cout << "\tKind: ";
-    if (segTable.isSmallSegmentTable()) {
-        std::cout << "Small" << std::endl;
-    } else {
-        std::cout << "Large" << std::endl;
-    }
-    // print out the first eight entries
-    std::cout << "\tFirst Eight Entries:" << std::endl;
-    for (int i = 0; i < 8; ++i) {
-        cortex::SegmentDescriptor& curr = segTable.getDescriptor(i);
-        std::cout << "\t\t" << std::dec << i << ":" << std::endl;
-        std::cout << "\t\t\tValid: " << std::boolalpha << curr.operator bool() << std::endl;
-        std::cout << "\t\t\tData:" << std::endl;
-        for (int j = 0; j < 4; ++j) {
-            std::cout << "\t\t\t\t" << std::dec << j << ": 0x" << std::hex << curr.backingStorage[j] << std::endl;
-        }
-    }
+    std::cout << "Boot Segment Table Information: " << std::endl;
+    printBaseSegmentTable(std::cout, segTable, 12);
 }
 template<bool specialSpaceIdentification>
 void loop() {
