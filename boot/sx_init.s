@@ -74,7 +74,7 @@ system_address_table:
     NullSegment # 5
     NullSegment # 6
     DeclareSegment 0, 0, sys_proc_table, 0x304000fb # 7
-    SimpleRegion system_address_table # 8
+    SmallSegmentTable system_address_table # 8
     #DeclareSegment 0, 0, system_address_table, 0x00fc00fb # 8
     DeclareSegment 0, 0, sys_proc_table, 0x304000fb # 9
     DeclareSegment 0, 0, fault_proc_table, 0x304000fb # 10
