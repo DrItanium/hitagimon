@@ -9,7 +9,7 @@
 #include <iostream>
 #include <cortex/ModernGCC.h>
 #include <cortex/ChipsetInteract.h>
-#include <third-party/tinyscheme-1.42/scheme.h>
+#include <tinyscheme-1.42/scheme.h>
 
 void
 init()

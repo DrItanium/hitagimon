@@ -63,10 +63,10 @@ add_executable(hitagimon
 		boot/f_handle.cc
 		boot/macros.s
 		hitagimain.cc
-		third-party/tinyscheme-1.42/scheme-private.h
-		third-party/tinyscheme-1.42/scheme.h
-		third-party/tinyscheme-1.42/scheme.c
-		third-party/tinyscheme-1.42/opdefines.h
+		tinyscheme-1.42/scheme-private.h
+		tinyscheme-1.42/scheme.h
+		tinyscheme-1.42/scheme.c
+		tinyscheme-1.42/opdefines.h
 		)
 
 add_library(hitagiemul

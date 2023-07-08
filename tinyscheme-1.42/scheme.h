@@ -241,6 +241,9 @@ void scheme_register_foreign_func_list(scheme * sc,
 
 #endif /* !STANDALONE */
 
+#if defined(BARE_METAL)
+int scheme_main(int argc, char** argv);
+#endif
 #ifdef __cplusplus
 }
 #endif

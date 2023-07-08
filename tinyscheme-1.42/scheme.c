@@ -4959,6 +4959,8 @@ int main()
      return 0;
 }
 int MacTS_main(int argc, char **argv) {
+#elif defined(BARE_METAL)
+    int scheme_main(int argc, char** argv) {
 #else
 int main(int argc, char **argv) {
 #endif
