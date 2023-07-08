@@ -410,8 +410,8 @@ def_system_call 20, _sys_setitimer
 /* -- define RAM area to copy the PRCB and interrupt table
  *    to after initial bootup from EPROM/FLASH
  */
- .bss _user_stack, 0x8000, 6
- .bss _intr_stack, 0x8000, 6
- .bss _sup_stack,  0x8000, 6
+ .bss _user_stack, 4096, 6
+ .bss _intr_stack, 4096, 6
+ .bss _sup_stack,  4096, 6
  .bss intr_ram, 1028, 6
  .bss _prcb_ram, 176, 6
