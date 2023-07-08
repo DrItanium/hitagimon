@@ -9,6 +9,7 @@
 #include <iostream>
 #include <cortex/ModernGCC.h>
 #include <cortex/ChipsetInteract.h>
+#include <third-party/tinyscheme-1.42/scheme.h>
 
 void
 init()
@@ -106,13 +107,16 @@ void loop() {
     }
 }
 
+char* argv[] = { "hitagimon", };
 int main(void) {
     init();
     setup();
+    int argc = 1;
+    int result = scheme_main(argc, argv);
     for (;;) {
         loop<false>();
     }
-    return 0;
+    return result;
 }
 
 extern "C"

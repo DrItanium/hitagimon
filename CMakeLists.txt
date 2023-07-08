@@ -8,8 +8,8 @@ set(tools /home/jwscoggins/dev/i960/i960-elf-gcc-3.4.6_v4)
 set(CMAKE_C_COMPILER ${tools}/bin/i960-elf-gcc)
 set(CMAKE_CXX_COMPILER ${tools}/bin/i960-elf-g++)
 set(CMAKE_ASM-ATT_COMPILER ${tools}/bin/i960-elf-as)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -DBARE_METAL -fno-exceptions")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -DBARE_METAL --std=gnu99")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -fno-exceptions")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 --std=gnu99")
 # gcc 3.4.6 doesn't support colorizing output
 unset(CMAKE_COLOR_DIAGNOSTICS CACHE)
 set(LINKER_SCRIPT "start.ld")
@@ -38,7 +38,7 @@ add_library(hitagisys
 		sys/setitimer.cc
 		sys/close.cc
 		sys/gettimeofday.cc
-		#sys/access.cc
+		sys/access.cc
 		#sys/getpid.cc
 		sys/_exit.cc
 		sys/link.cc
@@ -63,6 +63,10 @@ add_executable(hitagimon
 		boot/f_handle.cc
 		boot/macros.s
 		hitagimain.cc
+		third-party/tinyscheme-1.42/scheme-private.h
+		third-party/tinyscheme-1.42/scheme.h
+		third-party/tinyscheme-1.42/scheme.c
+		third-party/tinyscheme-1.42/opdefines.h
 		)
 
 add_library(hitagiemul
@@ -74,7 +78,7 @@ target_include_directories(hitagiemul PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagicortex PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagisys PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagimon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-#set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT})
+
 target_link_libraries(hitagimon
 		gcc
 		c
