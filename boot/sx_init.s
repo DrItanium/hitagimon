@@ -64,6 +64,125 @@ fault, and system procedure tables, and then vectors to a user defined routine. 
     .word 0
     .word 0
     .word -1
+.text
+ # processor starts execution at this spot upon power-up after self-test.
+ start_ip:
+    clear_g14
+
+# enable address debugging
+    # copy the interrupt table to RAM space, more like proper spaces
+    ldconst 1028, g0 # load length of the interrupt table
+    ldconst 0, g4 # initialize offset to 0
+    ldconst intr_table, g1 # load source
+    ldconst intr_ram, g2    # load address of new table
+    bal move_data # branch to move routine
+# copy PRCB to RAM space, located at _prcb_ram
+    ldconst 176,g0 # load length of PRCB
+    ldconst 0, g4 # initialize offset to 0
+    ldconst prcb_ptr, g1 # load source
+    ldconst _prcb_ram, g2 # load destination
+    bal move_data # branch to move routine
+ # fix up the PRCB to point to a new interrupt table
+    ldconst intr_ram, g12 # load address
+    st g12, 20(g2) # store into PRCB
+
+ /*
+  * -- At this point, the PRCB, and interrupt table have been moved to RAM.
+  *    It is time to issue a reinitialize IAC, which will start us anew with our RAM based PRCB.
+  *
+  * -- The IAC message, found in the 4 words located at the reinitialize_iac label, contains pointers
+  *    to the current System Address Table, the new RAM based PRCB, and to the Instruction Pointer
+  *    labeled start_again_ip
+ */
+    ldconst 0xff000010, g5
+    ldconst reinitialize_iac, g6
+    synmovq g5, g6
+    /* FALLTHROUGH DOES NOT HAPPEN HERE!!!! */
+    .align 4 # Align BEFORE the label...holy crap
+reinitialize_iac:
+    .word 0x93000000    # reinitialize IAC message
+    .word system_address_table
+    .word _prcb_ram     # use newly copied PRCB
+    .word start_again_ip    # start here
+
+  /*
+   * The process will begin execution here after being reinitialized.
+   *    We will now setup the stacks and continue.
+   */
+
+  start_again_ip:
+  /* -- this would be a good place to diable board interrupts if you are using an interrupt controller.
+   *
+   * -- Before call to main, we need to take the processor out of the "interrupted" state.
+   *    In order to do this, we will execute a call statement, then "fix up" the stack frame
+   *    to cause an interrupt return to be executed.
+   */
+    ldconst 64, g0 # bump up stack to make
+    addo sp, g0, sp # room for simulated interrupt frame
+    call fix_stack  # routine to turn off int state
+
+    lda _user_stack, fp     # setup user stack space
+    lda -0x40(fp), pfp      # load pfp (just in case)
+    lda 0x40(fp), sp        # set up current stack pointer
+
+/* -- This is the point where your main code is called.
+ *    If any IO needs to be set up, you should do it here before your
+ *    call to main. No opens have been done for STDIN, STDOUT, or STDERR
+ */
+    callx _init_fp
+    callx setupInterruptHandler
+    c_callx _main # assume a main for startup
+
+_init_fp:
+    # initialize the floating point registers if it makes sense
+    cvtir   0, fp0
+    movre   fp0, fp1
+    movre   fp1, fp2
+    movre   fp2, fp3
+    ret
+
+setupInterruptHandler:
+    # setup the interrupt handlers to work correctly
+    lda 0xff000004, g5
+    # give maximum priority to the interrupt handlers
+    ldconst 0xFCFDFEFF, g6 # load the interrupt handler defualt value
+    synmov g5, g6
+    ret
+/* -- Below is a software loop to move data */
+
+/*
+move_data:
+    ldq (g1)[g4*1], g8  # load 4 words into g8
+    stq g8, (g2)[g4*1]  # store to RAM block
+    addi g4,16, g4      # increment index
+    cmpibg  g0,g4, move_data # loop until done
+    bx (g14)
+    */
+move_data:
+    movqstr g2, g1, g0
+    bx (g14)
+
+# setup the bss section so do giant blocks of writes
+
+/* The routine below fixes up the stack for a flase interrupt return.
+ * We have reserved area on the stack before the call to this
+ * routine. We need to build a phony interrupt record here
+ * to force the processor to pick it up on return. Also, we
+ * will take advantage of the fact that the processor will
+ * restore the PC and AC to its registers
+ */
+
+fix_stack:
+    flushreg
+    or  pfp, 7, pfp     # put interrupt return code into pfp
+
+    ldconst 0x1f0002, g0
+    st  g0, -16(fp)     # store contrived PC
+    ldconst 0x3b001000, g0  # setup arithmetic controls
+    st  g0, -12(fp)     # store contrived AC
+    ret
+
+
 .align 6
 system_address_table:
     NullSegment # 0
@@ -268,129 +387,6 @@ DefFaultDispatcher process
 DefFaultDispatcher descriptor
 DefFaultDispatcher event
 DefFaultDispatcher reserved
-.text
- # processor starts execution at this spot upon power-up after self-test.
- start_ip:
-    clear_g14
-
-# enable address debugging
-    # copy the interrupt table to RAM space, more like proper spaces
-    ldconst 1028, g0 # load length of the interrupt table
-    ldconst 0, g4 # initialize offset to 0
-    ldconst intr_table, g1 # load source
-    ldconst intr_ram, g2    # load address of new table
-    bal move_data # branch to move routine
-# copy PRCB to RAM space, located at _prcb_ram
-    ldconst 176,g0 # load length of PRCB
-    ldconst 0, g4 # initialize offset to 0
-    ldconst prcb_ptr, g1 # load source
-    ldconst _prcb_ram, g2 # load destination
-    bal move_data # branch to move routine
- # fix up the PRCB to point to a new interrupt table
-    ldconst intr_ram, g12 # load address
-    st g12, 20(g2) # store into PRCB
-
- /*
-  * -- At this point, the PRCB, and interrupt table have been moved to RAM.
-  *    It is time to issue a reinitialize IAC, which will start us anew with our RAM based PRCB.
-  *
-  * -- The IAC message, found in the 4 words located at the reinitialize_iac label, contains pointers
-  *    to the current System Address Table, the new RAM based PRCB, and to the Instruction Pointer
-  *    labeled start_again_ip
- */
-    ldconst 0xff000010, g5
-    ldconst reinitialize_iac, g6
-    synmovq g5, g6
-    /* FALLTHROUGH DOES NOT HAPPEN HERE!!!! */
-    .align 4 # Align BEFORE the label...holy crap
-reinitialize_iac:
-    .word 0x93000000    # reinitialize IAC message
-    .word system_address_table
-    .word _prcb_ram     # use newly copied PRCB
-    .word start_again_ip    # start here
-
-  /*
-   * The process will begin execution here after being reinitialized.
-   *    We will now setup the stacks and continue.
-   */
-
-  start_again_ip:
-  /* -- this would be a good place to diable board interrupts if you are using an interrupt controller.
-   *
-   * -- Before call to main, we need to take the processor out of the "interrupted" state.
-   *    In order to do this, we will execute a call statement, then "fix up" the stack frame
-   *    to cause an interrupt return to be executed.
-   */
-    ldconst 64, g0 # bump up stack to make
-    addo sp, g0, sp # room for simulated interrupt frame
-    call fix_stack  # routine to turn off int state
-
-    lda _user_stack, fp     # setup user stack space
-    lda -0x40(fp), pfp      # load pfp (just in case)
-    lda 0x40(fp), sp        # set up current stack pointer
-
-/* -- This is the point where your main code is called.
- *    If any IO needs to be set up, you should do it here before your
- *    call to main. No opens have been done for STDIN, STDOUT, or STDERR
- */
-    callx _init_fp
-    callx setupInterruptHandler
-    c_callx _main # assume a main for startup
-
-_init_fp:
-    # initialize the floating point registers if it makes sense
-    cvtir   0, fp0
-    movre   fp0, fp1
-    movre   fp1, fp2
-    movre   fp2, fp3
-    ret
-
-setupInterruptHandler:
-    # setup the interrupt handlers to work correctly
-    lda 0xff000004, g5
-    # give maximum priority to the interrupt handlers
-    lda defaultInterruptHandlerValue, g6
-    synmov g5, g6
-    ret
-
-
-defaultInterruptHandlerValue:
-    .word 0xFCFDFEFF
-/* -- Below is a software loop to move data */
-
-/*
-move_data:
-    ldq (g1)[g4*1], g8  # load 4 words into g8
-    stq g8, (g2)[g4*1]  # store to RAM block
-    addi g4,16, g4      # increment index
-    cmpibg  g0,g4, move_data # loop until done
-    bx (g14)
-    */
-move_data:
-    movqstr g2, g1, g0
-    bx (g14)
-
-# setup the bss section so do giant blocks of writes
-
-/* The routine below fixes up the stack for a flase interrupt return.
- * We have reserved area on the stack before the call to this
- * routine. We need to build a phony interrupt record here
- * to force the processor to pick it up on return. Also, we
- * will take advantage of the fact that the processor will
- * restore the PC and AC to its registers
- */
-
-fix_stack:
-    flushreg
-    or  pfp, 7, pfp     # put interrupt return code into pfp
-
-    ldconst 0x1f0002, g0
-    st  g0, -16(fp)     # store contrived PC
-    ldconst 0x3b001000, g0  # setup arithmetic controls
-    st  g0, -12(fp)     # store contrived AC
-    ret
-
-
 # reserved entries
 def_system_call 7, _sys_unlink
 #def_system_call 8, _sys_getpid
