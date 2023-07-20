@@ -91,8 +91,8 @@ prcb_ptr:
     .word intr_table # 20 - interrupt table physical address
     .word _intr_stack # 24 - interrupt stack pointer
     .word 0x0 # 28 - reserved
-    .word 0x000001ff  # 32 - pointer to offset zero (region 3 segment selector)
-    .word 0x0000027f  # 36 - system procedure table pointer
+    SegmentSelector 7 # 32 - pointer to offset zero (region 3 segment selector)
+    SegmentSelector 9 # 36 - system procedure table pointer
     .word fault_table # 40 - fault table
     .word 0x0 # 44 - reserved
     .space 12 # 48 -reserved
@@ -275,19 +275,19 @@ DefFaultDispatcher reserved
 
 # enable address debugging
     # copy the interrupt table to RAM space, more like proper spaces
-    lda 1028, g0 # load length of the interrupt table
-    lda 0, g4 # initialize offset to 0
-    lda intr_table, g1 # load source
-    lda intr_ram, g2    # load address of new table
+    ldconst 1028, g0 # load length of the interrupt table
+    ldconst 0, g4 # initialize offset to 0
+    ldconst intr_table, g1 # load source
+    ldconst intr_ram, g2    # load address of new table
     bal move_data # branch to move routine
 # copy PRCB to RAM space, located at _prcb_ram
-    lda 176,g0 # load length of PRCB
-    lda 0, g4 # initialize offset to 0
-    lda prcb_ptr, g1 # load source
-    lda _prcb_ram, g2 # load destination
+    ldconst 176,g0 # load length of PRCB
+    ldconst 0, g4 # initialize offset to 0
+    ldconst prcb_ptr, g1 # load source
+    ldconst _prcb_ram, g2 # load destination
     bal move_data # branch to move routine
  # fix up the PRCB to point to a new interrupt table
-    lda intr_ram, g12 # load address
+    ldconst intr_ram, g12 # load address
     st g12, 20(g2) # store into PRCB
 
  /*
@@ -298,8 +298,8 @@ DefFaultDispatcher reserved
   *    to the current System Address Table, the new RAM based PRCB, and to the Instruction Pointer
   *    labeled start_again_ip
  */
-    lda 0xff000010, g5
-    lda reinitialize_iac, g6
+    ldconst 0xff000010, g5
+    ldconst reinitialize_iac, g6
     synmovq g5, g6
     /* FALLTHROUGH DOES NOT HAPPEN HERE!!!! */
     .align 4 # Align BEFORE the label...holy crap
