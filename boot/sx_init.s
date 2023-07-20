@@ -365,6 +365,7 @@ fault_proc_table:
     FaultTableEntry event
     FaultTableEntry reserved
 .macro DefFaultDispatcher name
+.text
 _user_\()\name\()_core:
 	lda	-48(fp), g0	/* pass fault data */
 	callx _user_\()\name
