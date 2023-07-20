@@ -132,6 +132,10 @@ reinitialize_iac:
     callx _init_fp
     callx setupInterruptHandler
     c_callx _main # assume a main for startup
+exec_fallthrough:
+    b exec_fallthrough
+
+
 
 _init_fp:
     # initialize the floating point registers if it makes sense
@@ -194,7 +198,6 @@ system_address_table:
     NullSegment # 6
     DeclareSegment 0, 0, sys_proc_table, 0x304000fb # 7
     SmallSegmentTable system_address_table # 8
-    #DeclareSegment 0, 0, system_address_table, 0x00fc00fb # 8
     DeclareSegment 0, 0, sys_proc_table, 0x304000fb # 9
     DeclareSegment 0, 0, fault_proc_table, 0x304000fb # 10
 .align 6
