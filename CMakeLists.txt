@@ -42,7 +42,7 @@ add_library(hitagisys
 		#sys/getpid.cc
 		sys/_exit.cc
 		sys/link.cc
-		sys/unlink.cc sys/linkage.cc)
+		sys/unlink.cc sys/linkage.cc sys/getrusage.cc)
 add_library(hitagicortex
 		cortex/Faults.def
 		cortex/IODevice.cc
