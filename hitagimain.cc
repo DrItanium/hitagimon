@@ -777,7 +777,7 @@ int flops_main()
     printf("   MFLOPS(2)       = %10.4lf\n",T[30]);
     printf("   MFLOPS(3)       = %10.4lf\n",T[32]);
     printf("   MFLOPS(4)       = %10.4lf\n\n",T[34]);
-
+    return 0;
 }
 
 /*****************************************************/
