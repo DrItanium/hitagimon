@@ -12,6 +12,10 @@
 #include <tinyscheme-1.42/scheme.h>
 #include <stdio.h>
 #include <math.h>
+extern "C" {
+#include <sys/time.h>
+#include <sys/resource.h>
+}
 /* 'Uncomment' the line below to run   */
 /* with 'register double' variables    */
 /* defined, or compile with the        */
@@ -840,21 +844,13 @@ int dtime(double p[])
 /*  HP-UX Addition by: Bo Thide', bt@irfu.se         */
 /*****************************************************/
 #ifdef UNIX
-#include <sys/time.h>
-#include <sys/resource.h>
 
-#ifdef hpux
-#include <sys/syscall.h>
-#define getrusage(a,b) syscall(SYS_getrusage,a,b)
-#endif
 
 struct rusage rusage;
 
 int dtime(double p[])
 {
- double q;
-
- q = p[2];
+ double q = p[2];
 
  getrusage(RUSAGE_SELF,&rusage);
 
