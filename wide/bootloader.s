@@ -169,14 +169,6 @@ move_data:
 _user_reserved_core:
 _do_nothing_isr:
     ret
-
-.align 4 # Align BEFORE the label...holy crap
-reinitialize_iac:
-    .word 0x93000000    # reinitialize IAC message
-    .word system_address_table
-    .word _prcb_ram     # use newly copied PRCB
-    .word start_again_ip    # start here
-
 .align 6
 system_address_table:
     NullSegment # 0
