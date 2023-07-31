@@ -122,16 +122,6 @@ DeclareSegment 0, 0, \addr, 0x204000fb
 .macro ReservedTableEntry
 .word 0
 .endm
-.global system_address_table
-.global prcb_ptr
-.global _prcb_ram
-.global start_ip
-.global cs1
-.global STACK_SIZE
-
-.global _user_stack
-.global _sup_stack # supervisor stack
-.global _intr_stack # interrupt stack
 
 
 # Core Initialization Block (located at address 0)
@@ -142,45 +132,41 @@ DeclareSegment 0, 0, \addr, 0x204000fb
     .word prcb_ptr # prcb pointer
     .word 0
     .word start_ip # pointer to first ip
-    .word cs1 # calculated at link time (bind ?cs1 (- (+ ?SAT ?PRCB ?startIP)))
+    .word -(system_address_table + prcb_ptr + start_ip) # calculated at link time (bind ?cs1 (- (+ ?SAT ?PRCB ?startIP)))
     .word 0
     .word 0
     .word -1
 .text
  # processor starts execution at this spot upon power-up after self-test.
  start_ip:
-    clear_g14
+    #clear_g14
 
 # enable address debugging
     # copy the interrupt table to RAM space, more like proper spaces
-    ldconst 1028, g0 # load length of the interrupt table
-    ldconst 0, g4 # initialize offset to 0
-    ldconst intr_table, g1 # load source
-    ldconst intr_ram, g2    # load address of new table
-    bal move_data # branch to move routine
+    #ldconst 1028, g0 # load length of the interrupt table
+    #ldconst 0, g4 # initialize offset to 0
+    #ldconst intr_table, g1 # load source
+    #ldconst intr_ram, g2    # load address of new table
+    #bal move_data # branch to move routine
 # copy PRCB to RAM space, located at _prcb_ram
-    ldconst 176,g0 # load length of PRCB
-    ldconst 0, g4 # initialize offset to 0
-    ldconst prcb_ptr, g1 # load source
-    ldconst _prcb_ram, g2 # load destination
-    bal move_data # branch to move routine
+    #ldconst 176,g0 # load length of PRCB
+    #ldconst 0, g4 # initialize offset to 0
+    #ldconst prcb_ptr, g1 # load source
+    #ldconst _prcb_ram, g2 # load destination
+    #bal move_data # branch to move routine
  # fix up the PRCB to point to a new interrupt table
-    ldconst intr_ram, g12 # load address
-    st g12, 20(g2) # store into PRCB
-
+    # load the address
     ldconst 0xff000010, g5
+    /*
+    * the new address will be setup as we go through
+    */
     ldconst reinitialize_iac, g6
     synmovq g5, g6
-/*
 move_data:
     ldq (g1)[g4*1], g8  # load 4 words into g8
     stq g8, (g2)[g4*1]  # store to RAM block
     addi g4,16, g4      # increment index
     cmpibg  g0,g4, move_data # loop until done
-    bx (g14)
-    */
-move_data:
-    movqstr g2, g1, g0
     bx (g14)
  /*
   * -- At this point, the PRCB, and interrupt table have been moved to RAM.
@@ -191,6 +177,9 @@ move_data:
   *    labeled start_again_ip
  */
     /* FALLTHROUGH DOES NOT HAPPEN HERE!!!! */
+_user_reserved_core:
+_do_nothing_isr:
+    ret
     .align 4 # Align BEFORE the label...holy crap
 reinitialize_iac:
     .word 0x93000000    # reinitialize IAC message
@@ -334,7 +323,7 @@ fault_proc_table:
     .word 0 # Reserved
     .word 0 # Reserved
     .word 0 # Reserved
-    .word _sup_stack # Supervisor stack pointer
+    .word 0x01201000
     .word 0 # Preserved
     .word 0 # Preserved
     .word 0 # Preserved
@@ -343,67 +332,23 @@ fault_proc_table:
     .word 0 # Preserved
     .word 0 # Preserved
     .word 0 # Preserved
-    FaultTableEntry override # entry 0
-    FaultTableEntry trace
-    FaultTableEntry operation
-    FaultTableEntry arithmetic
-    FaultTableEntry floating_point
-    FaultTableEntry constraint
-    FaultTableEntry virtual_memory
-    FaultTableEntry protection
-    FaultTableEntry machine
-    FaultTableEntry structural
-    FaultTableEntry type
-    FaultTableEntry process # process
-    FaultTableEntry descriptor
-    FaultTableEntry event
+    FaultTableEntry reserved # entry 0
     FaultTableEntry reserved
-.macro DefFaultDispatcher name
-.text
-_user_\()\name\()_core:
-	ret
-.endm
+    FaultTableEntry reserved
+    FaultTableEntry reserved
+    FaultTableEntry reserved
+    FaultTableEntry reserved
+    FaultTableEntry reserved
+    FaultTableEntry reserved
+    FaultTableEntry reserved
+    FaultTableEntry reserved
+    FaultTableEntry reserved
+    FaultTableEntry reserved # process
+    FaultTableEntry reserved
+    FaultTableEntry reserved
+    FaultTableEntry reserved
 # We pass the fault data by grabbing it and passing it via g0 to the function itself
-DefFaultDispatcher override
-DefFaultDispatcher trace
-DefFaultDispatcher operation
-DefFaultDispatcher arithmetic
-DefFaultDispatcher floating_point
-DefFaultDispatcher constraint
-DefFaultDispatcher protection
-DefFaultDispatcher machine
-DefFaultDispatcher type
-DefFaultDispatcher virtual_memory
-DefFaultDispatcher structural
-DefFaultDispatcher process
-DefFaultDispatcher descriptor
-DefFaultDispatcher event
-DefFaultDispatcher reserved
 
-/*
-i960SxChipset
-Copyright (c) 2020-2021, Joshua Scoggins
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
 /* fault table */
 .macro FaultEntry index, code=0x2, table=0x2bf
 .word (\index << 2) | \code
@@ -415,21 +360,21 @@ FaultEntry 0x10
     .globl  fault_table
     .align  8
 fault_table:
-    FaultEntry 0  # override
-    FaultEntry 1  # trace
-    FaultEntry 2  # Operation
-    FaultEntry 3  # arithmetic
-    FaultEntry 4  # floating point
-    FaultEntry 5  # constraint
-    FaultEntry 6  # virtual memory
-    FaultEntry 7  # protection
-    FaultEntry 8  # Machine
-    FaultEntry 9  # structural
-    FaultEntry 0xa # type
+    ReservedFaultEntry # override
+    ReservedFaultEntry # trace
+    ReservedFaultEntry # Operation
+    ReservedFaultEntry # arithmetic
+    ReservedFaultEntry # floating point
+    ReservedFaultEntry # constraint
+    ReservedFaultEntry # virtual memory
+    ReservedFaultEntry # protection
+    ReservedFaultEntry # Machine
+    ReservedFaultEntry # structural
+    ReservedFaultEntry # type
     ReservedFaultEntry
-    FaultEntry 0xb # process
-    FaultEntry 0xc # descriptor
-    FaultEntry 0xd # event
+    ReservedFaultEntry # process
+    ReservedFaultEntry # descriptor
+    ReservedFaultEntry # event
     ReservedFaultEntry
     ReservedFaultEntry
     ReservedFaultEntry
@@ -448,70 +393,6 @@ fault_table:
     ReservedFaultEntry
     ReservedFaultEntry
 
-/*
-i960SxChipset
-Copyright (c) 2020-2021, Joshua Scoggins
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-.text
-.global _isr0
-.global _isr1
-.global _isr2
-.global _isr3
-_isr0:
-    ret
-_isr1:
-    ret
-_isr2:
-    ret
-_isr3:
-    ret
-.global _do_nothing_isr
-_do_nothing_isr:
-        ret
-/*
-i960SxChipset
-Copyright (c) 2020-2021, Joshua Scoggins
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
 /* Initial interrupt table
  * in my board, there is only one interrupt routine so they will all map to the same ISR
  */
@@ -753,7 +634,6 @@ intr_table:
         .word _do_nothing_isr;           # interrupt table entry 237
         .word _do_nothing_isr;           # interrupt table entry 238
         .word _do_nothing_isr;           # interrupt table entry 239
-
         .word _do_nothing_isr;           # interrupt table entry 240
         .word _do_nothing_isr;           # interrupt table entry 241
         .word _do_nothing_isr;           # interrupt table entry 242
@@ -766,7 +646,7 @@ intr_table:
         .word _do_nothing_isr;           # Reserved
         .word _do_nothing_isr;           # Reserved
         .word _do_nothing_isr;           # Reserved
-        .word _isr3          ;           # interrupt table entry 252
-        .word _isr2          ;           # interrupt table entry 253
-        .word _isr1          ;           # interrupt table entry 254
-        .word _isr0          ;           # interrupt table entry 255
+        .word _do_nothing_isr ;           # interrupt table entry 252
+        .word _do_nothing_isr ;           # interrupt table entry 253
+        .word _do_nothing_isr ;           # interrupt table entry 254
+        .word _do_nothing_isr ;           # interrupt table entry 255
