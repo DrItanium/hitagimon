@@ -140,30 +140,25 @@ DeclareSegment 0, 0, \addr, 0x204000fb
     .word 0
     .word -1
 .text
- # processor starts execution at this spot upon power-up after self-test.
  start_ip:
-    #clear_g14
+    # we need to copy the boot image over to the
 
 # enable address debugging
     # copy the interrupt table to RAM space, more like proper spaces
-    #ldconst 1028, g0 # load length of the interrupt table
-    #ldconst 0, g4 # initialize offset to 0
-    #ldconst intr_table, g1 # load source
-    #ldconst intr_ram, g2    # load address of new table
-    #bal move_data # branch to move routine
-# copy PRCB to RAM space, located at _prcb_ram
-    #ldconst 176,g0 # load length of PRCB
-    #ldconst 0, g4 # initialize offset to 0
-    #ldconst prcb_ptr, g1 # load source
-    #ldconst _prcb_ram, g2 # load destination
-    #bal move_data # branch to move routine
- # fix up the PRCB to point to a new interrupt table
+    # We need to make this a fixed size!
+    ldconst boot_img_length, g0 # load the length
+    ldconst boot_img_src_base, g1 # load source
+    ldconst boot_img_dest_base, g2 # load destination
+    ldconst 0, g4           # set offset to zero
+    bal move_data
+    # now hand off things to the image itself
+    # the program has a custom "header" of:
+    # [0x0100'0000-0x0100'001F]: Boot words
+    # [0x0100'0020-0x0100'002F]: Bootloader Handoff IAC Message
+    # so we load the IAC message from the handoff and synmovq to victory
     # load the address
     ldconst 0xff000010, g5
-    /*
-    * the new address will be setup as we go through
-    */
-    ldconst reinitialize_iac, g6
+    ldconst handoff_iac, g6
     synmovq g5, g6
 move_data:
     ldq (g1)[g4*1], g8  # load 4 words into g8
@@ -171,19 +166,11 @@ move_data:
     addi g4,16, g4      # increment index
     cmpibg  g0,g4, move_data # loop until done
     bx (g14)
- /*
-  * -- At this point, the PRCB, and interrupt table have been moved to RAM.
-  *    It is time to issue a reinitialize IAC, which will start us anew with our RAM based PRCB.
-  *
-  * -- The IAC message, found in the 4 words located at the reinitialize_iac label, contains pointers
-  *    to the current System Address Table, the new RAM based PRCB, and to the Instruction Pointer
-  *    labeled start_again_ip
- */
-    /* FALLTHROUGH DOES NOT HAPPEN HERE!!!! */
 _user_reserved_core:
 _do_nothing_isr:
     ret
-    .align 4 # Align BEFORE the label...holy crap
+
+.align 4 # Align BEFORE the label...holy crap
 reinitialize_iac:
     .word 0x93000000    # reinitialize IAC message
     .word system_address_table

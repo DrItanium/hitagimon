@@ -3,8 +3,7 @@
 MEMORY /* describe the partitioning of the memory space for the application */ 
 {
     rom (!r) : ORIGIN = 0, l = 128k,
-    ram (!rx) : ORIGIN = (16M+1M), l = 1M
-    /* Once I get the 32/8 bus up and running, I will be increasing this to significantly larger amount of ram */
+    ram (!rx) : ORIGIN = (16M+1M), l = 128k
 }
 
 
@@ -62,3 +61,7 @@ SECTIONS
 }
 
 cs1 = -(system_address_table + prcb_ptr + start_ip) ;
+handoff_iac = 0x01000020;
+boot_img_length = 0x00100000;
+boot_img_src_base = 0x00100000;
+boot_img_dest_base = 0x01000000;
