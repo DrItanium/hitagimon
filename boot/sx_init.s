@@ -64,6 +64,14 @@ fault, and system procedure tables, and then vectors to a user defined routine. 
     .word 0
     .word 0
     .word -1
+bootstrap_carry_off:
+    # this is used as part of the boot process for wide mode, DO NOT REMOVE THIS!!!
+    # it will cause the processor to get reinitialized but pointing to the normal boot process
+    # in "narrow" mode, this does nothing but does act as a header of sorts
+    .word 0x93000000    # reinitialize IAC message
+    .word system_address_table
+    .word prcb_ptr # use newly copied PRCB
+    .word start_ip # start here
 .text
  # processor starts execution at this spot upon power-up after self-test.
  start_ip:
