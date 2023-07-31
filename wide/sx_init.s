@@ -162,7 +162,7 @@ sys_proc_table:
     .word 0 # Reserved
     .word 0 # Reserved
     .word 0 # Reserved
-    .word (_sup_stack + 0x1) # Supervisor stack pointer
+    .word (0x01200000 + 0x1) # Supervisor stack pointer is at a fixed position
     .word 0 # Preserved
     .word 0 # Preserved
     .word 0 # Preserved
@@ -174,23 +174,11 @@ sys_proc_table:
 # up to 260 entries!
     # example entry
 	.word 0, 0, 0, 0 # 0-3
-	.word 0, 0, 0    # 4-6
-	DefTableEntry _hitagi_unlink
-	ReservedTableEntry # _hitagi_getpid
-	ReservedTableEntry # _hitagi_kill
-	ReservedTableEntry # _hitagi_fstat
-	ReservedTableEntry # sbrk
-	ReservedTableEntry #_hitagi_argvlen
-	ReservedTableEntry # _hitagi_argv
-	ReservedTableEntry # _hitagi_chdir
-	ReservedTableEntry # _hitagi_stat
-    ReservedTableEntry # _hitagi_chmod
-    ReservedTableEntry # _hitagi_utime
-    ReservedTableEntry # _hitagi_time
-    DefTableEntry _hitagi_gettimeofday
-    DefTableEntry _hitagi_setitimer
-    DefTableEntry _hitagi_getrusage
-	.word 0, 0 # 22-23
+	.word 0, 0, 0, 0 # 4-7
+	.word 0, 0, 0, 0 # 8-11
+	.word 0, 0, 0, 0 # 12-15
+	.word 0, 0, 0, 0 # 16-19
+	.word 0, 0, 0, 0 # 20-23
 	.word 0, 0, 0, 0 # 24-27
 	.word 0, 0, 0, 0 # 28-31
 	.word 0, 0, 0, 0 # 32-35
@@ -242,23 +230,14 @@ sys_proc_table:
 	.word 0, 0, 0, 0 # 4-7
 	.word 0, 0, 0, 0 # 4-7
 	.word 0, 0, 0, 0 # 4-7
-	# mon960 registrations
-	.word 0, 0
-	DefTableEntry _hitagi_open
-	DefTableEntry _hitagi_read
-	DefTableEntry _hitagi_write
-	DefTableEntry _hitagi_lseek
-	DefTableEntry _hitagi_close
-	.word 0
+	.word 0, 0, 0, 0
+	.word 0, 0, 0, 0
 	.word 0, 0, 0, 0 # 236-239
 	.word 0, 0, 0, 0 # 240-243
 	.word 0, 0, 0, 0 # 244-247
 	.word 0, 0, 0, 0 # 248-251
 	.word 0, 0, 0, 0 # 252-255
-	.word 0
-	DefTableEntry _hitagi_exit
-	.word 0, 0 # 256-259
-	#.word	(_console_io + 0x2)	# Calls 0 - console I/O routines
+	.word 0, 0, 0, 0 # 256-259
 # up to a total of 260 entries
 
 # below is the fault table for calls to the fault handler.
@@ -300,9 +279,6 @@ fault_proc_table:
 .macro DefFaultDispatcher name
 .text
 _user_\()\name\()_core:
-	lda	-48(fp), g0	/* pass fault data */
-	callx _user_\()\name
-	flushreg
 	ret
 .endm
 # We pass the fault data by grabbing it and passing it via g0 to the function itself
