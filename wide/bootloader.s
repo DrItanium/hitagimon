@@ -193,7 +193,7 @@ prcb_ptr:
     .word 0x0 # 12 - current process
     .word 0x0 # 16 - dispatch port
     .word intr_table # 20 - interrupt table physical address
-    .word 0x01202000 # 24 - interrupt stack pointer
+    .word 0x01102000 # 24 - interrupt stack pointer
     .word 0x0 # 28 - reserved
     SegmentSelector 7 # 32 - pointer to offset zero (region 3 segment selector)
     SegmentSelector 9 # 36 - system procedure table pointer
@@ -215,7 +215,7 @@ sys_proc_table:
     .word 0 # Reserved
     .word 0 # Reserved
     .word 0 # Reserved
-    .word (0x01200000 + 0x1) # Supervisor stack pointer is at a fixed position
+    .word (0x01100000 + 0x1) # Supervisor stack pointer is at a fixed position
     .word 0 # Preserved
     .word 0 # Preserved
     .word 0 # Preserved
@@ -305,7 +305,7 @@ fault_proc_table:
     .word 0 # Reserved
     .word 0 # Reserved
     .word 0 # Reserved
-    .word 0x01201000
+    .word 0x01101000
     .word 0 # Preserved
     .word 0 # Preserved
     .word 0 # Preserved
