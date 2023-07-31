@@ -214,7 +214,7 @@ prcb_ptr:
     .word 0x0 # 12 - current process
     .word 0x0 # 16 - dispatch port
     .word intr_table # 20 - interrupt table physical address
-    .word _intr_stack # 24 - interrupt stack pointer
+    .word 0x01202000 # 24 - interrupt stack pointer
     .word 0x0 # 28 - reserved
     SegmentSelector 7 # 32 - pointer to offset zero (region 3 segment selector)
     SegmentSelector 9 # 36 - system procedure table pointer
