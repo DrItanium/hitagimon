@@ -122,7 +122,10 @@ DeclareSegment 0, 0, \addr, 0x204000fb
 .macro ReservedTableEntry
 .word 0
 .endm
-
+.global cs1
+.global prcb_ptr
+.global system_address_table
+.global start_ip
 
 # Core Initialization Block (located at address 0)
 # 8 words
@@ -132,7 +135,7 @@ DeclareSegment 0, 0, \addr, 0x204000fb
     .word prcb_ptr # prcb pointer
     .word 0
     .word start_ip # pointer to first ip
-    .word -(system_address_table + prcb_ptr + start_ip) # calculated at link time (bind ?cs1 (- (+ ?SAT ?PRCB ?startIP)))
+    .word cs1
     .word 0
     .word 0
     .word -1
