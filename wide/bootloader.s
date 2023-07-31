@@ -31,9 +31,91 @@ Below is the system initialization code and tables.
 The code builds the PRCB (PRocessor Control Block) in memory, sets up the stack frame, the interrupt,
 fault, and system procedure tables, and then vectors to a user defined routine. *main*
 */
+.macro clear_g14
+        ldconst 0, g14 # c compiler expects g14 to be 0
+.endm
+.macro save_globals
+/* -- We allocate a spot for a "register holder" on the stack
+ *    and store data to that spot. We will take advantage of
+ *    the fact that this will be allocated at the first spot on the stack
+ */
+        ldconst 64, r4
+        addo    sp, r4, sp
+        stq     g0, -64(sp)
+        stq     g4, -48(sp)
+        stq     g8, -32(sp)
+        stt     g12, -16(sp)
+ .endm
+ .macro restore_globals
+        ldq     -64(sp), g0
+        ldq     -48(sp), g4
+        ldq     -32(sp), g8
+        ldt     -16(sp), g12
+ .endm
 
-# declare ahead of time
-.include "macros.s"
+.macro c_call function
+    clear_g14
+    call \function
+.endm
+
+.macro c_callx function
+    clear_g14
+    callx \function
+.endm
+
+.macro def_system_call index,name
+.text
+.align 4
+.global _\()\name
+_\()\name:
+lda \index, g13
+calls g13
+ret
+.endm
+
+.macro DeclareSegment a, b, c, d
+.word \a
+.word \b
+.word \c
+.word \d
+.endm
+.macro NullSegment
+.space 16
+.endm
+
+.macro SegmentSelector base
+.word ((\base)<<6) | 0x3f
+.endm
+
+.macro SimpleRegion address
+DeclareSegment 0, 0, \address, 0x00fc00a3
+.endm
+
+.macro PagedRegion address, size
+.space 8
+.word \address
+.word ((\size) << 18) | 0x5
+.endm
+
+.macro BipagedRegion address, size
+.space 8
+.word \address
+.word ((\size) << 18) | 0x7
+.endm
+
+.macro PageEntry addr
+.word ((\addr) | 0xc7)
+.endm
+
+.macro SmallSegmentTable addr
+.space 8
+.word \addr
+.word (0x3f << 18) | 0xfb
+.endm
+
+.macro PortSegment addr
+DeclareSegment 0, 0, \addr, 0x204000fb
+.endm
 .macro DefTableEntry name
    .word (\name + 0x2)
 .endm
