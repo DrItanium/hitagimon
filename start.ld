@@ -106,6 +106,7 @@ SECTIONS
 theDataSectionLength = (__data_end__ - __data_start__); 
 theDataSectionROMLocation = 0x20000000; 
 cs1 = -(system_address_table + prcb_ptr + start_ip) ;
+/* the following is a hack because if I don't include 0x0200'0000 then we get the wrong checksum! */
 cs2 = -(system_address_table + prcb_ptr + start_ip + 0x02000000) ;
 theBSSSectionLength = (__bss_end__ - __bss_start__);
 
