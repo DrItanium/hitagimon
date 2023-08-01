@@ -105,8 +105,9 @@ SECTIONS
 
 theDataSectionLength = (__data_end__ - __data_start__); 
 theDataSectionROMLocation = 0x20000000; 
-cs1 = -(system_address_table + prcb_ptr + start_ip) ; 
-theBSSSectionLength = (__bss_end__ - __bss_start__); 
+cs1 = -(system_address_table + prcb_ptr + start_ip) ;
+cs2 = -(system_address_table + prcb_ptr + start_ip + 0x02000000) ;
+theBSSSectionLength = (__bss_end__ - __bss_start__);
 
 /* This directive allows you to denote the file that will go onto the front of
  * the text section, the problem is that with CMake this moves around. So

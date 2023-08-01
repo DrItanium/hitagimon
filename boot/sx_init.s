@@ -60,7 +60,7 @@ fault, and system procedure tables, and then vectors to a user defined routine. 
     .word prcb_ptr # prcb pointer
     .word 0
     .word start_ip # pointer to first ip
-    .word cs1 # calculated at link time (bind ?cs1 (- (+ ?SAT ?PRCB ?startIP)))
+    .word cs2 # calculated at link time (bind ?cs1 (- (+ ?SAT ?PRCB ?startIP)))
     .word 0
     .word 0
     .word -1
@@ -72,7 +72,6 @@ bootstrap_carry_off:
     .word system_address_table
     .word prcb_ptr # use newly copied PRCB
     .word start_ip # start here
-.text
  # processor starts execution at this spot upon power-up after self-test.
  start_ip:
     clear_g14
