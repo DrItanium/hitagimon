@@ -60,7 +60,7 @@ fault, and system procedure tables, and then vectors to a user defined routine. 
     .word prcb_ptr # prcb pointer
     .word 0
     .word start_ip # pointer to first ip
-    .word cs2 # calculated at link time (bind ?cs1 (- (+ ?SAT ?PRCB ?startIP)))
+    .word cs1 # calculated at link time (bind ?cs1 (- (+ ?SAT ?PRCB ?startIP)))
     .word 0
     .word 0
     .word -1
