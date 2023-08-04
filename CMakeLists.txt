@@ -10,6 +10,8 @@ set(CMAKE_ASM-ATT_COMPILER ${tools}/bin/i960-elf-as)
 set(CMAKE_LINKER ${tools}/bin/i960-elf-ld)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -fno-exceptions")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 --std=gnu99")
+set(CMAKE_OBJCOPY_COMPILER ${tools}/bin/i960-elf-objcopy)
+set(CMAKE_OBJDUMP_COMPILER ${tools}/bin/i960-elf-objdump)
 # gcc 3.4.6 doesn't support colorizing output
 unset(CMAKE_COLOR_DIAGNOSTICS CACHE)
 add_compile_options(-Wall)
@@ -112,3 +114,11 @@ target_link_options(hitagimon
 target_link_options(hitagiwidebootloader
 		PRIVATE -T ${CMAKE_SOURCE_DIR}/wide/start.ld
 )
+
+add_custom_command(
+		OUTPUT firmware.bin
+		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0x01100000 --only-section=.text --only-section=.data --only-section=.bss -O binary hitagimon firmware.bin
+		MAIN_DEPENDENCY hitagimon
+)
+
+add_custom_target(hitagimon_firmware_narrow DEPENDS firmware.bin)
