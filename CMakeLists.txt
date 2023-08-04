@@ -3,23 +3,22 @@ project(hitagimon VERSION 0.1)
 enable_language(CXX C ASM-ATT)
 set(CMAKE_CXX_STANDARD 98)
 
-#set(tools /home/jwscoggins/sys/i960-elf-gcc-3.4.6)
 set(tools /home/jwscoggins/dev/i960/i960-elf-gcc-3.4.6_v4)
 set(CMAKE_C_COMPILER ${tools}/bin/i960-elf-gcc)
 set(CMAKE_CXX_COMPILER ${tools}/bin/i960-elf-g++)
 set(CMAKE_ASM-ATT_COMPILER ${tools}/bin/i960-elf-as)
+set(CMAKE_LINKER ${tools}/bin/i960-elf-ld)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -fno-exceptions")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 --std=gnu99")
 # gcc 3.4.6 doesn't support colorizing output
 unset(CMAKE_COLOR_DIAGNOSTICS CACHE)
-set(LINKER_SCRIPT "start.ld")
 add_compile_options(-Wall)
 # for some reason, the compiler generated multiple copies of the same entries
-add_link_options(-Wl,--as-needed -nostdlib -static -T ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT} -ffreestanding -Wl,--allow-multiple-definition)
+#add_link_options(-Wl,--as-needed -nostdlib -static -T ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT} -ffreestanding -Wl,--allow-multiple-definition)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmc -mnumerics")
 set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -mmc -mnumerics")
 set(CMAKE_ASM-ATT_FLAGS "${CMAKE_ASM_FLAGS} -AMC -I${CMAKE_SOURCE_DIR}/boot")
-add_link_options(-mmc -mnumerics)
+#add_link_options(-mmc -mnumerics)
 #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--as-needed -nostdlib -static -T ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT} -msb -mnumerics -ffreestanding")
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
@@ -68,6 +67,9 @@ add_executable(hitagimon
 		tinyscheme-1.42/scheme.c
 		tinyscheme-1.42/opdefines.h
 		)
+add_executable(hitagiwidebootloader
+		wide/bootloader.s
+)
 
 add_library(hitagiemul
 
@@ -94,3 +96,19 @@ target_link_libraries(hitagimon
 		mon960
 		hitagicortex
 		)
+
+#add_link_options(-Wl,--as-needed -nostdlib -static -T ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT} -ffreestanding -Wl,--allow-multiple-definition)
+target_link_options(hitagimon
+		PRIVATE -Wl,--as-needed
+		PRIVATE -nostdlib
+		PRIVATE -static
+		PRIVATE -T ${CMAKE_SOURCE_DIR}/start.ld
+		PRIVATE -ffreestanding
+		PRIVATE -Wl,--allow-multiple-definition
+		PRIVATE -mmc
+		PRIVATE -mnumerics
+)
+
+target_link_options(hitagiwidebootloader
+		PRIVATE -T ${CMAKE_SOURCE_DIR}/wide/start.ld
+)
