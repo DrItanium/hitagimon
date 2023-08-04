@@ -130,5 +130,32 @@ add_custom_command(
 		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0x00100000 --only-section=.text -O binary hitagiwidebootloader firmware_bootloader_wide.bin
 		MAIN_DEPENDENCY hitagiwidebootloader
 )
-
 add_custom_target(hitagimon_firmware_wide_front DEPENDS firmware_bootloader_wide.bin)
+add_custom_command(
+		OUTPUT wide_bootloader_p0.bin
+		COMMAND i960-elf-objcopy --interleave-width=1 -b 0 -i 4 --pad-to=0x00040000 --only-section=.text -O binary hitagiwidebootloader wide_bootloader_p0.bin
+		MAIN_DEPENDENCY hitagiwidebootloader
+)
+
+add_custom_command(
+		OUTPUT wide_bootloader_p1.bin
+		COMMAND i960-elf-objcopy --interleave-width=1 -b 1 -i 4 --pad-to=0x00040000 --only-section=.text -O binary hitagiwidebootloader wide_bootloader_p0.bin
+		MAIN_DEPENDENCY hitagiwidebootloader
+)
+add_custom_command(
+		OUTPUT wide_bootloader_p2.bin
+		COMMAND i960-elf-objcopy --interleave-width=1 -b 2 -i 4 --pad-to=0x00040000 --only-section=.text -O binary hitagiwidebootloader wide_bootloader_p0.bin
+		MAIN_DEPENDENCY hitagiwidebootloader
+)
+
+add_custom_command(
+		OUTPUT wide_bootloader_p3.bin
+		COMMAND i960-elf-objcopy --interleave-width=1 -b 3 -i 4 --pad-to=0x00040000 --only-section=.text -O binary hitagiwidebootloader wide_bootloader_p0.bin
+		MAIN_DEPENDENCY hitagiwidebootloader
+)
+
+add_custom_target(hitagimon_boot_front_wide_p0 DEPENDS wide_bootloader_p0.bin)
+add_custom_target(hitagimon_boot_front_wide_p1 DEPENDS wide_bootloader_p1.bin)
+add_custom_target(hitagimon_boot_front_wide_p2 DEPENDS wide_bootloader_p2.bin)
+add_custom_target(hitagimon_boot_front_wide_p3 DEPENDS wide_bootloader_p3.bin)
+
