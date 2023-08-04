@@ -68,9 +68,11 @@ add_executable(hitagimon
 		tinyscheme-1.42/scheme.h
 		tinyscheme-1.42/scheme.c
 		tinyscheme-1.42/opdefines.h
+		start.ld
 		)
 add_executable(hitagiwidebootloader
 		wide/bootloader.s
+		wide/start.ld
 )
 
 add_library(hitagiemul
@@ -122,3 +124,11 @@ add_custom_command(
 )
 
 add_custom_target(hitagimon_firmware_narrow DEPENDS firmware.bin)
+
+add_custom_command(
+		OUTPUT firmware_bootloader_wide.bin
+		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0x00100000 --only-section=.text -O binary hitagiwidebootloader firmware_bootloader_wide.bin
+		MAIN_DEPENDENCY hitagiwidebootloader
+)
+
+add_custom_target(hitagimon_firmware_wide_front DEPENDS firmware_bootloader_wide.bin)
