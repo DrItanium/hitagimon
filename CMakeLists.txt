@@ -178,14 +178,31 @@ add_custom_command(
 		DEPENDS hitagimon_firmware_narrow
 )
 
+add_custom_command(
+		OUTPUT wide_chip_p0.bin
+		COMMAND cat wide_bootloader_p0.bin wide_firmware_p0.bin > wide_chip_p0.bin
+		DEPENDS wide_firmware_p0.bin wide_bootloader_p0.bin
+)
+add_custom_command(
+		OUTPUT wide_chip_p1.bin
+		COMMAND cat wide_bootloader_p1.bin wide_firmware_p1.bin > wide_chip_p1.bin
+		DEPENDS wide_firmware_p1.bin wide_bootloader_p1.bin
+)
+add_custom_command(
+		OUTPUT wide_chip_p2.bin
+		COMMAND cat wide_bootloader_p2.bin wide_firmware_p2.bin > wide_chip_p2.bin
+		DEPENDS wide_firmware_p2.bin wide_bootloader_p2.bin
+)
+add_custom_command(
+		OUTPUT wide_chip_p3.bin
+		COMMAND cat wide_bootloader_p3.bin wide_firmware_p3.bin > wide_chip_p3.bin
+		DEPENDS wide_firmware_p3.bin wide_bootloader_p3.bin
+)
+
 add_custom_target(hitagimon_wide_mode_parts
 		DEPENDS
-		wide_firmware_p0.bin
-		wide_firmware_p1.bin
-		wide_firmware_p2.bin
-		wide_firmware_p3.bin
-		wide_bootloader_p0.bin
-		wide_bootloader_p1.bin
-		wide_bootloader_p2.bin
-		wide_bootloader_p3.bin
+		wide_chip_p0.bin
+		wide_chip_p1.bin
+		wide_chip_p2.bin
+		wide_chip_p3.bin
 )
