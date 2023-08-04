@@ -206,3 +206,46 @@ add_custom_target(hitagimon_wide_mode_parts
 		wide_chip_p2.bin
 		wide_chip_p3.bin
 )
+
+set(TARGET_FLASH_CHIP SST39SF040@PLCC32)
+add_custom_command(
+		OUTPUT uploaded_wide_chip0
+		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write wide_chip_p0.bin
+		MAIN_DEPENDENCY wide_chip_p0.bin
+)
+
+add_custom_target(install_wide_flash0
+		DEPENDS
+		uploaded_wide_chip0
+)
+
+add_custom_command(
+		OUTPUT uploaded_wide_chip1
+		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write wide_chip_p1.bin
+		MAIN_DEPENDENCY wide_chip_p1.bin
+)
+
+add_custom_target(install_wide_flash1
+		DEPENDS
+		uploaded_wide_chip1
+)
+add_custom_command(
+		OUTPUT uploaded_wide_chip2
+		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write wide_chip_p2.bin
+		MAIN_DEPENDENCY wide_chip_p2.bin
+)
+
+add_custom_target(install_wide_flash2
+		DEPENDS
+		uploaded_wide_chip2
+)
+add_custom_command(
+		OUTPUT uploaded_wide_chip3
+		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write wide_chip_p3.bin
+		MAIN_DEPENDENCY wide_chip_p3.bin
+)
+
+add_custom_target(install_wide_flash3
+		DEPENDS
+		uploaded_wide_chip3
+)
