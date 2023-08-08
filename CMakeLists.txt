@@ -139,19 +139,19 @@ add_custom_command(
 
 add_custom_command(
 		OUTPUT wide_bootloader_p1.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 0 -i 4 -I binary -O binary firmware_bootloader_wide.bin wide_bootloader_p1.bin
+		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 1 -i 4 -I binary -O binary firmware_bootloader_wide.bin wide_bootloader_p1.bin
 		MAIN_DEPENDENCY firmware_bootloader_wide.bin
 )
 
 add_custom_command(
 		OUTPUT wide_bootloader_p2.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 0 -i 4 -I binary -O binary firmware_bootloader_wide.bin wide_bootloader_p2.bin
+		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 2 -i 4 -I binary -O binary firmware_bootloader_wide.bin wide_bootloader_p2.bin
 		MAIN_DEPENDENCY firmware_bootloader_wide.bin
 )
 
 add_custom_command(
 		OUTPUT wide_bootloader_p3.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 0 -i 4 -I binary -O binary firmware_bootloader_wide.bin wide_bootloader_p3.bin
+		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 3 -i 4 -I binary -O binary firmware_bootloader_wide.bin wide_bootloader_p3.bin
 		MAIN_DEPENDENCY firmware_bootloader_wide.bin
 )
 
