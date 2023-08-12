@@ -65,3 +65,4 @@ handoff_iac = 0x01000020;
 boot_img_length = 0x00100000;
 boot_img_src_base = 0x00100000;
 boot_img_dest_base = 0x01000000;
+serial_base_offset = 0xFE00000C;

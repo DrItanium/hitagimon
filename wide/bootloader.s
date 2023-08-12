@@ -139,36 +139,6 @@ DeclareSegment 0, 0, \addr, 0x204000fb
     .word 0
     .word 0
     .word -1
-.text
- start_ip:
-    # we need to copy the boot image over to the
-
-# enable address debugging
-    # copy the interrupt table to RAM space, more like proper spaces
-    # We need to make this a fixed size!
-    ldconst boot_img_length, g0 # load the length
-    ldconst boot_img_src_base, g1 # load source
-    ldconst boot_img_dest_base, g2 # load destination
-    ldconst 0, g4           # set offset to zero
-    bal move_data
-    # now hand off things to the image itself
-    # the program has a custom "header" of:
-    # [0x0100'0000-0x0100'001F]: Boot words
-    # [0x0100'0020-0x0100'002F]: Bootloader Handoff IAC Message
-    # so we load the IAC message from the handoff and synmovq to victory
-    # load the address
-    ldconst 0xff000010, g5
-    ldconst handoff_iac, g6
-    synmovq g5, g6
-move_data:
-    ldq (g1)[g4*1], g8  # load 4 words into g8
-    stq g8, (g2)[g4*1]  # store to RAM block
-    addi g4,16, g4      # increment index
-    cmpibg  g0,g4, move_data # loop until done
-    bx (g14)
-_user_reserved_core:
-_do_nothing_isr:
-    ret
 .align 6
 system_address_table:
     NullSegment # 0
@@ -632,3 +602,57 @@ intr_table:
         .word _do_nothing_isr ;           # interrupt table entry 253
         .word _do_nothing_isr ;           # interrupt table entry 254
         .word _do_nothing_isr ;           # interrupt table entry 255
+ start_ip:
+    ldconst successful_boot_msg0, g0
+    bal println
+    ldconst banner0, g0
+    bal println
+    # need to printout a bootloader message
+    ldconst boot_img_length, g0 # load the length
+    ldconst boot_img_src_base, g1 # load source
+    ldconst boot_img_dest_base, g2 # load destination
+    ldconst 0, g3
+    bal move_data
+    # now hand off things to the image itself
+    # the program has a custom "header" of:
+    # [0x0100'0000-0x0100'001F]: Boot words
+    # [0x0100'0020-0x0100'002F]: Bootloader Handoff IAC Message
+    # so we load the IAC message from the handoff and synmovq to victory
+    # load the address
+    ldconst 0xff000010, g5
+    ldconst handoff_iac, g6
+    synmovq g5, g6
+_user_reserved_core:
+_do_nothing_isr:
+    ret
+print:
+    ldconst 0, g1
+    ldconst serial_base_offset, g2
+print_loop:
+    ldob (g0), g1 # load the current byte
+    cmpibe 0, g1, print_done # if it is zero then we are done and just leave
+    stob g1, (g2) # store the current byte
+    addi g0, 1, g0 # next byte
+    b print_loop # go to the next byte
+print_done:
+    bx (g14)
+println:
+    mov g14, r15
+    bal print
+    ldconst newline, g0
+    bal print
+    mov r15, g14
+    bx (g14)
+
+move_data:
+    ldq (g1)[g3*1], g8  # load 4 words into g8
+    stq g8,(g2)[g3*1]  # store to RAM block
+    addi g3,16, g3      # increment index
+    cmpibg  g0,g3, move_data # loop until done
+    bx (g14)
+newline:
+.asciz "\n"
+successful_boot_msg0:
+.asciz "CHECKSUM PASS!"
+banner0:
+.asciz "BOOTLOADER"
