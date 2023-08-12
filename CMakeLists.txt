@@ -249,3 +249,14 @@ add_custom_target(install_wide_flash3
 		DEPENDS
 		uploaded_wide_chip3
 )
+
+add_custom_command(
+		OUTPUT wfirmware.bin
+		COMMAND cat firmware_bootloader_wide.bin firmware.bin > wfirmware.bin
+		DEPENDS firmware_bootloader_wide.bin firmware.bin
+)
+
+add_custom_target(wide_firmware_fused
+		DEPENDS
+		wfirmware.bin
+)
