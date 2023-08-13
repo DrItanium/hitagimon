@@ -626,15 +626,18 @@ _user_reserved_core:
 _do_nothing_isr:
     ret
 print:
-    ldconst 0, g1
-    ldconst serial_base_offset, g2
+    ldconst 0, r3
+    ldconst serial_base_offset, r4
 print_loop:
-    ldob (g0), g1 # load the current byte
-    cmpibe 0, g1, print_done # if it is zero then we are done and just leave
-    stob g1, (g2) # store the current byte
+    ldob (g0), r3 # load the current byte
+    cmpibe 0, r3, do_flush # if it is zero then we are done and just leave
+    st   r3, (r4) # store the current byte but use 32-bit writes
     addi g0, 1, g0 # next byte
     b print_loop # go to the next byte
-print_done:
+do_flush:
+    ldconst serial_flush_offset, r4 # load the flush address
+    ldconst 0, r3 # need a zero to write
+    st r3, (r4) # call flush
     bx (g14)
 println:
     mov g14, r15
@@ -643,7 +646,6 @@ println:
     bal print
     mov r15, g14
     bx (g14)
-
 move_data:
     ldq (g1)[g3*1], g8  # load 4 words into g8
     stq g8,(g2)[g3*1]  # store to RAM block
