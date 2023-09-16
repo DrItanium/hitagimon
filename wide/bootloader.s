@@ -613,6 +613,10 @@ intr_table:
     ldconst boot_img_dest_base, g2 # load destination
     ldconst 0, g3
     bal move_data
+    ldconst copy_complete_msg, g0
+    bal println
+    ldconst booting_msg, g0
+    bal println
     # now hand off things to the image itself
     # the program has a custom "header" of:
     # [0x0100'0000-0x0100'001F]: Boot words
@@ -669,3 +673,7 @@ successful_boot_msg0:
 .asciz "CHECKSUM PASS!"
 banner0:
 .asciz "BOOTLOADER"
+copy_complete_msg:
+.asciz "Transfer Complete!"
+booting_msg:
+.asciz "Passing control off to the image!"
