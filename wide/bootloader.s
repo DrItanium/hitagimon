@@ -658,6 +658,7 @@ move_data_loop:
     modi  16, g6, g7    # see if the current value is modulo 16
     cmpibne 0, g7, move_data_next_block
     st g4, (g5)          # print the dot out to the screen
+    st g4, 4(g5)         # flush
  move_data_next_block:
     addi g3,16, g3      # increment index
     cmpibg  g0,g3, move_data_loop # loop until done
