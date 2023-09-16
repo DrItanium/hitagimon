@@ -647,10 +647,20 @@ println:
     mov r15, g14
     bx (g14)
 move_data:
+    ldconst '.', g4     # the period
+    ldconst serial_base_offset, g5 # the serial console
+    ldconst 0, g6 # an output counter
+    ldconst 0, g7 # temporary
+move_data_loop:
     ldq (g1)[g3*1], g8  # load 4 words into g8
     stq g8,(g2)[g3*1]  # store to RAM block
+    addi g6, 1, g6      # increment transfer count
+    modi  16, g6, g7    # see if the current value is modulo 16
+    cmpibne 0, g7, move_data_next_block
+    st g4, (g5)          # print the dot out to the screen
+ move_data_next_block:
     addi g3,16, g3      # increment index
-    cmpibg  g0,g3, move_data # loop until done
+    cmpibg  g0,g3, move_data_loop # loop until done
     bx (g14)
 newline:
 .asciz "\n"
