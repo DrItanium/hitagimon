@@ -78,7 +78,7 @@ bootstrap_carry_off:
     # first transfer the upper 1 megabyte into SRAM
     ldconst theDataROMLength, g0 # length is 1 megabyte
     ldconst 0, g4 # initialize offset to 0
-    ldconst theDataROMLength, g1 # start at the 1 megabyte mark
+    ldconst theDataROMStart, g1 # start at the 1 megabyte mark
     ldconst __sram_start__, g2 # load the base address of sram
     bal move_data
 # enable address debugging
