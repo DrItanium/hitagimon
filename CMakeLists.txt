@@ -148,7 +148,7 @@ add_custom_command(
 
 add_custom_command(
 		OUTPUT flash_firmware_p2.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 2 -i 4 -I binary -O binary firmware.bin flash_firmware_p3.bin
+		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 2 -i 4 -I binary -O binary firmware.bin flash_firmware_p2.bin
 		DEPENDS hitagimon_firmware_image
 )
 
