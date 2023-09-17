@@ -2,11 +2,8 @@ GROUP(-lgcc -lm -lc -liberty -lc -lmon960) /* libraries to link in */
 
 MEMORY /* describe the partitioning of the memory space for the application */ 
 {
-    /* In this redesigned type103 board we have access to 512k of sram, EVERYTHING must fit in there! */
-    /* The PSRAM has been removed due to the overhead it incurs */
-    rom (!r) : ORIGIN = 16M, l = 512K,
-    ram (!rx) : ORIGIN = (16M+512K), l = 512K
-    /* Once I get the 32/8 bus up and running, I will be increasing this to significantly larger amount of ram */
+    rom (!r) : ORIGIN = 0, l = 1M,
+    ram (!rx) : ORIGIN = 16M, l = 1M
 }
 
 /* Define a symbol that your code can reference. The linker adds the symbol. */ 
@@ -62,7 +59,6 @@ SECTIONS
 		KEEP(*(.heap)) 
 		__heap_end__ = .; 
 		/* __HeapLimit = __heap_end__; */ 
-	
 	} >ram
 }
 
@@ -104,9 +100,10 @@ SECTIONS
  */ 
 
 theDataSectionLength = (__data_end__ - __data_start__); 
-theDataSectionROMLocation = 0x20000000; 
-cs1 = -(ABSOLUTE(system_address_table) + ABSOLUTE(prcb_ptr) + ABSOLUTE(start_ip)) ;
 theBSSSectionLength = (__bss_end__ - __bss_start__);
+theDataROMStart = 0x00100000;
+theDataROMLength = 0x00100000;
+cs1 = -(ABSOLUTE(system_address_table) + ABSOLUTE(prcb_ptr) + ABSOLUTE(start_ip)) ;
 
 /* This directive allows you to denote the file that will go onto the front of
  * the text section, the problem is that with CMake this moves around. So

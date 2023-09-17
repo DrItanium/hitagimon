@@ -70,10 +70,6 @@ add_executable(hitagimon
 		tinyscheme-1.42/opdefines.h
 		start.ld
 		)
-add_executable(hitagiwidebootloader
-		wide/bootloader.s
-		wide/start.ld
-)
 
 add_library(hitagiemul
 
@@ -113,150 +109,106 @@ target_link_options(hitagimon
 		PRIVATE -mnumerics
 )
 
-target_link_options(hitagiwidebootloader
-		PRIVATE -T ${CMAKE_SOURCE_DIR}/wide/start.ld
-)
-
 add_custom_command(
-		OUTPUT firmware.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0x01100000 --only-section=.text --only-section=.data --only-section=.bss -O binary hitagimon firmware.bin
+		OUTPUT firmware_sram.bin
+		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0x01100000 --only-section=.bss --only-section=.data --gap-fill=0x00 --set-section-flags .bss=alloc,load,contents -O binary hitagimon firmware_sram.bin
 		MAIN_DEPENDENCY hitagimon
 )
 
-add_custom_target(hitagimon_firmware_narrow DEPENDS firmware.bin)
-
 add_custom_command(
-		OUTPUT firmware_bootloader_wide.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0x00100000 --only-section=.text -O binary hitagiwidebootloader firmware_bootloader_wide.bin
-		DEPENDS hitagiwidebootloader
-)
-add_custom_target(hitagimon_firmware_wide_front DEPENDS firmware_bootloader_wide.bin)
-add_custom_command(
-		OUTPUT wide_bootloader_p0.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 0 -i 4 -I binary -O binary firmware_bootloader_wide.bin wide_bootloader_p0.bin
-		MAIN_DEPENDENCY firmware_bootloader_wide.bin
-)
-
-add_custom_command(
-		OUTPUT wide_bootloader_p1.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 1 -i 4 -I binary -O binary firmware_bootloader_wide.bin wide_bootloader_p1.bin
-		MAIN_DEPENDENCY firmware_bootloader_wide.bin
-)
-
-add_custom_command(
-		OUTPUT wide_bootloader_p2.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 2 -i 4 -I binary -O binary firmware_bootloader_wide.bin wide_bootloader_p2.bin
-		MAIN_DEPENDENCY firmware_bootloader_wide.bin
-)
-
-add_custom_command(
-		OUTPUT wide_bootloader_p3.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 3 -i 4 -I binary -O binary firmware_bootloader_wide.bin wide_bootloader_p3.bin
-		MAIN_DEPENDENCY firmware_bootloader_wide.bin
+		OUTPUT firmware_flash.bin
+		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0x00100000 --only-section=.text -O binary hitagimon firmware_flash.bin
+		MAIN_DEPENDENCY hitagimon
 )
 
 
+add_custom_target(hitagimon_firmware_flash DEPENDS firmware_flash.bin)
+add_custom_target(hitagimon_firmware_sram DEPENDS firmware_sram.bin)
+
 add_custom_command(
-		OUTPUT wide_firmware_p0.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 0 -i 4 -I binary -O binary firmware.bin wide_firmware_p0.bin
-		DEPENDS hitagimon_firmware_narrow
+		OUTPUT firmware.bin
+		COMMAND cat firmware_flash.bin firmware_sram.bin > firmware.bin
+		MAIN_DEPENDENCY firmware_flash.bin firmware_sram.bin
+		DEPENDS hitagimon_firmware_flash hitagimon_firmware_sram
 )
+
+add_custom_target(hitagimon_firmware_image DEPENDS firmware.bin)
+
 add_custom_command(
-		OUTPUT wide_firmware_p1.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 1 -i 4 -I binary -O binary firmware.bin wide_firmware_p1.bin
-		DEPENDS hitagimon_firmware_narrow
-)
-add_custom_command(
-		OUTPUT wide_firmware_p2.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 2 -i 4 -I binary -O binary firmware.bin wide_firmware_p2.bin
-		DEPENDS hitagimon_firmware_narrow
+		OUTPUT flash_firmware_p0.bin
+		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 0 -i 4 -I binary -O binary firmware.bin flash_firmware_p0.bin
+		DEPENDS hitagimon_firmware_image
 )
 
 add_custom_command(
-		OUTPUT wide_firmware_p3.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 3 -i 4 -I binary -O binary firmware.bin wide_firmware_p3.bin
-		DEPENDS hitagimon_firmware_narrow
+		OUTPUT flash_firmware_p1.bin
+		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 1 -i 4 -I binary -O binary firmware.bin flash_firmware_p1.bin
+		DEPENDS hitagimon_firmware_image
 )
 
 add_custom_command(
-		OUTPUT wide_chip_p0.bin
-		COMMAND cat wide_bootloader_p0.bin wide_firmware_p0.bin > wide_chip_p0.bin
-		DEPENDS wide_firmware_p0.bin wide_bootloader_p0.bin
+		OUTPUT flash_firmware_p2.bin
+		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 2 -i 4 -I binary -O binary firmware.bin flash_firmware_p3.bin
+		DEPENDS hitagimon_firmware_image
 )
+
 add_custom_command(
-		OUTPUT wide_chip_p1.bin
-		COMMAND cat wide_bootloader_p1.bin wide_firmware_p1.bin > wide_chip_p1.bin
-		DEPENDS wide_firmware_p1.bin wide_bootloader_p1.bin
-)
-add_custom_command(
-		OUTPUT wide_chip_p2.bin
-		COMMAND cat wide_bootloader_p2.bin wide_firmware_p2.bin > wide_chip_p2.bin
-		DEPENDS wide_firmware_p2.bin wide_bootloader_p2.bin
-)
-add_custom_command(
-		OUTPUT wide_chip_p3.bin
-		COMMAND cat wide_bootloader_p3.bin wide_firmware_p3.bin > wide_chip_p3.bin
-		DEPENDS wide_firmware_p3.bin wide_bootloader_p3.bin
+		OUTPUT flash_firmware_p3.bin
+		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 3 -i 4 -I binary -O binary firmware.bin flash_firmware_p3.bin
+		DEPENDS hitagimon_firmware_image
 )
 
 add_custom_target(hitagimon_wide_mode_parts
 		DEPENDS
-		wide_chip_p0.bin
-		wide_chip_p1.bin
-		wide_chip_p2.bin
-		wide_chip_p3.bin
+		flash_firmware_p0.bin
+		flash_firmware_p1.bin
+		flash_firmware_p2.bin
+		flash_firmware_p3.bin
 )
 
 set(TARGET_FLASH_CHIP SST39SF040@PLCC32)
 add_custom_command(
-		OUTPUT uploaded_wide_chip0
-		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write wide_chip_p0.bin
-		MAIN_DEPENDENCY wide_chip_p0.bin
+		OUTPUT uploaded_flash_firmware0
+		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write flash_firmware_p0.bin
+		DEPENDS hitagimon_wide_mode_parts
+		MAIN_DEPENDENCY flash_firmware_p0.bin
 )
 
 add_custom_target(install_wide_flash0
 		DEPENDS
-		uploaded_wide_chip0
+		uploaded_flash_firmware0
 )
 
 add_custom_command(
-		OUTPUT uploaded_wide_chip1
-		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write wide_chip_p1.bin
-		MAIN_DEPENDENCY wide_chip_p1.bin
+		OUTPUT uploaded_flash_firmware1
+		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write flash_firmware_p1.bin
+		MAIN_DEPENDENCY flash_firmware_p1.bin
+		DEPENDS hitagimon_wide_mode_parts
 )
 
 add_custom_target(install_wide_flash1
 		DEPENDS
-		uploaded_wide_chip1
+		uploaded_flash_firmware1
 )
 add_custom_command(
-		OUTPUT uploaded_wide_chip2
-		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write wide_chip_p2.bin
-		MAIN_DEPENDENCY wide_chip_p2.bin
+		OUTPUT uploaded_flash_firmware2
+		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write flash_firmware_p2.bin
+		MAIN_DEPENDENCY flash_firmware_p2.bin
+		DEPENDS hitagimon_wide_mode_parts
 )
 
 add_custom_target(install_wide_flash2
 		DEPENDS
-		uploaded_wide_chip2
+		uploaded_flash_firmware2
 )
 add_custom_command(
-		OUTPUT uploaded_wide_chip3
-		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write wide_chip_p3.bin
-		MAIN_DEPENDENCY wide_chip_p3.bin
+		OUTPUT uploaded_flash_firmware3
+		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write flash_firmware_p3.bin
+		MAIN_DEPENDENCY flash_firmware_p3.bin
+		DEPENDS hitagimon_wide_mode_parts
 )
 
 add_custom_target(install_wide_flash3
 		DEPENDS
-		uploaded_wide_chip3
-)
-
-add_custom_command(
-		OUTPUT wfirmware.bin
-		COMMAND cat firmware_bootloader_wide.bin firmware.bin > wfirmware.bin
-		DEPENDS firmware_bootloader_wide.bin firmware.bin
-)
-
-add_custom_target(wide_firmware_fused
-		DEPENDS
-		wfirmware.bin
+		uploaded_flash_firmware3
 )
