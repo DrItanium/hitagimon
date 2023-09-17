@@ -110,52 +110,48 @@ target_link_options(hitagimon
 )
 
 add_custom_command(
-		OUTPUT firmware_sram.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0x01100000 --only-section=.bss --only-section=.data --gap-fill=0x00 --set-section-flags .bss=alloc,load,contents -O binary hitagimon firmware_sram.bin
+		OUTPUT data.bin
+		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0xFE900000 --only-section=.bss --only-section=.data --gap-fill=0x00 --set-section-flags .bss=alloc,load,contents -O binary hitagimon data.bin
 		MAIN_DEPENDENCY hitagimon
 )
 
 add_custom_command(
-		OUTPUT firmware_flash.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0x00100000 --only-section=.text -O binary hitagimon firmware_flash.bin
+		OUTPUT code.bin
+		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0x00200000 --only-section=.text -O binary hitagimon code.bin
 		MAIN_DEPENDENCY hitagimon
 )
 
 
-add_custom_target(hitagimon_firmware_flash DEPENDS firmware_flash.bin)
-add_custom_target(hitagimon_firmware_sram DEPENDS firmware_sram.bin)
 
-add_custom_command(
-		OUTPUT firmware.bin
-		COMMAND cat firmware_flash.bin firmware_sram.bin > firmware.bin
-		MAIN_DEPENDENCY firmware_flash.bin firmware_sram.bin
-		DEPENDS hitagimon_firmware_flash hitagimon_firmware_sram
+add_custom_target(hitagimon_firmware
+		DEPENDS
+		code.bin
+		data.bin
 )
 
-add_custom_target(hitagimon_firmware_image DEPENDS firmware.bin)
 
 add_custom_command(
 		OUTPUT flash_firmware_p0.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 0 -i 4 -I binary -O binary firmware.bin flash_firmware_p0.bin
-		DEPENDS hitagimon_firmware_image
+		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 0 -i 4 -I binary -O binary code.bin flash_firmware_p0.bin
+		DEPENDS hitagimon_firmware
 )
 
 add_custom_command(
 		OUTPUT flash_firmware_p1.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 1 -i 4 -I binary -O binary firmware.bin flash_firmware_p1.bin
-		DEPENDS hitagimon_firmware_image
+		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 1 -i 4 -I binary -O binary code.bin flash_firmware_p1.bin
+		DEPENDS hitagimon_firmware
 )
 
 add_custom_command(
 		OUTPUT flash_firmware_p2.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 2 -i 4 -I binary -O binary firmware.bin flash_firmware_p2.bin
-		DEPENDS hitagimon_firmware_image
+		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 2 -i 4 -I binary -O binary code.bin flash_firmware_p2.bin
+		DEPENDS hitagimon_firmware
 )
 
 add_custom_command(
 		OUTPUT flash_firmware_p3.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 3 -i 4 -I binary -O binary firmware.bin flash_firmware_p3.bin
-		DEPENDS hitagimon_firmware_image
+		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 3 -i 4 -I binary -O binary code.bin flash_firmware_p3.bin
+		DEPENDS hitagimon_firmware
 )
 
 add_custom_target(hitagimon_wide_mode_parts

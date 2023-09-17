@@ -2,8 +2,8 @@ GROUP(-lgcc -lm -lc -liberty -lc -lmon960) /* libraries to link in */
 
 MEMORY /* describe the partitioning of the memory space for the application */ 
 {
-    rom (!r) : ORIGIN = 0, l = 1M,
-    sram (!rx) : ORIGIN = 16M, l = 1M,
+    rom (!r) : ORIGIN = 0, l = 2M,
+    sram (!rx) : ORIGIN = 16M, l = 2M,
     ioram (!rx) : ORIGIN = 0xFE800000, l = 4M
 }
 
