@@ -3,7 +3,8 @@ GROUP(-lgcc -lm -lc -liberty -lc -lmon960) /* libraries to link in */
 MEMORY /* describe the partitioning of the memory space for the application */ 
 {
     rom (!r) : ORIGIN = 0, l = 1M,
-    sram (!rx) : ORIGIN = 16M, l = 1M
+    sram (!rx) : ORIGIN = 16M, l = 1M,
+    ioram (!rx) : ORIGIN = 0xFE800000, l = 4M
 }
 
 /* Define a symbol that your code can reference. The linker adds the symbol. */ 
@@ -37,7 +38,7 @@ SECTIONS
 		*(.bss) 
 		*(COMMON) /* can't find much documentation on this but it is a good idea to have this here */ 
 		__bss_end__ = .; 
-	} >sram
+	} >ioram
 	.data :
 	{
 		__data_start__ = .; 
@@ -45,7 +46,7 @@ SECTIONS
 		CONSTRUCTORS  /* we want to place the constructors data here */
 		__data_end__ = .; 
 		_edata = .; 
-	} >sram
+	} >ioram
 	.heap : { 
 		/* this section is synthetic, I do not actually copy the contents of the heap
 		 * section over on boot, instead I just want the location of where it should
@@ -59,7 +60,7 @@ SECTIONS
 		KEEP(*(.heap)) 
 		__heap_end__ = .; 
 		/* __HeapLimit = __heap_end__; */ 
-	} >sram
+	} >ioram
 }
 
 /* these two locations are _very_ important for getting the program to startup correctly */ 
@@ -99,11 +100,6 @@ SECTIONS
 
  */ 
 
-theDataSectionLength = (__data_end__ - __data_start__); 
-theBSSSectionLength = (__bss_end__ - __bss_start__);
-theDataROMStart = 0x00100000;
-theDataROMLength = 0x00100000;
-__sram_start__ = 0x01000000;
 cs1 = -(ABSOLUTE(system_address_table) + ABSOLUTE(prcb_ptr) + ABSOLUTE(start_ip)) ;
 
 /* This directive allows you to denote the file that will go onto the front of
