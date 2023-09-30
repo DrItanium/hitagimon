@@ -75,6 +75,12 @@ bootstrap_carry_off:
  # processor starts execution at this spot upon power-up after self-test.
  start_ip:
     clear_g14
+    # pull data from the initial data/bss image into SRAM
+    ldconst dataBSSBlockSize, g0
+    ldconst 0, g4
+    ldconst transferCacheSource, g1 # load source
+    ldconst transferCacheDest, g2 # load destination
+    bal move_data
     # copy the interrupt table to RAM space, more like proper spaces
     ldconst 1028, g0 # load length of the interrupt table
     ldconst 0, g4 # initialize offset to 0
