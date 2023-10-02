@@ -76,10 +76,11 @@ bootstrap_carry_off:
  start_ip:
     clear_g14
     # pull data from the initial data/bss image into SRAM
-    ldconst dataBSSBlockSize, g0
+    ldconst 1024, g0
+    mulo g0, g0, g0 # square it
     ldconst 0, g4
-    ldconst transferCacheSource, g1 # load source
-    ldconst transferCacheDest, g2 # load destination
+    ldconst 0xFE800000, g1 # load source
+    ldconst 0x01000000, g2 # load destination
     bal move_data
     # copy the interrupt table to RAM space, more like proper spaces
     ldconst 1028, g0 # load length of the interrupt table
@@ -165,17 +166,17 @@ setupInterruptHandler:
     ret
 /* -- Below is a software loop to move data */
 
-/*
 move_data:
     ldq (g1)[g4*1], g8  # load 4 words into g8
     stq g8, (g2)[g4*1]  # store to RAM block
     addi g4,16, g4      # increment index
     cmpibg  g0,g4, move_data # loop until done
     bx (g14)
-    */
+/*
 move_data:
     movqstr g2, g1, g0
     bx (g14)
+    */
 
 # setup the bss section so do giant blocks of writes
 
