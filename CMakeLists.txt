@@ -134,24 +134,28 @@ add_custom_command(
 		OUTPUT flash_firmware_p0.bin
 		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 0 -i 4 -I binary -O binary code.bin flash_firmware_p0.bin
 		DEPENDS hitagimon_firmware
+		MAIN_DEPENDENCY code.bin
 )
 
 add_custom_command(
 		OUTPUT flash_firmware_p1.bin
 		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 1 -i 4 -I binary -O binary code.bin flash_firmware_p1.bin
 		DEPENDS hitagimon_firmware
+		MAIN_DEPENDENCY code.bin
 )
 
 add_custom_command(
 		OUTPUT flash_firmware_p2.bin
 		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 2 -i 4 -I binary -O binary code.bin flash_firmware_p2.bin
 		DEPENDS hitagimon_firmware
+		MAIN_DEPENDENCY code.bin
 )
 
 add_custom_command(
 		OUTPUT flash_firmware_p3.bin
 		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 3 -i 4 -I binary -O binary code.bin flash_firmware_p3.bin
 		DEPENDS hitagimon_firmware
+		MAIN_DEPENDENCY code.bin
 )
 
 add_custom_target(hitagimon_wide_mode_parts
@@ -178,8 +182,8 @@ add_custom_target(install_wide_flash0
 add_custom_command(
 		OUTPUT uploaded_flash_firmware1
 		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write flash_firmware_p1.bin
-		MAIN_DEPENDENCY flash_firmware_p1.bin
 		DEPENDS hitagimon_wide_mode_parts
+		MAIN_DEPENDENCY flash_firmware_p1.bin
 )
 
 add_custom_target(install_wide_flash1
@@ -189,8 +193,8 @@ add_custom_target(install_wide_flash1
 add_custom_command(
 		OUTPUT uploaded_flash_firmware2
 		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write flash_firmware_p2.bin
-		MAIN_DEPENDENCY flash_firmware_p2.bin
 		DEPENDS hitagimon_wide_mode_parts
+		MAIN_DEPENDENCY flash_firmware_p2.bin
 )
 
 add_custom_target(install_wide_flash2
@@ -200,8 +204,8 @@ add_custom_target(install_wide_flash2
 add_custom_command(
 		OUTPUT uploaded_flash_firmware3
 		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write flash_firmware_p3.bin
-		MAIN_DEPENDENCY flash_firmware_p3.bin
 		DEPENDS hitagimon_wide_mode_parts
+		MAIN_DEPENDENCY flash_firmware_p3.bin
 )
 
 add_custom_target(install_wide_flash3
