@@ -184,14 +184,11 @@ problem_checksum_failure:
     b exec_fallthrough
 
 boot_print:
-    ldconst 0xFE000008, g1
-    ldconst 0, g2
-boot_print_loop:
-    ldob (g0)[g2*1], g3 # load the current byte to potentially print out
-    cmpobe 0, g3, boot_print_done
-    addo g2, 1, g2  # increment the counter
-    st g3, (g1)     #
-    b boot_print_loop
+    ldob (g12), g13 # load the current byte to potentially print out
+    cmpobe 0, g13, boot_print_done
+    addi g12, 1, g12  # increment the counter
+    st g13, (0xFE000008)
+    b boot_print
 boot_print_done:
     bx (g14)
 msg_checksum_failures:
