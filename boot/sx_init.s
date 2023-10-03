@@ -168,6 +168,7 @@ move_data:
     cmpobne g5, g9, problem_checksum_failure
     cmpobne g6, g10, problem_checksum_failure
     cmpobne g7, g11, problem_checksum_failure
+    # okay, we are successful
     addi g3,16, g3      # increment index
     cmpibg  g0,g3, move_data # loop until done
     bx (g14)
