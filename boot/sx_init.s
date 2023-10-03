@@ -159,7 +159,7 @@ setupInterruptHandler:
     ret
 /* -- Below is a software loop to move data */
 .macro print_char in
-    st \in, (0xFE00'0008)
+    st \in, (0xFE000008)
 .endm
 move_data:
     ldconst 256, g12
