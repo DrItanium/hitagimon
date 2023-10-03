@@ -158,8 +158,13 @@ setupInterruptHandler:
     synmov g5, g6
     ret
 /* -- Below is a software loop to move data */
-
+.macro print_char in
+    st \in, (0xFE00'0008)
+.endm
 move_data:
+    ldconst 256, r3
+    ldconst 0, r4
+move_data_loop:
     ldq (g1)[g3*1], g4  # load 4 words into g8
     stq g4, (g2)[g3*1]  # store to RAM block
     ldq (g2)[g3*1], g8  # load what was stored from destination
@@ -170,7 +175,12 @@ move_data:
     cmpobne g7, g11, problem_checksum_failure
     # okay, we are successful
     addi g3,16, g3      # increment index
-    cmpibg  g0,g3, move_data # loop until done
+    modi r3, g3, r4 # check and see if it is a multiple of 256
+    cmpobne 0, r4 , move_data_no_print
+    ldconst '.', r4
+    print_char r4
+move_data_no_print:
+    cmpibg  g0,g3, move_data_loop # loop until done
     bx (g14)
 problem_checksum_failure:
     print_text msg_checksum_failures
@@ -180,7 +190,7 @@ boot_print:
     ldob (g0), g1 # load the current byte to potentially print out
     cmpobe 0, g1, boot_print_done
     addi g0, 1, g0 # increment the counter
-    st g1, (0xFE000008)
+    print_char g1
     b boot_print
 boot_print_done:
     bx (g14)
