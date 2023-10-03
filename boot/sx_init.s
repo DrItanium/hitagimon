@@ -73,28 +73,29 @@ bootstrap_carry_off:
     .word prcb_ptr # use newly copied PRCB
     .word start_ip # start here
  # processor starts execution at this spot upon power-up after self-test.
+.macro print_text name
+ldconst \name, g0
+bal boot_print
+.endm
+.macro transfer_data size,src,dest,offset
+ldconst \size, g0
+ldconst \src, g1
+ldconst \dest, g2
+ldconst \offset, g3
+bal move_data
+.endm
  start_ip:
     clear_g14
+    print_text msg_boot_checksum_passed
+    print_text msg_ram_copy_start
     # pull data from the initial data/bss image into SRAM
-    ldconst 1024, g0
-    mulo g0, g0, g0 # square it
-    ldconst 0, g4
-    ldconst 0xFE800000, g1 # load source
-    ldconst 0x01000000, g2 # load destination
-    bal move_data
+    transfer_data (1024*1024), 0xFE800000, 0x01000000, 0
+    print_text msg_transfer_complete
     # copy the interrupt table to RAM space, more like proper spaces
-    ldconst 1028, g0 # load length of the interrupt table
-    ldconst 0, g4 # initialize offset to 0
-    ldconst intr_table, g1 # load source
-    ldconst intr_ram, g2    # load address of new table
-    bal move_data # branch to move routine
-# copy PRCB to RAM space, located at _prcb_ram
-    ldconst 176,g0 # load length of PRCB
-    ldconst 0, g4 # initialize offset to 0
-    ldconst prcb_ptr, g1 # load source
-    ldconst _prcb_ram, g2 # load destination
-    bal move_data # branch to move routine
- # fix up the PRCB to point to a new interrupt table
+    transfer_data 1028, intr_table, intr_ram, 0
+    # copy PRCB to RAM space, located at _prcb_ram
+    transfer_data 176, prcb_ptr, _prcb_ram, 0
+    # fix up the PRCB to point to a new interrupt table
     ldconst intr_ram, g12 # load address
     st g12, 20(g2) # store into PRCB
 
@@ -167,17 +168,40 @@ setupInterruptHandler:
 /* -- Below is a software loop to move data */
 
 move_data:
-    ldq (g1)[g4*1], g8  # load 4 words into g8
-    stq g8, (g2)[g4*1]  # store to RAM block
-    addi g4,16, g4      # increment index
-    cmpibg  g0,g4, move_data # loop until done
+    ldq (g1)[g3*1], g4  # load 4 words into g8
+    stq g4, (g2)[g3*1]  # store to RAM block
+    ldq (g2)[g3*1], g8  # load what was stored from destination
+                        # now perform comparisons between the quad words
+    cmpobne g4, g8, problem_checksum_failure
+    cmpobne g5, g9, problem_checksum_failure
+    cmpobne g6, g10, problem_checksum_failure
+    cmpobne g7, g11, problem_checksum_failure
+    addi g3,16, g3      # increment index
+    cmpibg  g0,g3, move_data # loop until done
     bx (g14)
-/*
-move_data:
-    movqstr g2, g1, g0
-    bx (g14)
-    */
+problem_checksum_failure:
+    print_text msg_checksum_failures
+    b exec_fallthrough
 
+boot_print:
+    ldconst 0xFE000008, g1
+    ldconst 0, g2
+boot_print_loop:
+    ldob (g0)[g2*1], g3 # load the current byte to potentially print out
+    cmpobe 0, g3, boot_print_done
+    addo g2, 1, g2  # increment the counter
+    st g3, (g1)     #
+    b boot_print_loop
+boot_print_done:
+    bx (g14)
+msg_checksum_failures:
+    .asciz "Copy Verification Failed\n"
+msg_ram_copy_start:
+    .asciz "Start Copying Data/BSS to SRAM from IO Memory\n"
+msg_transfer_complete:
+    .asciz "Done Copying Data/BSS to SRAM from IO Memory\n"
+msg_boot_checksum_passed:
+    .asciz "i960 Boot Checksum Passed!\n"
 # setup the bss section so do giant blocks of writes
 
 /* The routine below fixes up the stack for a flase interrupt return.
