@@ -162,8 +162,8 @@ setupInterruptHandler:
     st \in, (0xFE00'0008)
 .endm
 move_data:
-    ldconst 256, r3
-    ldconst 0, r4
+    ldconst 256, g12
+    ldconst 0, g13
 move_data_loop:
     ldq (g1)[g3*1], g4  # load 4 words into g8
     stq g4, (g2)[g3*1]  # store to RAM block
@@ -175,12 +175,14 @@ move_data_loop:
     cmpobne g7, g11, problem_checksum_failure
     # okay, we are successful
     addi g3,16, g3      # increment index
-    modi r3, g3, r4 # check and see if it is a multiple of 256
-    cmpobne 0, r4 , move_data_no_print
-    ldconst '.', r4
-    print_char r4
+    modi g12, g3, g13 # check and see if it is a multiple of 256
+    cmpobne 0, g13 , move_data_no_print
+    ldconst '.', g13
+    print_char g13
 move_data_no_print:
     cmpibg  g0,g3, move_data_loop # loop until done
+    ldconst '\n', g13
+    print_char g13
     bx (g14)
 problem_checksum_failure:
     print_text msg_checksum_failures
