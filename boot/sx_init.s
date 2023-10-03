@@ -161,6 +161,23 @@ setupInterruptHandler:
 .macro print_char in
     st \in, (0xFE000008)
 .endm
+.macro emit_char value
+    ldconst \value, g13
+    print_char g13
+ .endm
+
+.macro emit_newline
+emit_char '\n'
+.endm
+.macro emit_tab
+emit_char '\t'
+.endm
+.macro emit_space
+emit_char ' '
+.endm
+.macro emit_colon
+emit_char ':'
+.endm
 move_data:
     ldconst 256, g12
     ldconst 0, g13
@@ -177,17 +194,57 @@ move_data_loop:
     addi g3,16, g3      # increment index
     modi g12, g3, g13 # check and see if it is a multiple of 256
     cmpobne 0, g13 , move_data_no_print
-    ldconst '.', g13
-    print_char g13
+    emit_char '.'
 move_data_no_print:
     cmpibg  g0,g3, move_data_loop # loop until done
-    ldconst '\n', g13
-    print_char g13
+    emit_newline
     bx (g14)
+ .macro pnum in
+ mov \in, g0
+ bal print_number_hex
+ .endm
+ .macro print_comparison prefix, a, b
+ print_text \prefix
+ pnum \a
+ emit_space
+ pnum \b
+ emit_newline
+ .endm
+ .macro print_single_register prefix, value
+ print_text \prefix
+ pnum \value
+ emit_newline
+ .endm
 problem_checksum_failure:
+    movq g0, r12
     print_text msg_checksum_failures
+    print_single_register msg_g0, r12
+    print_single_register msg_g1, r13
+    print_single_register msg_g2, r14
+    print_single_register msg_g3, r15
+    emit_newline
+    print_comparison msg_g4_g8, g4, g8
+    print_comparison msg_g5_g9, g5, g9
+    print_comparison msg_g6_g10, g6, g10
+    print_comparison msg_g7_g11, g7, g11
     b exec_fallthrough
 
+.macro slice_digit shift
+    shro \shift, g0, g1
+    and 0xf, g1, g1
+    ldob (ascii_hex_table)[g1*1], g2
+    print_char g2
+.endm
+print_number_hex:
+    slice_digit 28
+    slice_digit 24
+    slice_digit 20
+    slice_digit 16
+    slice_digit 12
+    slice_digit 8
+    slice_digit 4
+    slice_digit 0
+    bx (g14)
 boot_print:
     ldob (g0), g1 # load the current byte to potentially print out
     cmpobe 0, g1, boot_print_done
@@ -204,6 +261,24 @@ msg_transfer_complete:
     .asciz "Done Copying Data/BSS to SRAM from IO Memory\n"
 msg_boot_checksum_passed:
     .asciz "i960 Boot Checksum Passed!\n"
+msg_g4_g8:
+    .asciz "g4&g8: "
+msg_g5_g9:
+    .asciz "g5&g9: "
+msg_g6_g10:
+    .asciz "g6&g10: "
+msg_g7_g11:
+    .asciz "g7&g11: "
+msg_g0:
+    .asciz "g0: "
+msg_g1:
+    .asciz "g1: "
+msg_g2:
+    .asciz "g2: "
+msg_g3:
+    .asciz "g3: "
+ascii_hex_table:
+    .asciz "0123456789ABCDEF"
 # setup the bss section so do giant blocks of writes
 
 /* The routine below fixes up the stack for a flase interrupt return.
