@@ -38,7 +38,7 @@ SECTIONS
 		*(.bss) 
 		*(COMMON) /* can't find much documentation on this but it is a good idea to have this here */ 
 		__bss_end__ = .; 
-	} >sram
+	} >ioram
 	.data :
 	{
 		__data_start__ = .; 
@@ -46,7 +46,7 @@ SECTIONS
 		CONSTRUCTORS  /* we want to place the constructors data here */
 		__data_end__ = .; 
 		_edata = .; 
-	} >sram
+	} >ioram
 	.heap : { 
 		/* this section is synthetic, I do not actually copy the contents of the heap
 		 * section over on boot, instead I just want the location of where it should
@@ -60,7 +60,7 @@ SECTIONS
 		KEEP(*(.heap)) 
 		__heap_end__ = .; 
 		/* __HeapLimit = __heap_end__; */ 
-	} >sram
+	} >ioram
 }
 
 /* these two locations are _very_ important for getting the program to startup correctly */ 
@@ -103,7 +103,7 @@ SECTIONS
 cs1 = -(ABSOLUTE(system_address_table) + ABSOLUTE(prcb_ptr) + ABSOLUTE(start_ip)) ;
 transferCacheSource = 0xFE800000;
 transferCacheSize = 1024*1024;
-transferCacheDest = 0x01000000;
+transferCacheDest = 0xFE800000;
 /* This directive allows you to denote the file that will go onto the front of
  * the text section, the problem is that with CMake this moves around. So
  * instead, I just make sure that sx_init.s is the first file in the list of

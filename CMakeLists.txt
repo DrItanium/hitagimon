@@ -70,7 +70,7 @@ add_executable(hitagimon
 		tinyscheme-1.42/opdefines.h
 		start.ld
 		)
-
+set_target_properties(hitagimon PROPERTIES LINK_DEPENDS start.ld)
 add_library(hitagiemul
 
 		emulation/m6502.cc emulation/m6502.h emulation/Segment.cc emulation/Segment.h emulation/Domain.cc emulation/Domain.h)
@@ -112,13 +112,15 @@ target_link_options(hitagimon
 add_custom_command(
 		OUTPUT data.bin
 		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0x01100000 --only-section=.bss --only-section=.data --gap-fill=0x00 --set-section-flags .bss=alloc,load,contents -O binary hitagimon data.bin
-		MAIN_DEPENDENCY hitagimon
+		MAIN_DEPENDENCY
+			hitagimon
 )
 
 add_custom_command(
 		OUTPUT code.bin
 		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0x00200000 --only-section=.text -O binary hitagimon code.bin
-		MAIN_DEPENDENCY hitagimon
+		MAIN_DEPENDENCY
+		hitagimon
 )
 
 
