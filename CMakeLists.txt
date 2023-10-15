@@ -70,7 +70,7 @@ add_executable(hitagimon
 		tinyscheme-1.42/opdefines.h
 		start.ld
 		)
-set_target_properties(hitagimon PROPERTIES LINK_DEPENDS start.ld)
+set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/start.ld)
 add_library(hitagiemul
 
 		emulation/m6502.cc emulation/m6502.h emulation/Segment.cc emulation/Segment.h emulation/Domain.cc emulation/Domain.h)
