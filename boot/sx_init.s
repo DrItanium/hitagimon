@@ -129,10 +129,12 @@ reinitialize_iac:
    *    In order to do this, we will execute a call statement, then "fix up" the stack frame
    *    to cause an interrupt return to be executed.
    */
+    print_text msg_start_again_ip
     ldconst 64, g0 # bump up stack to make
     addo sp, g0, sp # room for simulated interrupt frame
     call fix_stack  # routine to turn off int state
-
+    ldconst msg_stack_fixed, g0
+    callx boot_print2
     lda _user_stack, fp     # setup user stack space
     lda -0x40(fp), pfp      # load pfp (just in case)
     lda 0x40(fp), sp        # set up current stack pointer
@@ -260,6 +262,14 @@ boot_print:
     b boot_print
 boot_print_done:
     bx (g14)
+boot_print2:
+    ldob (g0), g1 # load the current byte to potentially print out
+    cmpobe 0, g1, boot_print_done2
+    addi g0, 1, g0 # increment the counter
+    print_char g1
+    b boot_print2
+boot_print_done2:
+    ret
 msg_checksum_failures:
     .asciz "Copy Verification Failed\n"
 msg_ram_copy_start:
@@ -286,6 +296,10 @@ msg_g3:
     .asciz "g3: "
 ascii_hex_table:
     .asciz "0123456789ABCDEF"
+msg_start_again_ip:
+    .asciz "start again ip\n"
+msg_stack_fixed:
+    .asciz "stack fixed!\n"
 # setup the bss section so do giant blocks of writes
 
 /* The routine below fixes up the stack for a flase interrupt return.
