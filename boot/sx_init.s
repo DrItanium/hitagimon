@@ -94,8 +94,9 @@ bal move_data
     transfer_data 176, prcb_ptr, _prcb_ram, 0
     print_text msg_transfer_complete
     # fix up the PRCB to point to a new interrupt table
-    ldconst intr_ram, g12 # load address
-    st g12, 20(g2) # store into PRCB
+    ldconst intr_ram, g0 # load address
+    ldconst _prcb_ram, g1 # load prcb in ram
+    st g0, 20(g1) # store into PRCB
 
  /*
   * -- At this point, the PRCB, and interrupt table have been moved to RAM.
