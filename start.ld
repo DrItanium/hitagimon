@@ -102,7 +102,7 @@ SECTIONS
 
 cs1 = -(ABSOLUTE(system_address_table) + ABSOLUTE(prcb_ptr) + ABSOLUTE(start_ip)) ;
 transferCacheSource = 0xFE800000;
-dataBSSBlockSize = 1024*1024;
+transferCacheSize = 1024*1024;
 transferCacheDest = 0x01000000;
 /* This directive allows you to denote the file that will go onto the front of
  * the text section, the problem is that with CMake this moves around. So

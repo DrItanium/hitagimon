@@ -79,10 +79,14 @@ bal move_data
  start_ip:
     clear_g14
     print_text msg_boot_checksum_passed
-    print_text msg_ram_copy_start
     # pull data from the initial data/bss image into SRAM
-    transfer_data (1024*1024), 0xFE800000, 0x01000000, 0
+    ldconst transferCacheSource, g0
+    ldconst transferCacheDest, g1
+    cmpobe g0, g1, skipFullCopy
+    print_text msg_ram_copy_start
+    transfer_data transferCacheSize, transferCacheSource, transferCacheDest, 0
     print_text msg_transfer_complete
+  skipFullCopy:
     # copy the interrupt table to RAM space, more like proper spaces
     transfer_data 1028, intr_table, intr_ram, 0
     # copy PRCB to RAM space, located at _prcb_ram
