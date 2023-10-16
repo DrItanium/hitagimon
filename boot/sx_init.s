@@ -133,21 +133,22 @@ reinitialize_iac:
     ldconst 64, g0 # bump up stack to make
     addo sp, g0, sp # room for simulated interrupt frame
     call fix_stack  # routine to turn off int state
-    ldconst msg_stack_fixed, g0
-    callx boot_print2
     lda _user_stack, fp     # setup user stack space
     lda -0x40(fp), pfp      # load pfp (just in case)
     lda 0x40(fp), sp        # set up current stack pointer
+    ldconst msg_stack_fixed, g0
+    callx boot_print2
 /* -- This is the point where your main code is called.
  *    If any IO needs to be set up, you should do it here before your
  *    call to main. No opens have been done for STDIN, STDOUT, or STDERR
  */
     callx _init_fp
     callx setupInterruptHandler
+    ldconst msg_invoking_main, g0
+    callx boot_print2
     c_callx _main # assume a main for startup
 exec_fallthrough:
     b exec_fallthrough
-
 
 
 _init_fp:
@@ -299,6 +300,16 @@ msg_start_again_ip:
     .asciz "start again ip\n"
 msg_stack_fixed:
     .asciz "stack fixed!\n"
+msg_fp_init_start:
+    .asciz "about to call fp_init!\n"
+msg_fp_init_done:
+    .asciz "done calling fp_init!\n"
+msg_setup_int_start:
+    .asciz "about to call setupInterruptHandler!\n"
+msg_setup_int_done:
+    .asciz "done calling setupInterruptHandler!\n"
+msg_invoking_main:
+    .asciz "entering main!\n"
 # setup the bss section so do giant blocks of writes
 
 /* The routine below fixes up the stack for a flase interrupt return.
