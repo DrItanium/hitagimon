@@ -138,7 +138,6 @@ reinitialize_iac:
     lda _user_stack, fp     # setup user stack space
     lda -0x40(fp), pfp      # load pfp (just in case)
     lda 0x40(fp), sp        # set up current stack pointer
-    modtc 0x2, 0x2, g0 # enable instruction trace controls
 /* -- This is the point where your main code is called.
  *    If any IO needs to be set up, you should do it here before your
  *    call to main. No opens have been done for STDIN, STDOUT, or STDERR
