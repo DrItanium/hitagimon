@@ -129,7 +129,6 @@ reinitialize_iac:
    *    In order to do this, we will execute a call statement, then "fix up" the stack frame
    *    to cause an interrupt return to be executed.
    */
-    print_text msg_start_again_ip
     ldconst 64, g0 # bump up stack to make
     addo sp, g0, sp # room for simulated interrupt frame
     call fix_stack  # routine to turn off int state
