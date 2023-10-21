@@ -318,7 +318,7 @@ msg_invoking_main:
  * will take advantage of the fact that the processor will
  * restore the PC and AC to its registers
  */
-
+.align 6
 fix_stack:
     flushreg
     or  pfp, 7, pfp     # put interrupt return code into pfp
