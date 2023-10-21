@@ -108,109 +108,117 @@ target_link_options(hitagimon
 		PRIVATE -mmc
 		PRIVATE -mnumerics
 )
-
 add_custom_command(
-		OUTPUT data.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0xFE900000 --only-section=.bss --only-section=.data --gap-fill=0x00 --set-section-flags .bss=alloc,load,contents -O binary hitagimon data.bin
-		MAIN_DEPENDENCY
-			hitagimon
+		OUTPUT prog.bin
+		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0x00100000 --only-section=.text --only-section=.bss --only-section=.data --gap-fill=0x00 --set-section-flags .bss=alloc,load,contents -O binary hitagimon prog.bin
+		DEPENDS hitagimon
+		MAIN_DEPENDENCY hitagimon
 )
-
-add_custom_command(
-		OUTPUT code.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0x00200000 --only-section=.text -O binary hitagimon code.bin
-		MAIN_DEPENDENCY
-		hitagimon
+add_custom_target(hitagimon_sd_image
+		DEPENDS prog.bin
 )
-
-
-
-add_custom_target(hitagimon_firmware
-		DEPENDS
-		code.bin
-		data.bin
-)
-
-
-add_custom_command(
-		OUTPUT flash_firmware_p0.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 0 -i 4 -I binary -O binary code.bin flash_firmware_p0.bin
-		DEPENDS hitagimon_firmware
-		MAIN_DEPENDENCY code.bin
-)
-
-add_custom_command(
-		OUTPUT flash_firmware_p1.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 1 -i 4 -I binary -O binary code.bin flash_firmware_p1.bin
-		DEPENDS hitagimon_firmware
-		MAIN_DEPENDENCY code.bin
-)
-
-add_custom_command(
-		OUTPUT flash_firmware_p2.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 2 -i 4 -I binary -O binary code.bin flash_firmware_p2.bin
-		DEPENDS hitagimon_firmware
-		MAIN_DEPENDENCY code.bin
-)
-
-add_custom_command(
-		OUTPUT flash_firmware_p3.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 3 -i 4 -I binary -O binary code.bin flash_firmware_p3.bin
-		DEPENDS hitagimon_firmware
-		MAIN_DEPENDENCY code.bin
-)
-
-add_custom_target(hitagimon_wide_mode_parts
-		DEPENDS
-		flash_firmware_p0.bin
-		flash_firmware_p1.bin
-		flash_firmware_p2.bin
-		flash_firmware_p3.bin
-)
-
-set(TARGET_FLASH_CHIP SST39SF040@PLCC32)
-add_custom_command(
-		OUTPUT uploaded_flash_firmware0
-		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write flash_firmware_p0.bin
-		DEPENDS hitagimon_wide_mode_parts
-		MAIN_DEPENDENCY flash_firmware_p0.bin
-)
-
-add_custom_target(install_wide_flash0
-		DEPENDS
-		uploaded_flash_firmware0
-)
-
-add_custom_command(
-		OUTPUT uploaded_flash_firmware1
-		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write flash_firmware_p1.bin
-		DEPENDS hitagimon_wide_mode_parts
-		MAIN_DEPENDENCY flash_firmware_p1.bin
-)
-
-add_custom_target(install_wide_flash1
-		DEPENDS
-		uploaded_flash_firmware1
-)
-add_custom_command(
-		OUTPUT uploaded_flash_firmware2
-		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write flash_firmware_p2.bin
-		DEPENDS hitagimon_wide_mode_parts
-		MAIN_DEPENDENCY flash_firmware_p2.bin
-)
-
-add_custom_target(install_wide_flash2
-		DEPENDS
-		uploaded_flash_firmware2
-)
-add_custom_command(
-		OUTPUT uploaded_flash_firmware3
-		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write flash_firmware_p3.bin
-		DEPENDS hitagimon_wide_mode_parts
-		MAIN_DEPENDENCY flash_firmware_p3.bin
-)
-
-add_custom_target(install_wide_flash3
-		DEPENDS
-		uploaded_flash_firmware3
-)
+#add_custom_command(
+#		OUTPUT data.bin
+#		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0xFE900000 --only-section=.bss --only-section=.data --gap-fill=0x00 --set-section-flags .bss=alloc,load,contents -O binary hitagimon data.bin
+#		MAIN_DEPENDENCY
+#			hitagimon
+#)
+#
+#add_custom_command(
+#		OUTPUT code.bin
+#		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0x00200000 --only-section=.text -O binary hitagimon code.bin
+#		MAIN_DEPENDENCY
+#		hitagimon
+#)
+#
+#
+#
+#add_custom_target(hitagimon_firmware
+#		DEPENDS
+#		code.bin
+#		data.bin
+#)
+#
+#
+#add_custom_command(
+#		OUTPUT flash_firmware_p0.bin
+#		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 0 -i 4 -I binary -O binary code.bin flash_firmware_p0.bin
+#		DEPENDS hitagimon_firmware
+#		MAIN_DEPENDENCY code.bin
+#)
+#
+#add_custom_command(
+#		OUTPUT flash_firmware_p1.bin
+#		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 1 -i 4 -I binary -O binary code.bin flash_firmware_p1.bin
+#		DEPENDS hitagimon_firmware
+#		MAIN_DEPENDENCY code.bin
+#)
+#
+#add_custom_command(
+#		OUTPUT flash_firmware_p2.bin
+#		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 2 -i 4 -I binary -O binary code.bin flash_firmware_p2.bin
+#		DEPENDS hitagimon_firmware
+#		MAIN_DEPENDENCY code.bin
+#)
+#
+#add_custom_command(
+#		OUTPUT flash_firmware_p3.bin
+#		COMMAND ${CMAKE_OBJCOPY_COMPILER} --interleave-width=1 -b 3 -i 4 -I binary -O binary code.bin flash_firmware_p3.bin
+#		DEPENDS hitagimon_firmware
+#		MAIN_DEPENDENCY code.bin
+#)
+#
+#add_custom_target(hitagimon_wide_mode_parts
+#		DEPENDS
+#		flash_firmware_p0.bin
+#		flash_firmware_p1.bin
+#		flash_firmware_p2.bin
+#		flash_firmware_p3.bin
+#)
+#
+#set(TARGET_FLASH_CHIP SST39SF040@PLCC32)
+#add_custom_command(
+#		OUTPUT uploaded_flash_firmware0
+#		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write flash_firmware_p0.bin
+#		DEPENDS hitagimon_wide_mode_parts
+#		MAIN_DEPENDENCY flash_firmware_p0.bin
+#)
+#
+#add_custom_target(install_wide_flash0
+#		DEPENDS
+#		uploaded_flash_firmware0
+#)
+#
+#add_custom_command(
+#		OUTPUT uploaded_flash_firmware1
+#		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write flash_firmware_p1.bin
+#		DEPENDS hitagimon_wide_mode_parts
+#		MAIN_DEPENDENCY flash_firmware_p1.bin
+#)
+#
+#add_custom_target(install_wide_flash1
+#		DEPENDS
+#		uploaded_flash_firmware1
+#)
+#add_custom_command(
+#		OUTPUT uploaded_flash_firmware2
+#		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write flash_firmware_p2.bin
+#		DEPENDS hitagimon_wide_mode_parts
+#		MAIN_DEPENDENCY flash_firmware_p2.bin
+#)
+#
+#add_custom_target(install_wide_flash2
+#		DEPENDS
+#		uploaded_flash_firmware2
+#)
+#add_custom_command(
+#		OUTPUT uploaded_flash_firmware3
+#		COMMAND minipro -p ${TARGET_FLASH_CHIP} --write flash_firmware_p3.bin
+#		DEPENDS hitagimon_wide_mode_parts
+#		MAIN_DEPENDENCY flash_firmware_p3.bin
+#)
+#
+#add_custom_target(install_wide_flash3
+#		DEPENDS
+#		uploaded_flash_firmware3
+#)
