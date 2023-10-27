@@ -14,9 +14,14 @@ getrusage(int who, struct rusage* usage) {
 extern "C"
 int
 hitagi_getrusage(int who, struct rusage* usage) {
-    uint64_t counterAmounts = cortex::getSystemCounter(); // this is at a frequency of every 10 usec so we multiply it by 10 first
-    uint64_t seconds = counterAmounts / 100;
-    uint64_t remainder = counterAmounts % 100;
+    uint64_t counterAmounts = cortex::getSystemCounter() * 10; // this is at a frequency of every 10 msec so we multiply it by 10 first
+    // this gives us the number of milliseconds overall
+    uint64_t seconds = counterAmounts / 1000;
+    // dividing by 1000 will give us the number of seconds
+    uint64_t remainder = counterAmounts % 1000;
+    // the remainder is in milliseconds
+    // now we multiply that by 1000 to get the number of microseconds
+    remainder *= 1000;
     usage->ru_utime.tv_sec = seconds;
     usage->ru_utime.tv_usec = remainder;
     usage->ru_stime.tv_sec = 0;
