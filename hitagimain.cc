@@ -131,11 +131,7 @@ int main(void) {
     setup();
     flops_main();
     int argc = 1;
-    int result = scheme_main(argc, argv);
-    for (;;) {
-        loop<false>();
-    }
-    return result;
+    return scheme_main(argc, argv);
 }
 
 extern "C"
