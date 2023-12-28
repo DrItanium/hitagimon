@@ -110,12 +110,7 @@ setup() {
     printBaseSegmentTable(std::cout, currTable, 12);
 #endif
 }
-template<bool specialSpaceIdentification>
 void loop() {
-    if (specialSpaceIdentification) {
-        __builtin_i960_syncf();
-        cortex::memory<uint32_t>(0xE0000000) = 0xABCDEF01;
-    } else {
         uint64_t start = cortex::getSystemCounter();
         do {
             uint64_t now = cortex::getSystemCounter();
@@ -125,17 +120,19 @@ void loop() {
                 break;
             }
         } while (true);
-
-    }
 }
 
-char* argv[] = { "hitagimon", };
+//char* argv[] = { "hitagimon", };
 int main(void) {
     init();
     setup();
     flops_main();
-    int argc = 1;
-    return scheme_main(argc, argv);
+    //int argc = 1;
+    //return scheme_main(argc, argv);
+    for (;; ) {
+        loop();
+    }
+    return 0;
 }
 
 extern "C"
