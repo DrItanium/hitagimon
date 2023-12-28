@@ -36,9 +36,8 @@ init()
     // then setup the system clock to be 200 hz so that we trigger every 10 ms
     // we have a 16-bit counter so the prescalar is 8 (0b010) and the compare is 624
     // this is directly configuring timer 1 on the 2560 acting as chipset
-    //cortex::clearSystemCounter();
-    //cortex::enableSystemCounter(6249, 0x2);
-    // don't enable the system counter
+    cortex::clearSystemCounter();
+    cortex::enableSystemCounter(6249, 0x2);
 }
 void
 printSegmentDescriptor(std::ostream& out, cortex::SegmentDescriptor& curr) {
