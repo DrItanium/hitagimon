@@ -201,13 +201,13 @@ namespace cortex
             volatile Timer16& getTimer0() noexcept;
             volatile Timer16& getTimer1() noexcept;
             volatile Timer16& getTimer2() noexcept;
-            volatile Timer16& getTimer3() noexcept;
             /**
              * @brief Get the unixtime of the system
              * @return the unixtime as an unsigned 32-bit number
              */
             uint32_t unixtime() noexcept;
-
+            uint32_t millis() noexcept;
+            uint32_t micros() noexcept;
 
         }
         namespace Info {

@@ -16,7 +16,8 @@ namespace cortex
         Timer16 timer0;
         Timer16 timer1;
         Timer16 timer2;
-        Timer16 timer3;
+        uint32_t millis;
+        uint32_t micros;
     } __attribute__((packed));
     volatile IOSpace& getIOSpace() noexcept {
         return memory<IOSpace>(0xFE000000);
@@ -97,7 +98,6 @@ namespace cortex
             volatile Timer16& getTimer0() noexcept { return getIOSpace().timer0; }
             volatile Timer16& getTimer1() noexcept { return getIOSpace().timer1; }
             volatile Timer16& getTimer2() noexcept { return getIOSpace().timer2; }
-            volatile Timer16& getTimer3() noexcept { return getIOSpace().timer3; }
         } // end namespace RTC
         namespace Info {
             uint32_t
