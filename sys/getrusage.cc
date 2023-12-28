@@ -5,6 +5,7 @@ extern "C" {
 #include <sys/resource.h>
 }
 #include <cortex/SystemCounter.h>
+#include <cortex/IODevice.h>
 extern "C" int _sys_getrusage(int who, struct rusage*);
 extern "C"
 int
@@ -14,7 +15,8 @@ getrusage(int who, struct rusage* usage) {
 extern "C"
 int
 hitagi_getrusage(int who, struct rusage* usage) {
-    uint64_t counterAmounts = cortex::getSystemCounter() * 10; // this is at a frequency of every 10 msec so we multiply it by 10 first
+    uint64_t counterAmounts = cortex::ChipsetBasicFunctions::Timer::millis();
+    //uint64_t counterAmounts = cortex::getSystemCounter() * 10; // this is at a frequency of every 10 msec so we multiply it by 10 first
     // this gives us the number of milliseconds overall
     uint64_t seconds = counterAmounts / 1000;
     // dividing by 1000 will give us the number of seconds

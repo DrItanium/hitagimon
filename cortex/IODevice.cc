@@ -98,6 +98,14 @@ namespace cortex
             volatile Timer16& getTimer0() noexcept { return getIOSpace().timer0; }
             volatile Timer16& getTimer1() noexcept { return getIOSpace().timer1; }
             volatile Timer16& getTimer2() noexcept { return getIOSpace().timer2; }
+            uint32_t
+            millis() noexcept {
+                return getIOSpace().millis;
+            }
+            uint32_t
+            micros() noexcept {
+                return getIOSpace().micros;
+            }
         } // end namespace RTC
         namespace Info {
             uint32_t
@@ -108,6 +116,7 @@ namespace cortex
             getChipsetClockSpeed() noexcept {
                 return getIOSpace().chipsetClockSpeed;
             }
+
         }
         void
         begin() noexcept {
