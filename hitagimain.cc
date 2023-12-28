@@ -91,6 +91,10 @@ setup() {
               << "Starting counter: 0x" << std::hex << cortex::getSystemCounter() << std::endl;
     std::cout << "millis: " << std::dec << cortex::ChipsetBasicFunctions::Timer::millis() << " millseconds since chipset boot" << std::endl;
     std::cout << "micros: " << std::dec << cortex::ChipsetBasicFunctions::Timer::micros() << " microseconds since chipset boot" << std::endl;
+    struct rusage ru;
+    getrusage(RUSAGE_SELF, &ru);
+    std::cout << "rusage.sec: " << std::dec << ru.ru_utime.tv_sec << " sec" << std::endl;
+    std::cout << "rusage.usec: " << std::dec << ru.ru_utime.tv_usec << " usec" << std::endl;
 
 #if 0
     std::cout << "Boot Words information: " << std::endl;
