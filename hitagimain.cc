@@ -36,8 +36,9 @@ init()
     // then setup the system clock to be 200 hz so that we trigger every 10 ms
     // we have a 16-bit counter so the prescalar is 8 (0b010) and the compare is 624
     // this is directly configuring timer 1 on the 2560 acting as chipset
-    cortex::clearSystemCounter();
-    cortex::enableSystemCounter(6249, 0x2);
+    //cortex::clearSystemCounter();
+    //cortex::enableSystemCounter(6249, 0x2);
+    // don't enable the system counter
 }
 void
 printSegmentDescriptor(std::ostream& out, cortex::SegmentDescriptor& curr) {
@@ -89,7 +90,10 @@ setup() {
               << "--------------------------------------------" << std::endl << std::endl << std::endl << std::endl
               << "NEWLIB Version: " << _NEWLIB_VERSION << std::endl
               << "Starting counter: 0x" << std::hex << cortex::getSystemCounter() << std::endl;
+    std::cout << "millis: " << std::dec << cortex::ChipsetBasicFunctions::Timer::millis() << " millseconds since chipset boot" << std::endl;
+    std::cout << "micros: " << std::dec << cortex::ChipsetBasicFunctions::Timer::micros() << " microseconds since chipset boot" << std::endl;
 
+#if 0
     std::cout << "Boot Words information: " << std::endl;
     const volatile cortex::BootWords& theWords = cortex::getBootWords();
     std::cout << "\tSegment Table Start: " << std::hex << theWords.sat << std::endl;
@@ -101,6 +105,7 @@ setup() {
     cortex::SegmentTable& currTable = *cortex::getSystemAddressTable();
     std::cout << "Current Segment Table Information: " << std::endl;
     printBaseSegmentTable(std::cout, currTable, 12);
+#endif
 }
 template<bool specialSpaceIdentification>
 void loop() {
