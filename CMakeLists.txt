@@ -73,7 +73,7 @@ add_executable(hitagimon
 set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/start.ld)
 add_library(hitagiemul
 
-		emulation/m6502.cc emulation/m6502.h emulation/Segment.cc emulation/Segment.h emulation/Domain.cc emulation/Domain.h)
+        emulation/Segment.cc emulation/Segment.h emulation/Domain.cc emulation/Domain.h)
 
 target_include_directories(hitagiemul PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
