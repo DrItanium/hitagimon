@@ -11,6 +11,7 @@
 #include <cortex/ChipsetInteract.h>
 #include <stdio.h>
 #include <math.h>
+#include <cortex/ext2.h>
 extern "C" {
 #include <sys/time.h>
 #include <sys/resource.h>
