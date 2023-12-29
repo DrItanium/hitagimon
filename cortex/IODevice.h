@@ -50,7 +50,7 @@ namespace cortex
                uint8_t mpe : 1;
                uint8_t rie : 1;
                uint8_t pm : 2;
-               uint8_t unused : 2;
+               uint8_t : 2;
            } bits;
         } config;
         uint8_t dataRegister;
@@ -155,14 +155,14 @@ namespace cortex
                 uint8_t cs : 3;
                 uint8_t wgm2 : 1;
                 uint8_t wgm3 : 1;
-                uint8_t unused0 : 1;
+                uint8_t : 1;
                 uint8_t ices : 1;
                 uint8_t icnc : 1;
-                uint8_t unused1 : 5;
+                uint8_t : 5;
                 uint8_t foc_c : 1;
                 uint8_t foc_b : 1;
                 uint8_t foc_a : 1;
-                uint8_t unused2 : 8;
+                uint8_t : 8;
             } bits;
         } ctl_;
         uint16_t counter_;
