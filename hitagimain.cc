@@ -9,7 +9,6 @@
 #include <iostream>
 #include <cortex/ModernGCC.h>
 #include <cortex/ChipsetInteract.h>
-#include <tinyscheme-1.42/scheme.h>
 #include <stdio.h>
 #include <math.h>
 extern "C" {

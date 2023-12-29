@@ -64,10 +64,6 @@ add_executable(hitagimon
 		boot/f_handle.cc
 		boot/macros.s
 		hitagimain.cc
-		tinyscheme-1.42/scheme-private.h
-		tinyscheme-1.42/scheme.h
-		tinyscheme-1.42/scheme.c
-		tinyscheme-1.42/opdefines.h
 		start.ld
 		)
 set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/start.ld)
