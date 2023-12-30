@@ -18,6 +18,13 @@ namespace cortex
         Timer16 timer2;
         uint32_t millis;
         uint32_t micros;
+        uint32_t reserved0;
+        uint32_t reserved1;
+        uint64_t capacity;
+        uint64_t position;
+        uint16_t available;
+        int16_t rw;
+
     } __attribute__((packed));
     volatile IOSpace& getIOSpace() noexcept {
         return memory<IOSpace>(0xFE000000);
