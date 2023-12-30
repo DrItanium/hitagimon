@@ -20,10 +20,12 @@ namespace cortex
         uint32_t micros;
         uint32_t reserved0;
         uint32_t reserved1;
-        uint64_t capacity;
-        uint64_t position;
-        uint16_t available;
-        int16_t rw;
+        struct {
+            uint64_t size;
+            uint64_t position;
+            uint16_t available;
+            int16_t rw;
+        } disk0;
 
     } __attribute__((packed));
     volatile IOSpace& getIOSpace() noexcept {
@@ -128,6 +130,20 @@ namespace cortex
         void
         begin() noexcept {
         }
+        namespace Disk0 {
+            bool available() { return getIOSpace().disk0.available != 0; }
+            uint64_t size() { return getIOSpace().disk0.size; }
+            uint64_t getPosition() { return getIOSpace().disk0.position; }
+            void setPosition(uint64_t pos) {
+                getIOSpace().disk0.position = pos;
+            }
+            int16_t read() {
+                return getIOSpace().disk0.rw;
+            }
+            void write(uint8_t value) {
+                getIOSpace().disk0.rw = value;
+            }
+        }
     } // end namespace ChipsetBasicFunctions
     void
     Timer16::begin() volatile noexcept {
@@ -139,4 +155,5 @@ namespace cortex
         outputCompareC_ = 0;
         unused_ = 0;
     }
+
 } // end namespace cortex

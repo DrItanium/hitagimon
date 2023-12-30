@@ -197,6 +197,14 @@ namespace cortex
              */
             ssize_t write(char *buffer, size_t nbyte);
         } // end namespace Console
+        namespace Disk0 {
+            bool available();
+            uint64_t size();
+            uint64_t getPosition();
+            void setPosition(uint64_t);
+            int16_t read();
+            void write(uint8_t);
+        }
         namespace Timer {
             volatile Timer16& getTimer0() noexcept;
             volatile Timer16& getTimer1() noexcept;

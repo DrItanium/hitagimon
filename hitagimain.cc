@@ -95,7 +95,13 @@ setup() {
     getrusage(RUSAGE_SELF, &ru);
     std::cout << "rusage.sec: " << std::dec << ru.ru_utime.tv_sec << " sec" << std::endl;
     std::cout << "rusage.usec: " << std::dec << ru.ru_utime.tv_usec << " usec" << std::endl;
-
+    if (cortex::ChipsetBasicFunctions::Disk0::available()) {
+        std::cout << "Found disk 0!" << std::endl;
+        std::cout << "Capacity: " << std::dec << cortex::ChipsetBasicFunctions::Disk0::size() << " bytes" << std::endl;
+        std::cout << "Position: " << std::dec << cortex::ChipsetBasicFunctions::Disk0::getPosition() << std::endl;
+    } else {
+        std::cout << "Disk 0 is not installed!" << std::endl;
+    }
 #if 0
     std::cout << "Boot Words information: " << std::endl;
     const volatile cortex::BootWords& theWords = cortex::getBootWords();
