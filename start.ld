@@ -4,7 +4,8 @@ MEMORY /* describe the partitioning of the memory space for the application */
 {
     rom (!r) : ORIGIN = 0, l = 512K,
     sram (!rx) : ORIGIN = 512K, l = 512K,
-    ioram (!rx) : ORIGIN = 0xFE800000, l = 4M
+    sram2 (!rx) : ORIGIN = 1M, l = 15M,
+    psram (!rx) : ORIGIN = 16M, l = 64M
 }
 
 /* Define a symbol that your code can reference. The linker adds the symbol. */ 
