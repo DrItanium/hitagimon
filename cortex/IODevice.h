@@ -41,21 +41,6 @@ namespace cortex
         uint8_t output;
     } __attribute__((packed));
 
-    struct EEPROMInterface {
-        union {
-           uint8_t reg;
-           struct {
-               uint8_t re : 1;
-               uint8_t pe : 1;
-               uint8_t mpe : 1;
-               uint8_t rie : 1;
-               uint8_t pm : 2;
-               uint8_t : 2;
-           } bits;
-        } config;
-        uint8_t dataRegister;
-        uint16_t addressRegister : 12;
-    } __attribute__((packed));
 /**
  * @brief Exposure of a chipset timer to the i960, since the chipset is an m6502 timer this is a modelling of an m6502 16 bit timer
  */
