@@ -36,7 +36,7 @@ ISR(INT1) {
 }
 
 ISR(INT2) {
-
+    // walk through DMA channels
 }
 
 ISR(INT3) {
