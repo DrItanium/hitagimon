@@ -25,14 +25,14 @@ namespace cortex {
             uint32_t cc : 3;
 #ifdef __HAS_NUMERICS_ARCHITECTURE_EXTENSIONS__
             uint32_t arithmeticStatus : 4;
-            uint32_t unused0 : 1;
+            uint32_t : 1;
 #else
-            uint32_t unused0 : 5;
+            uint32_t : 5;
 #endif
             uint32_t integerOverflowFlag : 1;
-            uint32_t unused1 : 1;
+            uint32_t : 1;
             uint32_t integerOverflowMask : 1;
-            uint32_t unused2 : 2;
+            uint32_t : 2;
             uint32_t noImpreciseFaults : 1;
 #ifdef __HAS_NUMERICS_ARCHITECTURE_EXTENSIONS__
             uint32_t floatingOverflowFlag : 1;
@@ -40,7 +40,7 @@ namespace cortex {
             uint32_t floatingInvalidOpFlag : 1;
             uint32_t floatingZeroDivideFlag : 1;
             uint32_t floatingInexactFlag : 1;
-            uint32_t unused3 : 3;
+            uint32_t : 3;
             uint32_t floatingOverflowMask : 1;
             uint32_t floatingUnderflowMask : 1;
             uint32_t floatingInvalidOpMask : 1;
@@ -59,12 +59,12 @@ namespace cortex {
         struct {
             uint32_t traceEnable: 1;
             uint32_t executionMode: 1;
-            uint32_t unused0: 7;
+            uint32_t : 7;
             uint32_t resume: 1;
             uint32_t traceFaultPending: 1;
-            uint32_t unused1: 2;
+            uint32_t : 2;
             uint32_t state: 1;
-            uint32_t unused2: 2;
+            uint32_t : 2;
             uint32_t priority: 5;
             uint32_t internalState: 10;
         };
@@ -72,7 +72,7 @@ namespace cortex {
     union TraceControls {
         uint32_t raw;
         struct {
-            uint32_t unused0 : 1;
+            uint32_t : 1;
             uint32_t instructionTraceMode : 1;
             uint32_t branchTraceMode : 1;
             uint32_t callTraceMode : 1;
@@ -80,7 +80,7 @@ namespace cortex {
             uint32_t prereturnTraceMode : 1;
             uint32_t supervisorTraceMode : 1;
             uint32_t breakpointTraceMode : 1;
-            uint32_t unused1 : 9;
+            uint32_t : 9;
             uint32_t instructionTraceEvent : 1;
             uint32_t branchTraceEvent : 1;
             uint32_t callTraceEvent : 1;
@@ -88,7 +88,7 @@ namespace cortex {
             uint32_t prereturnTraceEvent : 1;
             uint32_t supervisorTraceEvent : 1;
             uint32_t breakpointTraceEvent : 1;
-            uint32_t unused2 : 8;
+            uint32_t : 8;
         };
     } __attribute((packed));
     struct FaultTableEntry {
@@ -160,16 +160,16 @@ namespace cortex {
         union {
             uint32_t raw;
             struct {
-                uint32_t reserved0 : 1;
+                uint32_t : 1;
                 uint32_t multiProcessorPreempt : 1;
                 uint32_t state : 2;
-                uint32_t reserved1 : 1;
+                uint32_t : 1;
                 uint32_t nonPreemptLimit : 5;
                 uint32_t addressingMode : 1;
                 uint32_t checkDispatchPort : 1;
-                uint32_t reserved2 : 4;
+                uint32_t : 4;
                 uint32_t interimPriority : 5;
-                uint32_t reserved3 : 10;
+                uint32_t : 10;
                 uint32_t writeExternalPriority : 1;
             };
         } processorState;
@@ -268,9 +268,9 @@ namespace cortex {
             uint32_t valid : 1;
             uint32_t pagingMethod : 2;
             uint32_t accessStatus : 5;
-            uint32_t reserved0 : 10;
+            uint32_t : 10;
             uint32_t size : 6;
-            uint32_t reserved1 : 4;
+            uint32_t : 4;
             uint32_t segmentType : 4;
         } generic;
         uint32_t getSegmentLength() const noexcept { return 64 * (generic.size + 1); }
@@ -278,7 +278,7 @@ namespace cortex {
             Semaphore data;
             uint32_t reserved1;
             uint32_t type : 3;
-            uint32_t reserved : 25;
+            uint32_t : 25;
             uint32_t segmentType : 4;
         } semaphore;
         struct {
@@ -288,77 +288,77 @@ namespace cortex {
             uint32_t pagingMethod : 2;
             uint32_t accessed : 1;
             uint32_t altered : 1;
-            uint32_t reserved0 : 1;
+            uint32_t : 1;
             uint32_t cacheable : 1;
-            uint32_t reserved1 : 11;
+            uint32_t : 11;
             uint32_t size : 6;
-            uint32_t reserved2 : 8;
+            uint32_t : 8;
         } simpleRegion;
         struct {
             uint32_t preserved[2];
             uint32_t baseAddress;
             uint32_t valid : 1;
             uint32_t pagingMethod : 2;
-            uint32_t reserved1 : 15;
+            uint32_t : 15;
             uint32_t size : 6;
-            uint32_t reserved2 : 8;
+            uint32_t : 8;
         } pagedRegion;
         struct {
             uint32_t preserved[2];
             uint32_t baseAddress;
             uint32_t valid : 1;
             uint32_t pagingMethod : 2;
-            uint32_t reserved1 : 15;
+            uint32_t : 15;
             uint32_t size : 6;
-            uint32_t reserved2 : 8;
+            uint32_t : 8;
         } bipagedRegion;
         struct {
             uint32_t preserved[2];
             uint32_t blockAddress;
-            uint32_t reserved0 : 6;
+            uint32_t : 6;
             uint32_t cacheable : 1;
-            uint32_t reserved1 : 11;
+            uint32_t : 11;
             uint32_t size : 6;
-            uint32_t reserved2 : 4;
+            uint32_t : 4;
             uint32_t segmentType : 4;
         } pcb;
         struct {
             uint32_t preserved[2];
             uint32_t portAddress;
-            uint32_t reserved0 : 6;
+            uint32_t : 6;
             uint32_t cacheable : 1;
-            uint32_t reserved1 : 11;
+            uint32_t : 11;
             uint32_t size : 6;
-            uint32_t reserved2 : 4;
+            uint32_t : 4;
             uint32_t segmentType : 4;
         } port;
         struct {
             uint32_t preserved[2];
             uint32_t portAddress;
-            uint32_t reserved0 : 6;
+            uint32_t : 6;
             uint32_t cacheable : 1;
-            uint32_t reserved1 : 11;
+            uint32_t : 11;
             uint32_t size : 6;
-            uint32_t reserved2 : 4;
+            uint32_t : 4;
             uint32_t segmentType : 4;
         } procedureTable;
         struct {
             uint32_t preserved[2];
             uint32_t segmentTableAddress;
-            uint32_t reserved0 : 6;
+            uint32_t : 6;
             uint32_t cacheable : 1;
-            uint32_t reserved1 : 11;
+            uint32_t : 11;
             uint32_t size : 6;
-            uint32_t reserved2 : 4;
+            uint32_t : 4;
             uint32_t segmentType : 4;
         } smallSegment;
         struct {
             uint32_t preserved[2];
             uint32_t pageTableAddress;
             uint32_t type : 3;
-            uint32_t reserved1 : 15;
+            uint32_t : 15;
             uint32_t size : 6;
-            uint32_t reserved2 : 8;
+            uint32_t : 8;
         } largeSegment;
         inline uint8_t getTypeCode() const noexcept { return backingStorage[3] & 0x7; }
         inline bool valid() const noexcept { return getTypeCode() != 0; }
@@ -397,7 +397,7 @@ namespace cortex {
             uint8_t preserved;
             uint32_t type : 1;
             uint32_t q : 1;
-            uint32_t reserved : 14;
+            uint32_t : 14;
         };
     };
     struct QueueHeader {
