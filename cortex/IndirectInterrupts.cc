@@ -25,30 +25,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 // Created by jwscoggins on 4/16/23.
 //
-#include <cortex/IAC.h>
-#include <cortex/IODevice.h>
+#include <cortex/builtins.h>
 /**
  * @brief indirect interrupt dispatch routine used to take advantage of the full interrupt table
  */
-extern "C"
-__attribute__((used))
-void
-vect_INT1(void) {
+ISR(INT1) {
     // the chipset will generate an IAC message to represent an action to be performed (usually it is an interrupt message)
 
     //cortex::sendIAC(cortex::ChipsetBasicFunctions::Info::getExternalMessage());
 }
 
-extern "C"
-__attribute__((used))
-void
-vect_INT2(void) {
+ISR(INT2) {
 
 }
 
-extern "C"
-__attribute__((used))
-void
-vect_INT3(void) {
+ISR(INT3) {
 
 }

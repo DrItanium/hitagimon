@@ -163,8 +163,12 @@ inline void __builtin_i960_saveprcs(void) {
 #endif // end defined(__HAS_PROTECTED_ARCHITECTURE_EXTENSIONS__)
 #ifdef __HAS_NUMERICS_ARCHITECTURE_EXTENSIONS__
 #endif // end defined(__HAS_NUMERICS_ARCHITECTURE_EXTENSIONS__)
-
-
+#ifdef __cplusplus
+#define EXTERN_C extern "C"
+#else
+#define EXTERN_C
+#endif
+#define ISR(name) EXTERN_C __attribute__((used)) void vect_ ## name (void)
 #ifdef __cplusplus
 }
 #endif

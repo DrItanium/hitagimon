@@ -27,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 #include <cortex/SystemCounter.h>
 #include <cortex/IODevice.h>
+#include <cortex/builtins.h>
 namespace cortex {
     namespace {
         uint64_t coreSystemCounter_ = 0;
@@ -58,9 +59,6 @@ IncrementSystemCounter() {
     ++cortex::coreSystemCounter_;
 }
 
-extern "C"
-__attribute__((used))
-void
-vect_INT0(void) {
+ISR(INT0) {
     IncrementSystemCounter();
 }
