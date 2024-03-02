@@ -26,3 +26,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Created by jwscoggins on 3/1/24.
 //
 #include "SysExamine.h"
+
+namespace cortex {
+    void
+    storeQuadWord(void* address, QuadWord word) {
+
+    }
+    QuadWord
+    loadQuadWord(void* address) {
+        register QuadWord result;
+        asm volatile ("ldq (%1), %0" : "=r" (result) : "r" (address) : "memory");
+        return result;
+    }
+}
