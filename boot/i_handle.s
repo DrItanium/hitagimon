@@ -24,30 +24,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 .text
 .include "macros.s"
-.global _isr0
-.global _isr1
-.global _isr2
-.global _isr3
-_isr0:
-    save_globals
-    c_call _vect_INT0
-    restore_globals
-    ret
-_isr1:
-    save_globals
-    c_call _vect_INT1
-    restore_globals
-    ret
-_isr2:
-    save_globals
-    c_call _vect_INT2
-    restore_globals
-    ret
-_isr3:
-    save_globals
-    c_call _vect_INT3
-    restore_globals
-    ret
+DefInterruptHandler _isr0, _vect_INT0
+DefInterruptHandler _isr1, _vect_INT1
+DefInterruptHandler _isr2, _vect_INT2
+DefInterruptHandler _isr3, _vect_INT3
 .global _do_nothing_isr
 _do_nothing_isr:
         ret

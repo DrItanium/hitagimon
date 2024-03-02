@@ -107,3 +107,12 @@ DeclareSegment 0, 0, \address, 0x00fc00a3
 .macro PortSegment addr
 DeclareSegment 0, 0, \addr, 0x204000fb
 .endm
+
+.macro DefInterruptHandler name,toCall
+.global \name
+\name:
+    save_globals
+    c_call \toCall
+    restore_globals
+    ret
+.endm
