@@ -29,15 +29,25 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef HITAGIMON_SOFTWAREDMA_H
 #define HITAGIMON_SOFTWAREDMA_H
 #include <stdint.h>
+#include <cortex/ModernCpp.h>
 namespace cortex {
     /**
      * Use interrupts to transfer some amount of 32-bit words per interrupt from one location to another
      */
-    class DMAChannel {
+    class DMARequest {
         uint8_t* source;
         uint8_t* destination;
-
-
+        uint32_t totalBytesToCopy;
+        uint32_t numberOfPacketsToTransferPerOperation;
+        uint32_t mask;
+    public:
+        DMARequest(uint8_t* src, uint8_t* dest, uint32_t tbc, uint32_t npackets, uint32_t m) : source(src), destination(dest), totalBytesToCopy(tbc), numberOfPacketsToTransferPerOperation(npackets), mask(m) { }
+        constexpr uint8_t* getSource() const noexcept { return source; }
+        constexpr uint8_t* getDestination() const noexcept { return destination; }
+        constexpr uint32_t getTotalBytesToCopy() const noexcept { return totalBytesToCopy; }
+        constexpr uint32_t getNumberOfPacketsToTransferPerOperation() const noexcept { return numberOfPacketsToTransferPerOperation; }
+        constexpr uint32_t getMask() const noexcept { return mask; }
+    public:
     };
 } // end namespace cortex
 #endif //HITAGIMON_SOFTWAREDMA_H
