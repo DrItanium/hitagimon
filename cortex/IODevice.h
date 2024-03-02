@@ -192,8 +192,6 @@ namespace cortex
         }
         namespace Timer {
             volatile Timer16& getTimer0() noexcept;
-            volatile Timer16& getTimer1() noexcept;
-            volatile Timer16& getTimer2() noexcept;
             /**
              * @brief Get the unixtime of the system
              * @return the unixtime as an unsigned 32-bit number

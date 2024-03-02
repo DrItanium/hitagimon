@@ -14,19 +14,23 @@ namespace cortex
         uint32_t SerialRW;
         uint32_t SerialFlush;
         Timer16 timer0;
-        Timer16 timer1;
-        Timer16 timer2;
-        uint32_t millis;
-        uint32_t micros;
-        uint32_t reserved0;
-        uint32_t reserved1;
+        Timer16 __nc0;
+        Timer16 __nc1;
+        uint32_t ms;
+        uint32_t us;
+        uint32_t : 32;
+        uint32_t : 32;
         struct {
             uint64_t size;
             uint64_t position;
             uint16_t available;
             int16_t rw;
         } disk0;
-
+        inline uint16_t read() volatile noexcept { return SerialRW; }
+        inline void write(uint16_t c) volatile noexcept { SerialRW = c; }
+        inline void flush() volatile noexcept { SerialFlush = 0; }
+        inline uint32_t millis() volatile noexcept { return ms; }
+        inline uint32_t micros() volatile noexcept { return us; }
     } __attribute__((packed));
     volatile IOSpace& getIOSpace() noexcept {
         return memory<IOSpace>(0xFE000000);
@@ -36,21 +40,21 @@ namespace cortex
 
             uint16_t
             read() {
-                return getIOSpace().SerialRW;
+                return getIOSpace().read();
             }
 
             void
             write(uint16_t c) {
-                getIOSpace().SerialRW = c;
+                getIOSpace().write(c);
             }
 
             void
             write(char c) {
-                write(static_cast<uint16_t>(c));
+                getIOSpace().write(static_cast<uint16_t>(c));
             }
             void
             flush() {
-                getIOSpace().SerialFlush = 0;
+                getIOSpace().flush();
             }
             void
             write(const char *ptr) {
@@ -105,15 +109,13 @@ namespace cortex
                 return 0;
             }
             volatile Timer16& getTimer0() noexcept { return getIOSpace().timer0; }
-            volatile Timer16& getTimer1() noexcept { return getIOSpace().timer1; }
-            volatile Timer16& getTimer2() noexcept { return getIOSpace().timer2; }
             uint32_t
             millis() noexcept {
-                return getIOSpace().millis;
+                return getIOSpace().millis();
             }
             uint32_t
             micros() noexcept {
-                return getIOSpace().micros;
+                return getIOSpace().micros();
             }
         } // end namespace RTC
         namespace Info {
