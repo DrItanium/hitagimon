@@ -58,7 +58,8 @@ add_library(hitagicortex
 		cortex/Types.h cortex/SystemCounter.h cortex/SystemCounter.cc cortex/ModernGCC.h cortex/ModernGCC.cc cortex/builtins.h cortex/builtins.c cortex/IndirectInterrupts.cc
 		cortex/ext2.h
 		cortex/SoftwareDMA.h
-		cortex/SoftwareDMA.cc)
+		cortex/SoftwareDMA.cc
+		cortex/SysExamine.cc)
 add_executable(hitagimon
 		boot/sx_init.s # this must ALWAYS be first!
 		boot/f_table.s
