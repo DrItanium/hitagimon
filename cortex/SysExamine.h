@@ -16,15 +16,11 @@ namespace cortex {
         uint32_t ordinals[3];
     };
     typedef int64_t LongWord;
-    union TripleWord {
-        uint8_t bytes[12];
-        uint32_t ordinals[3];
-    } __attribute__((packed)) ;
     union QuadWord {
         uint8_t bytes[16];
         uint32_t ordinals[4];
     } __attribute__((packed));
-    void storeQuadWord(void* address, QuadWord word);
+    void storeQuadWord(QuadWord word, void* address);
     QuadWord loadQuadWord(void* address);
     inline uint32_t getSegmentIndex(uint32_t ss) noexcept { return (ss & (~0x3f)) >> 6; }
     /**

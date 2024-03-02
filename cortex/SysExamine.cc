@@ -29,8 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace cortex {
     void
-    storeQuadWord(void* address, QuadWord word) {
-
+    storeQuadWord(QuadWord word, void* address) {
+        asm volatile ("stq %0, (%1)" : : "r" (word) , "r" (address) : "memory");
     }
     QuadWord
     loadQuadWord(void* address) {
@@ -38,4 +38,5 @@ namespace cortex {
         asm volatile ("ldq (%1), %0" : "=r" (result) : "r" (address) : "memory");
         return result;
     }
+    /// @todo fix triple word operations, it crashes the compiler
 }
