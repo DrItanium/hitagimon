@@ -31,10 +31,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @brief indirect interrupt dispatch routine used to take advantage of the full interrupt table
  */
 extern "C"
+__attribute__((used))
 void
-vect_ISR1(void) {
-    // we let the chipset generate the IAC message that we read in, what's strange is that there is no
-    // mention of what to do when we get a _bad_ iac in.
+vect_INT1(void) {
+    // the chipset will generate an IAC message to represent an action to be performed (usually it is an interrupt message)
 
     //cortex::sendIAC(cortex::ChipsetBasicFunctions::Info::getExternalMessage());
+}
+
+extern "C"
+__attribute__((used))
+void
+vect_INT2(void) {
+
+}
+
+extern "C"
+__attribute__((used))
+void
+vect_INT3(void) {
+
 }

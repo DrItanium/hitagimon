@@ -59,7 +59,8 @@ IncrementSystemCounter() {
 }
 
 extern "C"
+__attribute__((used))
 void
-vect_ISR0(void) {
+vect_INT0(void) {
     IncrementSystemCounter();
 }
