@@ -247,22 +247,23 @@ intr_table:
         .word _do_nothing_isr;           # interrupt table entry 221
         .word _do_nothing_isr;           # interrupt table entry 222
         .word _do_nothing_isr;           # interrupt table entry 223
-        .word _do_nothing_isr;           # interrupt table entry 224
-        .word _do_nothing_isr;           # interrupt table entry 225
-        .word _do_nothing_isr;           # interrupt table entry 226
-        .word _do_nothing_isr;           # interrupt table entry 227
-        .word _do_nothing_isr;           # interrupt table entry 228
-        .word _do_nothing_isr;           # interrupt table entry 229
-        .word _do_nothing_isr;           # interrupt table entry 230
-        .word _do_nothing_isr;           # interrupt table entry 231
-        .word _do_nothing_isr;           # interrupt table entry 232
-        .word _do_nothing_isr;           # interrupt table entry 233
-        .word _do_nothing_isr;           # interrupt table entry 234
-        .word _do_nothing_isr;           # interrupt table entry 235
-        .word _do_nothing_isr;           # interrupt table entry 236
-        .word _do_nothing_isr;           # interrupt table entry 237
-        .word _do_nothing_isr;           # interrupt table entry 238
-        .word _do_nothing_isr;           # interrupt table entry 239
+
+        .word _isr_dmachan0;           # interrupt table entry 224
+        .word _isr_dmachan1;           # interrupt table entry 225
+        .word _isr_dmachan2;           # interrupt table entry 226
+        .word _isr_dmachan3;           # interrupt table entry 227
+        .word _isr_dmachan4;           # interrupt table entry 228
+        .word _isr_dmachan5;           # interrupt table entry 229
+        .word _isr_dmachan6;           # interrupt table entry 230
+        .word _isr_dmachan7;           # interrupt table entry 231
+        .word _isr_dmachan8;           # interrupt table entry 232
+        .word _isr_dmachan9;           # interrupt table entry 233
+        .word _isr_dmachan10;           # interrupt table entry 234
+        .word _isr_dmachan11;           # interrupt table entry 235
+        .word _isr_dmachan12;           # interrupt table entry 236
+        .word _isr_dmachan13;           # interrupt table entry 237
+        .word _isr_dmachan14;           # interrupt table entry 238
+        .word _isr_dmachan15;           # interrupt table entry 239
 
         .word _do_nothing_isr;           # interrupt table entry 240
         .word _do_nothing_isr;           # interrupt table entry 241
@@ -272,6 +273,7 @@ intr_table:
         .word _do_nothing_isr;           # Reserved
         .word _do_nothing_isr;           # Reserved
         .word _do_nothing_isr;           # Reserved
+
         .word _do_nothing_isr;            # NMI Interrupt
         .word _do_nothing_isr;           # Reserved
         .word _do_nothing_isr;           # Reserved

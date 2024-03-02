@@ -112,7 +112,7 @@ DeclareSegment 0, 0, \addr, 0x204000fb
 .global \name
 \name:
     save_globals
-    c_call \toCall
+    c_call _vect_\toCall
     restore_globals
     ret
 .endm
