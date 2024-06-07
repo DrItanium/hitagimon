@@ -74,6 +74,8 @@
 #  define M3_LITTLE_ENDIAN
 # elif defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
 #  define M3_BIG_ENDIAN
+# elif defined(__i960__)
+# define M3_LITTLE_ENDIAN
 # else
 #  error "Byte order not detected"
 # endif
@@ -195,7 +197,10 @@
 
 #  elif defined(__AVR__)
 #   define M3_ARCH "avr"
+#  elif defined(__i960__)
+#   define M3_ARCH "i960"
 #  endif
+
 # endif
 
 # if defined(M3_COMPILER_MSVC)

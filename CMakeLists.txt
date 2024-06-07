@@ -75,6 +75,26 @@ add_library(wasm3
         wasm3/wasm3_defs.h
         wasm3/m3_api_libc.c
         wasm3/m3_api_libc.h
+        wasm3/m3_api_meta_wasi.c
+        wasm3/m3_api_tracer.c
+        wasm3/m3_api_tracer.h
+        wasm3/m3_api_uvwasi.c
+        wasm3/m3_api_wasi.c
+        wasm3/m3_api_wasi.h
+        wasm3/m3_bind.c
+        wasm3/m3_bind.h
+        wasm3/m3_code.c
+        wasm3/m3_compile.c
+        wasm3/m3_core.c
+        wasm3/m3_env.c
+        wasm3/m3_exec.c
+        wasm3/m3_exec.h
+        wasm3/m3_function.c
+        wasm3/m3_info.c
+        wasm3/m3_info.h
+        wasm3/m3_math_utils.h
+        wasm3/m3_module.c
+        wasm3/m3_parse.c
 )
 set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/start.ld)
 add_library(hitagiemul

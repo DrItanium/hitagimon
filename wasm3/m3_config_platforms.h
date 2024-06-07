@@ -35,6 +35,8 @@
 #  endif
 # elif defined(__SIZEOF_POINTER__)
 #  define M3_SIZEOF_PTR __SIZEOF_POINTER__
+# elif defined(__i960__)
+#  define M3_SIZEOF_PTR 4
 #else
 #  error "Pointer size not detected"
 # endif
