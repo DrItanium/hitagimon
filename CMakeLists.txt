@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(hitagimon VERSION 0.1)
+project(hitagimon VERSION 0.2)
 enable_language(CXX C ASM-ATT)
 set(CMAKE_CXX_STANDARD 98)
 
@@ -8,8 +8,8 @@ set(CMAKE_C_COMPILER ${tools}/bin/i960-elf-gcc)
 set(CMAKE_CXX_COMPILER ${tools}/bin/i960-elf-g++)
 set(CMAKE_ASM-ATT_COMPILER ${tools}/bin/i960-elf-as)
 set(CMAKE_LINKER ${tools}/bin/i960-elf-ld)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -fno-exceptions")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 --std=gnu99")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -fno-exceptions")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 --std=gnu99")
 set(CMAKE_OBJCOPY_COMPILER ${tools}/bin/i960-elf-objcopy)
 set(CMAKE_OBJDUMP_COMPILER ${tools}/bin/i960-elf-objdump)
 # gcc 3.4.6 doesn't support colorizing output
@@ -143,7 +143,7 @@ add_custom_command(
 		OUTPUT prog.bin
 		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0x00100000 --only-section=.text --only-section=.bss --only-section=.data --gap-fill=0x00 --set-section-flags .bss=alloc,load,contents -O binary hitagimon prog.bin
 		DEPENDS hitagimon
-		MAIN_DEPENDENCY hitagimon
+		#MAIN_DEPENDENCY hitagimon
 )
 add_custom_target(hitagimon_sd_image
 		DEPENDS prog.bin
