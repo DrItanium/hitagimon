@@ -70,6 +70,12 @@ add_executable(hitagimon
 		hitagimain.cc
 		start.ld
 		)
+add_library(wasm3
+        wasm3/wasm3.h
+        wasm3/wasm3_defs.h
+        wasm3/m3_api_libc.c
+        wasm3/m3_api_libc.h
+)
 set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/start.ld)
 add_library(hitagiemul
 
