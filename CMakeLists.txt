@@ -18,7 +18,7 @@ add_compile_options(-Wall)
 # for some reason, the compiler generated multiple copies of the same entries
 #add_link_options(-Wl,--as-needed -nostdlib -static -T ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT} -ffreestanding -Wl,--allow-multiple-definition)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmc -mnumerics")
-set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -mmc -mnumerics")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mmc -mnumerics")
 set(CMAKE_ASM-ATT_FLAGS "${CMAKE_ASM_FLAGS} -AMC -I${CMAKE_SOURCE_DIR}/boot")
 #add_link_options(-mmc -mnumerics)
 #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--as-needed -nostdlib -static -T ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT} -msb -mnumerics -ffreestanding")
