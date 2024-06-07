@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef __cplusplus
 extern "C" {
 #endif
-#if defined(__i960MC__) || defined(__i960SB__) || defined(__i960KB__) || defined(__i960KA__) || defined(__i960XA__)
+#if defined(__i960MC__) || defined(__i960SB__) || defined(__i960KB__) || defined(__i960XA__)
 #define __HAS_PROTECTED_ARCHITECTURE_EXTENSIONS__ 1
 #define __HAS_NUMERICS_ARCHITECTURE_EXTENSIONS__ 1
 #endif
