@@ -60,16 +60,6 @@ add_library(hitagicortex
 		cortex/SoftwareDMA.h
 		cortex/SoftwareDMA.cc
 		cortex/SysExamine.cc)
-add_executable(hitagimon
-		boot/sx_init.s # this must ALWAYS be first!
-		boot/f_table.s
-		boot/i_handle.s
-		boot/i_table.s
-		boot/f_handle.cc
-		boot/macros.s
-		hitagimain.cc
-		start.ld
-		)
 add_library(wasm3
         wasm3/wasm3.h
         wasm3/wasm3_defs.h
@@ -96,6 +86,16 @@ add_library(wasm3
         wasm3/m3_module.c
         wasm3/m3_parse.c
 )
+add_executable(hitagimon
+		boot/sx_init.s # this must ALWAYS be first!
+		boot/f_table.s
+		boot/i_handle.s
+		boot/i_table.s
+		boot/f_handle.cc
+		boot/macros.s
+		hitagimain.cc
+		start.ld
+		)
 set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/start.ld)
 add_library(hitagiemul
 
@@ -106,6 +106,7 @@ target_include_directories(hitagiemul PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagicortex PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagisys PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagimon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(wasm3 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(hitagimon
 		gcc
@@ -114,6 +115,7 @@ target_link_libraries(hitagimon
 		hitagicortex
 		hitagisys
 		hitagiemul
+        wasm3
 		mon960
 		stdc++
 		c
