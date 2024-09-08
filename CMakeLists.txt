@@ -8,8 +8,8 @@ set(CMAKE_C_COMPILER ${tools}/bin/i960-elf-gcc)
 set(CMAKE_CXX_COMPILER ${tools}/bin/i960-elf-g++)
 set(CMAKE_ASM-ATT_COMPILER ${tools}/bin/i960-elf-as)
 set(CMAKE_LINKER ${tools}/bin/i960-elf-ld)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -fno-exceptions")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 --std=gnu99")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -DUSH_CONFIG_PLATFORM_POSIX -fno-exceptions")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -DCONFIG_PLATFORM_POSIX --std=gnu99")
 set(CMAKE_OBJCOPY_COMPILER ${tools}/bin/i960-elf-objcopy)
 set(CMAKE_OBJDUMP_COMPILER ${tools}/bin/i960-elf-objdump)
 # gcc 3.4.6 doesn't support colorizing output
@@ -99,6 +99,58 @@ add_executable(hitagimon
 		hitagimain.cc
 		start.ld
 		)
+# add the microshell library directly since I get an infinite loop otherwise
+#add_library(microshell
+#        microshell/src/inc/ush.h
+#        microshell/src/inc/ush_commands.h
+#        microshell/src/inc/ush_const.h
+#        microshell/src/inc/ush_file.h
+#        microshell/src/inc/ush_internal.h
+#        microshell/src/inc/ush_node.h
+#        microshell/src/inc/ush_preconfig.h
+#        microshell/src/inc/ush_shell.h
+#        microshell/src/inc/ush_types.h
+#        microshell/src/inc/ush_utils.h
+#        microshell/src/config/ush_config_platform.h
+#        microshell/src/config/posix/ush_config.h
+#        microshell/src/src/commands/ush_cmd.c
+#        microshell/src/src/commands/ush_cmd_cat.c
+#        microshell/src/src/commands/ush_cmd_cd.c
+#        microshell/src/src/commands/ush_cmd_echo.c
+#        microshell/src/src/commands/ush_cmd_help.c
+#        microshell/src/src/commands/ush_cmd_ls.c
+#        microshell/src/src/commands/ush_cmd_pwd.c
+#        microshell/src/src/commands/ush_cmd_xxd.c
+#        microshell/src/src/ush.c
+#        microshell/src/src/ush_autocomp.c
+#        microshell/src/src/ush_autocomp_state.c
+#        microshell/src/src/ush_autocomp_utils.c
+#        microshell/src/src/ush_commands.c
+#        microshell/src/src/ush_file.c
+#        microshell/src/src/ush_node.c
+#        microshell/src/src/ush_node_mount.c
+#        microshell/src/src/ush_node_utils.c
+#        microshell/src/src/ush_parse.c
+#        microshell/src/src/ush_parse_char.c
+#        microshell/src/src/ush_parse_utils.c
+#        microshell/src/src/ush_process.c
+#        microshell/src/src/ush_prompt.c
+#        microshell/src/src/ush_read.c
+#        microshell/src/src/ush_read_char.c
+#        microshell/src/src/ush_read_utils.c
+#        microshell/src/src/ush_reset.c
+#        microshell/src/src/ush_utils.c
+#        microshell/src/src/ush_write.c
+#        microshell/src/src/ush_write_utils.c
+#
+#)
+add_subdirectory(microshell/src)
+build_ush(microshell)
+target_compile_definitions(
+        microshell
+        PUBLIC
+        USH_CONFIG_PLATFORM_POSIX
+)
 set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/start.ld)
 add_library(hitagiemul
 
@@ -110,7 +162,11 @@ target_include_directories(hitagicortex PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagisys PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagimon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(wasm3 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-
+#target_include_directories(microshell
+#        PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+#        PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/microshell/src
+#        PUBLIC $
+#)
 target_link_libraries(hitagimon
 		gcc
 		c
@@ -119,6 +175,7 @@ target_link_libraries(hitagimon
 		hitagisys
 		hitagiemul
         wasm3
+        microshell
 		mon960
 		stdc++
 		c
