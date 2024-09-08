@@ -1,0 +1,3 @@
+[submodule "microshell"]
+	path = microshell
+	url = https://github.com/DrItanium/microshell
