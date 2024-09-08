@@ -15,6 +15,8 @@
 extern "C" {
 #include <sys/time.h>
 #include <sys/resource.h>
+#include <stdio.h>
+#include <microshell.h>
 }
 /* 'Uncomment' the line below to run   */
 /* with 'register double' variables    */
@@ -23,8 +25,30 @@ extern "C" {
 /* registers used automatically, but   */
 /* you might want to try it anyway.    */
 /* #define ROPT */
+namespace microshell {
+    int flops_main();
 
-int flops_main();
+    int read(ush_object*, char*ch) {
+        *ch = fgetc(stdin);
+        return 1;
+    }
+
+    int write(ush_object*, char ch) {
+        char c = fputc(ch, stdout);
+        return (c != ch) ? 0 : 1;
+    }
+
+    ush_io_interface microshellIOInterface;
+    ush_descriptor microshellDescriptor;
+#define SHELL_BUFFER_SIZE 256
+    char inputBuffer[SHELL_BUFFER_SIZE];
+    char outputBuffer[SHELL_BUFFER_SIZE];
+    ush_object microshellObject;
+    void setup();
+    bool doMicroshell() {
+        return ush_service(&microshellObject);
+    }
+}
 void
 init()
 {
@@ -115,17 +139,10 @@ setup() {
     std::cout << "Current Segment Table Information: " << std::endl;
     printBaseSegmentTable(std::cout, currTable, 12);
 #endif
+    microshell::setup();
 }
 void loop() {
-        uint64_t start = cortex::getSystemCounter();
-        do {
-            uint64_t now = cortex::getSystemCounter();
-            uint64_t difference = now - start;
-            if (difference >= 100) {
-                printf("Counter: %#llx\n", now);
-                break;
-            }
-        } while (true);
+    microshell::doMicroshell();
 }
 
 
@@ -794,14 +811,53 @@ struct FlopsCode {
 };
 /*------ End flops.c code, say good night Jan! (Sep 1992) ------*/
 
+FlopsCode<double> fc("double precision");
+FlopsCode<float> fc2("single precision");
+namespace microshell {
+    void doFlops64Execution(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        fc.doIt();
+    }
+    void doFlops32Execution(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        fc2.doIt();
+    }
+    ush_node_object cmd;
+    const ush_file_descriptor cmdFiles[] = {
+            {
+                .name = "flops64",
+                .description = "run flops double precision benchmark",
+                .exec = doFlops64Execution,
+            },
+            {
+                    .name = "flops32",
+                    .description = "run flops single precision benchmark",
+                    .exec = doFlops32Execution,
+            },
+    };
+    void
+    setup() {
+        microshellIOInterface.read = microshell::read;
+        microshellIOInterface.write = microshell::write;
+        microshellDescriptor.io = &microshellIOInterface;
+        microshellDescriptor.input_buffer = inputBuffer;
+        microshellDescriptor.input_buffer_size = sizeof(inputBuffer);
+        microshellDescriptor.output_buffer = outputBuffer;
+        microshellDescriptor.output_buffer_size = sizeof(outputBuffer);
+        microshellDescriptor.path_max_length = SHELL_BUFFER_SIZE;
+        microshellDescriptor.hostname = "hitagimon960";
+
+
+        ush_init(&microshellObject, &microshellDescriptor);
+
+        ush_commands_add(microshellObject, &cmd, &cmdFiles, sizeof(cmdFiles) / sizeof(cmdFiles[0]));
+    }
+}
+
 //char* argv[] = { "hitagimon", };
 int main(void) {
     init();
     setup();
-    FlopsCode<double> fc("double precision");
-    fc.doIt();
-    FlopsCode<float> fc2("single precision");
-    fc2.doIt();
+    //fc.doIt();
+    //fc2.doIt();
     //int argc = 1;
     //return scheme_main(argc, argv);
     for (;; ) {
