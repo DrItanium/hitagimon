@@ -49,7 +49,7 @@ namespace microshell {
         &microshellIOInterface,
         inputBuffer, sizeof(inputBuffer),
         outputBuffer, sizeof(outputBuffer),
-        SHELL_BUFFER_SIZE, "higagimon960",
+        SHELL_BUFFER_SIZE, "hitagimon960",
     };
     ush_object microshellObject;
     void setup();
