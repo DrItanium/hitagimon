@@ -849,10 +849,15 @@ namespace microshell {
                     nullptr, // process
             },
     };
+    ush_node_object fsroot;
+    const ush_file_descriptor rootDesc[] = {
+
+    };
     void
     setup() {
         ush_init(&microshellObject, &microshellDescriptor);
         ush_commands_add(&microshellObject, &cmd, cmdFiles, sizeof(cmdFiles) / sizeof(cmdFiles[0]));
+        ush_node_mount(&microshellObject, "/", &fsroot, rootDesc, sizeof(rootDesc) / sizeof(rootDesc[0]));
     }
 }
 
