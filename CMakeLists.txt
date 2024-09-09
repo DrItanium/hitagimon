@@ -98,7 +98,7 @@ add_executable(hitagimon
 		boot/macros.s
 		hitagimain.cc
 		start.ld
-		)
+)
 # add the microshell library directly since I get an infinite loop otherwise
 #add_library(microshell
 #        microshell/src/inc/ush.h

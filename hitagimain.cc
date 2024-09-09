@@ -38,11 +38,19 @@ namespace microshell {
         return (c != ch) ? 0 : 1;
     }
 
-    ush_io_interface microshellIOInterface;
-    ush_descriptor microshellDescriptor;
+    const ush_io_interface microshellIOInterface = {
+        microshell::read,
+        microshell::write,
+    };
 #define SHELL_BUFFER_SIZE 256
     char inputBuffer[SHELL_BUFFER_SIZE];
     char outputBuffer[SHELL_BUFFER_SIZE];
+    const ush_descriptor microshellDescriptor = {
+        &microshellIOInterface,
+        inputBuffer, sizeof(inputBuffer),
+        outputBuffer, sizeof(outputBuffer),
+        SHELL_BUFFER_SIZE, "higagimon960",
+    };
     ush_object microshellObject;
     void setup();
     bool doMicroshell() {
@@ -821,26 +829,28 @@ namespace microshell {
         fc2.doIt();
     }
     ush_node_object cmd;
-    ush_file_descriptor cmdFiles[2];
+    const ush_file_descriptor cmdFiles[] = {
+            {
+                "flops64",
+                "run flops double precision benchmark" ,
+                nullptr, // help
+                doFlops64Execution, // exec
+                nullptr, // get_data
+                nullptr, // set_data
+                nullptr, // process
+            },
+            {
+                    "flops32",
+                    "run flops single precision benchmark" ,
+                    nullptr, // help
+                    doFlops32Execution, // exec
+                    nullptr, // get_data
+                    nullptr, // set_data
+                    nullptr, // process
+            },
+    };
     void
     setup() {
-        microshellIOInterface.read = microshell::read;
-        microshellIOInterface.write = microshell::write;
-        microshellDescriptor.io = &microshellIOInterface;
-        microshellDescriptor.input_buffer = inputBuffer;
-        microshellDescriptor.input_buffer_size = sizeof(inputBuffer);
-        microshellDescriptor.output_buffer = outputBuffer;
-        microshellDescriptor.output_buffer_size = sizeof(outputBuffer);
-        microshellDescriptor.path_max_length = SHELL_BUFFER_SIZE;
-        microshellDescriptor.hostname = "hitagimon960";
-        ush_file_descriptor& cmd0 = cmdFiles[0];
-        cmd0.description = "run flops double precision benchmark";
-        cmd0.name = "flops64";
-        cmd0.exec = doFlops64Execution;
-        ush_file_descriptor& cmd1 = cmdFiles[1];
-        cmd1.description = "run flops single precision benchmark";
-        cmd1.name = "flops32";
-        cmd1.exec = doFlops32Execution;
         ush_init(&microshellObject, &microshellDescriptor);
         ush_commands_add(&microshellObject, &cmd, cmdFiles, sizeof(cmdFiles) / sizeof(cmdFiles[0]));
     }
