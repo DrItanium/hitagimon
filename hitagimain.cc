@@ -821,18 +821,7 @@ namespace microshell {
         fc2.doIt();
     }
     ush_node_object cmd;
-    const ush_file_descriptor cmdFiles[] = {
-            {
-                .name = "flops64",
-                .description = "run flops double precision benchmark",
-                .exec = doFlops64Execution,
-            },
-            {
-                    .name = "flops32",
-                    .description = "run flops single precision benchmark",
-                    .exec = doFlops32Execution,
-            },
-    };
+    ush_file_descriptor cmdFiles[2];
     void
     setup() {
         microshellIOInterface.read = microshell::read;
@@ -844,11 +833,16 @@ namespace microshell {
         microshellDescriptor.output_buffer_size = sizeof(outputBuffer);
         microshellDescriptor.path_max_length = SHELL_BUFFER_SIZE;
         microshellDescriptor.hostname = "hitagimon960";
-
-
+        ush_file_descriptor& cmd0 = cmdFiles[0];
+        cmd0.description = "run flops double precision benchmark";
+        cmd0.name = "flops64";
+        cmd0.exec = doFlops64Execution;
+        ush_file_descriptor& cmd1 = cmdFiles[1];
+        cmd1.description = "run flops single precision benchmark";
+        cmd1.name = "flops32";
+        cmd1.exec = doFlops32Execution;
         ush_init(&microshellObject, &microshellDescriptor);
-
-        ush_commands_add(microshellObject, &cmd, &cmdFiles, sizeof(cmdFiles) / sizeof(cmdFiles[0]));
+        ush_commands_add(&microshellObject, &cmd, cmdFiles, sizeof(cmdFiles) / sizeof(cmdFiles[0]));
     }
 }
 

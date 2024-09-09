@@ -144,10 +144,6 @@ add_executable(hitagimon
 #        microshell/src/src/ush_write_utils.c
 #
 #)
-add_library(hitagishell
-        shell/entry.h
-        shell/entry.c
-)
 add_subdirectory(microshell/src)
 build_ush(microshell)
 target_compile_definitions(
@@ -165,10 +161,6 @@ target_include_directories(hitagicortex PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagisys PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagimon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(wasm3 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_include_directories(hitagishell PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(hitagishell
-        microshell
-)
 target_link_libraries(hitagimon
 		gcc
 		c
@@ -177,7 +169,6 @@ target_link_libraries(hitagimon
 		hitagisys
 		hitagiemul
         wasm3
-        hitagishell
         microshell
 		mon960
 		stdc++
