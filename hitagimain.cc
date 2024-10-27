@@ -119,15 +119,14 @@ setup() {
     std::cout << "HITAGIMON" << std::endl
               << "Built on " << __DATE__ << " at " << __TIME__ << std::endl
               << "--------------------------------------------" << std::endl << std::endl << std::endl << std::endl
-              << "NEWLIB Version: " << _NEWLIB_VERSION << std::endl;
-              //<< "Starting counter: 0x" << std::hex << cortex::getSystemCounter() << std::endl;
+              << "NEWLIB Version: " << _NEWLIB_VERSION << std::endl
+              << "Starting counter: 0x" << std::hex << cortex::getSystemCounter() << std::endl;
     std::cout << "millis: " << std::dec << cortex::ChipsetBasicFunctions::Timer::millis() << " millseconds since chipset boot" << std::endl;
     std::cout << "micros: " << std::dec << cortex::ChipsetBasicFunctions::Timer::micros() << " microseconds since chipset boot" << std::endl;
     struct rusage ru;
     getrusage(RUSAGE_SELF, &ru);
     std::cout << "rusage.sec: " << std::dec << ru.ru_utime.tv_sec << " sec" << std::endl;
     std::cout << "rusage.usec: " << std::dec << ru.ru_utime.tv_usec << " usec" << std::endl;
-#if 0
     if (cortex::ChipsetBasicFunctions::Disk0::available()) {
         std::cout << "Found disk 0!" << std::endl;
         std::cout << "Capacity: " << std::dec << cortex::ChipsetBasicFunctions::Disk0::size() << " bytes" << std::endl;
@@ -135,6 +134,7 @@ setup() {
     } else {
         std::cout << "Disk 0 is not installed!" << std::endl;
     }
+#if 0
     std::cout << "Boot Words information: " << std::endl;
     const volatile cortex::BootWords& theWords = cortex::getBootWords();
     std::cout << "\tSegment Table Start: " << std::hex << theWords.sat << std::endl;
