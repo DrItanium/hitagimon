@@ -79,14 +79,6 @@ bal move_data
  start_ip:
     clear_g14
     print_text msg_boot_checksum_passed
-    # pull data from the initial data/bss image into SRAM
- #   ldconst transferCacheSource, g0
- #   ldconst transferCacheDest, g1
- #   cmpobe g0, g1, skipFullCopy
- #   print_text msg_ram_copy_start
- #   transfer_data transferCacheSize, transferCacheSource, transferCacheDest, 0
- #   print_text msg_transfer_complete
- # skipFullCopy:
     # copy the interrupt table to RAM space, more like proper spaces
     transfer_data 1028, intr_table, intr_ram, 0
     print_text msg_transfer_complete
@@ -135,7 +127,6 @@ reinitialize_iac:
     lda _user_stack, fp     # setup user stack space
     lda -0x40(fp), pfp      # load pfp (just in case)
     lda 0x40(fp), sp        # set up current stack pointer
-    ldconst msg_stack_fixed, g0
     callx boot_print2
 /* -- This is the point where your main code is called.
  *    If any IO needs to be set up, you should do it here before your
@@ -143,8 +134,6 @@ reinitialize_iac:
  */
     callx _init_fp
     callx setupInterruptHandler
-    ldconst msg_invoking_main, g0
-    callx boot_print2
     c_callx _main # assume a main for startup
 exec_fallthrough:
     b exec_fallthrough
@@ -271,8 +260,6 @@ boot_print_done2:
     ret
 msg_checksum_failures:
     .asciz "Copy Verification Failed\n"
-msg_ram_copy_start:
-    .asciz "Start Copying Data/BSS to SRAM from IO Memory\n"
 msg_transfer_complete:
     .asciz "Done Copying Data/BSS to SRAM from IO Memory\n"
 msg_boot_checksum_passed:
@@ -295,20 +282,6 @@ msg_g3:
     .asciz "g3: "
 ascii_hex_table:
     .asciz "0123456789ABCDEF"
-msg_start_again_ip:
-    .asciz "start again ip\n"
-msg_stack_fixed:
-    .asciz "stack fixed!\n"
-msg_fp_init_start:
-    .asciz "about to call fp_init!\n"
-msg_fp_init_done:
-    .asciz "done calling fp_init!\n"
-msg_setup_int_start:
-    .asciz "about to call setupInterruptHandler!\n"
-msg_setup_int_done:
-    .asciz "done calling setupInterruptHandler!\n"
-msg_invoking_main:
-    .asciz "entering main!\n"
 # setup the bss section so do giant blocks of writes
 
 /* The routine below fixes up the stack for a flase interrupt return.
