@@ -1017,9 +1017,87 @@ namespace microshell {
         }
         printf("NO MISMATCH DETECTED\n");
     }
+    inline bool isQuodigious(uint32_t value, uint32_t sum, uint32_t product)  {
+        return ((value % product) == 0) && ((value % sum) == 0);
+    }
+    const uint32_t factors10[10] = {
+        1, // 0
+        10, // 1
+        10 * 10, // 2
+        10 * 10 * 10, // 3
+        10 * 10 * 10 * 10, // 4
+        10 * 10 * 10 * 10 * 10, // 5
+        10 * 10 * 10 * 10 * 10 * 10, // 6
+        10 * 10 * 10 * 10 * 10 * 10 * 10, // 7
+        10 * 10 * 10 * 10 * 10 * 10 * 10 * 10, // 8
+        10 * 10 * 10 * 10 * 10 * 10 * 10 * 10 * 10, // 9
+    };
+    void doQuodigious(uint8_t depth, uint32_t number = 0, uint32_t sum = 0, uint32_t product = 1) {
+        if (depth == 0){
+            if (isQuodigious(number, sum, product)) {
+                printf("%lu\n", number);
+            }
+        } else {
+            uint8_t innerDepth = depth - 1;
+            uint32_t baseFactor = factors10[innerDepth];
+            number += (baseFactor << 1);
+            sum += 2;
+#define X(index) doQuodigious(innerDepth, number, sum, product * index)
+            X(2);
+            number += baseFactor;
+            ++sum;
+            X(3);
+            number += baseFactor;
+            ++sum;
+            X(4);
+            number += baseFactor;
+            ++sum;
+            X(5);
+            number += baseFactor;
+            ++sum;
+            X(6);
+            number += baseFactor;
+            ++sum;
+            X(7);
+            number += baseFactor;
+            ++sum;
+            X(8);
+            number += baseFactor;
+            ++sum;
+            X(9);
+#undef X
+        }
+    }
+    void quodigious_benchmark(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        if (argc == 1) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
+            return;
+        } else {
+            for (int i = 1; i < argc; ++i) {
+                uint32_t depth = 0;
+                if (sscanf(argv[i], "%lu", &depth) == EOF) {
+                    continue;
+                } else if (depth == 0) {
+                    continue;
+                } else if (depth > 9) {
+                    continue;
+                }
+                doQuodigious(static_cast<uint8_t>(depth));
+            }
+        }
+    }
 
     ush_node_object cmd;
     const ush_file_descriptor cmdFiles[] = {
+            {
+                "quodigious",
+                "Run the 32-bit linear quodigious benchmark",
+                nullptr,
+                quodigious_benchmark,
+                nullptr,
+                nullptr,
+                nullptr,
+            },
             {
                 "u64_subc_test",
                 "walk through all possible 64-bit unsigned integers checking for comparisons",
