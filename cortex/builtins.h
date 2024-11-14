@@ -163,6 +163,10 @@ inline void __builtin_i960_saveprcs(void) {
 #endif // end defined(__HAS_PROTECTED_ARCHITECTURE_EXTENSIONS__)
 #ifdef __HAS_NUMERICS_ARCHITECTURE_EXTENSIONS__
 #endif // end defined(__HAS_NUMERICS_ARCHITECTURE_EXTENSIONS__)
+uint64_t u64_add_via_addc(uint64_t a, uint64_t b);
+uint64_t u64_subtract_via_subc(uint64_t a, uint64_t b);
+int64_t s64_add_via_addc(int64_t a, int64_t b);
+int64_t s64_subtract_via_subc(int64_t a, int64_t b);
 #ifdef __cplusplus
 #define EXTERN_C extern "C"
 #else
