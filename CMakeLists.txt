@@ -62,7 +62,9 @@ add_library(hitagicortex
 		cortex/ext2.h
 		cortex/SoftwareDMA.h
 		cortex/SoftwareDMA.cc
-		cortex/SysExamine.cc)
+		cortex/SysExamine.cc
+        cortex/builtins.s
+)
 add_library(wasm3
         wasm3/wasm3.h
         wasm3/wasm3_defs.h
