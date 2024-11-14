@@ -164,9 +164,21 @@ inline void __builtin_i960_saveprcs(void) {
 #ifdef __HAS_NUMERICS_ARCHITECTURE_EXTENSIONS__
 #endif // end defined(__HAS_NUMERICS_ARCHITECTURE_EXTENSIONS__)
 uint64_t u64_add_via_addc(uint64_t a, uint64_t b);
-uint64_t u64_subtract_via_subc(uint64_t a, uint64_t b);
 int64_t s64_add_via_addc(int64_t a, int64_t b);
+uint64_t u64_subtract_via_subc(uint64_t a, uint64_t b);
 int64_t s64_subtract_via_subc(int64_t a, int64_t b);
+uint64_t u64_subtract_via_subc_v2(uint64_t a, uint64_t b);
+int64_t s64_subtract_via_subc_v2(int64_t a, int64_t b);
+uint32_t u32_rotate(uint32_t src, uint32_t len);
+uint64_t u32_emul(uint32_t src1, uint32_t src2);
+uint64_t xnor64(uint64_t src1, uint64_t src2);
+uint64_t nand64(uint64_t src1, uint64_t src2);
+uint64_t nor64(uint64_t src1, uint64_t src2);
+int scanbyte32(uint32_t src1, uint32_t src2);
+uint32_t spanbit32(uint32_t src);
+uint32_t scanbit32(uint32_t src);
+uint32_t extract32(uint32_t value, uint32_t bitpos, uint32_t len);
+uint32_t modify32(uint32_t value, uint32_t src, uint32_t mask);
 #ifdef __cplusplus
 #define EXTERN_C extern "C"
 #else
