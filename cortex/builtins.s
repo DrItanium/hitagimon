@@ -67,6 +67,30 @@ _u64_subtract_via_subc_v2:
     subc g3, g1, g1
     ret
 
+.global _s64_subtract_via_subc_v3
+.global _u64_subtract_via_subc_v3
+_s64_subtract_via_subc_v3:
+_u64_subtract_via_subc_v3:
+    # g0,g1 - a (src2)
+    # g2,g3 - b (src1)
+    # a -b ->
+    cmpo 1, 0
+    subc g3, g1, g1
+    subc g2, g0, g0
+    ret
+
+.global _s64_subtract_via_subc_v4
+.global _u64_subtract_via_subc_v4
+_s64_subtract_via_subc_v4:
+_u64_subtract_via_subc_v4:
+    # g0,g1 - a (src1)
+    # g2,g3 - b (src2)
+    # a - b ->
+    cmpo 1, 0
+    subc g1, g3, g1
+    subc g0, g2, g0
+    ret
+
 _u32_rotate:
     # g0 -> src
     # g1 -> len
