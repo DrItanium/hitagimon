@@ -177,6 +177,8 @@ uint64_t u64_subtract_via_subc_v5(uint64_t a, uint64_t b);
 int64_t s64_subtract_via_subc_v5(int64_t a, int64_t b);
 uint64_t u64_subtract_via_subc_v6(uint64_t a, uint64_t b);
 int64_t s64_subtract_via_subc_v6(int64_t a, int64_t b);
+uint64_t u64_subtract_via_subc_v7(uint64_t a, uint64_t b);
+int64_t s64_subtract_via_subc_v7(int64_t a, int64_t b);
 uint32_t u32_rotate(uint32_t src, uint32_t len);
 uint64_t u32_emul(uint32_t src1, uint32_t src2);
 uint64_t xnor64(uint64_t src1, uint64_t src2);

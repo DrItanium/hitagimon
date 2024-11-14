@@ -114,6 +114,17 @@ _u64_subtract_via_subc_v6:
     subc g1, g3, g1
     ret
 
+.global _s64_subtract_via_subc_v7
+.global _u64_subtract_via_subc_v7
+_s64_subtract_via_subc_v7:
+_u64_subtract_via_subc_v7:
+    # g0,g1 - a (src1)
+    # g2,g3 - b (src2)
+    cmpo 0, 0 # do not clear the carry flag but set it instead
+    subc g2, g0, g0
+    subc g3, g1, g1
+    ret
+
 _u32_rotate:
     # g0 -> src
     # g1 -> len
