@@ -952,6 +952,24 @@ namespace microshell {
                     nullptr,
                     nullptr,
             },
+            {
+                    "u64subcompare",
+                    "compare results of different ways to subtract 64-bit unsigned values",
+                    nullptr,
+                    doU64SubTest,
+                    nullptr,
+                    nullptr,
+                    nullptr,
+            },
+            {
+                    "s64subcompare",
+                    "compare results of different ways to subtract 64-bit signed values",
+                    nullptr,
+                    doS64SubTest,
+                    nullptr,
+                    nullptr,
+                    nullptr,
+            },
     };
     ush_node_object fsroot;
     const ush_file_descriptor rootDesc[] = {
