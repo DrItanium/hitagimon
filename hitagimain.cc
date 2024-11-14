@@ -1033,45 +1033,21 @@ namespace microshell {
         10 * 10 * 10 * 10 * 10 * 10 * 10 * 10 * 10, // 9
     };
     void doQuodigious(uint8_t depth, uint32_t number = 0, uint32_t sum = 0, uint32_t product = 1) {
-        if (depth == 0){
+        if (depth == 0) {
             if (isQuodigious(number, sum, product)) {
                 printf("%lu\n", number);
             }
         } else {
-            uint8_t innerDepth = depth - 1;
-            uint32_t baseFactor = factors10[innerDepth];
-            number += (baseFactor << 1);
-            sum += 2;
-#define X(index) doQuodigious(innerDepth, number, sum, product * index)
-            X(2);
-            number += baseFactor;
-            ++sum;
-            X(3);
-            number += baseFactor;
-            ++sum;
-            X(4);
-            number += baseFactor;
-            ++sum;
-            X(5);
-            number += baseFactor;
-            ++sum;
-            X(6);
-            number += baseFactor;
-            ++sum;
-            X(7);
-            number += baseFactor;
-            ++sum;
-            X(8);
-            number += baseFactor;
-            ++sum;
-            X(9);
-#undef X
+            const uint8_t innerDepth = depth - 1;
+            const uint32_t baseFactor = factors10[innerDepth];
+            for (int i = 2; i < 10; ++i) {
+                doQuodigious(innerDepth, number + (baseFactor * i), sum + i, product * i);
+            }
         }
     }
     void quodigious_benchmark(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         if (argc == 1) {
             ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
-            return;
         } else {
             for (int i = 1; i < argc; ++i) {
                 uint32_t depth = 0;
