@@ -120,9 +120,10 @@ _s64_subtract_via_subc_v7:
 _u64_subtract_via_subc_v7:
     # g0,g1 - a (src1)
     # g2,g3 - b (src2)
+    # this is the most reliable method to be honest!
     cmpo 0, 0 # do not clear the carry flag but set it instead
-    subc g2, g0, g0
-    subc g3, g1, g1
+    subc g2, g0, g0 # start at the lower half and move up
+    subc g3, g1, g1 # Now to the upper part
     ret
 
 _u32_rotate:
