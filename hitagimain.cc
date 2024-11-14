@@ -918,16 +918,125 @@ namespace microshell {
         printf("Subc Method (v1): %lld\n", optionalResult);
         printf("Subc Method (v2): %lld\n", optionalResult2);
     }
+    void doRotateOperation(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        if (argc != 3) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
+            return;
+        }
+        uint32_t src = 0;
+        uint32_t len = 0;
+        if (sscanf(argv[1], "%lx", &src) == EOF) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+            return;
+        }
+        if (sscanf(argv[2], "%lx", &len) == EOF) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+            return;
+        }
+        uint32_t result = u32_rotate(src, len);
+        printf("rotate(0x%lx, 0x%lx) = 0x%lx\n", src, len, result);
+    }
+    void doScanbitOperation(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        if (argc != 2) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
+            return;
+        }
+        uint32_t src = 0;
+        if (sscanf(argv[1], "%lx", &src) == EOF) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+            return;
+        }
+        uint32_t result = scanbit32(src);
+        printf("scanbit(0x%lx) = 0x%lx\n", src, result);
+    }
+    void doSpanbitOperation(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        if (argc != 2) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
+            return;
+        }
+        uint32_t src = 0;
+        if (sscanf(argv[1], "%lx", &src) == EOF) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+            return;
+        }
+        uint32_t result = spanbit32(src);
+        printf("spanbit(0x%lx) = 0x%lx\n", src, result);
+    }
+
     ush_node_object cmd;
     const ush_file_descriptor cmdFiles[] = {
             {
-                "flops64",
-                "run flops double precision benchmark" ,
-                nullptr, // help
-                doFlops64Execution, // exec
-                nullptr, // get_data
-                nullptr, // set_data
-                nullptr, // process
+                    "spanbit",
+                    "invoke the spanbit instruction" ,
+                    nullptr, // help
+                    doSpanbitOperation, // exec
+                    nullptr, // get_data
+                    nullptr, // set_data
+                    nullptr, // process
+            },
+            {
+                    "scanbit",
+                    "invoke the scanbit instruction" ,
+                    nullptr, // help
+                    doScanbitOperation, // exec
+                    nullptr, // get_data
+                    nullptr, // set_data
+                    nullptr, // process
+            },
+            {
+                    "rotate",
+                    "inspect the results of the rotate instruction",
+                    nullptr,
+                    doRotateOperation,
+                    nullptr,
+                    nullptr,
+                    nullptr,
+
+            },
+            {
+                "addc_u64",
+                "compare results of different ways to add 64-bit unsigned values",
+                nullptr,
+                doU64AddTest,
+                nullptr,
+                nullptr,
+                nullptr,
+            },
+            {
+                    "addc_s64",
+                    "compare results of different ways to add 64-bit signed values",
+                    nullptr,
+                    doS64AddTest,
+                    nullptr,
+                    nullptr,
+                    nullptr,
+            },
+            {
+                    "subc_u64",
+                    "compare results of different ways to subtract 64-bit unsigned values",
+                    nullptr,
+                    doU64SubTest,
+                    nullptr,
+                    nullptr,
+                    nullptr,
+            },
+            {
+                    "subc_s64",
+                    "compare results of different ways to subtract 64-bit signed values",
+                    nullptr,
+                    doS64SubTest,
+                    nullptr,
+                    nullptr,
+                    nullptr,
+            },
+            {
+                    "flops64",
+                    "run flops double precision benchmark" ,
+                    nullptr, // help
+                    doFlops64Execution, // exec
+                    nullptr, // get_data
+                    nullptr, // set_data
+                    nullptr, // process
             },
             {
                     "flops32",
@@ -937,42 +1046,6 @@ namespace microshell {
                     nullptr, // get_data
                     nullptr, // set_data
                     nullptr, // process
-            },
-            {
-                "u64addcompare",
-                "compare results of different ways to add 64-bit unsigned values",
-                nullptr,
-                doU64AddTest,
-                nullptr,
-                nullptr,
-                nullptr,
-            },
-            {
-                    "s64addcompare",
-                    "compare results of different ways to add 64-bit signed values",
-                    nullptr,
-                    doS64AddTest,
-                    nullptr,
-                    nullptr,
-                    nullptr,
-            },
-            {
-                    "u64subcompare",
-                    "compare results of different ways to subtract 64-bit unsigned values",
-                    nullptr,
-                    doU64SubTest,
-                    nullptr,
-                    nullptr,
-                    nullptr,
-            },
-            {
-                    "s64subcompare",
-                    "compare results of different ways to subtract 64-bit signed values",
-                    nullptr,
-                    doS64SubTest,
-                    nullptr,
-                    nullptr,
-                    nullptr,
             },
     };
     ush_node_object fsroot;

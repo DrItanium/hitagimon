@@ -103,7 +103,7 @@ _scanbyte32:
     # g0 -> src1
     # g1 -> src2
     scanbyte g0, g1
-    teste g0 // convert to boolean/int
+    teste g0 # convert to boolean/int
     ret
 
 _spanbit32:
