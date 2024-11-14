@@ -990,7 +990,7 @@ namespace microshell {
         printf("spanbit(0x%lx) = 0x%lx\n", src, result);
     }
     void testu64Subtractions(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-        printf("U64 Subtraction Compare Test");
+        printf("U64 Subtraction Compare Test\n");
         for (uint64_t i = 0; i < UINT64_MAX; ++i) {
             for (uint64_t j = 0; j < UINT64_MAX; ++j) {
                 uint64_t standardResult0 = j - i;
@@ -1004,7 +1004,7 @@ namespace microshell {
         printf("NO MISMATCH DETECTED\n");
     }
     void tests64Subtractions(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-        printf("S64 Subtraction Compare Test");
+        printf("S64 Subtraction Compare Test\n");
         for (int64_t i = INT64_MIN; i < INT64_MAX; ++i) {
             for (int64_t j = INT64_MIN; j < INT64_MAX; ++j) {
                 int64_t standardResult0 = j - i;
