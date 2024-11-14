@@ -931,17 +931,20 @@ namespace microshell {
         printf("Signed 64-bit numbers");
         printf("Operation: %lld - %lld\n", a, b);
         printf("Standard Result: %lld\n", stockResult);
-        printf("Subc Method (v1): %lld\n", optionalResult);
-        printf("Subc Method (v2): %lld\n", optionalResult2);
-        printf("Subc Method (v3): %lld\n", optionalResult3);
-        printf("Subc Method (v4): %lld\n", optionalResult4);
+#define X(var) ((var == stockResult) ? "yes" : "no")
+        printf("Subc Method (v1): %lld [matches: %s]\n", optionalResult, X(optionalResult));
+        printf("Subc Method (v2): %lld [matches: %s]\n", optionalResult2, X(optionalResult2));
+        printf("Subc Method (v3): %lld [matches: %s]\n", optionalResult3, X(optionalResult3));
+        printf("Subc Method (v4): %lld [matches: %s]\n", optionalResult4, X(optionalResult4));
         int64_t optionalResult5 = s64_subtract_via_subc_v5(a, b);
-        printf("Subc Method (v5): %lld\n", optionalResult5);
+        printf("Subc Method (v5): %lld [matches: %s]\n", optionalResult5, X(optionalResult5));
         int64_t optionalResult6 = s64_subtract_via_subc_v6(a, b);
-        printf("Subc Method (v6): %lld\n", optionalResult6);
+        printf("Subc Method (v6): %lld [matches: %s]\n", optionalResult6, X(optionalResult6));
         int64_t optionalResult7 = s64_subtract_via_subc_v7(a, b);
-        printf("Subc Method (v7): %lld\n", optionalResult7);
+        printf("Subc Method (v7): %lld [matches: %s]\n", optionalResult7, X(optionalResult7));
+#undef X
     }
+
     void doRotateOperation(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         if (argc != 3) {
             ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
@@ -986,9 +989,55 @@ namespace microshell {
         uint32_t result = spanbit32(src);
         printf("spanbit(0x%lx) = 0x%lx\n", src, result);
     }
+    void testu64Subtractions(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        printf("U64 Subtraction Compare Test");
+        for (uint64_t i = 0; i < UINT64_MAX; ++i) {
+            for (uint64_t j = 0; j < UINT64_MAX; ++j) {
+                uint64_t standardResult0 = j - i;
+                uint64_t v7Result0 = u64_subtract_via_subc_v7(j, i);
+                if (standardResult0 != v7Result0) {
+                    printf("MISMATCH DETECTED: %llx - %lld => [expected: %lld, got: %lld]\n", j, i, standardResult0, v7Result0);
+                    return;
+                }
+            }
+        }
+        printf("NO MISMATCH DETECTED\n");
+    }
+    void tests64Subtractions(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        printf("S64 Subtraction Compare Test");
+        for (int64_t i = INT64_MIN; i < INT64_MAX; ++i) {
+            for (int64_t j = INT64_MIN; j < INT64_MAX; ++j) {
+                int64_t standardResult0 = j - i;
+                int64_t v7Result0 = s64_subtract_via_subc_v7(j, i);
+                if (standardResult0 != v7Result0) {
+                    printf("MISMATCH DETECTED: %lld - %lld => [expected: %lld, got: %lld]\n", j, i, standardResult0, v7Result0);
+                    return;
+                }
+            }
+        }
+        printf("NO MISMATCH DETECTED\n");
+    }
 
     ush_node_object cmd;
     const ush_file_descriptor cmdFiles[] = {
+            {
+                "u64_subc_test",
+                "walk through all possible 64-bit unsigned integers checking for comparisons",
+                nullptr,
+                testu64Subtractions,
+                nullptr,
+                nullptr,
+                nullptr,
+            },
+            {
+                    "s64_subc_test",
+                    "walk through all possible 64-bit signed integers checking for comparisons",
+                    nullptr,
+                    tests64Subtractions,
+                    nullptr,
+                    nullptr,
+                    nullptr,
+            },
             {
                     "spanbit",
                     "invoke the spanbit instruction" ,
