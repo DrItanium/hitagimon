@@ -901,6 +901,10 @@ namespace microshell {
         printf("Subc Method (v2): 0x%llx\n", optionalResult2);
         printf("Subc Method (v3): 0x%llx\n", optionalResult3);
         printf("Subc Method (v4): 0x%llx\n", optionalResult4);
+        uint64_t optionalResult5 = u64_subtract_via_subc_v5(a, b);
+        printf("Subc Method (v5): 0x%llx\n", optionalResult5);
+        uint64_t optionalResult6 = u64_subtract_via_subc_v6(a, b);
+        printf("Subc Method (v6): 0x%llx\n", optionalResult6);
     }
     void doS64SubTest(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         if (argc != 3) {
@@ -929,6 +933,10 @@ namespace microshell {
         printf("Subc Method (v2): %lld\n", optionalResult2);
         printf("Subc Method (v3): %lld\n", optionalResult3);
         printf("Subc Method (v4): %lld\n", optionalResult4);
+        int64_t optionalResult5 = s64_subtract_via_subc_v5(a, b);
+        printf("Subc Method (v5): %lld\n", optionalResult5);
+        int64_t optionalResult6 = s64_subtract_via_subc_v6(a, b);
+        printf("Subc Method (v6): %lld\n", optionalResult6);
     }
     void doRotateOperation(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         if (argc != 3) {
