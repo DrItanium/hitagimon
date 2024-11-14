@@ -830,6 +830,90 @@ namespace microshell {
     void doFlops32Execution(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         fc2.doIt();
     }
+    void doU64AddTest(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        if (argc != 3) {
+           ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
+           return;
+        }
+        uint64_t a = 0;
+        uint64_t b = 0;
+        if (sscanf(argv[1], "%llx", &a) == EOF) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+            return;
+        }
+        if (sscanf(argv[2], "%llx", &b) == EOF) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+            return;
+        }
+        uint64_t stockResult = a + b;
+        uint64_t optionalResult = u64_add_via_addc(a, b);
+        printf("Operation: 0x%llx + 0x%llx\n", a, b);
+        printf("Standard Result: 0x%llx\n", stockResult);
+        printf("Addc Method: 0x%llx\n", optionalResult);
+    }
+    void doS64AddTest(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        if (argc != 3) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
+            return;
+        }
+        int64_t a = 0;
+        int64_t b = 0;
+        if (sscanf(argv[1], "%lld", &a) == EOF) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+            return;
+        }
+        if (sscanf(argv[2], "%lld", &b) == EOF) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+            return;
+        }
+        int64_t stockResult = a + b;
+        int64_t optionalResult = s64_add_via_addc(a, b);
+        printf("Operation: %lld + %lld\n", a, b);
+        printf("Standard Result: 0x%llx\n", stockResult);
+        printf("Addc Method: 0x%llx\n", optionalResult);
+    }
+    void doU64SubTest(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        if (argc != 3) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
+            return;
+        }
+        uint64_t a = 0;
+        uint64_t b = 0;
+        if (sscanf(argv[1], "%llx", &a) == EOF) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+            return;
+        }
+        if (sscanf(argv[2], "%llx", &b) == EOF) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+            return;
+        }
+        uint64_t stockResult = a - b;
+        uint64_t optionalResult = u64_subtract_via_subc(a, b);
+        printf("Operation: 0x%llx - 0x%llx\n", a, b);
+        printf("Standard Result: 0x%llx\n", stockResult);
+        printf("Addc Method: 0x%llx\n", optionalResult);
+    }
+    void doS64SubTest(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        if (argc != 3) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
+            return;
+        }
+        int64_t a = 0;
+        int64_t b = 0;
+        if (sscanf(argv[1], "%lld", &a) == EOF) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+            return;
+        }
+        if (sscanf(argv[2], "%lld", &b) == EOF) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+            return;
+        }
+        int64_t stockResult = a - b;
+        int64_t optionalResult = s64_subtract_via_subc(a, b);
+        printf("Operation: %lld - %lld\n", a, b);
+        printf("Standard Result: 0x%llx\n", stockResult);
+        printf("Addc Method: 0x%llx\n", optionalResult);
+    }
     ush_node_object cmd;
     const ush_file_descriptor cmdFiles[] = {
             {
@@ -849,6 +933,24 @@ namespace microshell {
                     nullptr, // get_data
                     nullptr, // set_data
                     nullptr, // process
+            },
+            {
+                "u64addcompare",
+                "compare results of different ways to add 64-bit unsigned values",
+                nullptr,
+                doU64AddTest,
+                nullptr,
+                nullptr,
+                nullptr,
+            },
+            {
+                    "s64addcompare",
+                    "compare results of different ways to add 64-bit signed values",
+                    nullptr,
+                    doS64AddTest,
+                    nullptr,
+                    nullptr,
+                    nullptr,
             },
     };
     ush_node_object fsroot;

@@ -39,6 +39,6 @@ _u64_add_via_addc:
 _s64_subtract_via_subc:
 _u64_subtract_via_subc:
     cmpo 1, 0
-    subc g0, g2, g0
     subc g1, g3, g1
+    subc g0, g2, g0
     ret
