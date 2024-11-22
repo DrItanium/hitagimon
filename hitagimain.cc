@@ -1062,6 +1062,23 @@ namespace microshell {
             }
         }
     }
+    void runFullBenchmark(ush_object*, ush_file_descriptor const*, int, char* []) {
+        printf("Running benchmarking suite\n");
+        printf("Running flops32\n\n");
+        fc2.doIt();
+        printf("\nRunning flops64\n\n");
+        fc.doIt();
+        printf("\nRunning quodigious 1-9\n\n");
+        doQuodigious(1);
+        doQuodigious(2);
+        doQuodigious(3);
+        doQuodigious(4);
+        doQuodigious(5);
+        doQuodigious(6);
+        doQuodigious(7);
+        doQuodigious(8);
+        doQuodigious(9);
+    }
 
     ush_node_object cmd;
     const ush_file_descriptor cmdFiles[] = {
@@ -1173,6 +1190,15 @@ namespace microshell {
                     nullptr, // get_data
                     nullptr, // set_data
                     nullptr, // process
+            },
+            {
+                    "run_benchmark",
+                    "run a series of benchmarks",
+                    nullptr,
+                    runFullBenchmark,
+                    nullptr,
+                    nullptr,
+                    nullptr,
             },
     };
     ush_node_object fsroot;
