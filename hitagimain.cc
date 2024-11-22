@@ -1063,9 +1063,8 @@ namespace microshell {
                 for (int i = 2; i < 10; ++i) {
                     doQuodigious(innerDepth, number + (baseFactor * i), sum + i, product * i);
                 }
-
+                break;
             }
-
             default: {
                 const uint8_t innerDepth = depth - 1;
                 const uint32_t baseFactor = factors10[innerDepth];
@@ -1077,8 +1076,8 @@ namespace microshell {
                     }
                     doQuodigious(innerDepth, number + (baseFactor * i), sum + i, product * i);
                 }
+                break;
             }
-            break;
         }
     }
     void quodigious_benchmark(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
