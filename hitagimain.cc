@@ -1051,16 +1051,34 @@ namespace microshell {
         10 * 10 * 10 * 10 * 10 * 10 * 10 * 10 * 10, // 9
     };
     void doQuodigious(uint8_t depth, uint32_t number = 0, uint32_t sum = 0, uint32_t product = 1) {
-        if (depth == 0) {
-            if (isQuodigious(number, sum, product)) {
-                printf("%lu\n", number);
+        switch (depth) {
+            case 0:
+                if (isQuodigious(number, sum, product)) {
+                    printf("%lu\n", number);
+                }
+                break;
+            case 1 ... 3: {
+                const uint8_t innerDepth = depth - 1;
+                const uint32_t baseFactor = factors10[innerDepth];
+                for (int i = 2; i < 10; ++i) {
+                    doQuodigious(innerDepth, number + (baseFactor * i), sum + i, product * i);
+                }
+
             }
-        } else {
-            const uint8_t innerDepth = depth - 1;
-            const uint32_t baseFactor = factors10[innerDepth];
-            for (int i = 2; i < 10; ++i) {
-                doQuodigious(innerDepth, number + (baseFactor * i), sum + i, product * i);
+
+            default: {
+                const uint8_t innerDepth = depth - 1;
+                const uint32_t baseFactor = factors10[innerDepth];
+                for (int i = 2; i < 10; ++i) {
+                    // Skip fives if the depth is greater than 3 as they will never crop up
+                    // This is based of actual observations
+                    if (i == 5) {
+                        continue;
+                    }
+                    doQuodigious(innerDepth, number + (baseFactor * i), sum + i, product * i);
+                }
             }
+            break;
         }
     }
     void quodigious_benchmark(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
