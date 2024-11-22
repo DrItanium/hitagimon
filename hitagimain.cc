@@ -114,6 +114,24 @@ printBaseSegmentTable(std::ostream& out, cortex::SegmentTable& segTable, int cou
         printSegmentDescriptor(out, segTable.getDescriptor(i));
     }
 }
+/**
+ * @brief Compute the duration of execution and stash the result in a provided rusage type
+ */
+class DurationTimer {
+public:
+    DurationTimer(rusage& duration) : _duration(duration) {
+        getrusage(RUSAGE_SELF, &_start);
+    }
+    ~DurationTimer() {
+        rusage _end;
+        getrusage(RUSAGE_SELF, &_end);
+        _duration.ru_utime.tv_sec = _end.ru_utime.tv_sec - _start.ru_utime.tv_sec;
+        _duration.ru_utime.tv_usec = _end.ru_utime.tv_usec - _start.ru_utime.tv_usec;
+    }
+private:
+    rusage _start;
+    rusage& _duration;
+};
 void
 setup() {
     std::cout << "HITAGIMON" << std::endl
@@ -1062,22 +1080,91 @@ namespace microshell {
             }
         }
     }
+    void displayExecutionDuration(const rusage& duration) {
+        std::cout << "execution duration: " << std::dec << duration.ru_utime.tv_sec << " sec" << std::endl;
+        std::cout << "\t\t" << std::dec << duration.ru_utime.tv_usec << " usec" << std::endl;
+    }
+    struct ExecutionContainer {
+        ExecutionContainer(const std::string& title) : _title(title) { }
+        std::string _title;
+        rusage _duration;
+    };
     void runFullBenchmark(ush_object*, ush_file_descriptor const*, int, char* []) {
-        printf("Running benchmarking suite\n");
-        printf("Running flops32\n\n");
-        fc2.doIt();
-        printf("\nRunning flops64\n\n");
-        fc.doIt();
-        printf("\nRunning quodigious 1-9\n\n");
-        doQuodigious(1);
-        doQuodigious(2);
-        doQuodigious(3);
-        doQuodigious(4);
-        doQuodigious(5);
-        doQuodigious(6);
-        doQuodigious(7);
-        doQuodigious(8);
-        doQuodigious(9);
+        ExecutionContainer components[13] = {
+                ExecutionContainer("Entire Benchmark"),
+                ExecutionContainer("FLOPS32"),
+                ExecutionContainer("FLOPS64"),
+                ExecutionContainer("Entire Quodigious"),
+                ExecutionContainer("Quodigious 1 digit"),
+                ExecutionContainer("Quodigious 2 digit"),
+                ExecutionContainer("Quodigious 3 digit"),
+                ExecutionContainer("Quodigious 4 digit"),
+                ExecutionContainer("Quodigious 5 digit"),
+                ExecutionContainer("Quodigious 6 digit"),
+                ExecutionContainer("Quodigious 7 digit"),
+                ExecutionContainer("Quodigious 8 digit"),
+                ExecutionContainer("Quodigious 9 digit"),
+        };
+        {
+            DurationTimer entire(components[0]._duration);
+            printf("Running benchmarking suite\n");
+            printf("Running flops32\n\n");
+            {
+                DurationTimer dt(components[1]._duration);
+                fc2.doIt();
+            }
+            printf("\nRunning flops64\n\n");
+            {
+                DurationTimer dt(components[2]._duration);
+                fc.doIt();
+
+                printf("\nRunning quodigious 1-9\n\n");
+                {
+                    DurationTimer dt(components[3]._duration);
+                    {
+                        DurationTimer q(components[4]._duration);
+                        doQuodigious(1);
+                    }
+                    {
+                        DurationTimer q(components[5]._duration);
+                        doQuodigious(2);
+                    }
+                    {
+                        DurationTimer q(components[6]._duration);
+                        doQuodigious(3);
+                    }
+                    {
+                        DurationTimer q(components[7]._duration);
+                        doQuodigious(4);
+                    }
+                    {
+                        DurationTimer q(components[8]._duration);
+                        doQuodigious(5);
+                    }
+                    {
+                        DurationTimer q(components[9]._duration);
+                        doQuodigious(6);
+                    }
+                    {
+                        DurationTimer q(components[10]._duration);
+                        doQuodigious(7);
+                    }
+                    {
+                        DurationTimer q(components[11]._duration);
+                        doQuodigious(8);
+                    }
+                    {
+                        DurationTimer q(components[12]._duration);
+                        doQuodigious(9);
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < 13; ++i) {
+            std::cout << components[i]._title << " execution duration: " << std::dec
+                      << components[i]._duration.ru_utime.tv_sec << " seconds, " << std::dec
+                      << components[i]._duration.ru_utime.tv_usec << " usec" << std::endl;
+        }
     }
 
     ush_node_object cmd;
