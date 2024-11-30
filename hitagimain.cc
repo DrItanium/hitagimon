@@ -1299,7 +1299,7 @@ namespace microshell {
     size_t millis_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
         static char timeBuffer[16];
         unsigned long currentTime = cortex::ChipsetBasicFunctions::Timer::millis();
-        snprintf(timeBuffer, sizeof(timeBuffer), "%lud\n", currentTime);
+        snprintf(timeBuffer, sizeof(timeBuffer), "%lu\n", currentTime);
         timeBuffer[sizeof(timeBuffer) - 1] = 0;
         *data = (uint8_t*)timeBuffer;
         return strlen((char*)(*data));
@@ -1307,7 +1307,15 @@ namespace microshell {
     size_t micros_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
         static char timeBuffer[16];
         unsigned long currentTime = cortex::ChipsetBasicFunctions::Timer::micros();
-        snprintf(timeBuffer, sizeof(timeBuffer), "%lud\n", currentTime);
+        snprintf(timeBuffer, sizeof(timeBuffer), "%lu\n", currentTime);
+        timeBuffer[sizeof(timeBuffer) - 1] = 0;
+        *data = (uint8_t*)timeBuffer;
+        return strlen((char*)(*data));
+    }
+    size_t unixtime_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
+        static char timeBuffer[16];
+        unsigned long current = cortex::ChipsetBasicFunctions::Timer::unixtime();
+        snprintf(timeBuffer, sizeof(timeBuffer), "%lu\n", current);
         timeBuffer[sizeof(timeBuffer) - 1] = 0;
         *data = (uint8_t*)timeBuffer;
         return strlen((char*)(*data));
@@ -1331,7 +1339,38 @@ namespace microshell {
                     micros_get_data_callback,
                     nullptr,
                     nullptr
-            }
+            },
+            {
+                    "unixtime",
+                    nullptr,
+                    nullptr,
+                    nullptr,
+                    unixtime_get_data_callback,
+                    nullptr,
+                    nullptr
+            },
+    };
+    size_t eeprom_capacity_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
+        static char timeBuffer[16];
+        /// @todo reimplement through memory mapped io
+        unsigned long capacity = 4096;
+        snprintf(timeBuffer, sizeof(timeBuffer), "%lu\n", capacity);
+        timeBuffer[sizeof(timeBuffer) - 1] = 0;
+        *data = (uint8_t*)timeBuffer;
+        return strlen((char*)(*data));
+    }
+    ush_node_object eepromRoot;
+    const ush_file_descriptor eepromDesc[] = {
+            {
+                    "capacity",
+                    nullptr,
+                    nullptr,
+                    nullptr,
+                    eeprom_capacity_get_data_callback,
+                    nullptr,
+                    nullptr
+            },
+            /// @todo finish implementing
     };
     void
     setup() {
@@ -1339,6 +1378,7 @@ namespace microshell {
         ush_commands_add(&microshellObject, &cmd, cmdFiles, sizeof(cmdFiles) / sizeof(cmdFiles[0]));
         ush_node_mount(&microshellObject, "/", &fsroot, rootDesc, sizeof(rootDesc) / sizeof(rootDesc[0]));
         ush_node_mount(&microshellObject, "/dev", &devNode, devDesc, sizeof(devDesc)/sizeof(devDesc[0]));
+        ush_node_mount(&microshellObject, "/dev/eeprom", &eepromRoot, eepromDesc, sizeof(eepromDesc) / sizeof(eepromDesc[0]));
     }
 }
 
