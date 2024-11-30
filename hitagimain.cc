@@ -1372,6 +1372,31 @@ namespace microshell {
             },
             /// @todo finish implementing
     };
+    size_t sram_capacity_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
+        static char timeBuffer[16];
+        /// @todo reimplement through memory mapped io
+        unsigned long capacity = 2048;
+        snprintf(timeBuffer, sizeof(timeBuffer), "%lu\n", capacity);
+        timeBuffer[sizeof(timeBuffer) - 1] = 0;
+        *data = (uint8_t*)timeBuffer;
+        return strlen((char*)(*data));
+    }
+    ush_node_object sramRoot;
+    const ush_file_descriptor sramDesc[] = {
+            {
+                    "capacity",
+                    nullptr,
+                    nullptr,
+                    nullptr,
+                    sram_capacity_get_data_callback,
+                    nullptr,
+                    nullptr
+            },
+            /// @todo finish implementing
+    };
+    ush_node_object rtcRoot;
+    const ush_file_descriptor rtcDesc[] = {
+    };
     void
     setup() {
         ush_init(&microshellObject, &microshellDescriptor);
@@ -1379,6 +1404,9 @@ namespace microshell {
         ush_node_mount(&microshellObject, "/", &fsroot, rootDesc, sizeof(rootDesc) / sizeof(rootDesc[0]));
         ush_node_mount(&microshellObject, "/dev", &devNode, devDesc, sizeof(devDesc)/sizeof(devDesc[0]));
         ush_node_mount(&microshellObject, "/dev/eeprom", &eepromRoot, eepromDesc, sizeof(eepromDesc) / sizeof(eepromDesc[0]));
+        ush_node_mount(&microshellObject, "/dev/sram", &sramRoot, sramDesc, sizeof(sramDesc) / sizeof(sramDesc[0]));
+        // @todo implement RTC support
+        //ush_node_mount(&microshellObject, "/dev/rtc", &rtcRoot, rtcDesc, sizeof(rtcDesc) / sizeof(rtcDesc[0]));
     }
 }
 
