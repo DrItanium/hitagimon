@@ -172,4 +172,24 @@ namespace cortex
         static EEPROM item;
         return item;
     }
+
+    uint16_t
+    SRAMCache::capacity() const noexcept {
+        return getIOSpace().sramCacheCapacity();
+    }
+    void
+    SRAMCache::write(uint16_t address, uint8_t value) noexcept {
+        getIOSpace().sramCache[address & 0x7FF] = value;
+    }
+    uint8_t
+    SRAMCache::read(uint16_t address) const noexcept {
+        return getIOSpace().sramCache[address & 0x7FF];
+    }
+    SRAMCache&
+    SRAMCache::get() noexcept {
+        static SRAMCache item;
+        return item;
+    }
+
+
 } // end namespace cortex

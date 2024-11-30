@@ -228,6 +228,17 @@ namespace cortex
         virtual void write(uint16_t address, uint8_t value) noexcept;
         static EEPROM& get() noexcept;
     };
+    struct SRAMCache : public IOMemoryBlock {
+    private:
+        SRAMCache() { }
+        SRAMCache(const SRAMCache&) {}
+    public:
+        virtual ~SRAMCache() { }
+        virtual uint16_t capacity() const noexcept;
+        virtual uint8_t read(uint16_t address) const noexcept;
+        virtual void write(uint16_t address, uint8_t value) noexcept;
+        static SRAMCache& get() noexcept;
+    };
 
 }
 #endif //I960SXCHIPSET_IODEVICE_H
