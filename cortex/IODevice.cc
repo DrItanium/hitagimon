@@ -138,17 +138,6 @@ namespace cortex
         begin() noexcept {
         }
     } // end namespace ChipsetBasicFunctions
-    void
-    Timer16::begin() volatile noexcept {
-        ctl_.whole = 0;
-        counter_ = 0;
-        inputCapture_ = 0;
-        outputCompareA_ = 0;
-        outputCompareB_ = 0;
-        outputCompareC_ = 0;
-        unused_ = 0;
-    }
-
     IOMemoryBlock&
     EEPROM() noexcept {
         static IOMemoryBlock thing(const_cast<uint8_t*>(getIOSpace().eeprom), getIOSpace().eepromCapacity());
