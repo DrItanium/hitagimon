@@ -216,6 +216,7 @@ namespace cortex
         virtual uint16_t capacity() const noexcept = 0;
         virtual uint8_t read(uint16_t address) const noexcept = 0;
         virtual void write(uint16_t address, uint8_t value) noexcept = 0;
+        virtual uint8_t* data() noexcept = 0;
     };
     struct EEPROM : public IOMemoryBlock {
     private:
@@ -226,6 +227,7 @@ namespace cortex
         virtual uint16_t capacity() const noexcept;
         virtual uint8_t read(uint16_t address) const noexcept;
         virtual void write(uint16_t address, uint8_t value) noexcept;
+        virtual uint8_t* data() noexcept;
         static EEPROM& get() noexcept;
     };
     struct SRAMCache : public IOMemoryBlock {
@@ -237,6 +239,7 @@ namespace cortex
         virtual uint16_t capacity() const noexcept;
         virtual uint8_t read(uint16_t address) const noexcept;
         virtual void write(uint16_t address, uint8_t value) noexcept;
+        virtual uint8_t* data() noexcept;
         static SRAMCache& get() noexcept;
     };
 

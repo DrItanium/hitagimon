@@ -172,6 +172,10 @@ namespace cortex
         static EEPROM item;
         return item;
     }
+    uint8_t*
+    EEPROM::data() noexcept {
+        return const_cast<uint8_t*>(getIOSpace().eeprom);
+    }
 
     uint16_t
     SRAMCache::capacity() const noexcept {
@@ -189,6 +193,11 @@ namespace cortex
     SRAMCache::get() noexcept {
         static SRAMCache item;
         return item;
+    }
+
+    uint8_t*
+    SRAMCache::data() noexcept {
+        return const_cast<uint8_t*>(getIOSpace().sramCache);
     }
 
 

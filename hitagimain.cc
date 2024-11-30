@@ -1369,8 +1369,7 @@ namespace microshell {
     };
     size_t sram_capacity_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
         static char timeBuffer[16];
-        /// @todo reimplement through memory mapped io
-        unsigned long capacity = 2048;
+        unsigned long capacity = cortex::SRAMCache::get().capacity();
         snprintf(timeBuffer, sizeof(timeBuffer), "%lu\n", capacity);
         timeBuffer[sizeof(timeBuffer) - 1] = 0;
         *data = (uint8_t*)timeBuffer;
