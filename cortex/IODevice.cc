@@ -10,29 +10,40 @@ namespace cortex
 {
     struct IOSpace {
         union {
-            uint8_t data[16][256];
+            uint8_t bytes[256];
             struct {
                 uint32_t cpuClockSpeed;
                 uint32_t chipsetClockSpeed;
                 uint32_t SerialRW;
                 uint32_t SerialFlush;
+                //
                 uint32_t ms;
                 uint32_t us;
-                uint32_t _eepromBaseAddress;
-                uint32_t _sramCacheBaseAddress;
                 uint16_t _eepromCapacity;
                 uint16_t _sramCapacity;
+                // rtc functions
+                uint32_t _unixtime;
+                uint32_t _secondstime;
+                uint32_t _rtcTemperature;
+                uint32_t _configure32k;
             };
-        };
-        inline uint16_t read() volatile noexcept { return SerialRW; }
-        inline void write(uint16_t c) volatile noexcept { SerialRW = c; }
-        inline void flush() volatile noexcept { SerialFlush = 0; }
-        inline uint32_t millis() volatile noexcept { return ms; }
-        inline uint32_t micros() volatile noexcept { return us; }
-        inline uint16_t eepromCapacity() volatile noexcept { return _eepromCapacity; }
-        inline uint16_t sramCacheCapacity() volatile noexcept { return _sramCapacity; }
-        inline volatile uint8_t* eepromStorage() volatile noexcept { return reinterpret_cast<volatile uint8_t*>(_eepromBaseAddress); }
-        inline volatile uint8_t* sramStorage() volatile noexcept { return reinterpret_cast<volatile uint8_t*>(_sramCacheBaseAddress); }
+        } builtin;
+        uint8_t unmappedPages[7][256];
+        uint8_t sramCache[2048];
+        uint8_t eeprom[4096];
+        inline uint16_t read() volatile noexcept { return builtin.SerialRW; }
+        inline void write(uint16_t c) volatile noexcept { builtin.SerialRW = c; }
+        inline void flush() volatile noexcept { builtin.SerialFlush = 0; }
+        inline uint32_t millis() volatile noexcept { return builtin.ms; }
+        inline uint32_t micros() volatile noexcept { return builtin.us; }
+        inline uint16_t eepromCapacity() volatile noexcept { return builtin._eepromCapacity; }
+        inline uint16_t sramCacheCapacity() volatile noexcept { return builtin._sramCapacity; }
+        inline uint32_t unixtime() volatile noexcept { return builtin._unixtime; }
+        inline uint32_t secondstime() volatile noexcept { return builtin._secondstime; }
+        inline uint32_t rtc_getTemperature() volatile noexcept { return builtin._rtcTemperature; }
+        inline bool rtc_32kEnabled() volatile noexcept { return builtin._configure32k; }
+        inline void rtc_enable32k() volatile noexcept { builtin._configure32k = 1; }
+        inline void rtc_disable32k() volatile noexcept { builtin._configure32k = 0; }
     } __attribute__((packed));
     volatile IOSpace& getIOSpace() noexcept {
         return memory<IOSpace>(0xFE000000);
@@ -108,7 +119,7 @@ namespace cortex
         namespace Timer {
             uint32_t
             unixtime() noexcept {
-                return 0;
+                return getIOSpace().unixtime();
             }
             uint32_t
             millis() noexcept {
@@ -122,11 +133,11 @@ namespace cortex
         namespace Info {
             uint32_t
             getCPUClockSpeed() noexcept {
-                return getIOSpace().cpuClockSpeed;
+                return getIOSpace().builtin.cpuClockSpeed;
             }
             uint32_t
             getChipsetClockSpeed() noexcept {
-                return getIOSpace().chipsetClockSpeed;
+                return getIOSpace().builtin.chipsetClockSpeed;
             }
 
         }
