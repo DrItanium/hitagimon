@@ -35,11 +35,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "IAC.h"
 namespace cortex
 {
-    struct Port8 {
-        uint8_t input;
-        uint8_t direction;
-        uint8_t output;
-    } __attribute__((packed));
 
 /**
  * @brief Exposure of a chipset timer to the i960, since the chipset is an m6502 timer this is a modelling of an m6502 16 bit timer
@@ -189,6 +184,10 @@ namespace cortex
              * @return the unixtime as an unsigned 32-bit number
              */
             uint32_t unixtime() noexcept;
+            /**
+             * @brief Return the amount of time elapsed since
+             */
+            uint32_t secondstime() noexcept;
             uint32_t millis() noexcept;
             uint32_t micros() noexcept;
 
@@ -212,10 +211,23 @@ namespace cortex
         return makeLongOrdinal(makeOrdinal(a, b),
                                makeOrdinal(c, d));
     }
-    namespace EEPROM {
-        uint16_t capacity() noexcept;
-        uint8_t read(uint16_t address) noexcept;
-        void write(uint16_t address, uint8_t value) noexcept;
-    } // end namespace EEPROM
+    struct IOMemoryBlock {
+        virtual ~IOMemoryBlock() { }
+        virtual uint16_t capacity() const noexcept = 0;
+        virtual uint8_t read(uint16_t address) const noexcept = 0;
+        virtual void write(uint16_t address, uint8_t value) noexcept = 0;
+    };
+    struct EEPROM : public IOMemoryBlock {
+    private:
+        EEPROM() { }
+        EEPROM(const EEPROM&) { }
+    public:
+        virtual ~EEPROM() { }
+        virtual uint16_t capacity() const noexcept;
+        virtual uint8_t read(uint16_t address) const noexcept;
+        virtual void write(uint16_t address, uint8_t value) noexcept;
+        static EEPROM& get() noexcept;
+    };
+
 }
 #endif //I960SXCHIPSET_IODEVICE_H

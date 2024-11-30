@@ -24,7 +24,7 @@ namespace cortex
                 // rtc functions
                 uint32_t _unixtime;
                 uint32_t _secondstime;
-                uint32_t _rtcTemperature;
+                float _rtcTemperature;
                 uint32_t _configure32k;
             };
         } builtin;
@@ -36,11 +36,11 @@ namespace cortex
         inline void flush() volatile noexcept { builtin.SerialFlush = 0; }
         inline uint32_t millis() volatile noexcept { return builtin.ms; }
         inline uint32_t micros() volatile noexcept { return builtin.us; }
-        inline uint16_t eepromCapacity() volatile noexcept { return builtin._eepromCapacity; }
+        inline uint16_t eepromCapacity() const volatile noexcept { return builtin._eepromCapacity; }
         inline uint16_t sramCacheCapacity() volatile noexcept { return builtin._sramCapacity; }
         inline uint32_t unixtime() volatile noexcept { return builtin._unixtime; }
         inline uint32_t secondstime() volatile noexcept { return builtin._secondstime; }
-        inline uint32_t rtc_getTemperature() volatile noexcept { return builtin._rtcTemperature; }
+        inline float rtc_getTemperature() volatile noexcept { return builtin._rtcTemperature; }
         inline bool rtc_32kEnabled() volatile noexcept { return builtin._configure32k; }
         inline void rtc_enable32k() volatile noexcept { builtin._configure32k = 1; }
         inline void rtc_disable32k() volatile noexcept { builtin._configure32k = 0; }
@@ -154,5 +154,22 @@ namespace cortex
         outputCompareB_ = 0;
         outputCompareC_ = 0;
         unused_ = 0;
+    }
+    uint16_t
+    EEPROM::capacity() const noexcept {
+        return getIOSpace().eepromCapacity();
+    }
+    void
+    EEPROM::write(uint16_t address, uint8_t value) noexcept {
+        getIOSpace().eeprom[address & 0xFFF] = value;
+    }
+    uint8_t
+    EEPROM::read(uint16_t address) const noexcept {
+        return getIOSpace().eeprom[address & 0xFFF] ;
+    }
+    EEPROM&
+    EEPROM::get() noexcept {
+        static EEPROM item;
+        return item;
     }
 } // end namespace cortex
