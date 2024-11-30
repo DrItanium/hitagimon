@@ -63,11 +63,6 @@ init()
 {
     // setup the chipset basic functions as one of the first things we actually do
     cortex::ChipsetBasicFunctions::begin();
-    // then setup the system clock to be 200 hz so that we trigger every 10 ms
-    // we have a 16-bit counter so the prescalar is 8 (0b010) and the compare is 624
-    // this is directly configuring timer 1 on the 2560 acting as chipset
-    cortex::clearSystemCounter();
-    cortex::enableSystemCounter(6249, 0x2);
 }
 void
 printSegmentDescriptor(std::ostream& out, cortex::SegmentDescriptor& curr) {
@@ -1394,8 +1389,25 @@ namespace microshell {
             },
             /// @todo finish implementing
     };
+    size_t rtc_available_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
+        static char timeBuffer[16];
+        //unsigned long capacity = 2048;
+        //snprintf(timeBuffer, sizeof(timeBuffer), "%d\n", capacity);
+        timeBuffer[sizeof(timeBuffer) - 1] = 0;
+        *data = (uint8_t*)timeBuffer;
+        return strlen((char*)(*data));
+    }
     ush_node_object rtcRoot;
     const ush_file_descriptor rtcDesc[] = {
+            {
+               "available" ,
+               nullptr,
+               nullptr,
+               nullptr,
+               rtc_available_get_data_callback,
+               nullptr,
+               nullptr,
+            },
     };
     void
     setup() {

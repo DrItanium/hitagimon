@@ -182,14 +182,6 @@ namespace cortex
              */
             ssize_t write(char *buffer, size_t nbyte);
         } // end namespace Console
-        namespace Disk0 {
-            bool available();
-            uint64_t size();
-            uint64_t getPosition();
-            void setPosition(uint64_t);
-            int16_t read();
-            void write(uint8_t);
-        }
         namespace Timer {
             volatile Timer16& getTimer0() noexcept;
             /**
@@ -214,54 +206,16 @@ namespace cortex
     inline uint64_t
     makeLongOrdinal(uint32_t lower, uint32_t upper) {
         return static_cast<uint64_t>(lower) | (static_cast<uint64_t>(upper) << 32);
-}
+    }
     inline uint64_t
     makeLongOrdinal(uint16_t a, uint16_t b, uint16_t c, uint16_t d) {
         return makeLongOrdinal(makeOrdinal(a, b),
                                makeOrdinal(c, d));
     }
-    class LTR390Device {
-        uint32_t _available;
-        uint32_t _uvs;
-        uint32_t _als;
-        uint32_t _mode;
-        uint32_t _gain;
-        uint32_t _resolution;
-        uint32_t _newDataAvailable;
-    public:
-        typedef enum {
-            Resolution_20Bit,
-            Resolution_19Bit,
-            Resolution_18Bit,
-            Resolution_17Bit,
-            Resolution_16Bit,
-            Resolution_13Bit,
-        } resolution_t;
-        typedef enum {
-            Gain_1,
-            Gain_3,
-            Gain_6,
-            Gain_9,
-            Gain_18,
-        } gain_t;
-        typedef enum {
-            ALS,
-            UVS,
-        } mode_t;
-        bool newDataAvailable() volatile const noexcept { return _newDataAvailable != 0; }
-        operator bool() volatile const noexcept { return newDataAvailable(); }
-        bool available() volatile const noexcept { return _available != 0; }
-        resolution_t getResolution() volatile const noexcept { return static_cast<resolution_t>(_resolution); }
-        gain_t getGain() volatile const noexcept { return static_cast<gain_t>(_gain); }
-        mode_t getMode() volatile const noexcept { return static_cast<mode_t>(_mode); }
-        bool inALSMode() volatile const noexcept { return getMode() == ALS; }
-        bool inUVSMode() volatile const noexcept { return getMode() == UVS; }
-        uint32_t readUVS() volatile const noexcept { return _uvs; }
-        uint32_t readALS() volatile const noexcept { return _als; }
-        void setGain(gain_t value) volatile noexcept { _gain = value; }
-        void setMode(mode_t value) volatile noexcept { _mode = value; }
-        void setResolution(resolution_t value) volatile noexcept { _resolution = value; }
-        static volatile LTR390Device& get() noexcept { return memory<LTR390Device>(0xFE000100); }
-    } __attribute__((packed));
+    namespace EEPROM {
+        uint16_t capacity() noexcept;
+        uint8_t read(uint16_t address) noexcept;
+        void write(uint16_t address, uint8_t value) noexcept;
+    } // end namespace EEPROM
 }
 #endif //I960SXCHIPSET_IODEVICE_H

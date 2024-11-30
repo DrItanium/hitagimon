@@ -9,28 +9,30 @@
 namespace cortex
 {
     struct IOSpace {
-        uint32_t cpuClockSpeed;
-        uint32_t chipsetClockSpeed;
-        uint32_t SerialRW;
-        uint32_t SerialFlush;
-        Timer16 timer0;
-        Timer16 __nc0;
-        Timer16 __nc1;
-        uint32_t ms;
-        uint32_t us;
-        uint32_t : 32;
-        uint32_t : 32;
-        struct {
-            uint64_t size;
-            uint64_t position;
-            uint16_t available;
-            int16_t rw;
-        } disk0;
+        union {
+            uint8_t data[16][256];
+            struct {
+                uint32_t cpuClockSpeed;
+                uint32_t chipsetClockSpeed;
+                uint32_t SerialRW;
+                uint32_t SerialFlush;
+                uint32_t ms;
+                uint32_t us;
+                uint32_t _eepromBaseAddress;
+                uint32_t _sramCacheBaseAddress;
+                uint16_t _eepromCapacity;
+                uint16_t _sramCapacity;
+            };
+        };
         inline uint16_t read() volatile noexcept { return SerialRW; }
         inline void write(uint16_t c) volatile noexcept { SerialRW = c; }
         inline void flush() volatile noexcept { SerialFlush = 0; }
         inline uint32_t millis() volatile noexcept { return ms; }
         inline uint32_t micros() volatile noexcept { return us; }
+        inline uint16_t eepromCapacity() volatile noexcept { return _eepromCapacity; }
+        inline uint16_t sramCacheCapacity() volatile noexcept { return _sramCapacity; }
+        inline volatile uint8_t* eepromStorage() volatile noexcept { return reinterpret_cast<volatile uint8_t*>(_eepromBaseAddress); }
+        inline volatile uint8_t* sramStorage() volatile noexcept { return reinterpret_cast<volatile uint8_t*>(_sramCacheBaseAddress); }
     } __attribute__((packed));
     volatile IOSpace& getIOSpace() noexcept {
         return memory<IOSpace>(0xFE000000);
@@ -108,7 +110,6 @@ namespace cortex
             unixtime() noexcept {
                 return 0;
             }
-            volatile Timer16& getTimer0() noexcept { return getIOSpace().timer0; }
             uint32_t
             millis() noexcept {
                 return getIOSpace().millis();
@@ -132,20 +133,6 @@ namespace cortex
         void
         begin() noexcept {
         }
-        namespace Disk0 {
-            bool available() { return getIOSpace().disk0.available != 0; }
-            uint64_t size() { return getIOSpace().disk0.size; }
-            uint64_t getPosition() { return getIOSpace().disk0.position; }
-            void setPosition(uint64_t pos) {
-                getIOSpace().disk0.position = pos;
-            }
-            int16_t read() {
-                return getIOSpace().disk0.rw;
-            }
-            void write(uint8_t value) {
-                getIOSpace().disk0.rw = value;
-            }
-        }
     } // end namespace ChipsetBasicFunctions
     void
     Timer16::begin() volatile noexcept {
@@ -157,5 +144,4 @@ namespace cortex
         outputCompareC_ = 0;
         unused_ = 0;
     }
-
 } // end namespace cortex
