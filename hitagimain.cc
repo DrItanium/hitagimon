@@ -969,34 +969,6 @@ namespace microshell {
         uint32_t result = spanbit32(src);
         printf("spanbit(0x%lx) = 0x%lx\n", src, result);
     }
-    void testu64Subtractions(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-        printf("U64 Subtraction Compare Test\n");
-        for (uint64_t i = 0; i < UINT64_MAX; ++i) {
-            for (uint64_t j = 0; j < UINT64_MAX; ++j) {
-                uint64_t standardResult0 = j - i;
-                uint64_t v7Result0 = u64_subtract_via_subc_v7(j, i);
-                if (standardResult0 != v7Result0) {
-                    printf("MISMATCH DETECTED: %llx - %lld => [expected: %lld, got: %lld]\n", j, i, standardResult0, v7Result0);
-                    return;
-                }
-            }
-        }
-        printf("NO MISMATCH DETECTED\n");
-    }
-    void tests64Subtractions(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-        printf("S64 Subtraction Compare Test\n");
-        for (int64_t i = INT64_MIN; i < INT64_MAX; ++i) {
-            for (int64_t j = INT64_MIN; j < INT64_MAX; ++j) {
-                int64_t standardResult0 = j - i;
-                int64_t v7Result0 = s64_subtract_via_subc_v7(j, i);
-                if (standardResult0 != v7Result0) {
-                    printf("MISMATCH DETECTED: %lld - %lld => [expected: %lld, got: %lld]\n", j, i, standardResult0, v7Result0);
-                    return;
-                }
-            }
-        }
-        printf("NO MISMATCH DETECTED\n");
-    }
     inline bool isQuodigious(uint32_t value, uint32_t sum, uint32_t product)  {
         return ((value % product) == 0) && ((value % sum) == 0);
     }
@@ -1158,122 +1130,36 @@ namespace microshell {
         *data = (uint8_t*)message.c_str();
         return message.length();
     }
+    void benchmark_operation(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        if (argc == 1) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
+        } else {
+            struct ush_file_descriptor const* targetCommand = ush_file_find_by_name(self, argv[1]);
+            if (targetCommand == nullptr) {
+                ush_print_status(self, USH_STATUS_ERROR_FILE_NOT_FOUND);
+                return;
+            }
+
+            if (targetCommand->exec == nullptr) {
+                ush_print_status(self, USH_STATUS_ERROR_FILE_NOT_EXECUTABLE);
+                return;
+            }
+            // okay, argv bump by one and then attempt an execution
+            uint32_t millisStart = cortex::ChipsetBasicFunctions::Timer::millis();
+            {
+                targetCommand->exec(self, targetCommand, argc - 1, &argv[1]);
+            }
+            uint32_t millisEnd = cortex::ChipsetBasicFunctions::Timer::millis();
+            std::cout << std::endl << "Execution took: " << std::dec << (millisEnd - millisStart) << std::endl;
+        }
+    }
     ush_node_object cmd;
     const ush_file_descriptor cmdFiles[] = {
             {
-                "quodigious",
-                "Run the 32-bit linear quodigious benchmark",
-                nullptr,
-                quodigious_benchmark,
-                nullptr,
-                nullptr,
-                nullptr,
-            },
-            {
-                "u64_subc_test",
-                "walk through all possible 64-bit unsigned integers checking for comparisons",
-                nullptr,
-                testu64Subtractions,
-                nullptr,
-                nullptr,
-                nullptr,
-            },
-            {
-                    "s64_subc_test",
-                    "walk through all possible 64-bit signed integers checking for comparisons",
-                    nullptr,
-                    tests64Subtractions,
-                    nullptr,
-                    nullptr,
-                    nullptr,
-            },
-            {
-                    "spanbit",
-                    "invoke the spanbit instruction" ,
-                    nullptr, // help
-                    doSpanbitOperation, // exec
-                    nullptr, // get_data
-                    nullptr, // set_data
-                    nullptr, // process
-            },
-            {
-                    "scanbit",
-                    "invoke the scanbit instruction" ,
-                    nullptr, // help
-                    doScanbitOperation, // exec
-                    nullptr, // get_data
-                    nullptr, // set_data
-                    nullptr, // process
-            },
-            {
-                    "rotate",
-                    "inspect the results of the rotate instruction",
-                    nullptr,
-                    doRotateOperation,
-                    nullptr,
-                    nullptr,
-                    nullptr,
-
-            },
-            {
-                "addc_u64",
-                "compare results of different ways to add 64-bit unsigned values",
-                nullptr,
-                doU64AddTest,
-                nullptr,
-                nullptr,
-                nullptr,
-            },
-            {
-                    "addc_s64",
-                    "compare results of different ways to add 64-bit signed values",
-                    nullptr,
-                    doS64AddTest,
-                    nullptr,
-                    nullptr,
-                    nullptr,
-            },
-            {
-                    "subc_u64",
-                    "compare results of different ways to subtract 64-bit unsigned values",
-                    nullptr,
-                    doU64SubTest,
-                    nullptr,
-                    nullptr,
-                    nullptr,
-            },
-            {
-                    "subc_s64",
-                    "compare results of different ways to subtract 64-bit signed values",
-                    nullptr,
-                    doS64SubTest,
-                    nullptr,
-                    nullptr,
-                    nullptr,
-            },
-            {
-                    "flops64",
-                    "run flops double precision benchmark" ,
-                    nullptr, // help
-                    doFlops64Execution, // exec
-                    nullptr, // get_data
-                    nullptr, // set_data
-                    nullptr, // process
-            },
-            {
-                    "flops32",
-                    "run flops single precision benchmark" ,
-                    nullptr, // help
-                    doFlops32Execution, // exec
-                    nullptr, // get_data
-                    nullptr, // set_data
-                    nullptr, // process
-            },
-            {
-                    "run_benchmark",
-                    "run a series of benchmarks",
-                    nullptr,
-                    runFullBenchmark,
+                    "benchmark",
+                    "See how long the given command takes to run",
+                    "usage: benchmark command args",
+                    benchmark_operation,
                     nullptr,
                     nullptr,
                     nullptr,
@@ -1453,11 +1339,115 @@ namespace microshell {
                     nullptr,
             },
     };
+    ush_node_object binNode;
+    const ush_file_descriptor binDesc[] = {
+            {
+                "quodigious",
+                        "Run the 32-bit linear quodigious benchmark",
+                        "usage: quodigious {0-9}+\n",
+                        quodigious_benchmark,
+                        nullptr,
+                        nullptr,
+                        nullptr,
+            },
+            {
+                    "spanbit",
+                    "invoke the spanbit instruction" ,
+                    "usage: spanbit value\n",
+                    doSpanbitOperation, // exec
+                    nullptr, // get_data
+                    nullptr, // set_data
+                    nullptr, // process
+            },
+            {
+                    "scanbit",
+                    "invoke the scanbit instruction" ,
+                    "usage: scanbit value\n", // help
+                    doScanbitOperation, // exec
+                    nullptr, // get_data
+                    nullptr, // set_data
+                    nullptr, // process
+            },
+            {
+                    "rotate",
+                    "inspect the results of the rotate instruction",
+                    "usage: rotate src len",
+                    doRotateOperation,
+                    nullptr,
+                    nullptr,
+                    nullptr,
+
+            },
+            {
+                    "addc_u64",
+                    "compare results of different ways to add 64-bit unsigned values",
+                    "usage: addc_u64 src1 src2",
+                    doU64AddTest,
+                    nullptr,
+                    nullptr,
+                    nullptr,
+            },
+            {
+                    "addc_s64",
+                    "compare results of different ways to add 64-bit signed values",
+                    "usage: addc_s64 src1 src2",
+                    doS64AddTest,
+                    nullptr,
+                    nullptr,
+                    nullptr,
+            },
+            {
+                    "subc_u64",
+                    "compare results of different ways to subtract 64-bit unsigned values",
+                    "usage: subc_u64 src1 src2",
+                    doU64SubTest,
+                    nullptr,
+                    nullptr,
+                    nullptr,
+            },
+            {
+                    "subc_s64",
+                    "compare results of different ways to subtract 64-bit signed values",
+                    "usage: subc_s64 src1 src2",
+                    doS64SubTest,
+                    nullptr,
+                    nullptr,
+                    nullptr,
+            },
+            {
+                    "flops64",
+                    "run flops double precision benchmark" ,
+                    nullptr, // help
+                    doFlops64Execution, // exec
+                    nullptr, // get_data
+                    nullptr, // set_data
+                    nullptr, // process
+            },
+            {
+                    "flops32",
+                    "run flops single precision benchmark" ,
+                    nullptr, // help
+                    doFlops32Execution, // exec
+                    nullptr, // get_data
+                    nullptr, // set_data
+                    nullptr, // process
+            },
+            {
+                    "run_benchmark",
+                    "run a series of benchmarks",
+                    nullptr,
+                    runFullBenchmark,
+                    nullptr,
+                    nullptr,
+                    nullptr,
+            },
+    };
     void
     setup() {
         ush_init(&microshellObject, &microshellDescriptor);
         ush_commands_add(&microshellObject, &cmd, cmdFiles, sizeof(cmdFiles) / sizeof(cmdFiles[0]));
         ush_node_mount(&microshellObject, "/", &fsroot, rootDesc, sizeof(rootDesc) / sizeof(rootDesc[0]));
+        ush_node_mount(&microshellObject, "/bin", &binNode, binDesc, sizeof(binDesc)/sizeof(binDesc[0]));
         ush_node_mount(&microshellObject, "/dev", &devNode, devDesc, sizeof(devDesc)/sizeof(devDesc[0]));
         ush_node_mount(&microshellObject, "/dev/eeprom", &eepromRoot, eepromDesc, sizeof(eepromDesc) / sizeof(eepromDesc[0]));
         ush_node_mount(&microshellObject, "/dev/sram", &sramRoot, sramDesc, sizeof(sramDesc) / sizeof(sramDesc[0]));
