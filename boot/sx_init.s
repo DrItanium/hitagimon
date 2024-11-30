@@ -73,18 +73,20 @@ bal boot_print
 ldconst \size, g0
 ldconst \src, g1
 ldconst \dest, g2
-ldconst \offset, g3
+ldconst \offset, g4
 bal move_data
 .endm
+/* -- Below is a software loop to move data */
+move_data:
+    ldq (g1)[g4*1], g8 # load 4 words into g8
+    stq g8, (g2)[g4*1] # store 4 words into RAM
+    addi g4, 16, g4    # increment index
+    cmpibg g0, g4, move_data # loop until done
+    bx (g14)
  start_ip:
     clear_g14
-    print_text msg_boot_checksum_passed
-    # copy the interrupt table to RAM space, more like proper spaces
-    transfer_data 1028, intr_table, intr_ram, 0
-    print_text msg_transfer_complete
-    # copy PRCB to RAM space, located at _prcb_ram
-    transfer_data 176, prcb_ptr, _prcb_ram, 0
-    print_text msg_transfer_complete
+    transfer_data 1028, intr_table, intr_ram, 0 # copy the interrupt table to RAM space, more like proper spaces
+    transfer_data 176, prcb_ptr, _prcb_ram, 0 # copy PRCB to RAM space, located at _prcb_ram
     # fix up the PRCB to point to a new interrupt table
     ldconst intr_ram, g0 # load address
     ldconst _prcb_ram, g1 # load prcb in ram
@@ -127,7 +129,6 @@ reinitialize_iac:
     lda _user_stack, fp     # setup user stack space
     lda -0x40(fp), pfp      # load pfp (just in case)
     lda 0x40(fp), sp        # set up current stack pointer
-    callx boot_print2
 /* -- This is the point where your main code is called.
  *    If any IO needs to be set up, you should do it here before your
  *    call to main. No opens have been done for STDIN, STDOUT, or STDERR
@@ -154,136 +155,7 @@ setupInterruptHandler:
     ldconst 0xFCFDFEFF, g6 # load the interrupt handler defualt value
     synmov g5, g6
     ret
-/* -- Below is a software loop to move data */
-.macro print_char in
-    st \in, (0xFE000008)
-.endm
-.macro emit_char value
-    ldconst \value, g13
-    print_char g13
- .endm
-
-.macro emit_newline
-emit_char '\n'
-.endm
-.macro emit_tab
-emit_char '\t'
-.endm
-.macro emit_space
-emit_char ' '
-.endm
-.macro emit_colon
-emit_char ':'
-.endm
-move_data:
-    ldconst 256, g12
-    ldconst 0, g13
-move_data_loop:
-    ldq (g1)[g3*1], g4  # load 4 words into g8
-    stq g4, (g2)[g3*1]  # store to RAM block
-    ldq (g2)[g3*1], g8  # load what was stored from destination
-                        # now perform comparisons between the quad words
-    cmpobne g4, g8, problem_checksum_failure
-    cmpobne g5, g9, problem_checksum_failure
-    cmpobne g6, g10, problem_checksum_failure
-    cmpobne g7, g11, problem_checksum_failure
-    # okay, we are successful
-    addi g3,16, g3      # increment index
-    modi g12, g3, g13 # check and see if it is a multiple of 256
-    cmpobne 0, g13 , move_data_no_print
-    emit_char '.'
-move_data_no_print:
-    cmpibg  g0,g3, move_data_loop # loop until done
-    emit_newline
-    bx (g14)
- .macro pnum in
- mov \in, g0
- bal print_number_hex
- .endm
- .macro print_comparison prefix, a, b
- print_text \prefix
- pnum \a
- emit_space
- pnum \b
- emit_newline
- .endm
- .macro print_single_register prefix, value
- print_text \prefix
- pnum \value
- emit_newline
- .endm
-problem_checksum_failure:
-    movq g0, r12
-    print_text msg_checksum_failures
-    print_single_register msg_g0, r12
-    print_single_register msg_g1, r13
-    print_single_register msg_g2, r14
-    print_single_register msg_g3, r15
-    emit_newline
-    print_comparison msg_g4_g8, g4, g8
-    print_comparison msg_g5_g9, g5, g9
-    print_comparison msg_g6_g10, g6, g10
-    print_comparison msg_g7_g11, g7, g11
-    b exec_fallthrough
-
-.macro slice_digit shift
-    shro \shift, g0, g1
-    and 0xf, g1, g1
-    ldob (ascii_hex_table)[g1*1], g2
-    print_char g2
-.endm
-print_number_hex:
-    slice_digit 28
-    slice_digit 24
-    slice_digit 20
-    slice_digit 16
-    slice_digit 12
-    slice_digit 8
-    slice_digit 4
-    slice_digit 0
-    bx (g14)
-boot_print:
-    ldob (g0), g1 # load the current byte to potentially print out
-    cmpobe 0, g1, boot_print_done
-    addi g0, 1, g0 # increment the counter
-    print_char g1
-    b boot_print
-boot_print_done:
-    bx (g14)
-boot_print2:
-    ldob (g0), g1 # load the current byte to potentially print out
-    cmpobe 0, g1, boot_print_done2
-    addi g0, 1, g0 # increment the counter
-    print_char g1
-    b boot_print2
-boot_print_done2:
-    ret
-msg_checksum_failures:
-    .asciz "Copy Verification Failed\n"
-msg_transfer_complete:
-    .asciz "Done Copying Data/BSS to SRAM from IO Memory\n"
-msg_boot_checksum_passed:
-    .asciz "i960 Boot Checksum Passed!\n"
-msg_g4_g8:
-    .asciz "g4&g8: "
-msg_g5_g9:
-    .asciz "g5&g9: "
-msg_g6_g10:
-    .asciz "g6&g10: "
-msg_g7_g11:
-    .asciz "g7&g11: "
-msg_g0:
-    .asciz "g0: "
-msg_g1:
-    .asciz "g1: "
-msg_g2:
-    .asciz "g2: "
-msg_g3:
-    .asciz "g3: "
-ascii_hex_table:
-    .asciz "0123456789ABCDEF"
 # setup the bss section so do giant blocks of writes
-
 /* The routine below fixes up the stack for a flase interrupt return.
  * We have reserved area on the stack before the call to this
  * routine. We need to build a phony interrupt record here
