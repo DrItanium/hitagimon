@@ -1371,6 +1371,13 @@ namespace microshell {
         *data = (uint8_t*)timeBuffer;
         return strlen((char*)(*data));
     }
+    size_t eeprom_data_get_data_callback(struct ush_object*, struct ush_file_descriptor const*, uint8_t** data) {
+        *data = cortex::EEPROM().data();
+        return cortex::EEPROM().capacity();
+    }
+    void eeprom_data_set_data_callback(struct ush_object*, struct ush_file_descriptor const*, uint8_t* data, size_t size) {
+        memcpy(cortex::EEPROM().data(), data, size);
+    }
     ush_node_object eepromRoot;
     const ush_file_descriptor eepromDesc[] = {
             {
@@ -1382,6 +1389,15 @@ namespace microshell {
                     nullptr,
                     nullptr
             },
+            {
+                "block",
+                nullptr,
+                nullptr,
+                nullptr,
+                eeprom_data_get_data_callback,
+                eeprom_data_set_data_callback,
+                nullptr,
+            },
             /// @todo finish implementing
     };
     size_t sram_capacity_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
@@ -1391,6 +1407,13 @@ namespace microshell {
         timeBuffer[sizeof(timeBuffer) - 1] = 0;
         *data = (uint8_t*)timeBuffer;
         return strlen((char*)(*data));
+    }
+    size_t sram_data_get_data_callback(struct ush_object*, struct ush_file_descriptor const*, uint8_t** data) {
+        *data = cortex::SRAM().data();
+        return cortex::SRAM().capacity();
+    }
+    void sram_data_set_data_callback(struct ush_object*, struct ush_file_descriptor const*, uint8_t* data, size_t size) {
+        memcpy(cortex::SRAM().data(), data, size);
     }
     ush_node_object sramRoot;
     const ush_file_descriptor sramDesc[] = {
@@ -1403,7 +1426,15 @@ namespace microshell {
                     nullptr,
                     nullptr
             },
-            /// @todo finish implementing
+            {
+                    "block",
+                    nullptr,
+                    nullptr,
+                    nullptr,
+                    sram_data_get_data_callback,
+                    sram_data_set_data_callback,
+                    nullptr,
+            },
     };
     void
     setup() {
