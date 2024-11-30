@@ -27,16 +27,25 @@ extern "C" {
 /* you might want to try it anyway.    */
 /* #define ROPT */
 namespace microshell {
-    int flops_main();
 
     int read(ush_object*, char*ch) {
+#if 0
         *ch = fgetc(stdin);
         return 1;
+#else
+        *ch = cortex::ChipsetBasicFunctions::Console::read();
+        return 1;
+#endif
     }
 
     int write(ush_object*, char ch) {
+#if 0
         char c = fputc(ch, stdout);
         return (c != ch) ? 0 : 1;
+#else
+        cortex::ChipsetBasicFunctions::Console::write(ch);
+        return 1;
+#endif
     }
 
     const ush_io_interface microshellIOInterface = {
@@ -50,7 +59,8 @@ namespace microshell {
         &microshellIOInterface,
         inputBuffer, sizeof(inputBuffer),
         outputBuffer, sizeof(outputBuffer),
-        SHELL_BUFFER_SIZE, "hitagimon960",
+        SHELL_BUFFER_SIZE,
+        "hitagimon960",
     };
     ush_object microshellObject;
     void setup();
@@ -63,6 +73,8 @@ init()
 {
     // setup the chipset basic functions as one of the first things we actually do
     cortex::ChipsetBasicFunctions::begin();
+    // make sure that we configured the c runtime to not buffer the inputs and outputs
+    // this should allow each character to be printed out
 }
 void
 printSegmentDescriptor(std::ostream& out, cortex::SegmentDescriptor& curr) {
