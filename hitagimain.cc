@@ -1323,6 +1323,13 @@ namespace microshell {
         *data = (uint8_t*)timeBuffer;
         return strlen((char*)(*data));
     }
+    size_t systemcounter_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
+        static char timeBuffer[32];
+        snprintf(timeBuffer, sizeof(timeBuffer), "%llu\n", cortex::getSystemCounter());
+        timeBuffer[sizeof(timeBuffer) - 1] = 0;
+        *data = (uint8_t*)timeBuffer;
+        return strlen((char*)(*data));
+    }
     ush_node_object devNode;
     const ush_file_descriptor devDesc[] = {
             {
@@ -1361,6 +1368,16 @@ namespace microshell {
                     nullptr,
                     nullptr
             },
+            {
+                    "system_counter",
+                    nullptr,
+                    nullptr,
+                    nullptr,
+                    systemcounter_get_data_callback,
+                    nullptr,
+                    nullptr
+
+            }
     };
     size_t eeprom_capacity_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
         static char timeBuffer[16];
