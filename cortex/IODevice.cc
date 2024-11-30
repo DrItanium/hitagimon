@@ -117,18 +117,11 @@ namespace cortex
             }
         } // end namespace Console
         namespace Timer {
-            uint32_t
-            unixtime() noexcept {
-                return getIOSpace().unixtime();
-            }
-            uint32_t
-            millis() noexcept {
-                return getIOSpace().millis();
-            }
-            uint32_t
-            micros() noexcept {
-                return getIOSpace().micros();
-            }
+            uint32_t secondstime() noexcept { return getIOSpace().secondstime(); }
+            uint32_t unixtime() noexcept { return getIOSpace().unixtime(); }
+            uint32_t millis() noexcept { return getIOSpace().millis(); }
+            uint32_t micros() noexcept { return getIOSpace().micros(); }
+            float getRTCTemperature() noexcept { return getIOSpace().rtc_getTemperature(); }
         } // end namespace RTC
         namespace Info {
             uint32_t
@@ -155,50 +148,16 @@ namespace cortex
         outputCompareC_ = 0;
         unused_ = 0;
     }
-    uint16_t
-    EEPROM::capacity() const noexcept {
-        return getIOSpace().eepromCapacity();
-    }
-    void
-    EEPROM::write(uint16_t address, uint8_t value) noexcept {
-        getIOSpace().eeprom[address & 0xFFF] = value;
-    }
-    uint8_t
-    EEPROM::read(uint16_t address) const noexcept {
-        return getIOSpace().eeprom[address & 0xFFF] ;
-    }
-    EEPROM&
-    EEPROM::get() noexcept {
-        static EEPROM item;
-        return item;
-    }
-    uint8_t*
-    EEPROM::data() noexcept {
-        return const_cast<uint8_t*>(getIOSpace().eeprom);
-    }
 
-    uint16_t
-    SRAMCache::capacity() const noexcept {
-        return getIOSpace().sramCacheCapacity();
+    IOMemoryBlock&
+    EEPROM() noexcept {
+        static IOMemoryBlock thing(const_cast<uint8_t*>(getIOSpace().eeprom), getIOSpace().eepromCapacity());
+        return thing;
     }
-    void
-    SRAMCache::write(uint16_t address, uint8_t value) noexcept {
-        getIOSpace().sramCache[address & 0x7FF] = value;
+    IOMemoryBlock&
+    SRAM() noexcept {
+        static IOMemoryBlock thing(const_cast<uint8_t*>(getIOSpace().sramCache), getIOSpace().sramCacheCapacity());
+        return thing;
     }
-    uint8_t
-    SRAMCache::read(uint16_t address) const noexcept {
-        return getIOSpace().sramCache[address & 0x7FF];
-    }
-    SRAMCache&
-    SRAMCache::get() noexcept {
-        static SRAMCache item;
-        return item;
-    }
-
-    uint8_t*
-    SRAMCache::data() noexcept {
-        return const_cast<uint8_t*>(getIOSpace().sramCache);
-    }
-
 
 } // end namespace cortex

@@ -178,7 +178,6 @@ namespace cortex
             ssize_t write(char *buffer, size_t nbyte);
         } // end namespace Console
         namespace Timer {
-            volatile Timer16& getTimer0() noexcept;
             /**
              * @brief Get the unixtime of the system
              * @return the unixtime as an unsigned 32-bit number
@@ -190,6 +189,7 @@ namespace cortex
             uint32_t secondstime() noexcept;
             uint32_t millis() noexcept;
             uint32_t micros() noexcept;
+            float getRTCTemperature() noexcept;
 
         }
         namespace Info {
@@ -212,36 +212,18 @@ namespace cortex
                                makeOrdinal(c, d));
     }
     struct IOMemoryBlock {
-        virtual ~IOMemoryBlock() { }
-        virtual uint16_t capacity() const noexcept = 0;
-        virtual uint8_t read(uint16_t address) const noexcept = 0;
-        virtual void write(uint16_t address, uint8_t value) noexcept = 0;
-        virtual uint8_t* data() noexcept = 0;
-    };
-    struct EEPROM : public IOMemoryBlock {
+        IOMemoryBlock(uint8_t* address, uint16_t capacity) : _address(address), _capacity(capacity), _mask(capacity - 1) { }
+        uint16_t capacity() const noexcept { return _capacity; }
+        uint8_t read(uint16_t address) const noexcept { return _address[address & _mask]; }
+        void write(uint16_t address, uint8_t value) noexcept { _address[address & _mask] = value; }
+        uint8_t* data() const noexcept { return _address; }
     private:
-        EEPROM() { }
-        EEPROM(const EEPROM&) { }
-    public:
-        virtual ~EEPROM() { }
-        virtual uint16_t capacity() const noexcept;
-        virtual uint8_t read(uint16_t address) const noexcept;
-        virtual void write(uint16_t address, uint8_t value) noexcept;
-        virtual uint8_t* data() noexcept;
-        static EEPROM& get() noexcept;
+        uint8_t* _address;
+        uint16_t _capacity;
+        uint16_t _mask;
     };
-    struct SRAMCache : public IOMemoryBlock {
-    private:
-        SRAMCache() { }
-        SRAMCache(const SRAMCache&) {}
-    public:
-        virtual ~SRAMCache() { }
-        virtual uint16_t capacity() const noexcept;
-        virtual uint8_t read(uint16_t address) const noexcept;
-        virtual void write(uint16_t address, uint8_t value) noexcept;
-        virtual uint8_t* data() noexcept;
-        static SRAMCache& get() noexcept;
-    };
+    IOMemoryBlock& EEPROM() noexcept;
+    IOMemoryBlock& SRAM() noexcept;
 
 }
 #endif //I960SXCHIPSET_IODEVICE_H

@@ -1315,6 +1315,14 @@ namespace microshell {
         *data = (uint8_t*)timeBuffer;
         return strlen((char*)(*data));
     }
+    size_t secondstime_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
+        static char timeBuffer[16];
+        unsigned long current = cortex::ChipsetBasicFunctions::Timer::secondstime();
+        snprintf(timeBuffer, sizeof(timeBuffer), "%lu\n", current);
+        timeBuffer[sizeof(timeBuffer) - 1] = 0;
+        *data = (uint8_t*)timeBuffer;
+        return strlen((char*)(*data));
+    }
     ush_node_object devNode;
     const ush_file_descriptor devDesc[] = {
             {
@@ -1344,11 +1352,20 @@ namespace microshell {
                     nullptr,
                     nullptr
             },
+            {
+                    "secondstime",
+                    nullptr,
+                    nullptr,
+                    nullptr,
+                    secondstime_get_data_callback,
+                    nullptr,
+                    nullptr
+            },
     };
     size_t eeprom_capacity_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
         static char timeBuffer[16];
         /// @todo reimplement through memory mapped io
-        unsigned long capacity = cortex::EEPROM::get().capacity();
+        unsigned long capacity = cortex::EEPROM().capacity();
         snprintf(timeBuffer, sizeof(timeBuffer), "%lu\n", capacity);
         timeBuffer[sizeof(timeBuffer) - 1] = 0;
         *data = (uint8_t*)timeBuffer;
@@ -1369,7 +1386,7 @@ namespace microshell {
     };
     size_t sram_capacity_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
         static char timeBuffer[16];
-        unsigned long capacity = cortex::SRAMCache::get().capacity();
+        unsigned long capacity = cortex::SRAM().capacity();
         snprintf(timeBuffer, sizeof(timeBuffer), "%lu\n", capacity);
         timeBuffer[sizeof(timeBuffer) - 1] = 0;
         *data = (uint8_t*)timeBuffer;
@@ -1388,26 +1405,6 @@ namespace microshell {
             },
             /// @todo finish implementing
     };
-    size_t rtc_available_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
-        static char timeBuffer[16];
-        //unsigned long capacity = 2048;
-        //snprintf(timeBuffer, sizeof(timeBuffer), "%d\n", capacity);
-        timeBuffer[sizeof(timeBuffer) - 1] = 0;
-        *data = (uint8_t*)timeBuffer;
-        return strlen((char*)(*data));
-    }
-    ush_node_object rtcRoot;
-    const ush_file_descriptor rtcDesc[] = {
-            {
-               "available" ,
-               nullptr,
-               nullptr,
-               nullptr,
-               rtc_available_get_data_callback,
-               nullptr,
-               nullptr,
-            },
-    };
     void
     setup() {
         ush_init(&microshellObject, &microshellDescriptor);
@@ -1416,8 +1413,6 @@ namespace microshell {
         ush_node_mount(&microshellObject, "/dev", &devNode, devDesc, sizeof(devDesc)/sizeof(devDesc[0]));
         ush_node_mount(&microshellObject, "/dev/eeprom", &eepromRoot, eepromDesc, sizeof(eepromDesc) / sizeof(eepromDesc[0]));
         ush_node_mount(&microshellObject, "/dev/sram", &sramRoot, sramDesc, sizeof(sramDesc) / sizeof(sramDesc[0]));
-        // @todo implement RTC support
-        //ush_node_mount(&microshellObject, "/dev/rtc", &rtcRoot, rtcDesc, sizeof(rtcDesc) / sizeof(rtcDesc[0]));
     }
 }
 
