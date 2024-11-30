@@ -11,7 +11,8 @@
 #include <cortex/ChipsetInteract.h>
 #include <stdio.h>
 #include <math.h>
-#include <cortex/ext2.h>
+#include <string>
+#include <sstream>
 extern "C" {
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -131,11 +132,6 @@ private:
 };
 void
 setup() {
-    //std::cout << "HITAGIMON" << std::endl
-    //          << "Built on " << __DATE__ << " at " << __TIME__ << std::endl
-    //          << "--------------------------------------------" << std::endl << std::endl << std::endl << std::endl;
-    //std::cout << "millis: " << std::dec << cortex::ChipsetBasicFunctions::Timer::millis() << " millseconds since chipset boot" << std::endl;
-    //std::cout << "micros: " << std::dec << cortex::ChipsetBasicFunctions::Timer::micros() << " microseconds since chipset boot" << std::endl;
     microshell::setup();
 }
 void loop() {
@@ -1154,7 +1150,19 @@ namespace microshell {
                       << components[i]._duration.ru_utime.tv_usec << " usec" << std::endl;
         }
     }
-
+    size_t info_txt_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
+        static bool initialized = false;
+        static std::string message;
+        if (!initialized) {
+            std::stringstream stream;
+            stream << "HITAGIMON" << std::endl
+                   << "Built on " << __DATE__ << " at " << __TIME__ << std::endl
+                   << "New Lib Version: " << _NEWLIB_VERSION << std::endl;
+            message = stream.str();
+        }
+        *data = (uint8_t*)message.c_str();
+        return message.length();
+    }
     ush_node_object cmd;
     const ush_file_descriptor cmdFiles[] = {
             {
@@ -1278,13 +1286,59 @@ namespace microshell {
     };
     ush_node_object fsroot;
     const ush_file_descriptor rootDesc[] = {
-
+            {
+                    "info.txt" ,
+                    nullptr,
+                    nullptr,
+                    nullptr,
+                    info_txt_get_data_callback,
+                    nullptr,
+                    nullptr,
+            }
+    };
+    size_t millis_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
+        static char timeBuffer[16];
+        unsigned long currentTime = cortex::ChipsetBasicFunctions::Timer::millis();
+        snprintf(timeBuffer, sizeof(timeBuffer), "%lud\n", currentTime);
+        timeBuffer[sizeof(timeBuffer) - 1] = 0;
+        *data = (uint8_t*)timeBuffer;
+        return strlen((char*)(*data));
+    }
+    size_t micros_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
+        static char timeBuffer[16];
+        unsigned long currentTime = cortex::ChipsetBasicFunctions::Timer::micros();
+        snprintf(timeBuffer, sizeof(timeBuffer), "%lud\n", currentTime);
+        timeBuffer[sizeof(timeBuffer) - 1] = 0;
+        *data = (uint8_t*)timeBuffer;
+        return strlen((char*)(*data));
+    }
+    ush_node_object devNode;
+    const ush_file_descriptor devDesc[] = {
+            {
+                "millis",
+                nullptr,
+                nullptr,
+                nullptr,
+                millis_get_data_callback,
+                nullptr,
+                nullptr
+            },
+            {
+                    "micros",
+                    nullptr,
+                    nullptr,
+                    nullptr,
+                    micros_get_data_callback,
+                    nullptr,
+                    nullptr
+            }
     };
     void
     setup() {
         ush_init(&microshellObject, &microshellDescriptor);
         ush_commands_add(&microshellObject, &cmd, cmdFiles, sizeof(cmdFiles) / sizeof(cmdFiles[0]));
         ush_node_mount(&microshellObject, "/", &fsroot, rootDesc, sizeof(rootDesc) / sizeof(rootDesc[0]));
+        ush_node_mount(&microshellObject, "/dev", &devNode, devDesc, sizeof(devDesc)/sizeof(devDesc[0]));
     }
 }
 
