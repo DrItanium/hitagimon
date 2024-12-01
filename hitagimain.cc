@@ -29,7 +29,7 @@ extern "C" {
 namespace microshell {
 
     int read(ush_object*, char*ch) {
-#if 0
+#if 1
         *ch = fgetc(stdin);
         return 1;
 #else
@@ -39,7 +39,7 @@ namespace microshell {
     }
 
     int write(ush_object*, char ch) {
-#if 0
+#if 1
         char c = fputc(ch, stdout);
         return (c != ch) ? 0 : 1;
 #else
