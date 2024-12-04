@@ -13,6 +13,7 @@
 #include <math.h>
 #include <string>
 #include <sstream>
+#include <cstring>
 extern "C" {
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -309,10 +310,10 @@ struct FlopsCode {
 
 
     int doIt() {
-        register FloatType s, u, v, w, x;
+        FloatType s, u, v, w, x;
 
         long loops, NLimit;
-        register long i, m, n;
+        long i, m, n;
 
         printf("\n");
         printf("   FLOPS C Program (%s), V2.0 18 Dec 1992\n\n", _msg.c_str());

@@ -28,15 +28,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SysExamine.h"
 
 namespace cortex {
-    void
-    storeQuadWord(QuadWord word, void* address) {
-        asm volatile ("stq %0, (%1)" : : "r" (word) , "r" (address) : "memory");
-    }
-    QuadWord
-    loadQuadWord(void* address) {
-        register QuadWord result;
-        asm volatile ("ldq (%1), %0" : "=r" (result) : "r" (address) : "memory");
-        return result;
-    }
     /// @todo fix triple word operations, it crashes the compiler
 }
