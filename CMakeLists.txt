@@ -58,7 +58,7 @@ add_library(hitagicortex
 		cortex/IAC.cc
 		cortex/IACImplementation.s
 		cortex/ModernCpp.h
-		cortex/Types.h cortex/SystemCounter.h cortex/SystemCounter.cc cortex/builtins.h cortex/builtins.c cortex/IndirectInterrupts.cc
+        cortex/SystemCounter.h cortex/SystemCounter.cc cortex/builtins.h cortex/builtins.c cortex/IndirectInterrupts.cc
 		cortex/ext2.h
 		cortex/SoftwareDMA.h
 		cortex/SoftwareDMA.cc

@@ -2,7 +2,6 @@
 // Created by jwscoggins on 5/3/21.
 //
 
-#include <cortex/Types.h>
 #include <cortex/IODevice.h>
 #include <cortex/ChipsetInteract.h>
 #include <cstdio>
@@ -10,7 +9,7 @@
 
 namespace cortex
 {
-    struct IOSpace {
+    struct [[gnu::packed]] IOSpace {
         union {
             uint8_t bytes[256];
             struct {
@@ -46,7 +45,7 @@ namespace cortex
         inline bool rtc_32kEnabled() volatile noexcept { return builtin._configure32k; }
         inline void rtc_enable32k() volatile noexcept { builtin._configure32k = 1; }
         inline void rtc_disable32k() volatile noexcept { builtin._configure32k = 0; }
-    } __attribute__((packed));
+    };
     volatile IOSpace& getIOSpace() noexcept {
         return memory<IOSpace>(0xFE000000);
     }
