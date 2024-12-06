@@ -199,6 +199,7 @@ add_custom_command(
 		DEPENDS hitagimon
 		#MAIN_DEPENDENCY hitagimon
 )
+
 add_custom_target(hitagimon_sd_image
 		DEPENDS prog.bin
 )

@@ -2,9 +2,9 @@ GROUP(-lgcc -lm -lc -liberty -lc -lmon960) /* libraries to link in */
 
 MEMORY /* describe the partitioning of the memory space for the application */ 
 {
-    rom (!r) : ORIGIN = 0, l = 512K,
-    sram (!rx) : ORIGIN = 512K, l = 512K,
-    sram2 (!rx) : ORIGIN = 1M, l = 2047M
+    rom (!r) : ORIGIN = 0, l = 4M,
+    psram(!rx) : ORIGIN = 4M, l = 60M,
+    psram_upper(!rx) : ORIGIN = 64M, l = 2048M - 64M
 }
 
 /* Define a symbol that your code can reference. The linker adds the symbol. */ 
@@ -20,7 +20,11 @@ SECTIONS
 	{ 
 		CREATE_OBJECT_SYMBOLS /* C++ needs this */ 
 
-		*(.text) 	/* place the actual contents of the text section here */ 
+		*(.text*) 	/* place the actual contents of the text section here */
+	    __rodata_start__ = .;
+	    KEEP(*(.rodata*))
+	    __rodata_end__ = .;
+	    *(.gcc_except_table)
 
 		_etext = .; /* define a symbol named _etext and assign it to the
 					   address following the end of the text section data */ 
@@ -35,18 +39,21 @@ SECTIONS
 	{ 
 		__bss_start__ = .;
 		_bss_start = .;
-		*(.bss) 
+		*(.bss*)
 		*(COMMON) /* can't find much documentation on this but it is a good idea to have this here */ 
 		__bss_end__ = .; 
-	} >sram
+	} >psram
 	.data :
 	{
 		__data_start__ = .; 
-		KEEP(*(.data)) 
+		KEEP(*(.data*))
 		CONSTRUCTORS  /* we want to place the constructors data here */
-		__data_end__ = .; 
+	    __ctors_start__ = .;
+	    *(.ctors)
+	    __ctors_end__ = .;
+		__data_end__ = .;
 		_edata = .; 
-	} >sram
+	} >psram
 	.heap : { 
 		/* this section is synthetic, I do not actually copy the contents of the heap
 		 * section over on boot, instead I just want the location of where it should
@@ -60,7 +67,7 @@ SECTIONS
 		KEEP(*(.heap)) 
 		__heap_end__ = .; 
 		/* __HeapLimit = __heap_end__; */ 
-	} >sram
+	} >psram
 }
 
 /* these two locations are _very_ important for getting the program to startup correctly */ 
