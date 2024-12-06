@@ -135,7 +135,7 @@ reinitialize_iac:
  */
     callx _init_fp
     callx setupInterruptHandler
-    c_callx _main # assume a main for startup
+    c_callx main # assume a main for startup
 exec_fallthrough:
     b exec_fallthrough
 

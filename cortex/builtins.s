@@ -22,24 +22,26 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-.global _u64_add_via_addc
-.global _s64_add_via_addc
-.global _u64_subtract_via_subc
-.global _s64_subtract_via_subc
-.global _u64_subtract_via_subc_v2
-.global _s64_subtract_via_subc_v2
-.global _u32_rotate
-.global _u32_emul
-.global _xnor64
-.global _nand64
-.global _nor64
-.global _scanbyte32
-.global _spanbit32
-.global _scanbit32
-.global _extract32
+.global u64_add_via_addc
+.global s64_add_via_addc
+.global u64_subtract_via_subc
+.global s64_subtract_via_subc
+.global u64_subtract_via_subc_v2
+.global s64_subtract_via_subc_v2
+.global s64_subtract_via_subc_v3
+.global u64_subtract_via_subc_v3
+.global u32_rotate
+.global u32_emul
+.global xnor64
+.global nand64
+.global nor64
+.global scanbyte32
+.global spanbit32
+.global scanbit32
+.global extract32
 
-_s64_add_via_addc:
-_u64_add_via_addc:
+s64_add_via_addc:
+u64_add_via_addc:
     # g0,g1 - a
     # g2,g3 - b
     cmpo 1, 0
@@ -47,8 +49,8 @@ _u64_add_via_addc:
     addc g1, g3, g1
     ret
 
-_s64_subtract_via_subc:
-_u64_subtract_via_subc:
+s64_subtract_via_subc:
+u64_subtract_via_subc:
     # g0,g1 - a (src2)
     # g2,g3 - b (src1)
     # a -b ->
@@ -57,8 +59,8 @@ _u64_subtract_via_subc:
     subc g2, g0, g0
     ret
 
-_s64_subtract_via_subc_v2:
-_u64_subtract_via_subc_v2:
+s64_subtract_via_subc_v2:
+u64_subtract_via_subc_v2:
     # g0,g1 - a (src2)
     # g2,g3 - b (src1)
     # a -b ->
@@ -67,10 +69,8 @@ _u64_subtract_via_subc_v2:
     subc g3, g1, g1
     ret
 
-.global _s64_subtract_via_subc_v3
-.global _u64_subtract_via_subc_v3
-_s64_subtract_via_subc_v3:
-_u64_subtract_via_subc_v3:
+s64_subtract_via_subc_v3:
+u64_subtract_via_subc_v3:
     # g0,g1 - a (src2)
     # g2,g3 - b (src1)
     # a -b ->
@@ -79,10 +79,10 @@ _u64_subtract_via_subc_v3:
     subc g2, g0, g0
     ret
 
-.global _s64_subtract_via_subc_v4
-.global _u64_subtract_via_subc_v4
-_s64_subtract_via_subc_v4:
-_u64_subtract_via_subc_v4:
+.global s64_subtract_via_subc_v4
+.global u64_subtract_via_subc_v4
+s64_subtract_via_subc_v4:
+u64_subtract_via_subc_v4:
     # g0,g1 - a (src1)
     # g2,g3 - b (src2)
     # a - b ->
@@ -91,10 +91,10 @@ _u64_subtract_via_subc_v4:
     subc g0, g2, g0
     ret
 
-.global _s64_subtract_via_subc_v5
-.global _u64_subtract_via_subc_v5
-_s64_subtract_via_subc_v5:
-_u64_subtract_via_subc_v5:
+.global s64_subtract_via_subc_v5
+.global u64_subtract_via_subc_v5
+s64_subtract_via_subc_v5:
+u64_subtract_via_subc_v5:
     # g0,g1 - a (src1)
     # g2,g3 - b (src2)
     # a - b ->
@@ -103,10 +103,10 @@ _u64_subtract_via_subc_v5:
     subc g0, g2, g0
     ret
 
-.global _s64_subtract_via_subc_v6
-.global _u64_subtract_via_subc_v6
-_s64_subtract_via_subc_v6:
-_u64_subtract_via_subc_v6:
+.global s64_subtract_via_subc_v6
+.global u64_subtract_via_subc_v6
+s64_subtract_via_subc_v6:
+u64_subtract_via_subc_v6:
     # g0,g1 - a (src1)
     # g2,g3 - b (src2)
     cmpo 0, 0 # do not clear the carry flag but set it instead
@@ -114,10 +114,10 @@ _u64_subtract_via_subc_v6:
     subc g1, g3, g1
     ret
 
-.global _s64_subtract_via_subc_v7
-.global _u64_subtract_via_subc_v7
-_s64_subtract_via_subc_v7:
-_u64_subtract_via_subc_v7:
+.global s64_subtract_via_subc_v7
+.global u64_subtract_via_subc_v7
+s64_subtract_via_subc_v7:
+u64_subtract_via_subc_v7:
     # g0,g1 - a (src1)
     # g2,g3 - b (src2)
     # this is the most reliable method to be honest!
@@ -126,61 +126,61 @@ _u64_subtract_via_subc_v7:
     subc g3, g1, g1 # Now to the upper part
     ret
 
-_u32_rotate:
+u32_rotate:
     # g0 -> src
     # g1 -> len
     rotate g1, g0, g0
     ret
 
-_u32_emul:
+u32_emul:
     # g0 -> src1
     # g1 -> src2
     emul g0, g1, g0
     ret
 
-_xnor64:
+xnor64:
     # g0, g1 -> src1
     # g2, g3 -> src2
     xnor g0, g2, g0
     xnor g1, g3, g1
     ret
-_nand64:
+nand64:
     # g0, g1 -> src1
     # g2, g3 -> src2
     nand g0, g2, g0
     nand g1, g3, g1
     ret
 
-_nor64:
+nor64:
     # g0, g1 -> src1
     # g2, g3 -> src2
     nor g0, g2, g0
     nor g1, g3, g1
     ret
 
-_scanbyte32:
+scanbyte32:
     # g0 -> src1
     # g1 -> src2
     scanbyte g0, g1
     teste g0 # convert to boolean/int
     ret
 
-_spanbit32:
+spanbit32:
     # g0 -> src
     spanbit g0, g0
     ret
-_scanbit32:
+scanbit32:
     scanbit g0, g0
     ret
-_extract32:
+extract32:
     # g0 -> src/dest
     # g1 -> bitpos
     # g2 -> len
     extract g1, g2, g0
     ret
 
-.global _modify32
-_modify32:
+.global modify32
+modify32:
     # g0 -> value (src/dest)
     # g1 -> src
     # g2 -> mask
