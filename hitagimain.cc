@@ -28,24 +28,14 @@ extern "C" {
 /* #define ROPT */
 namespace microshell {
 
-    int read(ush_object*, char*ch) {
-#if 1
-        *ch = fgetc(stdin);
+    int read(ush_object*, char* ch) {
+        *ch = static_cast<char>(fgetc(stdin));
         return 1;
-#else
-        *ch = cortex::ChipsetBasicFunctions::Console::read();
-        return 1;
-#endif
     }
 
     int write(ush_object*, char ch) {
-#if 1
-        char c = fputc(ch, stdout);
+        char c = static_cast<char>(fputc(ch, stdout));
         return (c != ch) ? 0 : 1;
-#else
-        cortex::ChipsetBasicFunctions::Console::write(ch);
-        return 1;
-#endif
     }
 
     const ush_io_interface microshellIOInterface = {
@@ -984,7 +974,7 @@ namespace microshell {
     inline bool isQuodigious(uint32_t value, uint32_t sum, uint32_t product)  {
         return ((value % product) == 0) && ((value % sum) == 0);
     }
-    const uint32_t factors10[10] = {
+    constexpr uint32_t factors10[10] = {
         1, // 0
         10, // 1
         10 * 10, // 2

@@ -303,20 +303,20 @@ sys_proc_table:
 	.word 0, 0, 0, 0 # 4-7
 	# mon960 registrations
 	.word 0, 0
-	DefTableEntry hitagi_open
-	DefTableEntry hitagi_read
-	DefTableEntry hitagi_write
-	DefTableEntry hitagi_lseek
-	DefTableEntry hitagi_close
-	.word 0
+	DefTableEntry hitagi_open  # 230 (0xe6)
+	DefTableEntry hitagi_read  # 231 (0xe7)
+	DefTableEntry hitagi_write # 232 (0xe8)
+	DefTableEntry hitagi_lseek # 233 (0xe9)
+	DefTableEntry hitagi_close # 234 (0xea)
+	.word 0 # 235
 	.word 0, 0, 0, 0 # 236-239
 	.word 0, 0, 0, 0 # 240-243
 	.word 0, 0, 0, 0 # 244-247
 	.word 0, 0, 0, 0 # 248-251
 	.word 0, 0, 0, 0 # 252-255
-	.word 0
-	DefTableEntry hitagi_exit
-	.word 0, 0 # 256-259
+	.word 0 # 256
+	DefTableEntry hitagi_exit # 257
+	.word 0, 0 # 258-259
 	#.word	(_console_io + 0x2)	# Calls 0 - console I/O routines
 # up to a total of 260 entries
 
