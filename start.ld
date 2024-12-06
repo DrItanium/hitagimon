@@ -34,15 +34,19 @@ SECTIONS
 	 * few sections*/ 
 	} >rom
 	/* setup the bss section, tag it's start and end positions to allow the
-	 * i960 to manually zero out the memory on the sdcard's ram.bin file */ 
-	.bss : 
-	{ 
+	 * i960 to manually zero out the memory on the sdcard's ram.bin file */
+	.bss :
+	{
 		__bss_start__ = .;
 		bss_start = .;
 		*(.bss*)
-		*(COMMON) /* can't find much documentation on this but it is a good idea to have this here */ 
+		*(COMMON) /* can't find much documentation on this but it is a good idea to have this here */
 		__bss_end__ = .;
 	} >psram
+	/*
+	   Shove a bunch of different sections into data since we have to flatten this anyways.
+	   Eventually, an ELF format file will be better accessed later on.
+	   */
 	.data :
 	{
 		__data_start__ = .; 
@@ -50,26 +54,31 @@ SECTIONS
 		SORT(CONSTRUCTORS)  /* we want to place the constructors data here */
 		__data_end__ = .;
 		_edata = .;
-		/* init_array and fini_array */
+		/* .init_array */
 		PROVIDE_HIDDEN(__init_array_start = .);
 		KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*)))
 		KEEP (*(.init array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o) .ctors))
 		PROVIDE_HIDDEN(__init_array_end = .);
+		/* .fini_array */
 		PROVIDE_HIDDEN(__fini_array_start = .);
 		KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.dtors.*)))
 		KEEP (*(.init array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o) .dtors))
 		PROVIDE_HIDDEN(__fini_array_end = .);
-		/* constructors and destructors here */
+		/* .ctors */
+		/* According to the core linker script, gcc uses crtbegin.o to find the start of the constructors. So this
+		   sequence ensures that it is first. */
 	    KEEP (*crtbegin.o(.ctors))
 	    KEEP (*crtbegin?.o(.ctors))
 	    KEEP (*(EXCLUDE_FILE (*crtend.o *crtend?.o) .ctors))
 	    KEEP (*(SORT(.ctors.*)))
 	    KEEP (*(.ctors))
+	    /* .dtors */
 	    KEEP (*crtbegin.o(.dtors))
 	    KEEP (*crtbegin?.o(.dtors))
 	    KEEP (*(EXCLUDE_FILE (*crtend.o *crtend?.o) .dtors))
 	    KEEP (*(SORT(.dtors.*)))
 	    KEEP (*(.dtors))
+	    /* normally this would be the .fini section */
 	    KEEP (*(SORT_NONE(.fini)))
 	} >psram
 	.heap : {
