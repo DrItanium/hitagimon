@@ -51,6 +51,9 @@ SECTIONS
 	    __ctors_start__ = .;
 	    *(.ctors)
 	    __ctors_end__ = .;
+	    __dtors_start__ = .;
+	    *(.dtors)
+	    __dtors_end__ = .;
 		__data_end__ = .;
 		_edata = .; 
 	} >psram

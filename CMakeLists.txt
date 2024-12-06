@@ -8,7 +8,7 @@ set(CMAKE_C_COMPILER ${tools}/bin/i960-elf-gcc)
 set(CMAKE_CXX_COMPILER ${tools}/bin/i960-elf-g++)
 set(CMAKE_ASM-ATT_COMPILER ${tools}/bin/i960-elf-as)
 set(CMAKE_LINKER ${tools}/bin/i960-elf-ld)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -DUSH_CONFIG_PLATFORM_POSIX -fno-exceptions")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -DUSH_CONFIG_PLATFORM_POSIX -fno-exceptions -fno-use-cxa-atexit")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -DCONFIG_PLATFORM_POSIX --std=gnu99")
 set(CMAKE_OBJCOPY_COMPILER ${tools}/bin/i960-elf-objcopy)
 set(CMAKE_OBJDUMP_COMPILER ${tools}/bin/i960-elf-objdump)
@@ -17,8 +17,8 @@ unset(CMAKE_COLOR_DIAGNOSTICS CACHE)
 add_compile_options(-Wall)
 # for some reason, the compiler generated multiple copies of the same entries
 #add_link_options(-Wl,--as-needed -nostdlib -static -T ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT} -ffreestanding -Wl,--allow-multiple-definition)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msc -mnumerics -O1")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -msc -mnumerics -O1")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msc -mnumerics")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -msc -mnumerics")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mka -msoft-float")
 #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mka -msoft-float")
 set(CMAKE_ASM-ATT_FLAGS "${CMAKE_ASM_FLAGS} -AMC -I${CMAKE_SOURCE_DIR}/boot")
@@ -190,6 +190,7 @@ target_link_options(hitagimon
 		PRIVATE -ffreestanding
 		PRIVATE -Wl,--allow-multiple-definition
         PRIVATE -msoft-float
+        PRIVATE -fno-use-cxa-atexit
 		#PRIVATE -mmc
 		#PRIVATE -mnumerics
 )
