@@ -189,7 +189,7 @@ target_link_options(hitagimon
 		PRIVATE -T ${CMAKE_SOURCE_DIR}/start.ld
 		PRIVATE -ffreestanding
 		PRIVATE -Wl,--allow-multiple-definition
-        PRIVATE -msoft-float
+        #PRIVATE -msoft-float
 		#PRIVATE -mmc
 		#PRIVATE -mnumerics
 )

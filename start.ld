@@ -47,17 +47,31 @@ SECTIONS
 	{
 		__data_start__ = .; 
 		KEEP(*(.data*))
-		CONSTRUCTORS  /* we want to place the constructors data here */
-	    __ctors_start__ = .;
-	    *(.ctors)
-	    __ctors_end__ = .;
-	    __dtors_start__ = .;
-	    *(.dtors)
-	    __dtors_end__ = .;
+		SORT(CONSTRUCTORS)  /* we want to place the constructors data here */
 		__data_end__ = .;
-		_edata = .; 
+		_edata = .;
+		/* init_array and fini_array */
+		PROVIDE_HIDDEN(__init_array_start = .);
+		KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*)))
+		KEEP (*(.init array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o) .ctors))
+		PROVIDE_HIDDEN(__init_array_end = .);
+		PROVIDE_HIDDEN(__fini_array_start = .);
+		KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.dtors.*)))
+		KEEP (*(.init array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o) .dtors))
+		PROVIDE_HIDDEN(__fini_array_end = .);
+		/* constructors and destructors here */
+	    KEEP (*crtbegin.o(.ctors))
+	    KEEP (*crtbegin?.o(.ctors))
+	    KEEP (*(EXCLUDE_FILE (*crtend.o *crtend?.o) .ctors))
+	    KEEP (*(SORT(.ctors.*)))
+	    KEEP (*(.ctors))
+	    KEEP (*crtbegin.o(.dtors))
+	    KEEP (*crtbegin?.o(.dtors))
+	    KEEP (*(EXCLUDE_FILE (*crtend.o *crtend?.o) .dtors))
+	    KEEP (*(SORT(.dtors.*)))
+	    KEEP (*(.dtors))
 	} >psram
-	.heap : { 
+	.heap : {
 		/* this section is synthetic, I do not actually copy the contents of the heap
 		 * section over on boot, instead I just want the location of where it should
 		 * start.In this case, the heap will start _after_ the .bss and .data sections

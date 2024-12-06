@@ -405,11 +405,3 @@ def_system_call 21, sys_getrusage
  .bss sup_stack,  0x8000, 6
  .bss intr_ram, 1028, 6
  .bss prcb_ram, 176, 6
-.global __dso_handle
-.type __dso_handle,@object
-.size __dso_handle,4
-.section .sbss
-.align 4
-__dso_handle:
-    .skip 4
-    .hidden __dso_handle
