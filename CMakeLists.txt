@@ -164,34 +164,21 @@ target_include_directories(hitagisys PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagimon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(wasm3 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(hitagimon
-		gcc
-		c
-		m
 		hitagicortex
 		hitagisys
 		hitagiemul
         wasm3
         microshell
 		mon960
-		stdc++
-		c
-		m
-		gcc # necessary for soft float support, will need to provide my own custom routines ahead of this point to access the fpu
-		mon960
-		hitagicortex
 		)
 
 #add_link_options(-Wl,--as-needed -nostdlib -static -T ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT} -ffreestanding -Wl,--allow-multiple-definition)
 target_link_options(hitagimon
 		PRIVATE -Wl,--as-needed
-		#PRIVATE -nostdlib
 		PRIVATE -static
 		PRIVATE -T ${CMAKE_SOURCE_DIR}/start.ld
 		PRIVATE -ffreestanding
 		PRIVATE -Wl,--allow-multiple-definition
-        #PRIVATE -msoft-float
-		#PRIVATE -mmc
-		#PRIVATE -mnumerics
 )
 add_custom_command(
 		OUTPUT prog.bin
