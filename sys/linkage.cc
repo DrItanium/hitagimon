@@ -54,15 +54,15 @@ kill (int pid, int signal) {
     _sys_kill(pid, signal);
 }
 #endif
-extern "C" int _sys_gettimeofday(struct timeval*, void*);
+extern "C" int sys_gettimeofday(struct timeval*, void*);
 extern "C"
 int
 gettimeofday(struct timeval* tv, void* tz) {
-    return _sys_gettimeofday(tv, tz);
+    return sys_gettimeofday(tv, tz);
 }
-extern "C" int _sys_setitimer(int which, const struct itimerval* newValue, struct itimerval* oldValue);
+extern "C" int sys_setitimer(int which, const struct itimerval* newValue, struct itimerval* oldValue);
 extern "C"
 int
 setitimer(int which, const struct itimerval* newValue, struct itimerval* oldValue) {
-    return _sys_setitimer(which, newValue, oldValue);
+    return sys_setitimer(which, newValue, oldValue);
 }

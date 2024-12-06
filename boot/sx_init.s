@@ -42,14 +42,14 @@ fault, and system procedure tables, and then vectors to a user defined routine. 
 .endm
 .global system_address_table
 .global prcb_ptr
-.global _prcb_ram
+.global prcb_ram
 .global start_ip
 .global cs1
 .global STACK_SIZE
 
-.global _user_stack
-.global _sup_stack # supervisor stack
-.global _intr_stack # interrupt stack
+.global user_stack
+.global sup_stack # supervisor stack
+.global intr_stack # interrupt stack
 
 
 # Core Initialization Block (located at address 0)
@@ -86,10 +86,10 @@ move_data:
  start_ip:
     clear_g14
     transfer_data 1028, intr_table, intr_ram, 0 # copy the interrupt table to RAM space, more like proper spaces
-    transfer_data 176, prcb_ptr, _prcb_ram, 0 # copy PRCB to RAM space, located at _prcb_ram
+    transfer_data 176, prcb_ptr, prcb_ram, 0 # copy PRCB to RAM space, located at prcb_ram
     # fix up the PRCB to point to a new interrupt table
     ldconst intr_ram, g0 # load address
-    ldconst _prcb_ram, g1 # load prcb in ram
+    ldconst prcb_ram, g1 # load prcb in ram
     st g0, 20(g1) # store into PRCB
 
  /*
@@ -108,7 +108,7 @@ move_data:
 reinitialize_iac:
     .word 0x93000000    # reinitialize IAC message
     .word system_address_table
-    .word _prcb_ram     # use newly copied PRCB
+    .word prcb_ram     # use newly copied PRCB
     .word start_again_ip    # start here
 
   /*
@@ -126,7 +126,7 @@ reinitialize_iac:
     ldconst 64, g0 # bump up stack to make
     addo sp, g0, sp # room for simulated interrupt frame
     call fix_stack  # routine to turn off int state
-    lda _user_stack, fp     # setup user stack space
+    lda user_stack, fp     # setup user stack space
     lda -0x40(fp), pfp      # load pfp (just in case)
     lda 0x40(fp), sp        # set up current stack pointer
 /* -- This is the point where your main code is called.
@@ -199,7 +199,7 @@ prcb_ptr:
     .word 0x0 # 12 - current process
     .word 0x0 # 16 - dispatch port
     .word intr_table # 20 - interrupt table physical address
-    .word _intr_stack # 24 - interrupt stack pointer
+    .word intr_stack # 24 - interrupt stack pointer
     .word 0x0 # 28 - reserved
     SegmentSelector 7 # 32 - pointer to offset zero (region 3 segment selector)
     SegmentSelector 9 # 36 - system procedure table pointer
@@ -221,7 +221,7 @@ sys_proc_table:
     .word 0 # Reserved
     .word 0 # Reserved
     .word 0 # Reserved
-    .word (_sup_stack + 0x1) # Supervisor stack pointer
+    .word (sup_stack + 0x1) # Supervisor stack pointer
     .word 0 # Preserved
     .word 0 # Preserved
     .word 0 # Preserved
@@ -234,21 +234,21 @@ sys_proc_table:
     # example entry
 	.word 0, 0, 0, 0 # 0-3
 	.word 0, 0, 0    # 4-6
-	DefTableEntry _hitagi_unlink
-	ReservedTableEntry # _hitagi_getpid
-	ReservedTableEntry # _hitagi_kill
-	ReservedTableEntry # _hitagi_fstat
+	DefTableEntry hitagi_unlink
+	ReservedTableEntry # hitagi_getpid
+	ReservedTableEntry # hitagi_kill
+	ReservedTableEntry # hitagi_fstat
 	ReservedTableEntry # sbrk
-	ReservedTableEntry #_hitagi_argvlen
-	ReservedTableEntry # _hitagi_argv
-	ReservedTableEntry # _hitagi_chdir
-	ReservedTableEntry # _hitagi_stat
-    ReservedTableEntry # _hitagi_chmod
-    ReservedTableEntry # _hitagi_utime
-    ReservedTableEntry # _hitagi_time
-    DefTableEntry _hitagi_gettimeofday
-    DefTableEntry _hitagi_setitimer
-    DefTableEntry _hitagi_getrusage
+	ReservedTableEntry # hitagi_argvlen
+	ReservedTableEntry # hitagi_argv
+	ReservedTableEntry # hitagi_chdir
+	ReservedTableEntry # hitagi_stat
+    ReservedTableEntry # hitagi_chmod
+    ReservedTableEntry # hitagi_utime
+    ReservedTableEntry # hitagi_time
+    DefTableEntry hitagi_gettimeofday
+    DefTableEntry hitagi_setitimer
+    DefTableEntry hitagi_getrusage
 	.word 0, 0 # 22-23
 	.word 0, 0, 0, 0 # 24-27
 	.word 0, 0, 0, 0 # 28-31
@@ -303,11 +303,11 @@ sys_proc_table:
 	.word 0, 0, 0, 0 # 4-7
 	# mon960 registrations
 	.word 0, 0
-	DefTableEntry _hitagi_open
-	DefTableEntry _hitagi_read
-	DefTableEntry _hitagi_write
-	DefTableEntry _hitagi_lseek
-	DefTableEntry _hitagi_close
+	DefTableEntry hitagi_open
+	DefTableEntry hitagi_read
+	DefTableEntry hitagi_write
+	DefTableEntry hitagi_lseek
+	DefTableEntry hitagi_close
 	.word 0
 	.word 0, 0, 0, 0 # 236-239
 	.word 0, 0, 0, 0 # 240-243
@@ -315,7 +315,7 @@ sys_proc_table:
 	.word 0, 0, 0, 0 # 248-251
 	.word 0, 0, 0, 0 # 252-255
 	.word 0
-	DefTableEntry _hitagi_exit
+	DefTableEntry hitagi_exit
 	.word 0, 0 # 256-259
 	#.word	(_console_io + 0x2)	# Calls 0 - console I/O routines
 # up to a total of 260 entries
@@ -325,14 +325,14 @@ sys_proc_table:
 # tracing of trace-fault events (creating an endless loop), whereas this table will
 # not allow tracing of trace-fault events.
 .macro FaultTableEntry name
-DefTableEntry _user_\()\name\()_core
+DefTableEntry user_\()\name\()_core
 .endm
     .align 6
 fault_proc_table:
     .word 0 # Reserved
     .word 0 # Reserved
     .word 0 # Reserved
-    .word _sup_stack # Supervisor stack pointer
+    .word sup_stack # Supervisor stack pointer
     .word 0 # Preserved
     .word 0 # Preserved
     .word 0 # Preserved
@@ -358,9 +358,9 @@ fault_proc_table:
     FaultTableEntry reserved
 .macro DefFaultDispatcher name
 .text
-_user_\()\name\()_core:
+user_\()\name\()_core:
 	lda	-48(fp), g0	/* pass fault data */
-	callx _user_\()\name
+	callx user_\()\name
 	flushreg
 	ret
 .endm
@@ -381,27 +381,27 @@ DefFaultDispatcher descriptor
 DefFaultDispatcher event
 DefFaultDispatcher reserved
 # reserved entries
-def_system_call 7, _sys_unlink
-#def_system_call 8, _sys_getpid
-#def_system_call 9, _sys_kill
-#def_system_call 10, _sys_fstat
-#def_system_call 11, _sys_sbrk
-#def_system_call 12, _sys_argvlen
-#def_system_call 13, _sys_argv
-#def_system_call 14, _sys_chdir
-#def_system_call 15, _sys_stat
-#def_system_call 16, _sys_chmod
-#def_system_call 17, _sys_utime
-#def_system_call 18, _sys_time
-def_system_call 19, _sys_gettimeofday
-def_system_call 20, _sys_setitimer
-def_system_call 21, _sys_getrusage
+def_system_call 7, sys_unlink
+#def_system_call 8, sys_getpid
+#def_system_call 9, sys_kill
+#def_system_call 10, sys_fstat
+#def_system_call 11, sys_sbrk
+#def_system_call 12, sys_argvlen
+#def_system_call 13, sys_argv
+#def_system_call 14, sys_chdir
+#def_system_call 15, sys_stat
+#def_system_call 16, sys_chmod
+#def_system_call 17, sys_utime
+#def_system_call 18, sys_time
+def_system_call 19, sys_gettimeofday
+def_system_call 20, sys_setitimer
+def_system_call 21, sys_getrusage
 
 /* -- define RAM area to copy the PRCB and interrupt table
  *    to after initial bootup from EPROM/FLASH
  */
- .bss _user_stack, 0x8000, 6
- .bss _intr_stack, 0x8000, 6
- .bss _sup_stack,  0x8000, 6
+ .bss user_stack, 0x8000, 6
+ .bss intr_stack, 0x8000, 6
+ .bss sup_stack,  0x8000, 6
  .bss intr_ram, 1028, 6
- .bss _prcb_ram, 176, 6
+ .bss prcb_ram, 176, 6

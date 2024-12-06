@@ -57,8 +57,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro def_system_call index,name
 .text
 .align 4
-.global _\()\name
-_\()\name:
+.global \name
+\name:
 lda \index, g13
 calls g13
 ret
@@ -112,7 +112,7 @@ DeclareSegment 0, 0, \addr, 0x204000fb
 .global \name
 \name:
     save_globals
-    c_call _vect_\toCall
+    c_call vect_\toCall
     restore_globals
     ret
 .endm

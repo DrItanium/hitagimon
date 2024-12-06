@@ -6,11 +6,11 @@ extern "C" {
 }
 #include <cortex/SystemCounter.h>
 #include <cortex/IODevice.h>
-extern "C" int _sys_getrusage(int who, struct rusage*);
+extern "C" int sys_getrusage(int who, struct rusage*);
 extern "C"
 int
 getrusage(int who, struct rusage* usage) {
-    return _sys_getrusage(who, usage);
+    return sys_getrusage(who, usage);
 }
 extern "C"
 int

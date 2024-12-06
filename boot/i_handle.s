@@ -24,26 +24,26 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 .text
 .include "macros.s"
-DefInterruptHandler _isr0, INT0
-DefInterruptHandler _isr1, INT1
-DefInterruptHandler _isr2, INT2
-DefInterruptHandler _isr3, INT3
-DefInterruptHandler _isr_dmachan0, DMACHANNEL0
-DefInterruptHandler _isr_dmachan1, DMACHANNEL1
-DefInterruptHandler _isr_dmachan2, DMACHANNEL2
-DefInterruptHandler _isr_dmachan3, DMACHANNEL3
-DefInterruptHandler _isr_dmachan4, DMACHANNEL4
-DefInterruptHandler _isr_dmachan5, DMACHANNEL5
-DefInterruptHandler _isr_dmachan6, DMACHANNEL6
-DefInterruptHandler _isr_dmachan7, DMACHANNEL7
-DefInterruptHandler _isr_dmachan8, DMACHANNEL8
-DefInterruptHandler _isr_dmachan9, DMACHANNEL9
-DefInterruptHandler _isr_dmachan10, DMACHANNEL10
-DefInterruptHandler _isr_dmachan11, DMACHANNEL11
-DefInterruptHandler _isr_dmachan12, DMACHANNEL12
-DefInterruptHandler _isr_dmachan13, DMACHANNEL13
-DefInterruptHandler _isr_dmachan14, DMACHANNEL14
-DefInterruptHandler _isr_dmachan15, DMACHANNEL15
-.global _do_nothing_isr
-_do_nothing_isr:
+DefInterruptHandler isr0, INT0
+DefInterruptHandler isr1, INT1
+DefInterruptHandler isr2, INT2
+DefInterruptHandler isr3, INT3
+DefInterruptHandler isr_dmachan0, DMACHANNEL0
+DefInterruptHandler isr_dmachan1, DMACHANNEL1
+DefInterruptHandler isr_dmachan2, DMACHANNEL2
+DefInterruptHandler isr_dmachan3, DMACHANNEL3
+DefInterruptHandler isr_dmachan4, DMACHANNEL4
+DefInterruptHandler isr_dmachan5, DMACHANNEL5
+DefInterruptHandler isr_dmachan6, DMACHANNEL6
+DefInterruptHandler isr_dmachan7, DMACHANNEL7
+DefInterruptHandler isr_dmachan8, DMACHANNEL8
+DefInterruptHandler isr_dmachan9, DMACHANNEL9
+DefInterruptHandler isr_dmachan10, DMACHANNEL10
+DefInterruptHandler isr_dmachan11, DMACHANNEL11
+DefInterruptHandler isr_dmachan12, DMACHANNEL12
+DefInterruptHandler isr_dmachan13, DMACHANNEL13
+DefInterruptHandler isr_dmachan14, DMACHANNEL14
+DefInterruptHandler isr_dmachan15, DMACHANNEL15
+.global do_nothing_isr
+do_nothing_isr:
         ret
