@@ -38,10 +38,10 @@ SECTIONS
 	.bss : 
 	{ 
 		__bss_start__ = .;
-		_bss_start = .;
+		bss_start = .;
 		*(.bss*)
 		*(COMMON) /* can't find much documentation on this but it is a good idea to have this here */ 
-		__bss_end__ = .; 
+		__bss_end__ = .;
 	} >psram
 	.data :
 	{
@@ -70,6 +70,7 @@ SECTIONS
 	    KEEP (*(EXCLUDE_FILE (*crtend.o *crtend?.o) .dtors))
 	    KEEP (*(SORT(.dtors.*)))
 	    KEEP (*(.dtors))
+	    KEEP (*(SORT_NONE(.fini)))
 	} >psram
 	.heap : {
 		/* this section is synthetic, I do not actually copy the contents of the heap

@@ -184,7 +184,7 @@ target_link_libraries(hitagimon
 #add_link_options(-Wl,--as-needed -nostdlib -static -T ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT} -ffreestanding -Wl,--allow-multiple-definition)
 target_link_options(hitagimon
 		PRIVATE -Wl,--as-needed
-		PRIVATE -nostdlib
+		#PRIVATE -nostdlib
 		PRIVATE -static
 		PRIVATE -T ${CMAKE_SOURCE_DIR}/start.ld
 		PRIVATE -ffreestanding
