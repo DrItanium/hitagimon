@@ -7,7 +7,6 @@
 #include <cortex/builtins.h>
 #include <newlib.h>
 #include <iostream>
-#include <cortex/ModernGCC.h>
 #include <cortex/ChipsetInteract.h>
 #include <stdio.h>
 #include <math.h>
@@ -1148,12 +1147,12 @@ namespace microshell {
             ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
         } else {
             struct ush_file_descriptor const* targetCommand = ush_file_find_by_name(self, argv[1]);
-            if (targetCommand == nullptr) {
+            if (!targetCommand) {
                 ush_print_status(self, USH_STATUS_ERROR_FILE_NOT_FOUND);
                 return;
             }
 
-            if (targetCommand->exec == nullptr) {
+            if (!targetCommand->exec) {
                 ush_print_status(self, USH_STATUS_ERROR_FILE_NOT_EXECUTABLE);
                 return;
             }
@@ -1169,25 +1168,17 @@ namespace microshell {
     ush_node_object cmd;
     const ush_file_descriptor cmdFiles[] = {
             {
-                    "benchmark",
-                    "See how long the given command takes to run",
-                    "usage: benchmark command args",
-                    benchmark_operation,
-                    nullptr,
-                    nullptr,
-                    nullptr,
+                    .name = "benchmark",
+                    .description = "See how long the given command takes to run",
+                    .help = "usage: benchmark command args",
+                    .exec = benchmark_operation,
             },
     };
     ush_node_object fsroot;
     const ush_file_descriptor rootDesc[] = {
             {
-                    "info.txt" ,
-                    nullptr,
-                    nullptr,
-                    nullptr,
-                    info_txt_get_data_callback,
-                    nullptr,
-                    nullptr,
+                    .name = "info.txt" ,
+                    .get_data = info_txt_get_data_callback,
             }
     };
     size_t millis_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
@@ -1232,49 +1223,24 @@ namespace microshell {
     ush_node_object devNode;
     const ush_file_descriptor devDesc[] = {
             {
-                "millis",
-                nullptr,
-                nullptr,
-                nullptr,
-                millis_get_data_callback,
-                nullptr,
-                nullptr
+                .name = "millis",
+                .get_data = millis_get_data_callback,
             },
             {
-                    "micros",
-                    nullptr,
-                    nullptr,
-                    nullptr,
-                    micros_get_data_callback,
-                    nullptr,
-                    nullptr
+                    .name = "micros",
+                    .get_data = micros_get_data_callback,
             },
             {
-                    "unixtime",
-                    nullptr,
-                    nullptr,
-                    nullptr,
-                    unixtime_get_data_callback,
-                    nullptr,
-                    nullptr
+                    .name = "unixtime",
+                    .get_data = unixtime_get_data_callback,
             },
             {
-                    "secondstime",
-                    nullptr,
-                    nullptr,
-                    nullptr,
-                    secondstime_get_data_callback,
-                    nullptr,
-                    nullptr
+                    .name = "secondstime",
+                    .get_data = secondstime_get_data_callback,
             },
             {
-                    "system_counter",
-                    nullptr,
-                    nullptr,
-                    nullptr,
-                    systemcounter_get_data_callback,
-                    nullptr,
-                    nullptr
+                    .name = "system_counter",
+                    .get_data = systemcounter_get_data_callback,
 
             }
     };
@@ -1297,22 +1263,13 @@ namespace microshell {
     ush_node_object eepromRoot;
     const ush_file_descriptor eepromDesc[] = {
             {
-                    "capacity",
-                    nullptr,
-                    nullptr,
-                    nullptr,
-                    eeprom_capacity_get_data_callback,
-                    nullptr,
-                    nullptr
+                    .name = "capacity",
+                    .get_data = eeprom_capacity_get_data_callback,
             },
             {
-                "block",
-                nullptr,
-                nullptr,
-                nullptr,
-                eeprom_data_get_data_callback,
-                eeprom_data_set_data_callback,
-                nullptr,
+                .name = "block",
+                .get_data = eeprom_data_get_data_callback,
+                .set_data = eeprom_data_set_data_callback,
             },
             /// @todo finish implementing
     };
@@ -1334,125 +1291,80 @@ namespace microshell {
     ush_node_object sramRoot;
     const ush_file_descriptor sramDesc[] = {
             {
-                    "capacity",
-                    nullptr,
-                    nullptr,
-                    nullptr,
-                    sram_capacity_get_data_callback,
-                    nullptr,
-                    nullptr
+                    .name = "capacity",
+                    .get_data = sram_capacity_get_data_callback,
             },
             {
-                    "block",
-                    nullptr,
-                    nullptr,
-                    nullptr,
-                    sram_data_get_data_callback,
-                    sram_data_set_data_callback,
-                    nullptr,
+                    .name = "block",
+                    .get_data = sram_data_get_data_callback,
+                    .set_data = sram_data_set_data_callback,
             },
     };
     ush_node_object binNode;
     const ush_file_descriptor binDesc[] = {
             {
-                "quodigious",
-                        "Run the 32-bit linear quodigious benchmark",
-                        "usage: quodigious {0-9}+\n",
-                        quodigious_benchmark,
-                        nullptr,
-                        nullptr,
-                        nullptr,
+                .name = "quodigious",
+                        .description = "Run the 32-bit linear quodigious benchmark",
+                        .help = "usage: quodigious {0-9}+\n",
+                        .exec = quodigious_benchmark,
             },
             {
-                    "spanbit",
-                    "invoke the spanbit instruction" ,
-                    "usage: spanbit value\n",
-                    doSpanbitOperation, // exec
-                    nullptr, // get_data
-                    nullptr, // set_data
-                    nullptr, // process
+                    .name = "spanbit",
+                    .description = "invoke the spanbit instruction" ,
+                    .help = "usage: spanbit value\n",
+                    .exec = doSpanbitOperation, // exec
             },
             {
-                    "scanbit",
-                    "invoke the scanbit instruction" ,
-                    "usage: scanbit value\n", // help
-                    doScanbitOperation, // exec
-                    nullptr, // get_data
-                    nullptr, // set_data
-                    nullptr, // process
+                    .name = "scanbit",
+                    .description = "invoke the scanbit instruction" ,
+                    .help = "usage: scanbit value\n", // help
+                    .exec = doScanbitOperation, // exec
             },
             {
-                    "rotate",
-                    "inspect the results of the rotate instruction",
-                    "usage: rotate src len",
-                    doRotateOperation,
-                    nullptr,
-                    nullptr,
-                    nullptr,
+                    .name = "rotate",
+                    .description = "inspect the results of the rotate instruction",
+                    .help = "usage: rotate src len",
+                    .exec = doRotateOperation,
 
             },
             {
-                    "addc_u64",
-                    "compare results of different ways to add 64-bit unsigned values",
-                    "usage: addc_u64 src1 src2",
-                    doU64AddTest,
-                    nullptr,
-                    nullptr,
-                    nullptr,
+                    .name = "addc_u64",
+                    .description = "compare results of different ways to add 64-bit unsigned values",
+                    .help = "usage: addc_u64 src1 src2",
+                    .exec = doU64AddTest,
             },
             {
-                    "addc_s64",
-                    "compare results of different ways to add 64-bit signed values",
-                    "usage: addc_s64 src1 src2",
-                    doS64AddTest,
-                    nullptr,
-                    nullptr,
-                    nullptr,
+                    .name = "addc_s64",
+                    .description = "compare results of different ways to add 64-bit signed values",
+                    .help = "usage: addc_s64 src1 src2",
+                    .exec = doS64AddTest,
             },
             {
-                    "subc_u64",
-                    "compare results of different ways to subtract 64-bit unsigned values",
-                    "usage: subc_u64 src1 src2",
-                    doU64SubTest,
-                    nullptr,
-                    nullptr,
-                    nullptr,
+                    .name = "subc_u64",
+                    .description = "compare results of different ways to subtract 64-bit unsigned values",
+                    .help = "usage: subc_u64 src1 src2",
+                    .exec = doU64SubTest,
             },
             {
-                    "subc_s64",
-                    "compare results of different ways to subtract 64-bit signed values",
-                    "usage: subc_s64 src1 src2",
-                    doS64SubTest,
-                    nullptr,
-                    nullptr,
-                    nullptr,
+                    .name = "subc_s64",
+                    .description = "compare results of different ways to subtract 64-bit signed values",
+                    .help = "usage: subc_s64 src1 src2",
+                    .exec = doS64SubTest,
             },
             {
-                    "flops64",
-                    "run flops double precision benchmark" ,
-                    nullptr, // help
-                    doFlops64Execution, // exec
-                    nullptr, // get_data
-                    nullptr, // set_data
-                    nullptr, // process
+                    .name = "flops64",
+                    .description = "run flops double precision benchmark" ,
+                    .exec = doFlops64Execution, // exec
             },
             {
-                    "flops32",
-                    "run flops single precision benchmark" ,
-                    nullptr, // help
-                    doFlops32Execution, // exec
-                    nullptr, // get_data
-                    nullptr, // set_data
-                    nullptr, // process
+                    .name = "flops32",
+                    .description = "run flops single precision benchmark" ,
+                    .exec = doFlops32Execution, // exec
             },
             {
-                    "run_benchmark",
-                    "run a series of benchmarks",
-                    nullptr,
-                    runFullBenchmark,
-                    nullptr,
-                    nullptr,
-                    nullptr,
+                    .name = "run_benchmark",
+                    .description = "run a series of benchmarks",
+                    .exec = runFullBenchmark,
             },
     };
     void

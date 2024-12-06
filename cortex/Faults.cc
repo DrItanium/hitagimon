@@ -2,11 +2,8 @@
 // Created by jwscoggins on 8/28/21.
 //
 
-#include "ModernGCC.h"
 #include "Faults.h"
 #include "ChipsetInteract.h"
-#include <stdio.h>
-#include <stdint.h>
 namespace cortex
 {
     void
