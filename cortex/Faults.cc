@@ -41,21 +41,26 @@ namespace cortex
         printf("Process Controls: %#lx\n", pc.raw);
         printf("Arithmetic Controls: %#lx\n", ac.raw);
         printf("Frame Pointer Chain:\n");
-        auto printFP = [](ProcedureStackFrame* fp, int index) {
+        auto printFP = [](ProcedureStackFrame* fp, int index, bool isFailingFrame) {
             printf("\tFrame %d @ %p\n", index, fp);
             printf("\t\tPFP: %#lx\n", fp->pfp);
             printf("\t\tSP: %#lx\n", fp->sp);
             printf("\t\tRIP: %#lx\n", fp->rip);
+            if (isFailingFrame) {
+                printf("\t\tIs Failing Frame!\n");
+            }
         };
         ProcedureStackFrame* failingFrame = fp;
         int i = 0;
         // walk back up the chain until we get to the frame which will return to the faulting frame (this allows us to ignore any number of frames we generate as part of the fault handling process
         for (; failingFrame->rip != reinterpret_cast<uint32_t>(addressOfFaultingInstruction); failingFrame = failingFrame->getParentFrame(), ++i) {
-            printFP(failingFrame, i);
+            printFP(failingFrame, i, failingFrame->rip == reinterpret_cast<uint32_t>(addressOfFaultingInstruction));
         }
+        printFP(failingFrame, i, failingFrame->rip == reinterpret_cast<uint32_t>(addressOfFaultingInstruction));
         // go one more up to be able to actually figure out where we came from
         failingFrame = failingFrame->getParentFrame();
-        printFP(failingFrame, i + 1);
+        ++i;
+        printFP(failingFrame, i, failingFrame->rip == reinterpret_cast<uint32_t>(addressOfFaultingInstruction));
         // now that we have this address, we need to figure out where the pfp of the pfp is located
     }
 #define X(kind, index, locase, hicase) \
