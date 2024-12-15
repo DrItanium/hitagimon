@@ -30,8 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *    and store data to that spot. We will take advantage of
  *    the fact that this will be allocated at the first spot on the stack
  */
-        ldconst 64, r4
-        addo    sp, r4, sp
+        ldconst 64, r3
+        addo    sp, r3, sp
         stq     g0, -64(sp)
         stq     g4, -48(sp)
         stq     g8, -32(sp)

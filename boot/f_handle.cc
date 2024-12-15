@@ -29,24 +29,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../cortex/Faults.h"
 #include <string>
 void
-basicDisplay(const std::string& kind, cortex::FaultData* record) {
+basicDisplay(const std::string& kind, cortex::FaultData* record, uint32_t pfp) {
     cortex::ChipsetBasicFunctions::Console::write(kind.c_str());
     cortex::ChipsetBasicFunctions::Console::writeLine(" FAULT RAISED!");
-    record->display();
+    record->display(pfp);
 }
 inline void
-basicOperation(const std::string& kind, cortex::FaultData* record, cortex::FaultHandler handler) {
+basicOperation(const std::string& kind, cortex::FaultData* record, uint32_t pfp, cortex::FaultHandler handler) {
     if (handler)  {
-        handler(record);
+        handler(record, pfp);
     } else {
-        basicDisplay(kind, record);
+        basicDisplay(kind, record, pfp);
     }
 }
 #define X(kind, code, locase, hicase) \
 extern "C"                      \
 void                            \
-user_ ## locase (cortex::FaultData* record) { \
-    basicOperation( "USER " #hicase , record, cortex::getUser ## kind ## FaultHandler ()); \
+user_ ## locase (cortex::FaultData* record, uint32_t pfp) { \
+    basicOperation( "USER " #hicase , record, pfp, cortex::getUser ## kind ## FaultHandler ()); \
 }
 #include "cortex/Faults.def"
 #undef X

@@ -360,9 +360,15 @@ fault_proc_table:
 .macro DefFaultDispatcher name
 .text
 user_\()\name\()_core:
-	lda	-48(fp), g0	/* pass fault data */
+	flushreg /* flush registers out of frames to allow inspection */
+	save_globals
+	lda	-48(fp), g0	/* pass fault data start */
+    /* need to also pass the address to the previous frame pointer as well as the pfp of the pfp */
+    mov pfp, g1
+    ldconst 0xfffffff0, r3  /* load mask */
+    and g1, r3, g1          /* remove the pfp mask information */
 	callx user_\()\name
-	flushreg
+	restore_globals
 	ret
 .endm
 # We pass the fault data by grabbing it and passing it via g0 to the function itself
