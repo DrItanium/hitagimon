@@ -27,26 +27,27 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include "../cortex/IODevice.h"
 #include "../cortex/Faults.h"
+#include "../cortex/SysExamine.h"
 #include <string>
 void
-basicDisplay(const std::string& kind, cortex::FaultData* record, uint32_t pfp) {
+basicDisplay(const std::string& kind, cortex::FaultData* record, cortex::ProcedureStackFrame* pfp) {
     cortex::ChipsetBasicFunctions::Console::write(kind.c_str());
     cortex::ChipsetBasicFunctions::Console::writeLine(" FAULT RAISED!");
     record->display(pfp);
 }
 inline void
-basicOperation(const std::string& kind, cortex::FaultData* record, uint32_t pfp, cortex::FaultHandler handler) {
+basicOperation(const std::string& kind, cortex::FaultData* record, cortex::ProcedureStackFrame* fp, cortex::FaultHandler handler) {
     if (handler)  {
-        handler(record, pfp);
+        handler(record, fp);
     } else {
-        basicDisplay(kind, record, pfp);
+        basicDisplay(kind, record, fp);
     }
 }
 #define X(kind, code, locase, hicase) \
 extern "C"                      \
 void                            \
-user_ ## locase (cortex::FaultData* record, uint32_t pfp) { \
-    basicOperation( "USER " #hicase , record, pfp, cortex::getUser ## kind ## FaultHandler ()); \
+user_ ## locase (cortex::FaultData* record, cortex::ProcedureStackFrame* fp) { \
+    basicOperation( "USER " #hicase , record, fp, cortex::getUser ## kind ## FaultHandler ()); \
 }
 #include "cortex/Faults.def"
 #undef X

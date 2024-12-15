@@ -7,7 +7,7 @@
 namespace cortex
 {
     void
-    FaultData::display(uint32_t pfp) {
+    FaultData::display(ProcedureStackFrame* fp) {
         uint8_t ftype = faultInfo.type;
         uint8_t fsubtype = faultInfo.subtype;
         printf("FAULT INTERCEPTED!\n\n");
@@ -40,7 +40,18 @@ namespace cortex
         printf("Faulting Address: %p\n", addressOfFaultingInstruction);
         printf("Process Controls: %#lx\n", pc.raw);
         printf("Arithmetic Controls: %#lx\n", ac.raw);
-        printf("Previous Frame Pointer Address: %#lx\n", pfp);
+        printf("Frame Pointer Chain:\n");
+        auto printFP = [](ProcedureStackFrame* fp, int index) {
+            printf("\tFrame %d @ %p\n", index, fp);
+            printf("\t\tPFP: %#lx\n", fp->pfp);
+            printf("\t\tSP: %#lx\n", fp->sp);
+            printf("\t\tRIP: %#lx\n", fp->rip);
+        };
+        printFP(fp, 0);
+        printFP(fp->getParentFrame(), 1);
+        printFP(fp->getParentFrame()->getParentFrame(), 2);
+        //printf("Frame Pointer Chain: %p -> %p -> %p\n", fp, fp->getParentFrame(), fp->getParentFrame()->getParentFrame());
+        // now that we have this address, we need to figure out where the pfp of the pfp is located
     }
 #define X(kind, index, locase, hicase) \
 namespace { FaultHandler user ## kind ## _ ; } \

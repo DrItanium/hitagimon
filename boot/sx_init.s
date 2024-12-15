@@ -364,9 +364,7 @@ user_\()\name\()_core:
 	save_globals
 	lda	-48(fp), g0	/* pass fault data start */
     /* need to also pass the address to the previous frame pointer as well as the pfp of the pfp */
-    mov pfp, g1
-    ldconst 0xfffffff0, r3  /* load mask */
-    and g1, r3, g1          /* remove the pfp mask information */
+    mov fp, g1 /* just pass the frame pointer address as the second argument */
 	callx user_\()\name
 	restore_globals
 	ret

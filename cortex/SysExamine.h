@@ -420,5 +420,13 @@ namespace cortex {
         uint32_t queueStatus;
         QueueHeader priorityQueues[32];
     };
+    struct [[gnu::packed]] ProcedureStackFrame {
+        uint32_t pfp;
+        uint32_t sp;
+        uint32_t rip;
+        uint32_t rest[13];
+        inline ProcedureStackFrame* getParentFrame() const noexcept { return reinterpret_cast<ProcedureStackFrame*>(pfp & 0xFFFF'FFF0); }
+    };
+    static_assert(sizeof(ProcedureStackFrame) == 64);
 }
 #endif //HITAGIMON_SYSEXAMINE_H
