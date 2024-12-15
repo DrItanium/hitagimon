@@ -261,7 +261,7 @@ struct FlopsCode {
     FloatType D1, D2, D3;
     FloatType E2, E3;
     std::string _msg;
-    FlopsCode(const std::string& kind) : _msg(kind) {
+    explicit FlopsCode(const std::string& kind) : _msg(kind) {
         A0 = 1.0;
         A1 = -0.1666666666671334;
         A2 = 0.833333333809067E-2;
