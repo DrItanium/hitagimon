@@ -47,10 +47,15 @@ namespace cortex
             printf("\t\tSP: %#lx\n", fp->sp);
             printf("\t\tRIP: %#lx\n", fp->rip);
         };
-        printFP(fp, 0);
-        printFP(fp->getParentFrame(), 1);
-        printFP(fp->getParentFrame()->getParentFrame(), 2);
-        //printf("Frame Pointer Chain: %p -> %p -> %p\n", fp, fp->getParentFrame(), fp->getParentFrame()->getParentFrame());
+        ProcedureStackFrame* failingFrame = fp;
+        int i = 0;
+        // walk back up the chain until we get to the frame which will return to the faulting frame (this allows us to ignore any number of frames we generate as part of the fault handling process
+        for (; failingFrame->rip != reinterpret_cast<uint32_t>(addressOfFaultingInstruction); failingFrame = failingFrame->getParentFrame(), ++i) {
+            printFP(failingFrame, i);
+        }
+        // go one more up to be able to actually figure out where we came from
+        failingFrame = failingFrame->getParentFrame();
+        printFP(failingFrame, i + 1);
         // now that we have this address, we need to figure out where the pfp of the pfp is located
     }
 #define X(kind, index, locase, hicase) \
