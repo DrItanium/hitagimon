@@ -63,6 +63,9 @@ namespace cortex
         ++i;
         printFP(failingFrame, i);
         // now that we have this address, we need to figure out where the pfp of the pfp is located
+        failingFrame = failingFrame->getParentFrame();
+        ++i;
+        printFP(failingFrame, i);
     }
 #define X(kind, index, locase, hicase) \
 namespace { FaultHandler user ## kind ## _ ; } \
