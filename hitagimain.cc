@@ -61,13 +61,10 @@ namespace microshell {
 void
 init()
 {
-    int garbage;
     // setup the chipset basic functions as one of the first things we actually do
     cortex::ChipsetBasicFunctions::begin();
     // make sure that we configured the c runtime to not buffer the inputs and outputs
     // this should allow each character to be printed out
-    std::cout << "Basic Functions Up!" << std::endl;
-    printf("Testing Printf: %d\n", garbage);
 }
 void
 printSegmentDescriptor(std::ostream& out, cortex::SegmentDescriptor& curr) {
@@ -1036,15 +1033,7 @@ namespace microshell {
         }
     }
     size_t info_txt_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
-        static bool initialized = false;
-        static std::string message;
-        if (!initialized) {
-            std::stringstream stream;
-            stream << "HITAGIMON" << std::endl
-                   << "Built on " << __DATE__ << " at " << __TIME__ << std::endl
-                   << "New Lib Version: " << _NEWLIB_VERSION << std::endl;
-            message = stream.str();
-        }
+        static std::string message = "HITAGIMON\nBuilt on " __DATE__ " at " __TIME__ "\nNEWLIB Version: " _NEWLIB_VERSION "\n";
         *data = (uint8_t*)message.c_str();
         return message.length();
     }
