@@ -61,10 +61,13 @@ namespace microshell {
 void
 init()
 {
+    int garbage;
     // setup the chipset basic functions as one of the first things we actually do
     cortex::ChipsetBasicFunctions::begin();
     // make sure that we configured the c runtime to not buffer the inputs and outputs
     // this should allow each character to be printed out
+    std::cout << "Basic Functions Up!" << std::endl;
+    printf("Testing Printf: %d\n", garbage);
 }
 void
 printSegmentDescriptor(std::ostream& out, cortex::SegmentDescriptor& curr) {

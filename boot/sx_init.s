@@ -55,7 +55,7 @@ fault, and system procedure tables, and then vectors to a user defined routine. 
 # Core Initialization Block (located at address 0)
 # 8 words
 
-.text
+.section .imi
     .word system_address_table # SAT pointer
     .word prcb_ptr # prcb pointer
     .word 0
@@ -76,6 +76,7 @@ ldconst \dest, g2
 ldconst \offset, g4
 bal move_data
 .endm
+.text
 /* -- Below is a software loop to move data */
 move_data:
     ldq (g1)[g4*1], g8 # load 4 words into g8

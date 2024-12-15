@@ -2,7 +2,8 @@ GROUP(-lgcc -lm -lc -liberty -lc -lmon960) /* libraries to link in */
 
 MEMORY /* describe the partitioning of the memory space for the application */ 
 {
-    rom (!r) : ORIGIN = 0, l = 2M,
+    imi (!r) : ORIGIN = 0, l = 32,
+    rom (!r) : ORIGIN = 32, l = 2M,
     psram(!rx) : ORIGIN = 2M, l = 62M,
     psram_upper(!rx) : ORIGIN = 64M, l = 2048M - 64M
 }
@@ -15,10 +16,15 @@ STACK_SIZE = 0x8000;
  * memory spaces */ 
 SECTIONS
 {
+    .boot :
+    {
+        *(.imi*)
+    } > imi
+
 	/* this is the text section */ 
 	.text : 
-	{ 
-		CREATE_OBJECT_SYMBOLS /* C++ needs this */ 
+	{
+		CREATE_OBJECT_SYMBOLS /* C++ needs this */
 
 		*(.text*) 	/* place the actual contents of the text section here */
 	    __rodata_start__ = .;
