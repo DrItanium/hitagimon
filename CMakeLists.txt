@@ -3,12 +3,12 @@ project(hitagimon VERSION 0.2)
 enable_language(CXX C ASM-ATT)
 set(CMAKE_CXX_STANDARD 17)
 
-set(tools /home/jwscoggins/dev/i960/i960-elf-gcc-3.4.6_v4_to_11.3.0)
+set(tools /home/jwscoggins/dev/i960/i960-elf-gcc-11.5.0)
 set(CMAKE_C_COMPILER ${tools}/bin/i960-elf-gcc)
 set(CMAKE_CXX_COMPILER ${tools}/bin/i960-elf-g++)
 set(CMAKE_ASM-ATT_COMPILER ${tools}/bin/i960-elf-as)
 set(CMAKE_LINKER ${tools}/bin/i960-elf-ld)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -DUSH_CONFIG_PLATFORM_POSIX -fno-exceptions")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -DUSH_CONFIG_PLATFORM_POSIX -fno-exceptions -ffreestanding")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -DCONFIG_PLATFORM_POSIX --std=gnu99")
 set(CMAKE_OBJCOPY_COMPILER ${tools}/bin/i960-elf-objcopy)
 set(CMAKE_OBJDUMP_COMPILER ${tools}/bin/i960-elf-objdump)
@@ -178,7 +178,7 @@ target_link_options(hitagimon
 		PRIVATE -static
 		PRIVATE -T ${CMAKE_SOURCE_DIR}/start.ld
 		PRIVATE -ffreestanding
-		PRIVATE -Wl,--allow-multiple-definition
+		#PRIVATE -Wl,--allow-multiple-definition
 )
 add_custom_command(
 		OUTPUT prog.bin

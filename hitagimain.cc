@@ -136,19 +136,6 @@ void loop() {
 }
 
 
-extern "C"
-void
-vect_INT0(void) {
-
-}
-extern "C"
-void
-vect_INT1(void) {
-
-}
-
-
-
 /*--------------------- Start flops.c source code ----------------------*/
 
 /*****************************/
