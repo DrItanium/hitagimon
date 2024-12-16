@@ -100,6 +100,7 @@ add_executable(hitagimon
 		boot/macros.s
 		hitagimain.cc
 		start.ld
+        start2.ld
 )
 # add the microshell library directly since I get an infinite loop otherwise
 #add_library(microshell
@@ -154,6 +155,7 @@ target_compile_definitions(
         USH_CONFIG_PLATFORM_POSIX
 )
 set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/start.ld)
+set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/start2.ld)
 add_library(hitagiemul
         emulation/Segment.cc emulation/Segment.h emulation/Domain.cc emulation/Domain.h)
 
@@ -176,7 +178,7 @@ target_link_libraries(hitagimon
 target_link_options(hitagimon
 		PRIVATE -Wl,--as-needed
 		PRIVATE -static
-		PRIVATE -T ${CMAKE_SOURCE_DIR}/start.ld
+		PRIVATE -T ${CMAKE_SOURCE_DIR}/start2.ld
 		PRIVATE -ffreestanding
 		#PRIVATE -Wl,--allow-multiple-definition
 )

@@ -1,3 +1,19 @@
+GROUP(-lgcc -lm -lc -lmon960) /* libraries to link in */
+
+MEMORY /* describe the partitioning of the memory space for the application */
+{
+    imi (!r) : ORIGIN = 0, l = 32,
+    rom (!r) : ORIGIN = 32, l = 2M,
+    psram(!rx) : ORIGIN = 2M, l = 62M,
+    psram_upper(!rx) : ORIGIN = 64M, l = 2048M - 64M
+}
+
+/* Define a symbol that your code can reference. The linker adds the symbol. */
+/* I am reducing the stacks to 32k instead of 64k because I don't have much space in 512k anymore */
+STACK_SIZE = 0x8000;
+
+/* Layout the different ELF sections into memory using the above described
+ * memory spaces */
 /* taken from the default linker script */
 SECTIONS {
   PROVIDE (__executable_start = SEGMENT_START("text-segment", 0)); . = SEGMENT_START("text-segment", 0);
@@ -227,3 +243,72 @@ SECTIONS {
   .debug_sup      0 : { *(.debug_sup) }
   .gnu.attributes 0 : { KEEP (*(.gnu.attributes)) }
   /DISCARD/ : { *(.note.GNU-stack) *(.gnu_debuglink) *(.gnu.lto_*) }
+  }
+/* these two locations are _very_ important for getting the program to startup correctly */
+
+
+
+/* Currently, I am manually decomposing the elf binary into ROM (.text) and DAT
+ * (.data) files from the ELF using objcopy.
+
+ I have the chipset map the data section to 0x2000'0000 so we need to
+ reflect that in the linker script (start_ip in the sx_init.s uses this).
+
+ I also compute the data section's length ahead of time to save instructions.
+
+
+
+ It is the responsibility of the i960 to copy the contents of the mapped data
+ section into ram starting at address 0x8000'0000 on startup. Failure to do so
+ leads to the inability to properly allocate memory (no malloc) and other
+ various oddities.
+
+
+
+ The variable cs1 is specific to the i960 and is used in it's boot process.
+ The processor on startup loads the first eight words (32 bytes) and performs
+ a check sum with them. The processor will refuse to boot if the checksum
+ algorithm does not yield a zero from combining these eight words together.
+ Thus cs1 is used to make sure that 0 is the final result. The i960 SA/SB
+ reference manual is where I got the cs1 line
+
+
+
+ The BSS Section length is used on startup to "copy" the bss into ram like the
+ data section (although BSS copy happens first because it comes before data)..
+ In reality this just zeroing out ram on the SDCard (ram.bin) to prevent bad
+ things from happening during program execution
+
+ */
+
+cs1 = -(ABSOLUTE(system_address_table) + ABSOLUTE(prcb_ptr) + ABSOLUTE(start_ip)) ;
+transferCacheSource = 0xFE800000;
+transferCacheSize = 1024*1024;
+transferCacheDest = 0xFE800000;
+
+/* dest being the same as src will cause the transfer to be skipped */
+
+/* This directive allows you to denote the file that will go onto the front of
+ * the text section, the problem is that with CMake this moves around. So
+ * instead, I just make sure that sx_init.s is the first file in the list of
+ * dependencies in CMakeFiles.txt. It does the same thing as the linker
+ * appplies objects on a first come first serve basis. Very nice! */
+
+/* STARTUP ( CMakeFiles/hitagimon.dir/sx_init.s.o ) */
+
+/*
+
+How to dump the actual boot code:
+
+
+i960-elf-objcopy --only-section=.text -O binary hitagimon hitagimon.bin
+
+
+You have to make sure that you don't dump out the data section because that can
+get very large! This is because, objcopy is turning the dynamic elf into a
+statically mapped binary blob. Since ram starts at 0x8000'0000 the blob must
+have ram mapped at that exact location for bss and data. Thus the blob becomes
+over 2 gigabytes in size! This returns the baffling error "not enough space on
+device" from i960-elf-objcopy.
+
+ */
