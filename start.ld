@@ -20,12 +20,9 @@ SECTIONS
     {
         *(.imi*)
     } > imi
-
-	/* this is the text section */ 
+	/* this is the text section */
 	.text : 
 	{
-		CREATE_OBJECT_SYMBOLS /* C++ needs this */
-
 		*(.text*) 	/* place the actual contents of the text section here */
 	    __rodata_start__ = .;
 	    KEEP(*(.rodata*))
@@ -39,38 +36,21 @@ SECTIONS
 	 * memory location named "rom", it is sequential as we will see in the next
 	 * few sections*/ 
 	} >rom
-	/* setup the bss section, tag it's start and end positions to allow the
-	 * i960 to manually zero out the memory on the sdcard's ram.bin file */
-	.bss :
-	{
-		__bss_start__ = .;
-		bss_start = .;
-		*(.bss*)
-		*(COMMON) /* can't find much documentation on this but it is a good idea to have this here */
-		__bss_end__ = .;
-	} >psram
-	/*
-	   Shove a bunch of different sections into data since we have to flatten this anyways.
-	   Eventually, an ELF format file will be better accessed later on.
-	   */
-	.data :
-	{
-		__data_start__ = .; 
-		KEEP(*(.data*))
-		SORT(CONSTRUCTORS)  /* we want to place the constructors data here */
-		__data_end__ = .;
-		_edata = .;
+	.init_array : {
 		/* .init_array */
 		PROVIDE_HIDDEN(__init_array_start = .);
 		KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*)))
 		KEEP (*(.init array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o) .ctors))
 		PROVIDE_HIDDEN(__init_array_end = .);
+	} > psram
+	.fini_array  : {
 		/* .fini_array */
 		PROVIDE_HIDDEN(__fini_array_start = .);
 		KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.dtors.*)))
 		KEEP (*(.init array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o) .dtors))
 		PROVIDE_HIDDEN(__fini_array_end = .);
-		/* .ctors */
+	} > psram
+	.ctors : {
 		/* According to the core linker script, gcc uses crtbegin.o to find the start of the constructors. So this
 		   sequence ensures that it is first. */
 	    KEEP (*crtbegin.o(.ctors))
@@ -78,15 +58,51 @@ SECTIONS
 	    KEEP (*(EXCLUDE_FILE (*crtend.o *crtend?.o) .ctors))
 	    KEEP (*(SORT(.ctors.*)))
 	    KEEP (*(.ctors))
-	    /* .dtors */
+	} > psram
+	.dtors : {
 	    KEEP (*crtbegin.o(.dtors))
 	    KEEP (*crtbegin?.o(.dtors))
 	    KEEP (*(EXCLUDE_FILE (*crtend.o *crtend?.o) .dtors))
 	    KEEP (*(SORT(.dtors.*)))
 	    KEEP (*(.dtors))
+    } > psram
+	/*
+	   Shove a bunch of different sections into data since we have to flatten this anyways.
+	   Eventually, an ELF format file will be better accessed later on.
+	   */
+	.data :
+	{
+		__data_start__ = .; 
+		KEEP(*(.data .data.* .gnu.linkonce.d.*))
+		SORT(CONSTRUCTORS)  /* we want to place the constructors data here */
+		__data_end__ = .;
 	    /* normally this would be the .fini section */
 	    KEEP (*(SORT_NONE(.fini)))
 	} >psram
+	_edata = .;
+	. = .;
+	__bss_start__ = .;
+	bss_start = .;
+	.sbss : {
+	    *(.dynsbss)
+	    *(.sbss .sbss.* .gnu.linkonce.sb.*)
+	    *(.scommon)
+	} >psram
+	/* setup the bss section, tag it's start and end positions to allow the
+	 * i960 to manually zero out the memory on the sdcard's ram.bin file */
+	.bss :
+	{
+	    *(.dynbss)
+		*(.bss .bss.* .gnu.linkonce.b.*)
+		*(COMMON) /* can't find much documentation on this but it is a good idea to have this here */
+		. = ALIGN(. != 0 ? 32 / 8 : 1);
+	} >psram
+	. = ALIGN(32 / 8);
+	. = SEGMENT_START("ldata-segment", .);
+	. = ALIGN(32 / 8);
+	__bss_end__ = .;
+	end = .;
+	PROVIDE(end = .);
 	.heap : {
 		/* this section is synthetic, I do not actually copy the contents of the heap
 		 * section over on boot, instead I just want the location of where it should
@@ -95,9 +111,7 @@ SECTIONS
 		 */
 		__heap_start__ = .; 
 		end = __heap_start__; 
-		_end = end; 
-		__end = end; 
-		KEEP(*(.heap)) 
+		KEEP(*(.heap))
 		__heap_end__ = .; 
 		/* __HeapLimit = __heap_end__; */ 
 	} >psram
