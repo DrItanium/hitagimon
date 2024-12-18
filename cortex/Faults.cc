@@ -10,7 +10,6 @@ namespace cortex
     FaultData::display(ProcedureStackFrame* fp) {
         uint8_t ftype = faultInfo.type;
         uint8_t fsubtype = faultInfo.subtype;
-        printf("FAULT INTERCEPTED!\n\n");
         printf("Fault Type: %x\n", ftype);
         switch (getFaultKind()) {
 #define X(kind, index, locase, hicase) case UserFaultKind:: kind : printf ("\t" #kind " Fault\n" ); break;

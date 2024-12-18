@@ -142,8 +142,9 @@ reinitialize_iac:
  */
     # at this point we should setup the C++ structures that are normally found in the .init section
     # what needs to happen is that the body of the .init section needs to be expanded
-    c_callx _init
-    c_callx _start
+    #c_callx _init
+    #c_callx _start
+    c_callx main
 exec_fallthrough:
     b exec_fallthrough
 .global initFP
