@@ -116,7 +116,6 @@ reinitialize_iac:
    * The process will begin execution here after being reinitialized.
    *    We will now setup the stacks and continue.
    */
-
   start_again_ip:
   /* -- this would be a good place to diable board interrupts if you are using an interrupt controller.
    *
@@ -136,6 +135,9 @@ reinitialize_iac:
  */
     callx _init_fp
     callx setupInterruptHandler
+    # at this point we should setup the C++ structures that are normally found in the .init section
+    # what needs to happen is that the body of the .init section needs to be expanded
+    callx _init
     c_callx main # assume a main for startup
 exec_fallthrough:
     b exec_fallthrough
@@ -410,3 +412,4 @@ def_system_call 21, sys_getrusage
  .bss sup_stack,  0x8000, 6
  .bss intr_ram, 1028, 6
  .bss prcb_ram, 176, 6
+
