@@ -184,7 +184,22 @@ target_link_options(hitagimon
 )
 add_custom_command(
 		OUTPUT prog.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0x00100000 --only-section=.boot --only-section=.text --only-section=.bss --only-section=.data --only-section=.init --gap-fill=0x00 --set-section-flags .bss=alloc,load,contents --set-section-flags .boot=alloc,load,contents --set-section-flags .init=alloc,load,contents -O binary hitagimon prog.bin
+		COMMAND ${CMAKE_OBJCOPY_COMPILER}
+        --only-section=.boot --set-section-flags .boot=alloc,load,contents
+        --only-section=.text
+        --only-section=.data
+        --only-section=.init --set-section-flags .init=alloc,load,contents
+        --only-section=.bss --set-section-flags .bss=alloc,load,contents
+        --only-section=.fini --set-section-flags .fini=alloc,load,contents
+        --only-section=.rodata
+        --only-section=.gcc_except_table --set-section-flags .gcc_except_table=alloc,load,contents
+        --only-section=.init_array --set-section-flags .init_array=alloc,load,contents
+        --only-section=.ctors --set-section-flags .ctors=alloc,load,contents
+        --only-section=.dtors --set-section-flags .dtors=alloc,load,contents
+        --gap-fill=0x00
+        --pad-to=0x00100000
+        -O binary hitagimon prog.bin
+        VERBATIM
 		DEPENDS hitagimon
 		#MAIN_DEPENDENCY hitagimon
 )
