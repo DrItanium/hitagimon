@@ -116,6 +116,12 @@ reinitialize_iac:
    * The process will begin execution here after being reinitialized.
    *    We will now setup the stacks and continue.
    */
+  .section .rodata
+  .LINITCPP_MSG:
+    .asciz "Initializing C++ Structures..."
+  .LINITCPP_DONE_MSG:
+    .asciz "Done"
+  .text
   .align 6
   start_again_ip:
   /* -- this would be a good place to diable board interrupts if you are using an interrupt controller.
@@ -134,10 +140,7 @@ reinitialize_iac:
  *    If any IO needs to be set up, you should do it here before your
  *    call to main. No opens have been done for STDIN, STDOUT, or STDERR
  */
-    # at this point we should setup the C++ structures that are normally found in the .init section
-    # what needs to happen is that the body of the .init section needs to be expanded
-    c_callx _init
-    c_callx _start
+    c_callx main
 exec_fallthrough:
     b exec_fallthrough
 .global initFP

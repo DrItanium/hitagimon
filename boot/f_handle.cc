@@ -30,17 +30,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../cortex/SysExamine.h"
 #include <string>
 void
-basicDisplay(const std::string& kind, cortex::FaultData* record, cortex::ProcedureStackFrame* pfp) {
+basicDisplay(const std::string& kind, cortex::FaultData& record, cortex::ProcedureStackFrame& pfp) {
+    // we need to be careful not to cause an infinite loop
     cortex::ChipsetBasicFunctions::Console::write(kind.c_str());
     cortex::ChipsetBasicFunctions::Console::writeLine(" FAULT RAISED!");
-    record->display(pfp);
+    cortex::ChipsetBasicFunctions::Console::writeLine("{");
+    record.display(pfp);
+    cortex::ChipsetBasicFunctions::Console::writeLine("}");
 }
 inline void
 basicOperation(const std::string& kind, cortex::FaultData* record, cortex::ProcedureStackFrame* fp, cortex::FaultHandler handler) {
     if (handler)  {
-        handler(record, fp);
+        handler(*record, *fp);
     } else {
-        basicDisplay(kind, record, fp);
+        basicDisplay(kind, *record, *fp);
     }
 }
 #define X(kind, code, locase, hicase) \

@@ -33,7 +33,7 @@ namespace cortex
         ArithmeticControls ac;
         FaultRecordInfo faultInfo;
         uint32_t* addressOfFaultingInstruction;
-        void display(ProcedureStackFrame* previous);
+        void display(ProcedureStackFrame& previous);
         inline UserFaultKind::UserFaultKind getFaultKind() const noexcept {
                 switch (faultInfo.type) {
 #define X(kind, index, locase, hicase) case index : return UserFaultKind :: kind ;
@@ -44,8 +44,7 @@ namespace cortex
                 }
         }
     } __attribute__((packed));
-
-    typedef void (*FaultHandler)(FaultData *data, ProcedureStackFrame* pfp);
+    using FaultHandler = void(*)(FaultData& data, ProcedureStackFrame& pfp);
 #define X(kind, index, locase, hicase) \
 FaultHandler getUser ## kind ## FaultHandler (); \
                 void setUser ## kind ## FaultHandler (FaultHandler);

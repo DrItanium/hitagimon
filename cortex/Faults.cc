@@ -3,13 +3,12 @@
 //
 
 #include "Faults.h"
-#include "ChipsetInteract.h"
 namespace cortex
 {
     void
-    FaultData::display(ProcedureStackFrame* fp) {
-        uint8_t ftype = faultInfo.type;
-        uint8_t fsubtype = faultInfo.subtype;
+    FaultData::display(ProcedureStackFrame& fp) {
+        auto ftype = faultInfo.type;
+        auto fsubtype = faultInfo.subtype;
         printf("Fault Type: %x\n", ftype);
         switch (getFaultKind()) {
 #define X(kind, index, locase, hicase) case UserFaultKind:: kind : printf ("\t" #kind " Fault\n" ); break;
@@ -50,7 +49,7 @@ namespace cortex
                 printf("\t\tIs Failing Frame!\n");
             }
         };
-        ProcedureStackFrame* failingFrame = fp;
+        ProcedureStackFrame* failingFrame = &fp;
         int i = 0;
         // walk back up the chain until we get to the frame which will return to the faulting frame (this allows us to ignore any number of frames we generate as part of the fault handling process
         for (; !frameMatchesFaultingInstruction(failingFrame); failingFrame = failingFrame->getParentFrame(), ++i) {

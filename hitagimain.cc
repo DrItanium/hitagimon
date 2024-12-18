@@ -60,11 +60,14 @@ namespace microshell {
 }
 extern "C" void setupInterruptHandler();
 extern "C" void initFP();
+extern "C" void _init();
 void
 init()
 {
+    // these routines must be first!
     initFP();
     setupInterruptHandler();
+    _init(); // must be first!
     // setup the chipset basic functions as one of the first things we actually do
     cortex::ChipsetBasicFunctions::begin();
     // make sure that we configured the c runtime to not buffer the inputs and outputs
