@@ -797,13 +797,13 @@ struct FlopsCode {
 };
 /*------ End flops.c code, say good night Jan! (Sep 1992) ------*/
 
-FlopsCode<double> fc("double precision");
-FlopsCode<float> fc2("single precision");
 namespace microshell {
     void doFlops64Execution(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        FlopsCode<double> fc("double precision");
         fc.doIt();
     }
     void doFlops32Execution(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        FlopsCode<float> fc2("single precision");
         fc2.doIt();
     }
     void doU64AddTest(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
