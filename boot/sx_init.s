@@ -405,9 +405,9 @@ def_system_call 21, sys_getrusage
 /* -- define RAM area to copy the PRCB and interrupt table
  *    to after initial bootup from EPROM/FLASH
  */
- .bss user_stack, 0x8000, 6
- .bss intr_stack, 0x8000, 6
- .bss sup_stack,  0x8000, 6
+ .bss user_stack, 0x00010000, 6
+ .bss intr_stack, 0x00010000, 6
+ .bss sup_stack,  0x00010000, 6
  .bss intr_ram, 1028, 6
  .bss prcb_ram, 176, 6
 
