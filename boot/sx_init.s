@@ -116,12 +116,6 @@ reinitialize_iac:
    * The process will begin execution here after being reinitialized.
    *    We will now setup the stacks and continue.
    */
-  .LInitFPMessage:
-  .asciz "init_fp called"
-  .LSetupInterruptHandlerMessage:
-  .asciz "setupInterruptHandler called"
-  .LMainMessage:
-  .asciz "main called"
   .align 6
   start_again_ip:
   /* -- this would be a good place to diable board interrupts if you are using an interrupt controller.
@@ -142,9 +136,8 @@ reinitialize_iac:
  */
     # at this point we should setup the C++ structures that are normally found in the .init section
     # what needs to happen is that the body of the .init section needs to be expanded
-    #c_callx _init
-    #c_callx _start
-    c_callx main
+    c_callx _init
+    c_callx _start
 exec_fallthrough:
     b exec_fallthrough
 .global initFP
