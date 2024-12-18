@@ -3,8 +3,8 @@ GROUP(-lgcc -lm -lc -lmon960) /* libraries to link in */
 MEMORY /* describe the partitioning of the memory space for the application */
 {
     imi (!r) : ORIGIN = 0, l = 32,
-    rom (!r) : ORIGIN = 32, l = 4M,
-    psram(!rx) : ORIGIN = 4M, l = 60M,
+    rom (!r) : ORIGIN = 32, l = 2M,
+    psram(!rx) : ORIGIN = 2M, l = 62M,
     psram_upper(!rx) : ORIGIN = 64M, l = 2048M - 64M
 }
 

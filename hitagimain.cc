@@ -58,9 +58,13 @@ namespace microshell {
         return ush_service(&microshellObject);
     }
 }
+extern "C" void setupInterruptHandler();
+extern "C" void initFP();
 void
 init()
 {
+    initFP();
+    setupInterruptHandler();
     // setup the chipset basic functions as one of the first things we actually do
     cortex::ChipsetBasicFunctions::begin();
     // make sure that we configured the c runtime to not buffer the inputs and outputs
@@ -1257,7 +1261,7 @@ namespace microshell {
 }
 
 //char* argv[] = { "hitagimon", };
-int main(void) {
+int main(int argc, char** argv) {
     init();
     setup();
     //fc.doIt();
