@@ -28,8 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef HITAGIMON_SYSTEMCOUNTER_H
 #define HITAGIMON_SYSTEMCOUNTER_H
-#include <stdint.h>
-#include <cortex/ModernCpp.h>
+#include <cstdint>
 namespace cortex {
     void clearSystemCounter() noexcept;
     uint64_t getSystemCounter() noexcept;

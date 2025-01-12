@@ -25,17 +25,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*
  * Fault handler routines
  */
-#include "../cortex/IODevice.h"
-#include "../cortex/Faults.h"
-#include "../cortex/SysExamine.h"
+#include <cortex/Faults.h>
 void
 basicDisplay(const char* kind, cortex::FaultData& record, cortex::ProcedureStackFrame& pfp) {
-    // we need to be careful not to cause an infinite loop
-    cortex::ChipsetBasicFunctions::Console::write(kind);
-    cortex::ChipsetBasicFunctions::Console::writeLine(" FAULT RAISED!");
-    cortex::ChipsetBasicFunctions::Console::writeLine("{");
+    /// @todo report faults to the AVR chip
     record.display(pfp);
-    cortex::ChipsetBasicFunctions::Console::writeLine("}");
 }
 inline void
 basicOperation(const char* kind, cortex::FaultData* record, cortex::ProcedureStackFrame* fp, cortex::FaultHandler handler) {

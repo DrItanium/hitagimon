@@ -6,7 +6,6 @@
 #define HITAGIMON_SYSEXAMINE_H
 #include <cstdint>
 #include <cstdio>
-#include "ModernCpp.h"
 #include "builtins.h"
 namespace cortex {
     union ExtendedReal {

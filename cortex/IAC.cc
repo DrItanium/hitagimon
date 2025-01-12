@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C" void sendIACCommand(uint32_t iacPort, void* theMessage);
 namespace cortex {
     void
-    sendIAC(IACMessage* message) {
+    sendIAC(IACMessage* message) noexcept {
         sendIACCommand(0, message);
     }
     void

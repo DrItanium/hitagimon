@@ -28,8 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef HITAGIMON_SOFTWAREDMA_H
 #define HITAGIMON_SOFTWAREDMA_H
-#include <stdint.h>
-#include <cortex/ModernCpp.h>
+#include <cstdint>
 namespace cortex {
     /**
      * Use interrupts to transfer some amount of 32-bit words per interrupt from one location to another

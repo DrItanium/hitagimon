@@ -14,7 +14,7 @@ namespace cortex
 #undef X
         };
     }
-    struct FaultData
+    struct [[gnu::packed]] FaultData
     {
         union FaultRecordInfo {
             uint32_t full;
@@ -43,7 +43,7 @@ namespace cortex
                         return UserFaultKind::UserFaultKind(0xFF);
                 }
         }
-    } __attribute__((packed));
+    };
     using FaultHandler = void(*)(FaultData& data, ProcedureStackFrame& pfp);
 #define X(kind, index, locase, hicase) \
 FaultHandler getUser ## kind ## FaultHandler (); \
