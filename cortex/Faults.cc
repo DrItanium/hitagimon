@@ -7,6 +7,7 @@ namespace cortex
 {
     void
     FaultData::display(ProcedureStackFrame& fp) {
+#if 0
         auto ftype = faultInfo.type;
         auto fsubtype = faultInfo.subtype;
         printf("Fault Type: %x\n", ftype);
@@ -64,6 +65,7 @@ namespace cortex
         failingFrame = failingFrame->getParentFrame();
         ++i;
         printFP(failingFrame, i);
+    #endif
     }
 #define X(kind, index, locase, hicase) \
 namespace { FaultHandler user ## kind ## _ ; } \
