@@ -39,6 +39,7 @@ intr_table:
         .word do_nothing_isr;           # interrupt table entry 13
         .word do_nothing_isr;           # interrupt table entry 14
         .word do_nothing_isr;           # interrupt table entry 15
+
         .word do_nothing_isr;           # interrupt table entry 16
         .word do_nothing_isr;           # interrupt table entry 17
         .word do_nothing_isr;           # interrupt table entry 18
@@ -55,6 +56,7 @@ intr_table:
         .word do_nothing_isr;           # interrupt table entry 29
         .word do_nothing_isr;           # interrupt table entry 30
         .word do_nothing_isr;           # interrupt table entry 31
+
         .word do_nothing_isr;           # interrupt table entry 32
         .word do_nothing_isr;           # interrupt table entry 33
         .word do_nothing_isr;           # interrupt table entry 34
@@ -71,6 +73,7 @@ intr_table:
         .word do_nothing_isr;           # interrupt table entry 45
         .word do_nothing_isr;           # interrupt table entry 46
         .word do_nothing_isr;           # interrupt table entry 47
+
         .word do_nothing_isr;           # interrupt table entry 48
         .word do_nothing_isr;           # interrupt table entry 49
         .word do_nothing_isr;           # interrupt table entry 50
@@ -87,6 +90,7 @@ intr_table:
         .word do_nothing_isr;           # interrupt table entry 61
         .word do_nothing_isr;           # interrupt table entry 62
         .word do_nothing_isr;           # interrupt table entry 63
+
         .word do_nothing_isr;           # interrupt table entry 64
         .word do_nothing_isr;           # interrupt table entry 65
         .word do_nothing_isr;           # interrupt table entry 66
@@ -103,6 +107,7 @@ intr_table:
         .word do_nothing_isr;           # interrupt table entry 77
         .word do_nothing_isr;           # interrupt table entry 78
         .word do_nothing_isr;           # interrupt table entry 79
+
         .word do_nothing_isr;           # interrupt table entry 80
         .word do_nothing_isr;           # interrupt table entry 81
         .word do_nothing_isr;           # interrupt table entry 82
@@ -119,6 +124,7 @@ intr_table:
         .word do_nothing_isr;           # interrupt table entry 93
         .word do_nothing_isr;           # interrupt table entry 94
         .word do_nothing_isr;           # interrupt table entry 95
+
         .word do_nothing_isr;           # interrupt table entry 96
         .word do_nothing_isr;           # interrupt table entry 97
         .word do_nothing_isr;           # interrupt table entry 98
@@ -135,6 +141,7 @@ intr_table:
         .word do_nothing_isr;           # interrupt table entry 109
         .word do_nothing_isr;           # interrupt table entry 110
         .word do_nothing_isr;           # interrupt table entry 111
+
         .word do_nothing_isr;           # interrupt table entry 112
         .word do_nothing_isr;           # interrupt table entry 113
         .word do_nothing_isr;           # interrupt table entry 114
@@ -231,6 +238,7 @@ intr_table:
         .word do_nothing_isr;           # interrupt table entry 205
         .word do_nothing_isr;           # interrupt table entry 206
         .word do_nothing_isr;           # interrupt table entry 207
+
         .word do_nothing_isr;           # interrupt table entry 208
         .word do_nothing_isr;           # interrupt table entry 209
         .word do_nothing_isr;           # interrupt table entry 210
