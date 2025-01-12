@@ -28,9 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef I960SXCHIPSET_IODEVICE_H
 #define I960SXCHIPSET_IODEVICE_H
-#include <stdint.h>
+#include <cstdint>
 #include <unistd.h>
-#include <string>
 #include "ChipsetInteract.h"
 #include "IAC.h"
 namespace cortex {

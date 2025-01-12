@@ -4,8 +4,8 @@
 
 #ifndef HITAGIMON_SYSEXAMINE_H
 #define HITAGIMON_SYSEXAMINE_H
-#include <stdint.h>
-#include <stdio.h>
+#include <cstdint>
+#include <cstdio>
 #include "ModernCpp.h"
 #include "builtins.h"
 namespace cortex {

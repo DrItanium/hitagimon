@@ -28,18 +28,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../cortex/IODevice.h"
 #include "../cortex/Faults.h"
 #include "../cortex/SysExamine.h"
-#include <string>
 void
-basicDisplay(const std::string& kind, cortex::FaultData& record, cortex::ProcedureStackFrame& pfp) {
+basicDisplay(const char* kind, cortex::FaultData& record, cortex::ProcedureStackFrame& pfp) {
     // we need to be careful not to cause an infinite loop
-    cortex::ChipsetBasicFunctions::Console::write(kind.c_str());
+    cortex::ChipsetBasicFunctions::Console::write(kind);
     cortex::ChipsetBasicFunctions::Console::writeLine(" FAULT RAISED!");
     cortex::ChipsetBasicFunctions::Console::writeLine("{");
     record.display(pfp);
     cortex::ChipsetBasicFunctions::Console::writeLine("}");
 }
 inline void
-basicOperation(const std::string& kind, cortex::FaultData* record, cortex::ProcedureStackFrame* fp, cortex::FaultHandler handler) {
+basicOperation(const char* kind, cortex::FaultData* record, cortex::ProcedureStackFrame* fp, cortex::FaultHandler handler) {
     if (handler)  {
         handler(*record, *fp);
     } else {

@@ -8,7 +8,7 @@ set(CMAKE_C_COMPILER ${tools}/bin/i960-elf-gcc)
 set(CMAKE_CXX_COMPILER ${tools}/bin/i960-elf-g++)
 set(CMAKE_ASM-ATT_COMPILER ${tools}/bin/i960-elf-as)
 set(CMAKE_LINKER ${tools}/bin/i960-elf-ld)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -DUSH_CONFIG_PLATFORM_POSIX -fno-exceptions -ffreestanding")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -DUSH_CONFIG_PLATFORM_POSIX -fno-exceptions -ffreestanding -fno-exceptions")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -DCONFIG_PLATFORM_POSIX --std=gnu99")
 set(CMAKE_OBJCOPY_COMPILER ${tools}/bin/i960-elf-objcopy)
 set(CMAKE_OBJDUMP_COMPILER ${tools}/bin/i960-elf-objdump)
@@ -59,8 +59,7 @@ add_library(hitagicortex
 		cortex/IACImplementation.s
 		cortex/ModernCpp.h
         cortex/SystemCounter.h cortex/SystemCounter.cc cortex/builtins.h cortex/builtins.c cortex/IndirectInterrupts.cc
-		cortex/ext2.h
-		cortex/SoftwareDMA.h
+        cortex/SoftwareDMA.h
 		cortex/SoftwareDMA.cc
 		cortex/SysExamine.cc
         cortex/builtins.s
@@ -94,6 +93,7 @@ target_link_options(hitagimon
 		PRIVATE -static
 		PRIVATE -T ${CMAKE_SOURCE_DIR}/start2.ld
 		PRIVATE -ffreestanding
+        PRIVATE -fno-exceptions
 		#PRIVATE -Wl,--allow-multiple-definition
 )
 add_custom_command(

@@ -116,11 +116,6 @@ reinitialize_iac:
    * The process will begin execution here after being reinitialized.
    *    We will now setup the stacks and continue.
    */
-  .section .rodata
-  .LINITCPP_MSG:
-    .asciz "Initializing C++ Structures..."
-  .LINITCPP_DONE_MSG:
-    .asciz "Done"
   .text
   .align 6
   start_again_ip:

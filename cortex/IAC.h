@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef HITAGIMON_IAC_H
 #define HITAGIMON_IAC_H
-#include <stdint.h>
+#include <cstdint>
 #include "SysExamine.h"
 #include "ModernCpp.h"
 namespace cortex {
