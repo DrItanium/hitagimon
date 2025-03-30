@@ -107,6 +107,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro unimplemented_opcode 
 	instruction_dispatch rv32_undefined_instruction
 .endm
+# all 32 real entries for the 0b11 form
 rv32_opcode_dispatch_table:
 	instruction_dispatch rv32_load_primary, rv32_load_instruction_table
 	unimplemented_opcode # load-fp
@@ -117,7 +118,33 @@ rv32_opcode_dispatch_table:
 	unimplemented_opcode # OP-IMM-32 (can be used for custom instructions in rv32 mode)
 	unimplemented_opcode # 48b mode?
 	instruction_dispatch rv32_store_primary, rv32_store_instruction_table
+	unimplemented_opcode # store-fp
+	unimplemented_opcode # custom-1
+	unimplemented_opcode # AMO
+	instruction_dispatch rv32_op_primary
+	instruction_dispatch rv32_lui
+	unimplemented_opcode # op-32
+	unimplemented_opcode # 64b
 	unimplemented_opcode # we don't support madd right now
+	unimplemented_opcode # msub
+	unimplemented_opcode # nmsub
+	unimplemented_opcode # nmadd
+	unimplemented_opcode # op-fp
+	unimplemented_opcode # op-v
+	unimplemented_opcode # custom-2/rv128
+	unimplemented_opcode # 48b
+	instruction_dispatch rv32_branch_primary
+	instruction_dispatch rv32_jalr
+	unimplemented_opcode # reserved
+	instruction_dispatch rv32_jal
+	instruction_dispatch rv32_system
+	unimplemented_opcode # op-ve
+	unimplemented_opcode # custom-3/rv128
+	unimplemented_opcode # >=8b
+
+
+
+
 # this will hold the opcode dispatch table, aligned to be as easy to work on as possible
 rv32_load_instruction_table:
 	.word rv32_lb, rv32_lh, rv32_lw, rv32_undefined_instruction
@@ -145,12 +172,12 @@ rv32_store_instruction_table:
 .macro extract_rd dest=g2, rinst=r3
 	extract4 7, 5, \rinst, \dest
 .endm
-	
-rv32_load_primary:
-	extract_rd
-	extract_rs1
-	shri 20, r3, g3 # compute the immediate with sign extension
-	funct3_dispatch 
+rv32_system:
+	b next_instruction
+rv32_branch_primary:
+	b next_instruction
+rv32_op_primary:
+	b next_instruction
 rv32_op_imm:
 	b next_instruction
 rv32_misc_mem:
@@ -177,6 +204,11 @@ rv32_jal:
 rv32_jalr:
 	b instruction_decoder_body
 	
+rv32_load_primary:
+	extract_rd
+	extract_rs1
+	shri 20, r3, g3 # compute the immediate with sign extension
+	funct3_dispatch 
 rv32_store_primary:
 	extract4 7, 5, r3, r4 # get imm[4:0]
 	shri 25, r3, r5	# grab imm[11:5] but make sure that immediates are sign-extended
