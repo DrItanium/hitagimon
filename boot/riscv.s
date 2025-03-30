@@ -32,12 +32,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # r3 -> instruction contents
 # r4 -> temporary
 # r5 -> temporary
-# r6 -> opcode function address
-# r7 -> opcode subfunction address
-# r8 -> opcode subsubfunction address
-# r9 -> 
-# r10 -> 
-# r11 -> 
+# r6 -> temporary
+# r7 -> temporary
+# r8 -> opcode function address
+# r9 -> opcode subfunction address
+# r10 -> opcode subsubfunction address
+# r11 -> opcode subsubsubfunction address
 # r12 -> 
 # r13 -> 
 # r14 -> 
@@ -105,7 +105,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	.word \target, \subtable, \subsubtable, \subsubsubtable
 .endm
 .macro unimplemented_opcode 
-	instruction_dispatch rv32_undefined_instruction, rv32_undefined_instruction
+	instruction_dispatch rv32_undefined_instruction
 .endm
 rv32_opcode_dispatch_table:
 	instruction_dispatch rv32_load_primary, rv32_load_instruction_table
@@ -127,16 +127,42 @@ rv32_store_instruction_table:
 	.word rv32_undefined_instruction, rv32_undefined_instruction
 	.word rv32_undefined_instruction, rv32_undefined_instruction
 .align 6
-rv32_load_primary:
-	mov r3, r4
-	extract 12, 3, r4
-	ld (r7)[r4*4], r4 # use the secondary address to save code space
+.macro extract4 bitpos, len, src, dest
+	mov \src, \dest
+	extract \bitpos, \len, \dest
+.endm
+.macro funct3_dispatch rtable=r9, rinst=r3
+	extract4 12, 3, \rinst , r4 # now figure out where to go by getting funct3
+	ld (\rtable)[r4*4], r4  # dispatch to address pointed by rtable
 	bx (r4)
+.endm
+.macro extract_rs1 dest=g0, rinst=r3
+	extract4 15, 5, \rinst, \dest
+.endm
+.macro extract_rs2 dest=g1, rinst=r3
+	extract4 20, 5, \rinst, \dest
+.endm
+.macro extract_rd dest=g2, rinst=r3
+	extract4 7, 5, \rinst, \dest
+.endm
+	
+rv32_load_primary:
+	extract_rd
+	extract_rs1
+	shri 20, r3, g3 # compute the immediate with sign extension
+	funct3_dispatch 
 rv32_op_imm:
 	b next_instruction
 rv32_misc_mem:
 	b next_instruction
 rv32_auipc:
+	ldconst 0xFFFFF000, r4             # load a mask into memory
+	and r3, r4, r5		               # construct the offset
+	addo g13, r5, r6 	               # add it to the program counter
+	extract_rd 			               # where we are going to save things to
+	cmpobe 0, g2, 1f # skip the actual act of saving if the destination is x0
+	st r6, (g12)[g2*4] 				   # save the result to a register
+1:
 	b next_instruction
 rv32_lui:
 	b next_instruction
@@ -144,21 +170,16 @@ rv32_jal:
 	b instruction_decoder_body
 rv32_jalr:
 	b instruction_decoder_body
+	
 rv32_store_primary:
-	mov r3, r4  # make a copy of r3
-	extract 7, 5, r4 # get the imm[4:0] out
+	extract4 7, 5, r3, r4 # get imm[4:0]
 	shri 25, r3, r5	# grab imm[11:5] but make sure that immediates are sign-extended
 	shlo 5, r5, r5    # move it into position
 	or r4, r5, g3 	  # immediate has been computed
 					  # compute rs1
-	mov r3, g0 # copy r3 to g0
-	extract 15, 5, g0 # get rs1
-	mov r3, g1 # copy r3 to g1
-	extract 20, 5, g1 # get rs2
-	mov r3, r4
-	extract 12, 3, r4 # now figure out where to go
-	ld (r7)[r4*4], r4 # use the secondary address to save code space
-	bx (r4)
+	extract_rs1
+	extract_rs2
+	funct3_dispatch
 rv32_lb:
 rv32_lh:
 rv32_lw:
@@ -190,8 +211,8 @@ instruction_decoder_body:
 	cmpobne 3, r5, rv32_undefined_instruction # it is an illegal instruction
 	shro 2, r3, r4 # remove the lowest two bits since we know it is 0b11
 	and 31, r4, r4 # now get the remaining 5 bits to figure out where to dispatch to
-	ldl rv32_opcode_dispatch_table[r4*8], r6 # load the two addresses necessary for execution
-	bx (r6) # jump to r6, r7 has the secondary table
+	ldq rv32_opcode_dispatch_table[r4*16], r8 # load the two addresses necessary for execution
+	bx (r8) # jump to r8, r9 has the secondary table, r10 has the tertiary table, r11 is the quaternary table
 next_instruction:
 	addo g13, 4, g13 # go to the next instruction
 	b instruction_decoder_body 
