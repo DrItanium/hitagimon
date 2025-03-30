@@ -54,8 +54,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # g9 -> 
 # g10 -> 
 # g11 -> 
-# g12 -> PC
-# g13 -> RISCV32 memory space start (i960 address)
+# g12 -> 
+# g13 -> PC (we can start at address zero now)
 # g14 -> i960 link register
 # fp -> i960 frame pointer
 
@@ -74,9 +74,7 @@ riscv_emulator_start:
 	movq 0, g0 
 	movq 0, g4
 	movq 0, g8
-	ldconst 0, g12 # setup PC
-	ldconst __riscv_space_start__, g13 # setup the base address
-	ldconst 0, g14
+	movt 0, g12
 	b riscv_emulator_start
 .data
 .align 6

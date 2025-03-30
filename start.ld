@@ -3,7 +3,7 @@ MEMORY /* describe the partitioning of the memory space for the application */
 {
     imi (!r) : ORIGIN = 0, l = 32,
 	sram_cache(!rx) : ORIGIN = 0xFE002000, l = 4096,
-	sim_program(!r) : ORIGIN = 0xFE010000, l = 64k,
+	sim_program(!r) : ORIGIN = 0xFE010000, l = 64k
 }
 
 /* Define a symbol that your code can reference. The linker adds the symbol. */ 

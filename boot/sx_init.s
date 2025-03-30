@@ -454,8 +454,14 @@ vect_INT3:
 /* -- define RAM area to copy the PRCB and interrupt table
  *    to after initial bootup from EPROM/FLASH
  */
- .bss user_stack, 0x00010000, 6
- .bss intr_stack, 0x00010000, 6
- .bss sup_stack,  0x00010000, 6
+/* we won't be using the stack that much since we only have access to around 4k
+ * of ram total!
+ * we need to allocate the stack and data spaces as needed
+ * at the minimum we need to allocate at least 1204 bytes for the interrupt and
+ * prcb data. Thus we should also allocate 
+*/
  .bss intr_ram, 1028, 6
  .bss prcb_ram, 176, 6
+ .bss user_stack, 0x200, 6 # we will probably barely use the stack
+ .bss intr_stack, 0x400, 6 # barely use this stack as well but we want to make sure that interrupts don't cause an overflow
+ .bss sup_stack,  0x200, 6 # the supervisor stack will be allocated but I don't know if it will ever be used at all!
