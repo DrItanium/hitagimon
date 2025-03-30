@@ -1,4 +1,3 @@
-GROUP(-lgcc -lm -lc -lmon960) /* libraries to link in */
 
 MEMORY /* describe the partitioning of the memory space for the application */ 
 {
@@ -9,8 +8,6 @@ MEMORY /* describe the partitioning of the memory space for the application */
 }
 
 /* Define a symbol that your code can reference. The linker adds the symbol. */ 
-/* I am reducing the stacks to 32k instead of 64k because I don't have much space in 512k anymore */
-STACK_SIZE = 0x8000;
 
 /* Layout the different ELF sections into memory using the above described
  * memory spaces */ 
@@ -36,36 +33,6 @@ SECTIONS
 	 * memory location named "rom", it is sequential as we will see in the next
 	 * few sections*/ 
 	} >rom
-	.init_array : {
-		/* .init_array */
-		PROVIDE_HIDDEN(__init_array_start = .);
-		KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*)))
-		KEEP (*(.init array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o) .ctors))
-		PROVIDE_HIDDEN(__init_array_end = .);
-	} > psram
-	.fini_array  : {
-		/* .fini_array */
-		PROVIDE_HIDDEN(__fini_array_start = .);
-		KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.dtors.*)))
-		KEEP (*(.init array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o) .dtors))
-		PROVIDE_HIDDEN(__fini_array_end = .);
-	} > psram
-	.ctors : {
-		/* According to the core linker script, gcc uses crtbegin.o to find the start of the constructors. So this
-		   sequence ensures that it is first. */
-	    KEEP (*crtbegin.o(.ctors))
-	    KEEP (*crtbegin?.o(.ctors))
-	    KEEP (*(EXCLUDE_FILE (*crtend.o *crtend?.o) .ctors))
-	    KEEP (*(SORT(.ctors.*)))
-	    KEEP (*(.ctors))
-	} > psram
-	.dtors : {
-	    KEEP (*crtbegin.o(.dtors))
-	    KEEP (*crtbegin?.o(.dtors))
-	    KEEP (*(EXCLUDE_FILE (*crtend.o *crtend?.o) .dtors))
-	    KEEP (*(SORT(.dtors.*)))
-	    KEEP (*(.dtors))
-    } > psram
 	/*
 	   Shove a bunch of different sections into data since we have to flatten this anyways.
 	   Eventually, an ELF format file will be better accessed later on.
@@ -103,18 +70,6 @@ SECTIONS
 	__bss_end__ = .;
 	end = .;
 	PROVIDE(end = .);
-	.heap : {
-		/* this section is synthetic, I do not actually copy the contents of the heap
-		 * section over on boot, instead I just want the location of where it should
-		 * start.In this case, the heap will start _after_ the .bss and .data sections
-		 * in ram. It is placed linearly in order so there is no mystery to this. 
-		 */
-		__heap_start__ = .; 
-		end = __heap_start__; 
-		KEEP(*(.heap))
-		__heap_end__ = .; 
-		/* __HeapLimit = __heap_end__; */ 
-	} >psram
 }
 
 /* these two locations are _very_ important for getting the program to startup correctly */ 
@@ -155,9 +110,6 @@ SECTIONS
  */ 
 
 cs1 = -(ABSOLUTE(system_address_table) + ABSOLUTE(prcb_ptr) + ABSOLUTE(start_ip)) ;
-transferCacheSource = 0xFE800000;
-transferCacheSize = 1024*1024;
-transferCacheDest = 0xFE800000;
 
 /* dest being the same as src will cause the transfer to be skipped */
 

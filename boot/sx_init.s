@@ -45,7 +45,6 @@ fault, and system procedure tables, and then vectors to a user defined routine. 
 .global prcb_ram
 .global start_ip
 .global cs1
-.global STACK_SIZE
 
 .global user_stack
 .global sup_stack # supervisor stack
