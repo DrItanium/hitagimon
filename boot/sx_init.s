@@ -64,10 +64,6 @@ fault, and system procedure tables, and then vectors to a user defined routine. 
     .word 0
     .word -1
  # processor starts execution at this spot upon power-up after self-test.
-.macro print_text name
-ldconst \name, g0
-bal boot_print
-.endm
 .macro transfer_data size,src,dest,offset
 ldconst \size, g0
 ldconst \src, g1
@@ -463,17 +459,3 @@ vect_INT3:
  .bss sup_stack,  0x00010000, 6
  .bss intr_ram, 1028, 6
  .bss prcb_ram, 176, 6
-/* RISCV32 emulator begin */
-
-.text
-.align 6
-riscv_emulator_start:
-	
-	b riscv_emulator_start
-.data
-hart0_gpr_register_file:
-	.space 32 * 4
-hart0_fpr_register_file:
-	.space 32 * 8
-hart0_pc:
-	.space 4

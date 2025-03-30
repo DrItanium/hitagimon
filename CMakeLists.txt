@@ -50,12 +50,10 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 add_executable(hitagimon
 		boot/sx_init.s # this must ALWAYS be first!
 		boot/f_table.s
-		#boot/i_handle.s
 		boot/i_table.s
 		boot/macros.s
-		#hitagimain.cc
+		boot/riscv.s
 		start.ld
-        start2.ld
 )
 set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/start.ld)
 set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/start2.ld)
