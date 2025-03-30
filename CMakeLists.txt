@@ -65,113 +65,28 @@ add_library(hitagicortex
 		cortex/SysExamine.cc
         cortex/builtins.s
 )
-add_library(wasm3
-        wasm3/wasm3.h
-        wasm3/wasm3_defs.h
-        wasm3/m3_api_libc.c
-        wasm3/m3_api_libc.h
-        wasm3/m3_api_meta_wasi.c
-        wasm3/m3_api_tracer.c
-        wasm3/m3_api_tracer.h
-        wasm3/m3_api_uvwasi.c
-        wasm3/m3_api_wasi.c
-        wasm3/m3_api_wasi.h
-        wasm3/m3_bind.c
-        wasm3/m3_bind.h
-        wasm3/m3_code.c
-        wasm3/m3_compile.c
-        wasm3/m3_core.c
-        wasm3/m3_env.c
-        wasm3/m3_exec.c
-        wasm3/m3_exec.h
-        wasm3/m3_function.c
-        wasm3/m3_info.c
-        wasm3/m3_info.h
-        wasm3/m3_math_utils.h
-        wasm3/m3_module.c
-        wasm3/m3_parse.c
-)
 add_executable(hitagimon
 		boot/sx_init.s # this must ALWAYS be first!
 		boot/f_table.s
 		boot/i_handle.s
 		boot/i_table.s
-		boot/f_handle.cc
+		#boot/f_handle.cc
 		boot/macros.s
-		hitagimain.cc
+		#hitagimain.cc
 		start.ld
         start2.ld
 )
-# add the microshell library directly since I get an infinite loop otherwise
-#add_library(microshell
-#        microshell/src/inc/ush.h
-#        microshell/src/inc/ush_commands.h
-#        microshell/src/inc/ush_const.h
-#        microshell/src/inc/ush_file.h
-#        microshell/src/inc/ush_internal.h
-#        microshell/src/inc/ush_node.h
-#        microshell/src/inc/ush_preconfig.h
-#        microshell/src/inc/ush_shell.h
-#        microshell/src/inc/ush_types.h
-#        microshell/src/inc/ush_utils.h
-#        microshell/src/config/ush_config_platform.h
-#        microshell/src/config/posix/ush_config.h
-#        microshell/src/src/commands/ush_cmd.c
-#        microshell/src/src/commands/ush_cmd_cat.c
-#        microshell/src/src/commands/ush_cmd_cd.c
-#        microshell/src/src/commands/ush_cmd_echo.c
-#        microshell/src/src/commands/ush_cmd_help.c
-#        microshell/src/src/commands/ush_cmd_ls.c
-#        microshell/src/src/commands/ush_cmd_pwd.c
-#        microshell/src/src/commands/ush_cmd_xxd.c
-#        microshell/src/src/ush.c
-#        microshell/src/src/ush_autocomp.c
-#        microshell/src/src/ush_autocomp_state.c
-#        microshell/src/src/ush_autocomp_utils.c
-#        microshell/src/src/ush_commands.c
-#        microshell/src/src/ush_file.c
-#        microshell/src/src/ush_node.c
-#        microshell/src/src/ush_node_mount.c
-#        microshell/src/src/ush_node_utils.c
-#        microshell/src/src/ush_parse.c
-#        microshell/src/src/ush_parse_char.c
-#        microshell/src/src/ush_parse_utils.c
-#        microshell/src/src/ush_process.c
-#        microshell/src/src/ush_prompt.c
-#        microshell/src/src/ush_read.c
-#        microshell/src/src/ush_read_char.c
-#        microshell/src/src/ush_read_utils.c
-#        microshell/src/src/ush_reset.c
-#        microshell/src/src/ush_utils.c
-#        microshell/src/src/ush_write.c
-#        microshell/src/src/ush_write_utils.c
-#
-#)
-add_subdirectory(microshell/src)
-build_ush(microshell)
-target_compile_definitions(
-        microshell
-        PUBLIC
-        USH_CONFIG_PLATFORM_POSIX
-)
 set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/start.ld)
 set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/start2.ld)
-add_library(hitagiemul
-        emulation/Segment.cc emulation/Segment.h emulation/Domain.cc emulation/Domain.h)
 
-target_include_directories(hitagiemul PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_include_directories(hitagicortex PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagisys PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagimon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_include_directories(wasm3 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(hitagimon
-		hitagicortex
-		hitagisys
-		hitagiemul
-        wasm3
-        microshell
-		mon960
+	#hitagicortex
+	#	hitagisys
+	#	mon960
 		)
 
 #add_link_options(-Wl,--as-needed -nostdlib -static -T ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT} -ffreestanding -Wl,--allow-multiple-definition)
@@ -179,7 +94,7 @@ target_link_options(hitagimon
 		#PRIVATE -Wl,--as-needed
 		PRIVATE -static
 		PRIVATE -T ${CMAKE_SOURCE_DIR}/start2.ld
-		PRIVATE -ffreestanding
+		#PRIVATE -ffreestanding
 		#PRIVATE -Wl,--allow-multiple-definition
 )
 add_custom_command(

@@ -116,11 +116,6 @@ reinitialize_iac:
    * The process will begin execution here after being reinitialized.
    *    We will now setup the stacks and continue.
    */
-  .section .rodata
-  .LINITCPP_MSG:
-    .asciz "Initializing C++ Structures..."
-  .LINITCPP_DONE_MSG:
-    .asciz "Done"
   .text
   .align 6
   start_again_ip:
@@ -140,7 +135,7 @@ reinitialize_iac:
  *    If any IO needs to be set up, you should do it here before your
  *    call to main. No opens have been done for STDIN, STDOUT, or STDERR
  */
-    c_callx main
+# jump into the emulator from this point forward
 exec_fallthrough:
     b exec_fallthrough
 .global initFP
