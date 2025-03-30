@@ -156,15 +156,21 @@ rv32_op_imm:
 rv32_misc_mem:
 	b next_instruction
 rv32_auipc:
+	extract_rd 			               # where we are going to save things to
+	cmpobe 0, g2, 1f                   # skip the actual act of saving if the destination is x0
 	ldconst 0xFFFFF000, r4             # load a mask into memory
 	and r3, r4, r5		               # construct the offset
 	addo g13, r5, r6 	               # add it to the program counter
-	extract_rd 			               # where we are going to save things to
-	cmpobe 0, g2, 1f # skip the actual act of saving if the destination is x0
 	st r6, (g12)[g2*4] 				   # save the result to a register
 1:
 	b next_instruction
 rv32_lui:
+	extract_rd 						   
+	cmpobe 0, g2, 1f	# skip if destination is x0
+	ldconst 0xFFFFF000, r4
+	and r3, r4, r5
+	st r5, (g12)[g2*4]
+1:
 	b next_instruction
 rv32_jal:
 	b instruction_decoder_body
