@@ -120,9 +120,53 @@ next_instruction:
 	addo g13, 4, g13 # go to the next instruction
 	b instruction_decoder_body 
 rv32_auipc:
-	bx next_instruction
+	b next_instruction
 rv32_lui:
-	bx next_instruction
+	b next_instruction
+rv32_jal:
+	b instruction_decoder_body
+rv32_jalr:
+	b instruction_decoder_body
+rv32_beq:
+	b instruction_decoder_body
+rv32_bne:
+	b instruction_decoder_body
+rv32_blt:
+	b instruction_decoder_body
+rv32_bge:
+	b instruction_decoder_body
+rv32_bltu:
+	b instruction_decoder_body
+rv32_bgeu:
+	b instruction_decoder_body
+rv32_load_primary:
+	mov r3, r4
+	extract 12, 3, r4
+	ld rv32_load_instruction_table[r4*4], r4
+	b next_instruction
+rv32_lb:
+	b next_instruction
+rv32_lh:
+	b next_instruction
+rv32_lw:
+	b next_instruction
+rv32_lbu:
+	b next_instruction
+rv32_lhu:
+	b next_instruction
+rv32_undefined_instruction:
+	b next_instruction
+
+.align 4
+rv32_load_instruction_table:
+	.word rv32_lb
+	.word rv32_lh
+	.word rv32_lw
+	.word rv32_undefined_instruction
+	.word rv32_lbu
+	.word rv32_lhu
+	.word rv32_undefined_instruction
+	.word rv32_undefined_instruction
 .data
 .align 6
 hart0_gpr_register_file:
