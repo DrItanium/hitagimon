@@ -116,3 +116,4 @@ DeclareSegment 0, 0, \addr, 0x204000fb
     restore_globals
     ret
 .endm
+

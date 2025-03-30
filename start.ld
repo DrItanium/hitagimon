@@ -2,9 +2,8 @@
 MEMORY /* describe the partitioning of the memory space for the application */ 
 {
     imi (!r) : ORIGIN = 0, l = 32,
-    rom (!r) : ORIGIN = 32, l = 2M,
-    psram(!rx) : ORIGIN = 2M, l = 62M,
-    psram_upper(!rx) : ORIGIN = 64M, l = 2048M - 64M
+	sram_cache(!rx) : ORIGIN = 0xFE002000, l = 4096,
+	sim_program(!r) : ORIGIN = 0xFE010000, l = 64k,
 }
 
 /* Define a symbol that your code can reference. The linker adds the symbol. */ 
@@ -32,7 +31,7 @@ SECTIONS
 	/* the arrow syntax tells the linker that the text section will go into the
 	 * memory location named "rom", it is sequential as we will see in the next
 	 * few sections*/ 
-	} >rom
+	} >sim_program
 	/*
 	   Shove a bunch of different sections into data since we have to flatten this anyways.
 	   Eventually, an ELF format file will be better accessed later on.
@@ -45,16 +44,11 @@ SECTIONS
 		__data_end__ = .;
 	    /* normally this would be the .fini section */
 	    KEEP (*(SORT_NONE(.fini)))
-	} >psram
+	} >sram_cache
 	_edata = .;
 	. = .;
 	__bss_start__ = .;
 	bss_start = .;
-	.sbss : {
-	    *(.dynsbss)
-	    *(.sbss .sbss.* .gnu.linkonce.sb.*)
-	    *(.scommon)
-	} >psram
 	/* setup the bss section, tag it's start and end positions to allow the
 	 * i960 to manually zero out the memory on the sdcard's ram.bin file */
 	.bss :
@@ -63,13 +57,11 @@ SECTIONS
 		*(.bss .bss.* .gnu.linkonce.b.*)
 		*(COMMON) /* can't find much documentation on this but it is a good idea to have this here */
 		. = ALIGN(. != 0 ? 32 / 8 : 1);
-	} >psram
-	. = ALIGN(32 / 8);
-	. = SEGMENT_START("ldata-segment", .);
-	. = ALIGN(32 / 8);
+	} >sram_cache
 	__bss_end__ = .;
 	end = .;
 	PROVIDE(end = .);
+	
 }
 
 /* these two locations are _very_ important for getting the program to startup correctly */ 
