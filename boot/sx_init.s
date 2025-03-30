@@ -1,6 +1,6 @@
 /*
 i960SxChipset
-Copyright (c) 2020-2021, Joshua Scoggins
+Copyright (c) 2020-2025, Joshua Scoggins
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -136,8 +136,7 @@ reinitialize_iac:
  *    call to main. No opens have been done for STDIN, STDOUT, or STDERR
  */
 # jump into the emulator from this point forward
-exec_fallthrough:
-    b exec_fallthrough
+	b riscv_emulator_start
 .global initFP
 initFP:
     # initialize the floating point registers if it makes sense
@@ -457,7 +456,6 @@ vect_INT2:
 vect_INT3:
 	ret
 
-
 /* -- define RAM area to copy the PRCB and interrupt table
  *    to after initial bootup from EPROM/FLASH
  */
@@ -466,4 +464,17 @@ vect_INT3:
  .bss sup_stack,  0x00010000, 6
  .bss intr_ram, 1028, 6
  .bss prcb_ram, 176, 6
+/* RISCV32 emulator begin */
 
+.text
+.align 6
+riscv_emulator_start:
+	
+	b riscv_emulator_start
+.data
+hart0_gpr_register_file:
+	.space 32 * 4
+hart0_fpr_register_file:
+	.space 32 * 8
+hart0_pc:
+	.space 4

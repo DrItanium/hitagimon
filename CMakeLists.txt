@@ -29,48 +29,29 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
-add_library(hitagisys
-		# disabled entries are because mon960 provides the implementations for them
-		#sys/brk.cc
-		#sys/fstat.cc
-		#sys/isatty.cc
-		sys/lseek.cc
-		sys/write.cc
-		sys/read.cc
-		sys/open.cc
-		#sys/kill.cc
-		sys/setitimer.cc
-		sys/close.cc
-		sys/gettimeofday.cc
-		sys/access.cc
-		#sys/getpid.cc
-		sys/_exit.cc
-		sys/link.cc
-		sys/unlink.cc sys/linkage.cc sys/getrusage.cc)
-add_library(hitagicortex
-		cortex/Faults.def
-		cortex/IODevice.cc
-		cortex/IODevice.h
-		cortex/ChipsetInteract.h
-		cortex/Faults.cc
-		cortex/Faults.h
-		cortex/IAC.h
-		cortex/IAC.cc
-		cortex/IACImplementation.s
-		cortex/ModernCpp.h
-        cortex/SystemCounter.h cortex/SystemCounter.cc cortex/builtins.h cortex/builtins.c cortex/IndirectInterrupts.cc
-		cortex/ext2.h
-		cortex/SoftwareDMA.h
-		cortex/SoftwareDMA.cc
-		cortex/SysExamine.cc
-        cortex/builtins.s
-)
+#add_library(hitagicortex
+#		cortex/Faults.def
+#		cortex/IODevice.cc
+#		cortex/IODevice.h
+#		cortex/ChipsetInteract.h
+#		cortex/Faults.cc
+#		cortex/Faults.h
+#		cortex/IAC.h
+#		cortex/IAC.cc
+#		cortex/IACImplementation.s
+#		cortex/ModernCpp.h
+#        cortex/SystemCounter.h cortex/SystemCounter.cc cortex/builtins.h cortex/builtins.c cortex/IndirectInterrupts.cc
+#		cortex/ext2.h
+#		cortex/SoftwareDMA.h
+#		cortex/SoftwareDMA.cc
+#		cortex/SysExamine.cc
+#        cortex/builtins.s
+#)
 add_executable(hitagimon
 		boot/sx_init.s # this must ALWAYS be first!
 		boot/f_table.s
 		#boot/i_handle.s
 		boot/i_table.s
-		#boot/f_handle.cc
 		boot/macros.s
 		#hitagimain.cc
 		start.ld
@@ -80,14 +61,9 @@ set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/star
 set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/start2.ld)
 
 
-target_include_directories(hitagicortex PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_include_directories(hitagisys PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+#target_include_directories(hitagicortex PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagimon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(hitagimon
-	#hitagicortex
-	#	hitagisys
-	#	mon960
-		)
+target_link_libraries(hitagimon)
 
 #add_link_options(-Wl,--as-needed -nostdlib -static -T ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT} -ffreestanding -Wl,--allow-multiple-definition)
 target_link_options(hitagimon
