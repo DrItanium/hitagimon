@@ -100,13 +100,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 .text
-.align 4
 .macro instruction_dispatch target, subtable=0, subsubtable=0, subsubsubtable=0
 	.word \target, \subtable, \subsubtable, \subsubsubtable
 .endm
 .macro unimplemented_opcode 
 	instruction_dispatch rv32_undefined_instruction
 .endm
+.align 6
 # all 32 real entries for the 0b11 form
 rv32_opcode_dispatch_table:
 	instruction_dispatch rv32_load_primary, rv32_load_instruction_table
@@ -146,13 +146,16 @@ rv32_opcode_dispatch_table:
 
 
 # this will hold the opcode dispatch table, aligned to be as easy to work on as possible
+.align 4
 rv32_load_instruction_table:
 	.word rv32_lb, rv32_lh, rv32_lw, rv32_undefined_instruction
 	.word rv32_lbu, rv32_lhu, rv32_undefined_instruction, rv32_undefined_instruction
+.align 4
 rv32_store_instruction_table:
 	.word rv32_sb, rv32_sh, rv32_sw, rv32_undefined_instruction
 	.word rv32_undefined_instruction, rv32_undefined_instruction
 	.word rv32_undefined_instruction, rv32_undefined_instruction
+
 .align 6
 .macro extract4 bitpos, len, src, dest
 	mov \src, \dest
@@ -254,6 +257,12 @@ rv32_store_primary:
 	extract_rs1
 	extract_rs2
 	funct3_dispatch
+rv32_beq:
+rv32_bne:
+rv32_blt:
+rv32_bltu:
+rv32_bge:
+rv32_bgeu:
 rv32_lb:
 rv32_lh:
 rv32_lw:
@@ -294,4 +303,9 @@ next_instruction:
 .data
 .align 6
 hart0_gpr_register_file:
-	.space 32 * 4
+	.word 0, 0, 0, 0, 0, 0, 0, 0
+	.word 0, 0, 0, 0, 0, 0, 0, 0
+	.word 0, 0, 0, 0, 0, 0, 0, 0
+	.word 0, 0, 0, 0, 0, 0, 0, 0
+hart0_pc_storage:
+	.word 0
