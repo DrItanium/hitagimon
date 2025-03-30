@@ -158,10 +158,13 @@ rv32_store_instruction_table:
 	mov \src, \dest
 	extract \bitpos, \len, \dest
 .endm
-.macro funct3_dispatch rtable=r9, rinst=r3
-	extract4 12, 3, \rinst , r4 # now figure out where to go by getting funct3
-	ld (\rtable)[r4*4], r4  # dispatch to address pointed by rtable
-	bx (r4)
+.macro extract_funct3 rdest=r4, rinst=r3
+	extract4 12, 4, \rinst, \rdest
+.endm
+.macro funct3_dispatch rtmp=r4, rtable=r9, rinst=r3
+	extract_funct3 \rtmp, \rinst # now figure out where to go by getting funct3
+	ld (\rtable)[\rtmp*4], \rtmp  # dispatch to address pointed by rtable
+	bx (\rtmp)
 .endm
 .macro extract_rs1 dest=g0, rinst=r3
 	extract4 15, 5, \rinst, \dest
@@ -200,8 +203,41 @@ rv32_lui:
 1:
 	b next_instruction
 rv32_jal:
+	# jal has a strange immediate of [20|10:1|11|19:12] in that order
+	# but since bit 20 is actually at position 31, it is trivial to just shift right integer
+	# by 12 places to get the sign extension correct
+	ldconst 0x80000000, r6  # we want to mask out all but the most significant bit
+	and r6, r3, r4          # extract the upper most bit off by itself
+	shri 12, r4, r4 		# then sign extend it by shifting 12 places down
+	extract4 21, 10, r3, r5 # pull imm 10:1 and then correct it!
+	shlo 1, r5, r5 			# shift left by one to make sure that we are aligned to 32-bit boundaries plus it is imm10:1
+	chkbit 20, r3 			# extract bit 20 from the instruction (imm11)
+	alterbit 11, r5, r5     # then shove the bit into position 11 of of the lower part
+	# now onto imm[19:12]
+	ldconst 0b00000000000011111111000000000000, r6 #  imm[19:12] mask
+	and r6, r3, r7 			# imm[19:12] extracted by itself in place
+	or r7, r5, r6			# merge [imm11:0] with imm[19:12]
+	or r4, r6, g3			# this should get us our proper imm[20:1] value
+	extract_rd
+#	@todo implement the actual jump portion
+	cmpobe 0, g2, 1f	# if the destination is x0, then skip the actual computation
+	addo 4, g13, r4 		# the address to return to
+	st r4, (g12)[g2*4]		# save the return address in the given register (usually, this is ra but for now, do not worry about that fact)
+1:	
+	addo g13, g3, g13  # jump to the relative offset
 	b instruction_decoder_body
 rv32_jalr:
+	extract_funct3 r4
+	cmpobne 0, r4, rv32_undefined_instruction # this may be wrong in the future
+	extract_rs1
+	extract_rd
+	shri 20, r3, g3 # we want to make a sign extended version of imm[11:0]
+	cmpobe 0, g2, 1f # if destination is x0 then skip over the computation itself
+	addo 4, g13, r4 # pc+4
+	st r4, (g12)[g2*4]	# save the return address to wherever we need to go
+1: 
+	addo g3, g0, g13    # update PC
+	# @todo generate an exception if the target address is not aligned to a four byte boundary
 	b instruction_decoder_body
 	
 rv32_load_primary:
