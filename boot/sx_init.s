@@ -233,7 +233,7 @@ sys_proc_table:
     # example entry
 	.word 0, 0, 0, 0 # 0-3
 	.word 0, 0, 0    # 4-6
-	DefTableEntry hitagi_unlink
+	ReservedTableEntry # hitagi_unlink
 	ReservedTableEntry # hitagi_getpid
 	ReservedTableEntry # hitagi_kill
 	ReservedTableEntry # hitagi_fstat
@@ -245,9 +245,9 @@ sys_proc_table:
     ReservedTableEntry # hitagi_chmod
     ReservedTableEntry # hitagi_utime
     ReservedTableEntry # hitagi_time
-    DefTableEntry hitagi_gettimeofday
-    DefTableEntry hitagi_setitimer
-    DefTableEntry hitagi_getrusage
+    ReservedTableEntry # hitagi_gettimeofday
+    ReservedTableEntry # hitagi_setitimer
+    ReservedTableEntry # hitagi_getrusage
 	.word 0, 0 # 22-23
 	.word 0, 0, 0, 0 # 24-27
 	.word 0, 0, 0, 0 # 28-31
@@ -302,11 +302,11 @@ sys_proc_table:
 	.word 0, 0, 0, 0 # 4-7
 	# mon960 registrations
 	.word 0, 0
-	DefTableEntry hitagi_open  # 230 (0xe6)
-	DefTableEntry hitagi_read  # 231 (0xe7)
-	DefTableEntry hitagi_write # 232 (0xe8)
-	DefTableEntry hitagi_lseek # 233 (0xe9)
-	DefTableEntry hitagi_close # 234 (0xea)
+	ReservedTableEntry # hitagi_open  # 230 (0xe6)
+	ReservedTableEntry # hitagi_read  # 231 (0xe7)
+	ReservedTableEntry # hitagi_write # 232 (0xe8)
+	ReservedTableEntry # hitagi_lseek # 233 (0xe9)
+	ReservedTableEntry # hitagi_close # 234 (0xea)
 	.word 0 # 235
 	.word 0, 0, 0, 0 # 236-239
 	.word 0, 0, 0, 0 # 240-243
@@ -314,7 +314,7 @@ sys_proc_table:
 	.word 0, 0, 0, 0 # 248-251
 	.word 0, 0, 0, 0 # 252-255
 	.word 0 # 256
-	DefTableEntry hitagi_exit # 257
+	ReservedTableEntry # hitagi_exit # 257
 	.word 0, 0 # 258-259
 	#.word	(_console_io + 0x2)	# Calls 0 - console I/O routines
 # up to a total of 260 entries
@@ -369,22 +369,63 @@ user_\()\name\()_core:
 .endm
 # We pass the fault data by grabbing it and passing it via g0 to the function itself
 DefFaultDispatcher override
+user_override:
+	# g0 - fault data start
+	# g1 - frame pointer
+	ret
 DefFaultDispatcher trace
+user_trace:
+	# g0 - fault data start
+	# g1 - frame pointer
+	ret
 DefFaultDispatcher operation
+user_operation:
+	# g0 - fault data start
+	# g1 - frame pointer
+	ret
 DefFaultDispatcher arithmetic
+user_arithmetic:
+	# g0 - fault data start
+	# g1 - frame pointer
+	ret
 DefFaultDispatcher floating_point
+user_floating_point:
+	# g0 - fault data start
+	# g1 - frame pointer
+	ret
 DefFaultDispatcher constraint
+user_constraint:
+	ret
 DefFaultDispatcher protection
+user_protection:
+	ret
 DefFaultDispatcher machine
+user_machine:
+	ret
 DefFaultDispatcher type
+user_type:
+	ret
+
 DefFaultDispatcher virtual_memory
+user_virtual_memory:
+	ret
 DefFaultDispatcher structural
+user_structural:
+	ret
 DefFaultDispatcher process
+user_process:
+	ret
 DefFaultDispatcher descriptor
+user_descriptor:
+	ret
 DefFaultDispatcher event
+user_event:
+	ret
 DefFaultDispatcher reserved
+user_reserved:
+	ret
 # reserved entries
-def_system_call 7, sys_unlink
+#def_system_call 7, sys_unlink
 #def_system_call 8, sys_getpid
 #def_system_call 9, sys_kill
 #def_system_call 10, sys_fstat
@@ -396,9 +437,26 @@ def_system_call 7, sys_unlink
 #def_system_call 16, sys_chmod
 #def_system_call 17, sys_utime
 #def_system_call 18, sys_time
-def_system_call 19, sys_gettimeofday
-def_system_call 20, sys_setitimer
-def_system_call 21, sys_getrusage
+#def_system_call 19, sys_gettimeofday
+#def_system_call 20, sys_setitimer
+#def_system_call 21, sys_getrusage
+DefInterruptHandler isr0, INT0
+DefInterruptHandler isr1, INT1
+DefInterruptHandler isr2, INT2
+DefInterruptHandler isr3, INT3
+.global do_nothing_isr
+do_nothing_isr:
+        ret
+
+vect_INT0:
+	ret
+vect_INT1:
+	ret
+vect_INT2:
+	ret
+vect_INT3:
+	ret
+
 
 /* -- define RAM area to copy the PRCB and interrupt table
  *    to after initial bootup from EPROM/FLASH

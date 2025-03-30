@@ -68,7 +68,7 @@ add_library(hitagicortex
 add_executable(hitagimon
 		boot/sx_init.s # this must ALWAYS be first!
 		boot/f_table.s
-		boot/i_handle.s
+		#boot/i_handle.s
 		boot/i_table.s
 		#boot/f_handle.cc
 		boot/macros.s

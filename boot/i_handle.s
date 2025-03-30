@@ -31,3 +31,13 @@ DefInterruptHandler isr3, INT3
 .global do_nothing_isr
 do_nothing_isr:
         ret
+
+vect_isr0:
+	ret
+vect_isr1:
+	ret
+vect_isr2:
+	ret
+vect_isr3:
+	ret
+
