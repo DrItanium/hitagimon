@@ -30,11 +30,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # sp ->  i960 stack pointer
 # rip -> i960 return instruction pointer
 # r3 -> instruction contents
-# r4 -> opcode
-# r5 -> 
-# r6 -> 
-# r7 -> 
-# r8 -> 
+# r4 -> temporary
+# r5 -> temporary
+# r6 -> opcode function address
+# r7 -> opcode subfunction address
+# r8 -> opcode subsubfunction address
 # r9 -> 
 # r10 -> 
 # r11 -> 
@@ -42,10 +42,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # r13 -> 
 # r14 -> 
 # r15 -> 
-# g0 -> 
-# g1 -> 
-# g2 -> 
-# g3 -> 
+# g0 -> rs1
+# g1 -> rs2
+# g2 -> rd
+# g3 -> immediate
 # g4 -> 
 # g5 -> 
 # g6 -> 
@@ -54,7 +54,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # g9 -> 
 # g10 -> 
 # g11 -> 
-# g12 -> 
+# g12 -> GPR base address
 # g13 -> PC (we can start at address zero now)
 # g14 -> i960 link register
 # fp -> i960 frame pointer
@@ -100,6 +100,75 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 .text
+.align 4
+.macro instruction_dispatch target, subtable=0, subsubtable=0, subsubsubtable=0
+	.word \target, \subtable, \subsubtable, \subsubsubtable
+.endm
+.macro unimplemented_opcode 
+	instruction_dispatch rv32_undefined_instruction, rv32_undefined_instruction
+.endm
+rv32_opcode_dispatch_table:
+	instruction_dispatch rv32_load_primary, rv32_load_instruction_table
+	unimplemented_opcode # load-fp
+	unimplemented_opcode # custom0
+	instruction_dispatch rv32_misc_mem
+	instruction_dispatch rv32_op_imm
+	instruction_dispatch rv32_auipc
+	unimplemented_opcode # OP-IMM-32 (can be used for custom instructions in rv32 mode)
+	unimplemented_opcode # 48b mode?
+	instruction_dispatch rv32_store_primary, rv32_store_instruction_table
+	unimplemented_opcode # we don't support madd right now
+# this will hold the opcode dispatch table, aligned to be as easy to work on as possible
+rv32_load_instruction_table:
+	.word rv32_lb, rv32_lh, rv32_lw, rv32_undefined_instruction
+	.word rv32_lbu, rv32_lhu, rv32_undefined_instruction, rv32_undefined_instruction
+rv32_store_instruction_table:
+	.word rv32_sb, rv32_sh, rv32_sw, rv32_undefined_instruction
+	.word rv32_undefined_instruction, rv32_undefined_instruction
+	.word rv32_undefined_instruction, rv32_undefined_instruction
+.align 6
+rv32_load_primary:
+	mov r3, r4
+	extract 12, 3, r4
+	ld (r7)[r4*4], r4 # use the secondary address to save code space
+	bx (r4)
+rv32_op_imm:
+	b next_instruction
+rv32_misc_mem:
+	b next_instruction
+rv32_auipc:
+	b next_instruction
+rv32_lui:
+	b next_instruction
+rv32_jal:
+	b instruction_decoder_body
+rv32_jalr:
+	b instruction_decoder_body
+rv32_store_primary:
+	mov r3, r4  # make a copy of r3
+	extract 7, 5, r4 # get the imm[4:0] out
+	shri 25, r3, r5	# grab imm[11:5] but make sure that immediates are sign-extended
+	shlo 5, r5, r5    # move it into position
+	or r4, r5, g3 	  # immediate has been computed
+					  # compute rs1
+	mov r3, g0 # copy r3 to g0
+	extract 15, 5, g0 # get rs1
+	mov r3, g1 # copy r3 to g1
+	extract 20, 5, g1 # get rs2
+	mov r3, r4
+	extract 12, 3, r4 # now figure out where to go
+	ld (r7)[r4*4], r4 # use the secondary address to save code space
+	bx (r4)
+rv32_lb:
+rv32_lh:
+rv32_lw:
+rv32_lbu:
+rv32_lhu:
+rv32_sb:
+rv32_sh:
+rv32_sw:
+rv32_undefined_instruction:
+	b next_instruction
 .align 6
 .global riscv_emulator_start
 riscv_emulator_start:
@@ -112,66 +181,22 @@ riscv_emulator_start:
 	movq 0, g4
 	movq 0, g8
 	movt 0, g12
+	ldconst hart0_gpr_register_file, g12
 instruction_decoder_body:
 	ld 0(g13), r3 # load the current instruction
 	mov r3, r4    # make a copy of it
 	extract 0, 7, r4 # opcode extraction
+	and 3, r4, r5 # check the lowest two bits
+	cmpobne 3, r5, rv32_undefined_instruction # it is an illegal instruction
+	shro 2, r3, r4 # remove the lowest two bits since we know it is 0b11
+	and 31, r4, r4 # now get the remaining 5 bits to figure out where to dispatch to
+	ldl rv32_opcode_dispatch_table[r4*8], r6 # load the two addresses necessary for execution
+	bx (r6) # jump to r6, r7 has the secondary table
 next_instruction:
 	addo g13, 4, g13 # go to the next instruction
 	b instruction_decoder_body 
-rv32_auipc:
-	b next_instruction
-rv32_lui:
-	b next_instruction
-rv32_jal:
-	b instruction_decoder_body
-rv32_jalr:
-	b instruction_decoder_body
-rv32_beq:
-	b instruction_decoder_body
-rv32_bne:
-	b instruction_decoder_body
-rv32_blt:
-	b instruction_decoder_body
-rv32_bge:
-	b instruction_decoder_body
-rv32_bltu:
-	b instruction_decoder_body
-rv32_bgeu:
-	b instruction_decoder_body
-rv32_load_primary:
-	mov r3, r4
-	extract 12, 3, r4
-	ld rv32_load_instruction_table[r4*4], r4
-	b next_instruction
-rv32_lb:
-	b next_instruction
-rv32_lh:
-	b next_instruction
-rv32_lw:
-	b next_instruction
-rv32_lbu:
-	b next_instruction
-rv32_lhu:
-	b next_instruction
-rv32_undefined_instruction:
-	b next_instruction
 
-.align 4
-rv32_load_instruction_table:
-	.word rv32_lb
-	.word rv32_lh
-	.word rv32_lw
-	.word rv32_undefined_instruction
-	.word rv32_lbu
-	.word rv32_lhu
-	.word rv32_undefined_instruction
-	.word rv32_undefined_instruction
 .data
 .align 6
 hart0_gpr_register_file:
 	.space 32 * 4
-hart0_fpr_register_file:
-	.space 32 * 8
-hart0_pc:
-	.space 4
