@@ -126,6 +126,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro extract_rd dest=g2, rinst=r3
 	extract4 7, 5, \rinst, \dest
 .endm
+.macro skip_if_rd_is_x0 dest, target=g2
+	cmpobe 0, \target, \dest
+.endm
 
 .text
 .align 6
@@ -183,10 +186,85 @@ rv32_store_instruction_table:
 # At some point, I may use them for something.
 # some of these hint instructions are interesting, specifically
 # ---- INSTRUCTION IMPLEMENTATIONS BEGIN ----
+.macro extract_imm11_itype dest=g3, src=r3
+	shri 20, \src, \dest # construct a sign extended version of imm[11:0]
+.endm
+# ADDI - Add Immediate
+rv32_addi:
+	extract_rd
+	skip_if_rd_is_x0 1f
+	extract_rs1
+	extract_imm11_itype
+	ld (g12)[g0*4], r4 # load rs1 contents
+	addo g3, r4, r5    # add rs1 with the immediate
+	st r5, (g12)[g2*4] # save to the register
+1:
+	b next_instruction
+# SLTI - Set Less Than Immediate (place the value 1 in register rd if register
+#		rs1 is less than the sign-extended immediate when both are treated as
+#		signed numbers)
+rv32_slti:
+	extract_rd
+	skip_if_rd_is_x0 1f
+	extract_rs1
+	extract_imm11_itype
+	ld (g12)[g0*4], r4 # load rs1 contents
+	cmpi r4, g3 	   # compare r4 to g3 
+	testl r5		   # check and see if r4 < g3
+	st r5, (g12)[g2*4] # save the result to the dest register
+1:
+	b next_instruction
+rv32_sltiu:
+	extract_rd
+	skip_if_rd_is_x0 1f
+	extract_rs1
+	extract_imm11_itype
+	ld (g12)[g0*4], r4 # load rs1 contents
+	cmpo r4, g3 	   # compare r4 to g3 (ordinal)
+	testl r5		   # check and see if r4 < g3
+	st r5, (g12)[g2*4] # save the result to the dest register
+1:
+	b next_instruction
+rv32_andi:
+	extract_rd
+	skip_if_rd_is_x0 1f
+	extract_rs1
+	extract_imm11_itype
+	ld (g12)[g0*4], r4 # load rs1 contents
+	and g3, r4, r5    # add rs1 with the immediate
+	st r5, (g12)[g2*4] # save to the register
+1:
+	b next_instruction
+rv32_ori:
+	extract_rd
+	skip_if_rd_is_x0 1f
+	extract_rs1
+	extract_imm11_itype
+	ld (g12)[g0*4], r4 # load rs1 contents
+	or g3, r4, r5    # add rs1 with the immediate
+	st r5, (g12)[g2*4] # save to the register
+1:
+	b next_instruction
+rv32_xori:
+	extract_rd
+	skip_if_rd_is_x0 1f
+	extract_rs1
+	extract_imm11_itype
+	ld (g12)[g0*4], r4 # load rs1 contents
+	xor g3, r4, r5    # add rs1 with the immediate
+	st r5, (g12)[g2*4] # save to the register
+1:
+	b next_instruction
+rv32_slli:
+	b next_instruction
+rv32_srli:
+	b next_instruction
+rv32_srai:
+	b next_instruction
 # AUIPC - Add Upper Immediate to PC
 rv32_auipc:
 	extract_rd 			               # where we are going to save things to
-	cmpobe 0, g2, 1f                   # skip the actual act of saving if the destination is x0, this is a hint
+	skip_if_rd_is_x0 1f 			   # skip the actual act of saving if the destination is x0, this is a hint
 	ldconst 0xFFFFF000, r4             # load a mask into memory
 	and r3, r4, r5		               # construct the offset
 	addo g13, r5, r6 	               # add it to the program counter
@@ -196,7 +274,7 @@ rv32_auipc:
 # LUI - Load Upper Immediate
 rv32_lui:
 	extract_rd 						   
-	cmpobe 0, g2, 1f	# skip if destination is x0 since it is a hint
+	skip_if_rd_is_x0 1f # skip if destination is x0 since it is a hint
 	ldconst 0xFFFFF000, r4
 	and r3, r4, r5
 	st r5, (g12)[g2*4]
@@ -220,7 +298,7 @@ rv32_jal:
 	or r4, r6, g3			# this should get us our proper imm[20:1] value
 	extract_rd
 #	@todo implement the actual jump portion
-	cmpobe 0, g2, 1f	# if the destination is x0, then skip the actual computation
+	skip_if_rd_is_x0 1f # skip if destination is x0
 	addo 4, g13, r4 		# the address to return to
 	st r4, (g12)[g2*4]		# save the return address in the given register (usually, this is ra but for now, do not worry about that fact)
 1:	
@@ -234,14 +312,15 @@ rv32_jalr:
 	extract_rs1
 	extract_rd
 	shri 20, r3, g3 # we want to make a sign extended version of imm[11:0]
-	cmpobe 0, g2, 1f # if destination is x0 then skip over the computation itself
+	skip_if_rd_is_x0 1f # skip if destination is x0
 	addo 4, g13, r4 # pc+4
 	st r4, (g12)[g2*4]	# save the return address to wherever we need to go
 1: 
 	addo g3, g0, g13    # update PC
 	# @todo generate an exception if the target address is not aligned to a four byte boundary
 	b instruction_decoder_body
-	
+
+
 rv32_beq:
 rv32_bne:
 rv32_blt:
