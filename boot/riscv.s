@@ -98,14 +98,36 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .set OPCODE_CUSTOM_2,  0b1011011
 .set OPCODE_CUSTOM_3,  0b1111011
 
-
-.text
 .macro instruction_dispatch target, subtable=0, subsubtable=0, subsubsubtable=0
 	.word \target, \subtable, \subsubtable, \subsubsubtable
 .endm
 .macro unimplemented_opcode 
 	instruction_dispatch rv32_undefined_instruction
 .endm
+
+.macro extract4 bitpos, len, src, dest
+	mov \src, \dest
+	extract \bitpos, \len, \dest
+.endm
+.macro extract_funct3 rdest=r4, rinst=r3
+	extract4 12, 4, \rinst, \rdest
+.endm
+.macro funct3_dispatch rtmp=r4, rtable=r9, rinst=r3
+	extract_funct3 \rtmp, \rinst # now figure out where to go by getting funct3
+	ld (\rtable)[\rtmp*4], \rtmp  # dispatch to address pointed by rtable
+	bx (\rtmp)
+.endm
+.macro extract_rs1 dest=g0, rinst=r3
+	extract4 15, 5, \rinst, \dest
+.endm
+.macro extract_rs2 dest=g1, rinst=r3
+	extract4 20, 5, \rinst, \dest
+.endm
+.macro extract_rd dest=g2, rinst=r3
+	extract4 7, 5, \rinst, \dest
+.endm
+
+.text
 .align 6
 # all 32 real entries for the 0b11 form
 rv32_opcode_dispatch_table:
@@ -157,45 +179,11 @@ rv32_store_instruction_table:
 	.word rv32_undefined_instruction, rv32_undefined_instruction
 
 .align 6
-.macro extract4 bitpos, len, src, dest
-	mov \src, \dest
-	extract \bitpos, \len, \dest
-.endm
-.macro extract_funct3 rdest=r4, rinst=r3
-	extract4 12, 4, \rinst, \rdest
-.endm
-.macro funct3_dispatch rtmp=r4, rtable=r9, rinst=r3
-	extract_funct3 \rtmp, \rinst # now figure out where to go by getting funct3
-	ld (\rtable)[\rtmp*4], \rtmp  # dispatch to address pointed by rtable
-	bx (\rtmp)
-.endm
-.macro extract_rs1 dest=g0, rinst=r3
-	extract4 15, 5, \rinst, \dest
-.endm
-.macro extract_rs2 dest=g1, rinst=r3
-	extract4 20, 5, \rinst, \dest
-.endm
-.macro extract_rd dest=g2, rinst=r3
-	extract4 7, 5, \rinst, \dest
-.endm
-rv32_system:
-	b next_instruction
-rv32_branch_primary:
-	b next_instruction
-rv32_op_primary:
-	b next_instruction
-rv32_op_imm:
-	b next_instruction
-rv32_misc_mem:
-	b next_instruction
 # I have decided to ignore hint instructions completely.
 # At some point, I may use them for something.
 # some of these hint instructions are interesting, specifically
-# slli x0, x0, 31 -> semihosting entry marker
-# srai x0, x0, 7 -> semihosting exit marker
-# slti x0 ... -> designated for custom use
-# sltiu x0 ... -> designated for custom use
-# there are others but these are the most interesting to me
+# ---- INSTRUCTION IMPLEMENTATIONS BEGIN ----
+# AUIPC - Add Upper Immediate to PC
 rv32_auipc:
 	extract_rd 			               # where we are going to save things to
 	cmpobe 0, g2, 1f                   # skip the actual act of saving if the destination is x0, this is a hint
@@ -205,6 +193,7 @@ rv32_auipc:
 	st r6, (g12)[g2*4] 				   # save the result to a register
 1:
 	b next_instruction
+# LUI - Load Upper Immediate
 rv32_lui:
 	extract_rd 						   
 	cmpobe 0, g2, 1f	# skip if destination is x0 since it is a hint
@@ -237,7 +226,9 @@ rv32_jal:
 1:	
 	addo g13, g3, g13  # jump to the relative offset
 	b instruction_decoder_body
-rv32_jalr:
+
+# JALR -> Jump and Link Register
+rv32_jalr: 
 	extract_funct3 r4
 	cmpobne 0, r4, rv32_undefined_instruction # this may be wrong in the future
 	extract_rs1
@@ -251,20 +242,6 @@ rv32_jalr:
 	# @todo generate an exception if the target address is not aligned to a four byte boundary
 	b instruction_decoder_body
 	
-rv32_load_primary:
-	extract_rd
-	extract_rs1
-	shri 20, r3, g3 # compute the immediate with sign extension
-	funct3_dispatch 
-rv32_store_primary:
-	extract4 7, 5, r3, r4 # get imm[4:0]
-	shri 25, r3, r5	# grab imm[11:5] but make sure that immediates are sign-extended
-	shlo 5, r5, r5    # move it into position
-	or r4, r5, g3 	  # immediate has been computed
-					  # compute rs1
-	extract_rs1
-	extract_rs2
-	funct3_dispatch
 rv32_beq:
 rv32_bne:
 rv32_blt:
@@ -281,7 +258,38 @@ rv32_sh:
 rv32_sw:
 rv32_undefined_instruction:
 	b next_instruction
-.align 6
+# PRIMARY OPCODE: LOAD
+rv32_load_primary:
+	extract_rd
+	extract_rs1
+	shri 20, r3, g3 # compute the immediate with sign extension
+	funct3_dispatch 
+# PRIMARY OPCODE: STORE
+rv32_store_primary:
+	extract4 7, 5, r3, r4 # get imm[4:0]
+	shri 25, r3, r5	# grab imm[11:5] but make sure that immediates are sign-extended
+	shlo 5, r5, r5    # move it into position
+	or r4, r5, g3 	  # immediate has been computed
+					  # compute rs1
+	extract_rs1
+	extract_rs2
+	funct3_dispatch
+# PRIMARY OPCODE: SYSTEM
+rv32_system:
+	b next_instruction
+# PRIMARY OPCODE: BRANCH
+rv32_branch_primary:
+	b next_instruction
+# PRIMARY OPCODE: OP
+rv32_op_primary:
+	b next_instruction
+# PRIMARY OPCODE: OP-IMM
+rv32_op_imm:
+	b next_instruction
+# PRIMARY OPCODE: MISC-MEM
+rv32_misc_mem:
+	b next_instruction
+# ---- INSTRUCTION IMPLEMENTATIONS END ----
 .global riscv_emulator_start
 riscv_emulator_start:
 	mov 0, r3
@@ -308,12 +316,4 @@ next_instruction:
 	addo g13, 4, g13 # go to the next instruction
 	b instruction_decoder_body 
 
-.data
-.align 6
-hart0_gpr_register_file:
-	.word 0, 0, 0, 0, 0, 0, 0, 0
-	.word 0, 0, 0, 0, 0, 0, 0, 0
-	.word 0, 0, 0, 0, 0, 0, 0, 0
-	.word 0, 0, 0, 0, 0, 0, 0, 0
-hart0_pc_storage:
-	.word 0
+.bss hart0_gpr_register_file, 128, 6
