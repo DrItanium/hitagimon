@@ -307,6 +307,124 @@ rv32_lui:
 	st r5, (g12)[g2*4]
 1:
 	b next_instruction
+# ADD - Add
+rv32_add:
+	extract_rd
+	skip_if_rd_is_x0 1f
+	extract_rs1
+	ld (g12)[g0*4], r4 # load rs1
+	extract_rs2
+	ld (g12)[g1*4], r5 # load rs2
+	addo r4, r5, r6    # do the addition operation, use ordinal form to prevent integer overflow fault
+	st r6, (g12)[g2*4]
+1:
+	b next_instruction
+# SLT - Set Less Than
+rv32_slt:
+	extract_rd
+	skip_if_rd_is_x0 1f
+	extract_rs1
+	ld (g12)[g0*4], r4 # load rs1
+	extract_rs2
+	ld (g12)[g1*4], r5 # load rs2
+	cmpi r4, r5		   # compare r4, r5
+	testl r6		   # test to see if we got a less than
+	st r6, (g12)[g2*4]
+1:
+	b next_instruction
+rv32_sltu:
+	extract_rd
+	skip_if_rd_is_x0 1f
+	extract_rs1
+	ld (g12)[g0*4], r4 # load rs1
+	extract_rs2
+	ld (g12)[g1*4], r5 # load rs2
+	cmpo r4, r5		   # compare r4, r5
+	testl r6		   # test to see if we got a less than
+	st r6, (g12)[g2*4]
+1:
+	b next_instruction
+rv32_and:
+	extract_rd
+	skip_if_rd_is_x0 1f
+	extract_rs1
+	ld (g12)[g0*4], r4 # load rs1
+	extract_rs2
+	ld (g12)[g1*4], r5 # load rs2
+	and r4, r5, r6    
+	st r6, (g12)[g2*4]
+1:
+	b next_instruction
+rv32_or:
+	extract_rd
+	skip_if_rd_is_x0 1f
+	extract_rs1
+	ld (g12)[g0*4], r4 # load rs1
+	extract_rs2
+	ld (g12)[g1*4], r5 # load rs2
+	or r4, r5, r6    
+	st r6, (g12)[g2*4]
+1:
+	b next_instruction
+rv32_xor:
+	extract_rd
+	skip_if_rd_is_x0 1f
+	extract_rs1
+	ld (g12)[g0*4], r4 # load rs1
+	extract_rs2
+	ld (g12)[g1*4], r5 # load rs2
+	xor r4, r5, r6    
+	st r6, (g12)[g2*4]
+1:
+	b next_instruction
+# SLL - Shift Left Logical
+rv32_sll:
+	extract_rd
+	skip_if_rd_is_x0 1f
+	extract_rs1
+	ld (g12)[g0*4], r4 # load rs1
+	extract_rs2
+	ld (g12)[g1*4], r5 # load rs2
+	shlo r4, r5, r6    
+	st r6, (g12)[g2*4]
+1:
+	b next_instruction
+# SRL - Shift Right Logical
+rv32_srl:
+	extract_rd
+	skip_if_rd_is_x0 1f
+	extract_rs1
+	ld (g12)[g0*4], r4 # load rs1
+	extract_rs2
+	ld (g12)[g1*4], r5 # load rs2
+	shro r4, r5, r6    
+	st r6, (g12)[g2*4]
+1:
+	b next_instruction
+# SUB - Subtract x[rs1] - x[rs2] -> x[rd]
+rv32_sub:
+	extract_rd
+	skip_if_rd_is_x0 1f
+	extract_rs1
+	ld (g12)[g0*4], r4 # load rs1
+	extract_rs2
+	ld (g12)[g1*4], r5 # load rs2
+	subo r5, r4, r6		# x[rd] = x[rs1] - x[rs2] 
+	st r6, (g12)[g2*4]
+1:
+	b next_instruction
+# SRA - Shift Right Arithmetic
+rv32_sra:
+	extract_rd
+	skip_if_rd_is_x0 1f
+	extract_rs1
+	ld (g12)[g0*4], r4 # load rs1
+	extract_rs2
+	ld (g12)[g1*4], r5 # load rs2
+	shri r5, r4, r6 
+	st r6, (g12)[g2*4]
+1:
+	b next_instruction
 rv32_jal:
 	# jal has a strange immediate of [20|10:1|11|19:12] in that order
 	# but since bit 20 is actually at position 31, it is trivial to just shift right integer
@@ -346,7 +464,6 @@ rv32_jalr:
 	addo g3, g0, g13    # update PC
 	# @todo generate an exception if the target address is not aligned to a four byte boundary
 	b instruction_decoder_body
-
 
 rv32_beq:
 rv32_bne:
