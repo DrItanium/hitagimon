@@ -255,11 +255,38 @@ rv32_xori:
 	st r5, (g12)[g2*4] # save to the register
 1:
 	b next_instruction
+# SLLI - Shift Left Logical Immediate
 rv32_slli:
+	extract_rd
+	skip_if_rd_is_x0 1f
+	extract_rs1
+	extract4 20, 5, r3, r4 # extract imm[4:0]
+	ld (g12)[g0*4], r5
+	shlo r4, r5, r6        # do the shift left
+	st r6, (g12)[g2*4]	   # save the result
+1:
 	b next_instruction
+# SRLI - Shift Right Logical Immediate
 rv32_srli:
+	extract_rd
+	skip_if_rd_is_x0 1f
+	extract_rs1
+	extract4 20, 5, r3, r4 # extract imm[4:0]
+	ld (g12)[g0*4], r5	   # get the contents of rs1
+	shro r4, r5, r6        # do the shift right
+	st r6, (g12)[g2*4]	   # save the result
+1:
 	b next_instruction
+# SRAI - Shift Right Arithmetic Immediate
 rv32_srai:
+	extract_rd
+	skip_if_rd_is_x0 1f
+	extract_rs1
+	extract4 20, 5, r3, r4 # extract imm[4:0]
+	ld (g12)[g0*4], r5	   # get the contents of rs1
+	shri r4, r5, r6        # do the shift right (but do the integer version)
+	st r6, (g12)[g2*4]	   # save the result
+1:
 	b next_instruction
 # AUIPC - Add Upper Immediate to PC
 rv32_auipc:
