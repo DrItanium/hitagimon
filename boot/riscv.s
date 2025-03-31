@@ -188,9 +188,17 @@ rv32_op_imm:
 	b next_instruction
 rv32_misc_mem:
 	b next_instruction
+# I have decided to ignore hint instructions completely.
+# At some point, I may use them for something.
+# some of these hint instructions are interesting, specifically
+# slli x0, x0, 31 -> semihosting entry marker
+# srai x0, x0, 7 -> semihosting exit marker
+# slti x0 ... -> designated for custom use
+# sltiu x0 ... -> designated for custom use
+# there are others but these are the most interesting to me
 rv32_auipc:
 	extract_rd 			               # where we are going to save things to
-	cmpobe 0, g2, 1f                   # skip the actual act of saving if the destination is x0
+	cmpobe 0, g2, 1f                   # skip the actual act of saving if the destination is x0, this is a hint
 	ldconst 0xFFFFF000, r4             # load a mask into memory
 	and r3, r4, r5		               # construct the offset
 	addo g13, r5, r6 	               # add it to the program counter
@@ -199,7 +207,7 @@ rv32_auipc:
 	b next_instruction
 rv32_lui:
 	extract_rd 						   
-	cmpobe 0, g2, 1f	# skip if destination is x0
+	cmpobe 0, g2, 1f	# skip if destination is x0 since it is a hint
 	ldconst 0xFFFFF000, r4
 	and r3, r4, r5
 	st r5, (g12)[g2*4]
