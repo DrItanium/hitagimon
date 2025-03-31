@@ -461,7 +461,8 @@ rv32_jalr:
 	addo 4, g13, r4 # pc+4
 	st r4, (g12)[g2*4]	# save the return address to wherever we need to go
 1: 
-	addo g3, g0, g13    # update PC
+	ld (g12)[g0*4], r4
+	addo g3, r4, g13    # update PC
 	# @todo generate an exception if the target address is not aligned to a four byte boundary
 	b instruction_decoder_body
 
@@ -476,9 +477,6 @@ rv32_lh:
 rv32_lw:
 rv32_lbu:
 rv32_lhu:
-rv32_sb:
-rv32_sh:
-rv32_sw:
 	b next_instruction
 rv32_fence:
 	# do nothing right now
@@ -504,9 +502,33 @@ rv32_store_primary:
 	shlo 5, r5, r5    # move it into position
 	or r4, r5, g3 	  # immediate has been computed
 					  # compute rs1
-	extract_rs1
-	extract_rs2
+	extract_rs1		  # extract rs1 index (base)
+	extract_rs2		  # extract rs2 index (src)
 	funct3_dispatch
+rv32_sb:
+	# g0 -> base register index
+	# g1 -> src register index
+	# g3 -> immediate
+	ld (g12)[g0*4], r4 # base
+	ld (g12)[g1*4], r5 # src
+	stob r5, (r4)[g3] # compute the address
+	b next_instruction
+rv32_sh:
+	# g0 -> base register index
+	# g1 -> src register index
+	# g3 -> immediate
+	ld (g12)[g0*4], r4 # base
+	ld (g12)[g1*4], r5 # src
+	stos r5, (r4)[g3] # compute the address
+	b next_instruction
+rv32_sw:
+	# g0 -> base register index
+	# g1 -> src register index
+	# g3 -> immediate
+	ld (g12)[g0*4], r4 # base
+	ld (g12)[g1*4], r5 # src
+	st r5, (r4)[g3] # compute the address
+	b next_instruction
 # PRIMARY OPCODE: SYSTEM
 rv32_system:
 	b next_instruction
@@ -523,150 +545,17 @@ rv32_op_imm:
 rv32_misc_mem:
 	b next_instruction
 # Here are some of the extensions I want to implement
-# RV32M
-rv32_mul:
-	b next_instruction
-rv32_mulh:
-	b next_instruction
-rv32_hulhsu:
-	b next_instruction
-rv32_mulhu:
-	b next_instruction
-rv32_div:
-	b next_instruction
-rv32_divu:
-	b next_instruction
-rv32_rem:
-	b next_instruction
-rv32_remu:
-	b next_instruction
+# RV32M extension
 # RV32F extension
-rv32_flw:
-rv32_fsw:
-rv32_fmadd_s:
-rv32_fmsub_s:
-rv32_fnmsub_s:
-rv32_fnmadd_s:
-rv32_fadd_s:
-rv32_fsub_s:
-rv32_fmul_s:
-rv32_fdiv_s:
-rv32_fsqrt_s:
-rv32_fsgnj_s:
-rv32_fsgnjn_s:
-rv32_fsgnjx_s:
-rv32_fmin_s:
-rv32_fmax_s:
-rv32_fcvt_w_s:
-rv32_fcvt_wu_s:
-rv32_fmv_x_w:
-rv32_feq_s:
-rv32_flt_s:
-rv32_fle_s:
-rv32_fclass_s:
-rv32_fcvt_s_w:
-rv32_fcvt_s_wu:
-rv32_fmv_w_x:
-	b next_instruction
 # RV32D extension
-rv32_fld:
-rv32_fsd:
-rv32_fmadd_d:
-rv32_fmsub_d:
-rv32_fnmsub_d:
-rv32_fnmadd_d:
-rv32_fadd_d:
-rv32_fsub_d:
-rv32_fmul_d:
-rv32_fdiv_d:
-rv32_fsqrt_d:
-rv32_fsgnj_d:
-rv32_fsgnjn_d:
-rv32_fsgnjx_d:
-rv32_fmin_d:
-rv32_fmax_d:
-rv32_fcvt_s_d:
-rv32_fcvt_d_s:
-rv32_feq_d:
-rv32_flt_d:
-rv32_fle_d:
-rv32_fclass_d:
-rv32_fcvt_w_d:
-rv32_fcvt_wu_d:
-rv32_fcvt_d_w:
-rv32_fcvt_d_wu:
-	b next_instruction
 # Zilsd (Load/Store pair for RV32)
 # ld - Load doubleword to even/odd register pair, 32-bit encoding
-rv32_ld:
-	b next_instruction
 # sd - Store doubleword from even/odd register pair, 32-bit encoding
-rv32_sd:
-	b next_instruction
 # B Extension (bit manipulation) [Zba, Zbb, Zbs]
 # Zba -> address generation
-rv32_sh1add:
-	b next_instruction
-rv32_sh2add:
-	b next_instruction
-rv32_sh3add:
-	b next_instruction
 # Zbb -> basic bit manipulation
-rv32_andn:
-	b next_instruction
-rv32_orn:
-	b next_instruction
-rv32_xnor:
-	b next_instruction
-
-rv32_clz:
-	b next_instruction
-rv32_ctz:
-	b next_instruction
-rv32_cpop:
-	b next_instruction
-rv32_max:
-	b next_instruction
-rv32_maxu:
-	b next_instruction
-rv32_min:
-	b next_instruction
-rv32_minu:
-	b next_instruction
-rv32_sext_b:
-	b next_instruction
-rv32_sext_h:
-	b next_instruction
-rv32_zext_h:
-	b next_instruction
-rv32_rol:
-	b next_instruction
-rv32_ror:
-	b next_instruction
-rv32_rori:
-	b next_instruction
-rv32_orc_b:
-	b next_instruction
-rv32_rev8:
-	b next_instruction
 # Zbs -> single bit instructions
-rv32_bclr:
-	b next_instruction
-rv32_bclri:
-	b next_instruction
-rv32_bext:
-	b next_instruction
-rv32_bexti:
-	b next_instruction
-rv32_binv:
-	b next_instruction
-rv32_binvi:
-	b next_instruction
-rv32_bset:
-	b next_instruction
-rv32_bseti:
-	b next_instruction
-# Zicsr extension?
+# Zicsr extension
 # Zifencei extension?
 .align 6
 .global riscv_emulator_start
