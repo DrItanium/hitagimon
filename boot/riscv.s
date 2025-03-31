@@ -173,13 +173,24 @@ rv32_opcode_dispatch_table:
 # this will hold the opcode dispatch table, aligned to be as easy to work on as possible
 .align 4
 rv32_load_instruction_table:
-	.word rv32_lb, rv32_lh, rv32_lw, rv32_undefined_instruction
-	.word rv32_lbu, rv32_lhu, rv32_undefined_instruction, rv32_undefined_instruction
+	.word rv32_lb
+	.word rv32_lh
+	.word rv32_lw
+	.word rv32_ld # from the Zilsd extension
+	.word rv32_lbu 
+	.word rv32_lhu 
+	.word rv32_undefined_instruction
+	.word rv32_undefined_instruction
 .align 4
 rv32_store_instruction_table:
-	.word rv32_sb, rv32_sh, rv32_sw, rv32_undefined_instruction
-	.word rv32_undefined_instruction, rv32_undefined_instruction
-	.word rv32_undefined_instruction, rv32_undefined_instruction
+	.word rv32_sb
+	.word rv32_sh
+	.word rv32_sw
+	.word rv32_sd # from the Zilsd extension
+	.word rv32_undefined_instruction
+	.word rv32_undefined_instruction
+	.word rv32_undefined_instruction
+	.word rv32_undefined_instruction
 
 .align 6
 # I have decided to ignore hint instructions completely.
@@ -550,7 +561,11 @@ rv32_misc_mem:
 # RV32D extension
 # Zilsd (Load/Store pair for RV32)
 # ld - Load doubleword to even/odd register pair, 32-bit encoding
+rv32_ld:
+	b next_instruction
 # sd - Store doubleword from even/odd register pair, 32-bit encoding
+rv32_sd:
+	b next_instruction
 # B Extension (bit manipulation) [Zba, Zbb, Zbs]
 # Zba -> address generation
 # Zbb -> basic bit manipulation
