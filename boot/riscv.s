@@ -568,8 +568,41 @@ rv32_sd:
 	b next_instruction
 # B Extension (bit manipulation) [Zba, Zbb, Zbs]
 # Zba -> address generation
+# SH1ADD: Shift left by 1 and add
+# lda (rs2)[rs1*2], rd
+rv32_sh1add:
+	b next_instruction
+# SH2ADD: Shift left by 2 and add
+# lda (rs2)[rs1*4], rd
+rv32_sh2add:
+	b next_instruction
+# SH3ADD: Shift left by 3 and add
+# lda (rs2)[rs1*8], rd
+rv32_sh3add:
+	b next_instruction
 # Zbb -> basic bit manipulation
+# logical with negate
+# ANDN -> and with inverted operand
+# andnot/notand depending on what is needed
+rv32_andn:
+	b next_instruction
+# ORN -> or with inverted operand
+# ornot/notor depending on what is needed
+rv32_orn:
+	b next_instruction
+# XNOR -> exclusive nor
+# use the xnor instruction
+rv32_xnor:
+	b next_instruction
 # Zbs -> single bit instructions
+# bclr -> single-bit clear | clrbit
+# bclri -> single-bit clear (immediate) | clrbit
+# bext -> single-bit extract | chkbit + teste
+# bexti -> single-bit extract (immediate) | chkbit + teste
+# binv -> single-bit invert | notbit 
+# binvi -> single-bit invert (immediate) | notbit
+# bset -> single-bit set | setbit
+# bseti -> single-bit set (immediate) | setbit
 # Zicsr extension
 # Zifencei extension?
 .align 6
