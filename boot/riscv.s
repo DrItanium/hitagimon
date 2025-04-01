@@ -112,7 +112,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro extract_funct3 rdest=t0, rinst=instruction
 	extract4 12, 4, \rinst, \rdest
 .endm
-.macro funct3_dispatch rtmp=t0, rtable=r9, rinst=instruction
+.macro funct3_dispatch rtmp=t0, rtable=subfunc_addr, rinst=instruction
 	extract_funct3 \rtmp, \rinst # now figure out where to go by getting funct3
 	ld (\rtable)[\rtmp*4], \rtmp  # dispatch to address pointed by rtable
 	bx (\rtmp)
@@ -207,8 +207,8 @@ rv32_addi:
 	extract_rs1
 	extract_imm11_itype
 	ld (gpr_base)[g0*4], t0 # load rs1 contents
-	addo immediate, t0, r5    # add rs1 with the immediate
-	st r5, (gpr_base)[g2*4] # save to the register
+	addo immediate, t0, t1    # add rs1 with the immediate
+	st t1, (gpr_base)[g2*4] # save to the register
 1:
 	b next_instruction
 # SLTI - Set Less Than Immediate (place the value 1 in register rd if register
@@ -221,8 +221,8 @@ rv32_slti:
 	extract_imm11_itype
 	ld (gpr_base)[g0*4], t0 # load rs1 contents
 	cmpi t0, immediate 	   # compare t0 to immediate 
-	testl r5		   # check and see if t0 < immediate
-	st r5, (gpr_base)[g2*4] # save the result to the dest register
+	testl t1		   # check and see if t0 < immediate
+	st t1, (gpr_base)[g2*4] # save the result to the dest register
 1:
 	b next_instruction
 rv32_sltiu:
@@ -232,8 +232,8 @@ rv32_sltiu:
 	extract_imm11_itype
 	ld (gpr_base)[g0*4], t0 # load rs1 contents
 	cmpo t0, immediate 	   # compare t0 to immediate (ordinal)
-	testl r5		   # check and see if t0 < immediate
-	st r5, (gpr_base)[g2*4] # save the result to the dest register
+	testl t1		   # check and see if t0 < immediate
+	st t1, (gpr_base)[g2*4] # save the result to the dest register
 1:
 	b next_instruction
 rv32_andi:
@@ -242,8 +242,8 @@ rv32_andi:
 	extract_rs1
 	extract_imm11_itype
 	ld (gpr_base)[g0*4], t0 # load rs1 contents
-	and immediate, t0, r5    # add rs1 with the immediate
-	st r5, (gpr_base)[g2*4] # save to the register
+	and immediate, t0, t1    # add rs1 with the immediate
+	st t1, (gpr_base)[g2*4] # save to the register
 1:
 	b next_instruction
 rv32_ori:
@@ -252,8 +252,8 @@ rv32_ori:
 	extract_rs1
 	extract_imm11_itype
 	ld (gpr_base)[g0*4], t0 # load rs1 contents
-	or immediate, t0, r5    # add rs1 with the immediate
-	st r5, (gpr_base)[g2*4] # save to the register
+	or immediate, t0, t1    # add rs1 with the immediate
+	st t1, (gpr_base)[g2*4] # save to the register
 1:
 	b next_instruction
 rv32_xori:
@@ -262,8 +262,8 @@ rv32_xori:
 	extract_rs1
 	extract_imm11_itype
 	ld (gpr_base)[g0*4], t0 # load rs1 contents
-	xor immediate, t0, r5    # add rs1 with the immediate
-	st r5, (gpr_base)[g2*4] # save to the register
+	xor immediate, t0, t1    # add rs1 with the immediate
+	st t1, (gpr_base)[g2*4] # save to the register
 1:
 	b next_instruction
 # SLLI - Shift Left Logical Immediate
@@ -272,8 +272,8 @@ rv32_slli:
 	skip_if_rd_is_x0 1f
 	extract_rs1
 	extract4 20, 5, instruction, t0 # extract imm[4:0]
-	ld (gpr_base)[g0*4], r5
-	shlo t0, r5, r6        # do the shift left
+	ld (gpr_base)[g0*4], t1
+	shlo t0, t1, r6        # do the shift left
 	st r6, (gpr_base)[g2*4]	   # save the result
 1:
 	b next_instruction
@@ -283,8 +283,8 @@ rv32_srli:
 	skip_if_rd_is_x0 1f
 	extract_rs1
 	extract4 20, 5, instruction, t0 # extract imm[4:0]
-	ld (gpr_base)[g0*4], r5	   # get the contents of rs1
-	shro t0, r5, r6        # do the shift right
+	ld (gpr_base)[g0*4], t1	   # get the contents of rs1
+	shro t0, t1, r6        # do the shift right
 	st r6, (gpr_base)[g2*4]	   # save the result
 1:
 	b next_instruction
@@ -294,8 +294,8 @@ rv32_srai:
 	skip_if_rd_is_x0 1f
 	extract_rs1
 	extract4 20, 5, instruction, t0 # extract imm[4:0]
-	ld (gpr_base)[g0*4], r5	   # get the contents of rs1
-	shri t0, r5, r6        # do the shift right (but do the integer version)
+	ld (gpr_base)[g0*4], t1	   # get the contents of rs1
+	shri t0, t1, r6        # do the shift right (but do the integer version)
 	st r6, (gpr_base)[g2*4]	   # save the result
 1:
 	b next_instruction
@@ -304,8 +304,8 @@ rv32_auipc:
 	extract_rd 			               # where we are going to save things to
 	skip_if_rd_is_x0 1f 			   # skip the actual act of saving if the destination is x0, this is a hint
 	ldconst 0xFFFFF000, t0             # load a mask into memory
-	and instruction, t0, r5		               # construct the offset
-	addo pc, r5, r6 	               # add it to the program counter
+	and instruction, t0, t1		               # construct the offset
+	addo pc, t1, r6 	               # add it to the program counter
 	st r6, (gpr_base)[g2*4] 				   # save the result to a register
 1:
 	b next_instruction
@@ -314,8 +314,8 @@ rv32_lui:
 	extract_rd 						   
 	skip_if_rd_is_x0 1f # skip if destination is x0 since it is a hint
 	ldconst 0xFFFFF000, t0
-	and instruction, t0, r5
-	st r5, (gpr_base)[g2*4]
+	and instruction, t0, t1
+	st t1, (gpr_base)[g2*4]
 1:
 	b next_instruction
 # ADD - Add
@@ -325,8 +325,8 @@ rv32_add:
 	extract_rs1
 	ld (gpr_base)[g0*4], t0 # load rs1
 	extract_rs2
-	ld (gpr_base)[g1*4], r5 # load rs2
-	addo t0, r5, r6    # do the addition operation, use ordinal form to prevent integer overflow fault
+	ld (gpr_base)[g1*4], t1 # load rs2
+	addo t0, t1, r6    # do the addition operation, use ordinal form to prevent integer overflow fault
 	st r6, (gpr_base)[g2*4]
 1:
 	b next_instruction
@@ -337,8 +337,8 @@ rv32_slt:
 	extract_rs1
 	ld (gpr_base)[g0*4], t0 # load rs1
 	extract_rs2
-	ld (gpr_base)[g1*4], r5 # load rs2
-	cmpi t0, r5		   # compare t0, r5
+	ld (gpr_base)[g1*4], t1 # load rs2
+	cmpi t0, t1		   # compare t0, t1
 	testl r6		   # test to see if we got a less than
 	st r6, (gpr_base)[g2*4]
 1:
@@ -349,8 +349,8 @@ rv32_sltu:
 	extract_rs1
 	ld (gpr_base)[g0*4], t0 # load rs1
 	extract_rs2
-	ld (gpr_base)[g1*4], r5 # load rs2
-	cmpo t0, r5		   # compare t0, r5
+	ld (gpr_base)[g1*4], t1 # load rs2
+	cmpo t0, t1		   # compare t0, t1
 	testl r6		   # test to see if we got a less than
 	st r6, (gpr_base)[g2*4]
 1:
@@ -361,8 +361,8 @@ rv32_and:
 	extract_rs1
 	ld (gpr_base)[g0*4], t0 # load rs1
 	extract_rs2
-	ld (gpr_base)[g1*4], r5 # load rs2
-	and t0, r5, r6    
+	ld (gpr_base)[g1*4], t1 # load rs2
+	and t0, t1, r6    
 	st r6, (gpr_base)[g2*4]
 1:
 	b next_instruction
@@ -372,8 +372,8 @@ rv32_or:
 	extract_rs1
 	ld (gpr_base)[g0*4], t0 # load rs1
 	extract_rs2
-	ld (gpr_base)[g1*4], r5 # load rs2
-	or t0, r5, r6    
+	ld (gpr_base)[g1*4], t1 # load rs2
+	or t0, t1, r6    
 	st r6, (gpr_base)[g2*4]
 1:
 	b next_instruction
@@ -383,8 +383,8 @@ rv32_xor:
 	extract_rs1
 	ld (gpr_base)[g0*4], t0 # load rs1
 	extract_rs2
-	ld (gpr_base)[g1*4], r5 # load rs2
-	xor t0, r5, r6    
+	ld (gpr_base)[g1*4], t1 # load rs2
+	xor t0, t1, r6    
 	st r6, (gpr_base)[g2*4]
 1:
 	b next_instruction
@@ -395,8 +395,8 @@ rv32_sll:
 	extract_rs1
 	ld (gpr_base)[g0*4], t0 # load rs1
 	extract_rs2
-	ld (gpr_base)[g1*4], r5 # load rs2
-	shlo t0, r5, r6    
+	ld (gpr_base)[g1*4], t1 # load rs2
+	shlo t0, t1, r6    
 	st r6, (gpr_base)[g2*4]
 1:
 	b next_instruction
@@ -407,8 +407,8 @@ rv32_srl:
 	extract_rs1
 	ld (gpr_base)[g0*4], t0 # load rs1
 	extract_rs2
-	ld (gpr_base)[g1*4], r5 # load rs2
-	shro t0, r5, r6    
+	ld (gpr_base)[g1*4], t1 # load rs2
+	shro t0, t1, r6    
 	st r6, (gpr_base)[g2*4]
 1:
 	b next_instruction
@@ -419,8 +419,8 @@ rv32_sub:
 	extract_rs1
 	ld (gpr_base)[g0*4], t0 # load rs1
 	extract_rs2
-	ld (gpr_base)[g1*4], r5 # load rs2
-	subo r5, t0, r6		# x[rd] = x[rs1] - x[rs2] 
+	ld (gpr_base)[g1*4], t1 # load rs2
+	subo t1, t0, r6		# x[rd] = x[rs1] - x[rs2] 
 	st r6, (gpr_base)[g2*4]
 1:
 	b next_instruction
@@ -431,8 +431,8 @@ rv32_sra:
 	extract_rs1
 	ld (gpr_base)[g0*4], t0 # load rs1
 	extract_rs2
-	ld (gpr_base)[g1*4], r5 # load rs2
-	shri r5, t0, r6 
+	ld (gpr_base)[g1*4], t1 # load rs2
+	shri t1, t0, r6 
 	st r6, (gpr_base)[g2*4]
 1:
 	b next_instruction
@@ -443,14 +443,14 @@ rv32_jal:
 	ldconst 0x80000000, r6  # we want to mask out all but the most significant bit
 	and r6, instruction, t0          # extract the upper most bit off by itself
 	shri 12, t0, t0 		# then sign extend it by shifting 12 places down
-	extract4 21, 10, instruction, r5 # pull imm 10:1 and then correct it!
-	shlo 1, r5, r5 			# shift left by one to make sure that we are aligned to 32-bit boundaries plus it is imm10:1
+	extract4 21, 10, instruction, t1 # pull imm 10:1 and then correct it!
+	shlo 1, t1, t1 			# shift left by one to make sure that we are aligned to 32-bit boundaries plus it is imm10:1
 	chkbit 20, instruction 			# extract bit 20 from the instruction (imm11)
-	alterbit 11, r5, r5     # then shove the bit into position 11 of of the lower part
+	alterbit 11, t1, t1     # then shove the bit into position 11 of of the lower part
 	# now onto imm[19:12]
 	ldconst 0b00000000000011111111000000000000, r6 #  imm[19:12] mask
 	and r6, instruction, r7 			# imm[19:12] extracted by itself in place
-	or r7, r5, r6			# merge [imm11:0] with imm[19:12]
+	or r7, t1, r6			# merge [imm11:0] with imm[19:12]
 	or t0, r6, immediate			# this should get us our proper imm[20:1] value
 	extract_rd
 #	@todo implement the actual jump portion
@@ -509,9 +509,9 @@ rv32_load_primary:
 # PRIMARY OPCODE: STORE
 rv32_store_primary:
 	extract4 7, 5, instruction, t0 # get imm[4:0]
-	shri 25, instruction, r5	# grab imm[11:5] but make sure that immediates are sign-extended
-	shlo 5, r5, r5    # move it into position
-	or t0, r5, immediate 	  # immediate has been computed
+	shri 25, instruction, t1	# grab imm[11:5] but make sure that immediates are sign-extended
+	shlo 5, t1, t1    # move it into position
+	or t0, t1, immediate 	  # immediate has been computed
 					  # compute rs1
 	extract_rs1		  # extract rs1 index (base)
 	extract_rs2		  # extract rs2 index (src)
@@ -521,24 +521,24 @@ rv32_sb:
 	# g1 -> src register index
 	# g3 -> immediate
 	ld (gpr_base)[g0*4], t0 # base
-	ld (gpr_base)[g1*4], r5 # src
-	stob r5, (t0)[immediate] # compute the address
+	ld (gpr_base)[g1*4], t1 # src
+	stob t1, (t0)[immediate] # compute the address
 	b next_instruction
 rv32_sh:
 	# g0 -> base register index
 	# g1 -> src register index
 	# g3 -> immediate
 	ld (gpr_base)[g0*4], t0 # base
-	ld (gpr_base)[g1*4], r5 # src
-	stos r5, (t0)[immediate] # compute the address
+	ld (gpr_base)[g1*4], t1 # src
+	stos t1, (t0)[immediate] # compute the address
 	b next_instruction
 rv32_sw:
 	# g0 -> base register index
 	# g1 -> src register index
 	# g3 -> immediate
 	ld (gpr_base)[g0*4], t0 # base
-	ld (gpr_base)[g1*4], r5 # src
-	st r5, (t0)[immediate] # compute the address
+	ld (gpr_base)[g1*4], t1 # src
+	st t1, (t0)[immediate] # compute the address
 	b next_instruction
 # PRIMARY OPCODE: SYSTEM
 rv32_system:
@@ -622,12 +622,12 @@ instruction_decoder_body:
 	ld 0(pc), instruction # load the current instruction
 	mov instruction, t0    # make a copy of it
 	extract 0, 7, t0 # opcode extraction
-	and 3, t0, r5 # check the lowest two bits
-	cmpobne 3, r5, rv32_undefined_instruction # it is an illegal instruction
+	and 3, t0, t1 # check the lowest two bits
+	cmpobne 3, t1, rv32_undefined_instruction # it is an illegal instruction
 	shro 2, instruction, t0 # remove the lowest two bits since we know it is 0b11
 	and 31, t0, t0 # now get the remaining 5 bits to figure out where to dispatch to
 	ldq rv32_opcode_dispatch_table[t0*16], dispatch_table_base # load the two addresses necessary for execution
-	bx (r8) # jump to r8, r9 has the secondary table, r10 has the tertiary table, r11 is the quaternary table
+	bx (func_addr) # jump to func_addr, subfunc_addr has the secondary table, subsubfunc_addr has the tertiary table, subsubsubfunc_addr is the quaternary table
 next_instruction:
 	addo pc, 4, pc # go to the next instruction
 	b instruction_decoder_body 
