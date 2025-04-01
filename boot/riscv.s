@@ -483,11 +483,6 @@ rv32_blt:
 rv32_bltu:
 rv32_bge:
 rv32_bgeu:
-rv32_lb:
-rv32_lh:
-rv32_lw:
-rv32_lbu:
-rv32_lhu:
 	b next_instruction
 rv32_fence:
 	# do nothing right now
@@ -503,9 +498,37 @@ rv32_undefined_instruction:
 # PRIMARY OPCODE: LOAD
 rv32_load_primary:
 	extract_rd
+	skip_if_rd_is_x0 1f
 	extract_rs1
 	shri 20, instruction, immediate # compute the immediate with sign extension
 	funct3_dispatch 
+1:
+	b next_instruction
+rv32_lb:
+	ld (gpr_base)[rs1*4], t0 # base
+	ldib (t0)[immediate], t1 # dest
+	st t1, (gpr_base)[rd*4]
+	b next_instruction
+rv32_lh:
+	ld (gpr_base)[rs1*4], t0 # base
+	ldis (t0)[immediate], t1 # dest
+	st t1, (gpr_base)[rd*4]
+	b next_instruction
+rv32_lw:
+	ld (gpr_base)[rs1*4], t0 # base
+	ld (t0)[immediate], t1 # dest
+	st t1, (gpr_base)[rd*4]
+	b next_instruction
+rv32_lbu:
+	ld (gpr_base)[rs1*4], t0 # base
+	ldob (t0)[immediate], t1 # dest
+	st t1, (gpr_base)[rd*4]
+	b next_instruction
+rv32_lhu:
+	ld (gpr_base)[rs1*4], t0 # base
+	ldos (t0)[immediate], t1 # dest
+	st t1, (gpr_base)[rd*4]
+	b next_instruction
 # PRIMARY OPCODE: STORE
 rv32_store_primary:
 	extract4 7, 5, instruction, t0 # get imm[4:0]
