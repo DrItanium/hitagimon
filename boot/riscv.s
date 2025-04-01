@@ -476,7 +476,10 @@ rv32_jalr:
 	addo immediate, t0, pc    # update PC
 	# @todo generate an exception if the target address is not aligned to a four byte boundary
 	b instruction_decoder_body
-
+# PRIMARY OPCODE: BRANCH
+rv32_branch_primary:
+# @todo implement
+	b next_instruction
 rv32_beq:
 	ld (gpr_base)[rs1*4], t0 # src1
 	ld (gpr_base)[rs2*4], t1 # src2
@@ -606,9 +609,6 @@ rv32_sw:
 	b next_instruction
 # PRIMARY OPCODE: SYSTEM
 rv32_system:
-	b next_instruction
-# PRIMARY OPCODE: BRANCH
-rv32_branch_primary:
 	b next_instruction
 # PRIMARY OPCODE: OP
 rv32_op_primary:
