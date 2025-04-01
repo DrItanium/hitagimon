@@ -110,7 +110,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	extract \bitpos, \len, \dest
 .endm
 .macro extract_funct3 rdest=t0, rinst=instruction
-	extract4 12, 4, \rinst, \rdest
+	extract4 12, 3, \rinst, \rdest
 .endm
 .macro funct3_dispatch rtmp=t0, rtable=subfunc_addr, rinst=instruction
 	extract_funct3 \rtmp, \rinst # now figure out where to go by getting funct3
@@ -118,13 +118,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	bx (\rtmp)
 .endm
 .macro extract_rs1 dest=rs1, rinst=instruction
-	extract4 15, 5, \rinst, \dest
+	shro 15, \rinst, \dest
+	and 31, \dest, \dest
 .endm
 .macro extract_rs2 dest=rs2, rinst=instruction
-	extract4 20, 5, \rinst, \dest
+	shro 20, \rinst, \dest
+	and 31, \dest, \dest
 .endm
 .macro extract_rd dest=rd, rinst=instruction
-	extract4 7, 5, \rinst, \dest
+	shro 5, \rinst, \dest
+	and 31, \dest, \dest
 .endm
 .macro skip_if_rd_is_x0 dest, target=rd
 	cmpobe 0, \target, \dest
@@ -313,8 +316,8 @@ rv32_auipc:
 rv32_lui:
 	extract_rd 						   
 	skip_if_rd_is_x0 1f # skip if destination is x0 since it is a hint
-	ldconst 0xFFFFF000, t0
-	and instruction, t0, t1
+	shri 12, instruction, t0
+	shro 12, t0, t1
 	st t1, (gpr_base)[rd*4]
 1:
 	b next_instruction
@@ -575,7 +578,9 @@ rv32_lhu:
 	b next_instruction
 # PRIMARY OPCODE: STORE
 rv32_store_primary:
-	extract4 7, 5, instruction, t0 # get imm[4:0]
+    #extract4 7, 5, instruction, t0 # get imm[4:0]
+	shro 7, instruction, t0	# extract imm[4:0]
+	and 31, t0, t0 			# mask it 
 	shri 25, instruction, t1	# grab imm[11:5] but make sure that immediates are sign-extended
 	shlo 5, t1, t1    # move it into position
 	or t0, t1, immediate 	  # immediate has been computed
