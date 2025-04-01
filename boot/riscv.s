@@ -478,12 +478,53 @@ rv32_jalr:
 	b instruction_decoder_body
 
 rv32_beq:
-rv32_bne:
-rv32_blt:
-rv32_bltu:
-rv32_bge:
-rv32_bgeu:
+	ld (gpr_base)[rs1*4], t0 # src1
+	ld (gpr_base)[rs2*4], t1 # src2
+	cmpibe t0, t1, 1f
 	b next_instruction
+1:	
+	addo pc, immediate, pc  
+	b instruction_decoder_body
+rv32_bne:
+	ld (gpr_base)[rs1*4], t0 # src1
+	ld (gpr_base)[rs2*4], t1 # src2
+	cmpibne t0, t1, 1f
+	b next_instruction
+1:	
+	addo pc, immediate, pc  
+	b instruction_decoder_body
+rv32_blt:
+	ld (gpr_base)[rs1*4], t0 # src1
+	ld (gpr_base)[rs2*4], t1 # src2
+	cmpibl t0, t1, 1f
+	b next_instruction
+1:	
+	addo pc, immediate, pc  
+	b instruction_decoder_body
+rv32_bltu:
+	ld (gpr_base)[rs1*4], t0 # src1
+	ld (gpr_base)[rs2*4], t1 # src2
+	cmpobl t0, t1, 1f
+	b next_instruction
+1:	
+	addo pc, immediate, pc  
+	b instruction_decoder_body
+rv32_bge:
+	ld (gpr_base)[rs1*4], t0 # src1
+	ld (gpr_base)[rs2*4], t1 # src2
+	cmpibge t0, t1, 1f
+	b next_instruction
+1:	
+	addo pc, immediate, pc  
+	b instruction_decoder_body
+rv32_bgeu:
+	ld (gpr_base)[rs1*4], t0 # src1
+	ld (gpr_base)[rs2*4], t1 # src2
+	cmpobge t0, t1, 1f
+	b next_instruction
+1:	
+	addo pc, immediate, pc  
+	b instruction_decoder_body
 rv32_fence:
 	# do nothing right now
 	b next_instruction
