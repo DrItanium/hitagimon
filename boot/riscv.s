@@ -30,10 +30,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # sp ->  i960 stack pointer
 # rip -> i960 return instruction pointer
 # r3 -> instruction contents
-# r4 -> temporary
-# r5 -> temporary
-# r6 -> temporary
-# r7 -> temporary
+# r4 -> t0
+# r5 -> t1 
+# r6 -> t2 
+# r7 -> t3 
 # r8 -> opcode function address
 # r9 -> opcode subfunction address
 # r10 -> opcode subsubfunction address
