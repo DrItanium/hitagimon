@@ -61,7 +61,7 @@ fault, and system procedure tables, and then vectors to a user defined routine. 
     .word start_ip # pointer to first ip
     .word cs1 # calculated at link time (bind ?cs1 (- (+ ?SAT ?PRCB ?startIP)))
     .word 0
-    .word 0
+    .word -3 # offset handling
     .word -1
  # processor starts execution at this spot upon power-up after self-test.
 .macro transfer_data size,src,dest,offset
@@ -463,5 +463,5 @@ vect_INT3:
  .bss intr_ram, 1028, 6
  .bss prcb_ram, 176, 6
  .bss user_stack, 0x200, 6 # we will probably barely use the stack
- .bss intr_stack, 0x400, 6 # barely use this stack as well but we want to make sure that interrupts don't cause an overflow
+ .bss intr_stack, 0x200, 6 # barely use this stack as well but we want to make sure that interrupts don't cause an overflow
  .bss sup_stack,  0x200, 6 # the supervisor stack will be allocated but I don't know if it will ever be used at all!

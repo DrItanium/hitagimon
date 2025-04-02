@@ -682,6 +682,7 @@ rv32_op_primary:
 	shri 20, instruction, immediate # compute the immediate with sign extension
 	funct3_dispatch 
 # PRIMARY OPCODE: OP-IMM
+:w
 rv32_op_imm:
 	extract_rd
 	skip_if_rd_is_x0 next_instruction
@@ -696,6 +697,25 @@ rv32_misc_mem:
 	shri 20, instruction, immediate # compute the immediate with sign extension
 	funct3_dispatch 
 # this will hold the opcode dispatch table, aligned to be as easy to work on as possible
+# however, they 
+# this design allows for the actual jump tables to be embedded in the onboard instruction cache
+# without sacrificing performance. Instead of a offset ld followed by a jump, we just jump to the 
+# offset in the table. Each entry in the table is a branch instruction. We also allow the 16-byte lines
+# to be cached in the instruction cache this way. We don't hit the AVR on _each_ instruction. Only
+# when our jump tables are actually 
+.macro def_funct3_jump_table title, op0, op1=rv32_undefined_instruction, op2=rv32_undefined_instruction, op3=rv32_undefined_instruction, op4=rv32_undefined_instruction, op5=rv32_undefined_instruction, op6=rv32_undefined_instructon, op7=rv32_undefined_instruction
+.text
+.align 6
+\title : 
+	b \op0
+	b \op1
+	b \op2
+	b \op3
+	b \op4
+	b \op5
+	b \op6
+	b \op7
+.endm
 .align 4
 rv32_system_instruction_table:
 	.word rv32_ecall # ecall/ebreak
@@ -707,6 +727,7 @@ rv32_system_instruction_table:
 	.word rv32_undefined_instruction # csrrwi
 	.word rv32_undefined_instruction # csrrsi
 	.word rv32_undefined_instruction # csrrci
+.align 4
 rv32_misc_mem_instruction_table:
 	.word rv32_fence
 	.word rv32_undefined_instruction # fence.i
@@ -717,6 +738,7 @@ rv32_misc_mem_instruction_table:
 	.word rv32_undefined_instruction
 	.word rv32_undefined_instruction
 	.word rv32_undefined_instruction
+.align 4
 rv32_op_instruction_table:
 	.word rv32_add # add, sub, or mul handled here
 	.word rv32_sll # sll or mulh handled here
@@ -768,4 +790,3 @@ rv32_store_instruction_table:
 	.word rv32_undefined_instruction
 
 .bss hart0_gpr_register_file, 128, 6
-.bss hart0_fpr_register_file, 256, 6
