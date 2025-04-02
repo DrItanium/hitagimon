@@ -233,7 +233,7 @@ rv32_lui:
 	st t1, (gpr_base)[rd*4]
 1:
 	b next_instruction
-# ADD - Add
+# ADD - Add (check the funct7 code)
 rv32_add:
 	extract_rd
 	skip_if_rd_is_x0 1f
@@ -241,9 +241,14 @@ rv32_add:
 	ld (gpr_base)[rs1*4], t0 # load rs1
 	extract_rs2
 	ld (gpr_base)[rs2*4], t1 # load rs2
+	bbs 30, instruction, rv32_sub # check funct7 to see if we should do a subtract instead
 	addo t0, t1, t2    # do the addition operation, use ordinal form to prevent integer overflow fault
 	st t2, (gpr_base)[rd*4]
 1:
+	b next_instruction
+rv32_sub:
+	subo t1, t0, t2		# x[rd] = x[rs1] - x[rs2] 
+	st t2, (gpr_base)[rd*4]
 	b next_instruction
 # SLT - Set Less Than
 rv32_slt:
@@ -323,33 +328,16 @@ rv32_srl:
 	ld (gpr_base)[rs1*4], t0 # load rs1
 	extract_rs2
 	ld (gpr_base)[rs2*4], t1 # load rs2
+	bbs 30, instruction, rv32_sra
 	shro t0, t1, t2    
 	st t2, (gpr_base)[rd*4]
 1:
 	b next_instruction
 # SUB - Subtract x[rs1] - x[rs2] -> x[rd]
-rv32_sub:
-	extract_rd
-	skip_if_rd_is_x0 1f
-	extract_rs1
-	ld (gpr_base)[rs1*4], t0 # load rs1
-	extract_rs2
-	ld (gpr_base)[rs2*4], t1 # load rs2
-	subo t1, t0, t2		# x[rd] = x[rs1] - x[rs2] 
-	st t2, (gpr_base)[rd*4]
-1:
-	b next_instruction
 # SRA - Shift Right Arithmetic
 rv32_sra:
-	extract_rd
-	skip_if_rd_is_x0 1f
-	extract_rs1
-	ld (gpr_base)[rs1*4], t0 # load rs1
-	extract_rs2
-	ld (gpr_base)[rs2*4], t1 # load rs2
 	shri t1, t0, t2 
 	st t2, (gpr_base)[rd*4]
-1:
 	b next_instruction
 rv32_jal:
 	# jal has a strange immediate of [20|10:1|11|19:12] in that order
@@ -445,10 +433,17 @@ rv32_bgeu:
 	b instruction_decoder_body
 rv32_fence:
 	# do nothing right now
+	ldconst 0x8330000F, t0
+	cmpobe t0, instruction, rv32_fence_tso
+	extract_rd
+	extract_rs1
+	# @todo implement fence instruction
 	b next_instruction
 rv32_fence_tso:
+	# @todo implement fence.tso instruction
 	b next_instruction
 rv32_ecall:
+	bbs 20, instruction, rv32_ebreak
 	b next_instruction
 rv32_ebreak:
 	b next_instruction
@@ -521,18 +516,6 @@ rv32_sw:
 	ld (gpr_base)[rs1*4], t0 # base
 	ld (gpr_base)[rs2*4], t1 # src
 	st t1, (t0)[immediate] # compute the address
-	b next_instruction
-# PRIMARY OPCODE: SYSTEM
-rv32_system:
-	b next_instruction
-# PRIMARY OPCODE: OP
-rv32_op_primary:
-	b next_instruction
-# PRIMARY OPCODE: OP-IMM
-rv32_op_imm:
-	b next_instruction
-# PRIMARY OPCODE: MISC-MEM
-rv32_misc_mem:
 	b next_instruction
 # Here are some of the extensions I want to implement
 # RV32M extension
@@ -654,7 +637,7 @@ rv32_opcode_dispatch_table:
 	instruction_dispatch rv32_load_primary, rv32_load_instruction_table
 	unimplemented_opcode # load-fp
 	unimplemented_opcode # custom0
-	instruction_dispatch rv32_misc_mem
+	instruction_dispatch rv32_misc_mem, rv32_misc_mem_instruction_table
 	instruction_dispatch rv32_op_imm, rv32_op_imm_instruction_table
 	instruction_dispatch rv32_auipc
 	unimplemented_opcode # OP-IMM-32 (can be used for custom instructions in rv32 mode)
@@ -663,7 +646,7 @@ rv32_opcode_dispatch_table:
 	unimplemented_opcode # store-fp
 	unimplemented_opcode # custom-1
 	unimplemented_opcode # AMO
-	instruction_dispatch rv32_op_primary
+	instruction_dispatch rv32_op_primary, rv32_op_instruction_table
 	instruction_dispatch rv32_lui
 	unimplemented_opcode # op-32
 	unimplemented_opcode # 64b
@@ -679,14 +662,70 @@ rv32_opcode_dispatch_table:
 	instruction_dispatch rv32_jalr
 	unimplemented_opcode # reserved
 	instruction_dispatch rv32_jal
-	instruction_dispatch rv32_system
+	instruction_dispatch rv32_system, rv32_system_instruction_table
 	unimplemented_opcode # op-ve
 	unimplemented_opcode # custom-3/rv128
 	unimplemented_opcode # >=8b
 
-
-
+# PRIMARY OPCODE: SYSTEM
+rv32_system:
+	extract_rd
+	skip_if_rd_is_x0 next_instruction
+	extract_rs1
+	shri 20, instruction, immediate # compute the immediate with sign extension
+	funct3_dispatch 
+# PRIMARY OPCODE: OP
+rv32_op_primary:
+	extract_rd
+	skip_if_rd_is_x0 next_instruction
+	extract_rs1
+	shri 20, instruction, immediate # compute the immediate with sign extension
+	funct3_dispatch 
+# PRIMARY OPCODE: OP-IMM
+rv32_op_imm:
+	extract_rd
+	skip_if_rd_is_x0 next_instruction
+	extract_rs1
+	shri 20, instruction, immediate # compute the immediate with sign extension
+	funct3_dispatch 
+# PRIMARY OPCODE: MISC-MEM
+rv32_misc_mem:
+	extract_rd
+	skip_if_rd_is_x0 next_instruction
+	extract_rs1
+	shri 20, instruction, immediate # compute the immediate with sign extension
+	funct3_dispatch 
 # this will hold the opcode dispatch table, aligned to be as easy to work on as possible
+.align 4
+rv32_system_instruction_table:
+	.word rv32_ecall # ecall/ebreak
+	.word rv32_undefined_instruction # csrrw
+	.word rv32_undefined_instruction # csrrs
+	.word rv32_undefined_instruction # csrrc
+	.word rv32_undefined_instruction # undefined
+	.word rv32_undefined_instruction # csrrsi
+	.word rv32_undefined_instruction # csrrwi
+	.word rv32_undefined_instruction # csrrsi
+	.word rv32_undefined_instruction # csrrci
+rv32_misc_mem_instruction_table:
+	.word rv32_fence
+	.word rv32_undefined_instruction # fence.i
+	.word rv32_undefined_instruction
+	.word rv32_undefined_instruction
+	.word rv32_undefined_instruction
+	.word rv32_undefined_instruction
+	.word rv32_undefined_instruction
+	.word rv32_undefined_instruction
+	.word rv32_undefined_instruction
+rv32_op_instruction_table:
+	.word rv32_add # add, sub, or mul handled here
+	.word rv32_sll # sll or mulh handled here
+	.word rv32_slt # slt or mulhsu
+	.word rv32_sltu # sltu or mulhu
+	.word rv32_xor # xor or div
+	.word rv32_srl # sra, srl or divu
+	.word rv32_or  # 'or' | rem
+	.word rv32_and # and  | remu
 .align 4
 rv32_op_imm_instruction_table:
 	.word rv32_addi
