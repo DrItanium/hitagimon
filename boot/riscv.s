@@ -682,7 +682,6 @@ rv32_op_primary:
 	shri 20, instruction, immediate # compute the immediate with sign extension
 	funct3_dispatch 
 # PRIMARY OPCODE: OP-IMM
-:w
 rv32_op_imm:
 	extract_rd
 	skip_if_rd_is_x0 next_instruction
