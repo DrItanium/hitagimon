@@ -175,6 +175,12 @@ rv32_xori:
 	st t1, (gpr_base)[rd*4] # save to the register
 1:
 	b next_instruction
+rv32_shift_right_immediate_dispatch:
+	bbs 30, instruction, rv32_srai
+	b rv32_srli
+rv32_shift_left_immediate_dispatch:
+	bbc 30, instruction, rv32_slli
+	b rv32_undefined_instruction
 # SLLI - Shift Left Logical Immediate
 rv32_slli:
 	extract_rd
@@ -649,7 +655,7 @@ rv32_opcode_dispatch_table:
 	unimplemented_opcode # load-fp
 	unimplemented_opcode # custom0
 	instruction_dispatch rv32_misc_mem
-	instruction_dispatch rv32_op_imm
+	instruction_dispatch rv32_op_imm, rv32_op_imm_instruction_table
 	instruction_dispatch rv32_auipc
 	unimplemented_opcode # OP-IMM-32 (can be used for custom instructions in rv32 mode)
 	unimplemented_opcode # 48b mode?
@@ -680,8 +686,17 @@ rv32_opcode_dispatch_table:
 
 
 
-
 # this will hold the opcode dispatch table, aligned to be as easy to work on as possible
+.align 4
+rv32_op_imm_instruction_table:
+	.word rv32_addi
+	.word rv32_shift_left_immediate_dispatch # 0b001
+	.word rv32_slti
+	.word rv32_sltiu
+	.word rv32_xori
+	.word rv32_shift_right_immediate_dispatch # 0b101
+	.word rv32_ori
+	.word rv32_andi
 .align 4
 rv32_branch_instruction_table:
 	.word rv32_beq
