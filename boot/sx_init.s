@@ -54,7 +54,7 @@ fault, and system procedure tables, and then vectors to a user defined routine. 
 # Core Initialization Block (located at address 0)
 # 8 words
 
-.section .imi
+.section .imi, "a", @prog_bits
     .word system_address_table # SAT pointer
     .word prcb_ptr # prcb pointer
     .word 0
