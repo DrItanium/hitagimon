@@ -630,6 +630,44 @@ rv32_undefined_instruction:
 next_instruction:
 	addo pc, 4, pc # go to the next instruction
 	b instruction_decoder_body 
+.align 6
+rv32_direct_execution_dispatch_table:
+# we cache the jump tables into the instruction cache by using jump instructions
+# remember, the i960Sx does not have a data cache!
+	b rv32_load_primary
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+	b rv32_misc_mem
+
+	b rv32_op_imm
+	b rv32_auipc
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+
+	b rv32_store_primary
+	b rv32_lui
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+
+	b rv32_branch_primary
+	b rv32_jalr
+	b rv32_undefined_instruction
+	b rv32_jal
+
+	b rv32_system
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
 
 .align 6
 # all 32 real entries for the 0b11 form
@@ -638,30 +676,37 @@ rv32_opcode_dispatch_table:
 	unimplemented_opcode # load-fp
 	unimplemented_opcode # custom0
 	instruction_dispatch rv32_misc_mem, rv32_misc_mem_instruction_table
+
 	instruction_dispatch rv32_op_imm, rv32_op_imm_instruction_table
 	instruction_dispatch rv32_auipc
 	unimplemented_opcode # OP-IMM-32 (can be used for custom instructions in rv32 mode)
 	unimplemented_opcode # 48b mode?
+
 	instruction_dispatch rv32_store_primary, rv32_store_instruction_table
 	unimplemented_opcode # store-fp
 	unimplemented_opcode # custom-1
 	unimplemented_opcode # AMO
+
 	instruction_dispatch rv32_op_primary, rv32_op_instruction_table
 	instruction_dispatch rv32_lui
 	unimplemented_opcode # op-32
 	unimplemented_opcode # 64b
+
 	unimplemented_opcode # we don't support madd right now
 	unimplemented_opcode # msub
 	unimplemented_opcode # nmsub
 	unimplemented_opcode # nmadd
+
 	unimplemented_opcode # op-fp
 	unimplemented_opcode # op-v
 	unimplemented_opcode # custom-2/rv128
 	unimplemented_opcode # 48b
+
 	instruction_dispatch rv32_branch_primary, rv32_branch_instruction_table
 	instruction_dispatch rv32_jalr
 	unimplemented_opcode # reserved
 	instruction_dispatch rv32_jal
+
 	instruction_dispatch rv32_system, rv32_system_instruction_table
 	unimplemented_opcode # op-ve
 	unimplemented_opcode # custom-3/rv128
