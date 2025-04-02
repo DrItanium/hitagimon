@@ -63,40 +63,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # that way, we can actually keep the lowest 64 megabytes completely free. 
 .include "macros.s"
 # taken from the isa overview
-.set OPCODE_LOAD,      0b0000011
-.set OPCODE_STORE,     0b0100011
-.set OPCODE_MADD,      0b1000011
-.set OPCODE_BRANCH,    0b1100011
-
-.set OPCODE_LOAD_FP,   0b0000111
-.set OPCODE_STORE_FP,  0b0100111
-.set OPCODE_MSUB, 	   0b1000111
-.set OPCODE_JALR,      0b1100111
-
-.set OPCODE_CUSTOM_0,  0b0001011
-.set OPCODE_CUSTOM_1,  0b0101011
-.set OPCODE_NMSUB,     0b1001011
-.set OPCODE_RESERVED,  0b1101011
-
-.set OPCODE_MISC_MEM,  0b0001111
-.set OPCODE_AMO,       0b0101111
-.set OPCODE_NMADD,     0b1001111
-.set OPCODE_JAL,       0b1101111
-
-.set OPCODE_OP_IMM,    0b0010011
-.set OPCODE_OP,        0b0110011
-.set OPCODE_FP,        0b1010011
-.set OPCODE_SYSTEM,    0b1110011
-
-.set OPCODE_AUIPC,     0b0010111
-.set OPCODE_LUI,       0b0110111
-.set OPCODE_OP_V,      0b1010111
-.set OPCODE_OP_VE,     0b1110111
-
-.set OPCODE_OP_IMM_32, 0b0011011
-.set OPCODE_OP_32,     0b0111011
-.set OPCODE_CUSTOM_2,  0b1011011
-.set OPCODE_CUSTOM_3,  0b1111011
 
 .macro instruction_dispatch target, subtable=0, subsubtable=0, subsubsubtable=0
 	.word \target, \subtable, \subsubtable, \subsubsubtable
@@ -134,66 +100,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .text
-.align 6
-# all 32 real entries for the 0b11 form
-rv32_opcode_dispatch_table:
-	instruction_dispatch rv32_load_primary, rv32_load_instruction_table
-	unimplemented_opcode # load-fp
-	unimplemented_opcode # custom0
-	instruction_dispatch rv32_misc_mem
-	instruction_dispatch rv32_op_imm
-	instruction_dispatch rv32_auipc
-	unimplemented_opcode # OP-IMM-32 (can be used for custom instructions in rv32 mode)
-	unimplemented_opcode # 48b mode?
-	instruction_dispatch rv32_store_primary, rv32_store_instruction_table
-	unimplemented_opcode # store-fp
-	unimplemented_opcode # custom-1
-	unimplemented_opcode # AMO
-	instruction_dispatch rv32_op_primary
-	instruction_dispatch rv32_lui
-	unimplemented_opcode # op-32
-	unimplemented_opcode # 64b
-	unimplemented_opcode # we don't support madd right now
-	unimplemented_opcode # msub
-	unimplemented_opcode # nmsub
-	unimplemented_opcode # nmadd
-	unimplemented_opcode # op-fp
-	unimplemented_opcode # op-v
-	unimplemented_opcode # custom-2/rv128
-	unimplemented_opcode # 48b
-	instruction_dispatch rv32_branch_primary
-	instruction_dispatch rv32_jalr
-	unimplemented_opcode # reserved
-	instruction_dispatch rv32_jal
-	instruction_dispatch rv32_system
-	unimplemented_opcode # op-ve
-	unimplemented_opcode # custom-3/rv128
-	unimplemented_opcode # >=8b
-
-
-
-
-# this will hold the opcode dispatch table, aligned to be as easy to work on as possible
-.align 4
-rv32_load_instruction_table:
-	.word rv32_lb
-	.word rv32_lh
-	.word rv32_lw
-	.word rv32_ld # from the Zilsd extension
-	.word rv32_lbu 
-	.word rv32_lhu 
-	.word rv32_undefined_instruction
-	.word rv32_undefined_instruction
-.align 4
-rv32_store_instruction_table:
-	.word rv32_sb
-	.word rv32_sh
-	.word rv32_sw
-	.word rv32_sd # from the Zilsd extension
-	.word rv32_undefined_instruction
-	.word rv32_undefined_instruction
-	.word rv32_undefined_instruction
-	.word rv32_undefined_instruction
 
 .align 6
 # I have decided to ignore hint instructions completely.
@@ -540,8 +446,6 @@ rv32_ecall:
 	b next_instruction
 rv32_ebreak:
 	b next_instruction
-rv32_undefined_instruction:
-	b next_instruction
 # PRIMARY OPCODE: LOAD
 rv32_load_primary:
 	extract_rd
@@ -675,6 +579,38 @@ rv32_xnor:
 # Zicsr extension
 # Zifencei extension?
 .align 6
+.set OPCODE_LOAD,      (0b0000011 >> 2)
+.set OPCODE_STORE,     (0b0100011 >> 2)
+.set OPCODE_MADD,      (0b1000011 >> 2)
+.set OPCODE_BRANCH,    (0b1100011 >> 2)
+.set OPCODE_LOAD_FP,   (0b0000111 >> 2)
+.set OPCODE_STORE_FP,  (0b0100111 >> 2)
+.set OPCODE_MSUB, 	   (0b1000111 >> 2)
+.set OPCODE_JALR,      (0b1100111 >> 2)
+.set OPCODE_CUSTOM_0,  (0b0001011 >> 2)
+.set OPCODE_CUSTOM_1,  (0b0101011 >> 2)
+.set OPCODE_NMSUB,     (0b1001011 >> 2)
+.set OPCODE_RESERVED,  (0b1101011 >> 2)
+.set OPCODE_MISC_MEM,  (0b0001111 >> 2)
+.set OPCODE_AMO,       (0b0101111 >> 2)
+.set OPCODE_NMADD,     (0b1001111 >> 2)
+.set OPCODE_JAL,       (0b1101111 >> 2)
+.set OPCODE_OP_IMM,    (0b0010011 >> 2)
+.set OPCODE_OP,        (0b0110011 >> 2)
+.set OPCODE_FP,        (0b1010011 >> 2)
+.set OPCODE_SYSTEM,    (0b1110011 >> 2)
+.set OPCODE_AUIPC,     (0b0010111 >> 2)
+.set OPCODE_LUI,       (0b0110111 >> 2)
+.set OPCODE_OP_V,      (0b1010111 >> 2)
+.set OPCODE_OP_VE,     (0b1110111 >> 2)
+.set OPCODE_OP_IMM_32, (0b0011011 >> 2)
+.set OPCODE_OP_32,     (0b0111011 >> 2)
+.set OPCODE_CUSTOM_2,  (0b1011011 >> 2)
+.set OPCODE_CUSTOM_3,  (0b1111011 >> 2)
+.set OPCODE_48B, 	   (0b0011111 >> 2)
+.set OPCODE_64B, 	   (0b0111111 >> 2)
+.set OPCODE_48B_2, 	   (0b1011111 >> 2)
+.set OPCODE_80B,       (0b1111111 >> 2)
 .global riscv_emulator_start
 riscv_emulator_start:
 	# clear all temporaries ahead of time
@@ -695,11 +631,87 @@ instruction_decoder_body:
 	cmpobne 3, t1, rv32_undefined_instruction # it is an illegal instruction
 	shro 2, instruction, t0 # remove the lowest two bits since we know it is 0b11
 	and 31, t0, t0 # now get the remaining 5 bits to figure out where to dispatch to
+	# the lack of an onboard data cache means that constantly accessing the lookup table is actually extremely inefficient
+	# the i960 has to talk to the AVR/RP2350 chip when it wants to access table data
+	# instead, we should allow the dispatch table to be encoded into the onboard instruction cache by using instructions like cmpobe
+	# however, this will introduce quite a bit of overhead for compare and dispatch
 	ldq rv32_opcode_dispatch_table[t0*16], dispatch_table_base # load the two addresses necessary for execution
 	bx (func_addr) # jump to func_addr, subfunc_addr has the secondary table, subsubfunc_addr has the tertiary table, subsubsubfunc_addr is the quaternary table
+rv32_undefined_instruction:
 next_instruction:
 	addo pc, 4, pc # go to the next instruction
 	b instruction_decoder_body 
+
+.align 6
+# all 32 real entries for the 0b11 form
+rv32_opcode_dispatch_table:
+	instruction_dispatch rv32_load_primary, rv32_load_instruction_table
+	unimplemented_opcode # load-fp
+	unimplemented_opcode # custom0
+	instruction_dispatch rv32_misc_mem
+	instruction_dispatch rv32_op_imm
+	instruction_dispatch rv32_auipc
+	unimplemented_opcode # OP-IMM-32 (can be used for custom instructions in rv32 mode)
+	unimplemented_opcode # 48b mode?
+	instruction_dispatch rv32_store_primary, rv32_store_instruction_table
+	unimplemented_opcode # store-fp
+	unimplemented_opcode # custom-1
+	unimplemented_opcode # AMO
+	instruction_dispatch rv32_op_primary
+	instruction_dispatch rv32_lui
+	unimplemented_opcode # op-32
+	unimplemented_opcode # 64b
+	unimplemented_opcode # we don't support madd right now
+	unimplemented_opcode # msub
+	unimplemented_opcode # nmsub
+	unimplemented_opcode # nmadd
+	unimplemented_opcode # op-fp
+	unimplemented_opcode # op-v
+	unimplemented_opcode # custom-2/rv128
+	unimplemented_opcode # 48b
+	instruction_dispatch rv32_branch_primary, rv32_branch_instruction_table
+	instruction_dispatch rv32_jalr
+	unimplemented_opcode # reserved
+	instruction_dispatch rv32_jal
+	instruction_dispatch rv32_system
+	unimplemented_opcode # op-ve
+	unimplemented_opcode # custom-3/rv128
+	unimplemented_opcode # >=8b
+
+
+
+
+# this will hold the opcode dispatch table, aligned to be as easy to work on as possible
+.align 4
+rv32_branch_instruction_table:
+	.word rv32_beq
+	.word rv32_bne
+	.word rv32_undefined_instruction
+	.word rv32_undefined_instruction
+	.word rv32_blt
+	.word rv32_bge
+	.word rv32_bltu
+	.word rv32_bgeu
+.align 4
+rv32_load_instruction_table:
+	.word rv32_lb
+	.word rv32_lh
+	.word rv32_lw
+	.word rv32_ld # from the Zilsd extension
+	.word rv32_lbu 
+	.word rv32_lhu 
+	.word rv32_undefined_instruction
+	.word rv32_undefined_instruction
+.align 4
+rv32_store_instruction_table:
+	.word rv32_sb
+	.word rv32_sh
+	.word rv32_sw
+	.word rv32_sd # from the Zilsd extension
+	.word rv32_undefined_instruction
+	.word rv32_undefined_instruction
+	.word rv32_undefined_instruction
+	.word rv32_undefined_instruction
 
 .bss hart0_gpr_register_file, 128, 6
 .bss hart0_fpr_register_file, 256, 6
