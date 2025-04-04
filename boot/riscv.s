@@ -392,54 +392,6 @@ rv32_jalr:
 	addo immediate, t0, pc    # update PC
 	# @todo generate an exception if the target address is not aligned to a four byte boundary
 	b instruction_decoder_body
-rv32_beq:
-	ld (gpr_base)[rs1*4], t0 # src1
-	ld (gpr_base)[rs2*4], t1 # src2
-	cmpibe t0, t1, 1f
-	b next_instruction
-1:	
-	addo pc, immediate, pc  
-	b instruction_decoder_body
-rv32_bne:
-	ld (gpr_base)[rs1*4], t0 # src1
-	ld (gpr_base)[rs2*4], t1 # src2
-	cmpibne t0, t1, 1f
-	b next_instruction
-1:	
-	addo pc, immediate, pc  
-	b instruction_decoder_body
-rv32_blt:
-	ld (gpr_base)[rs1*4], t0 # src1
-	ld (gpr_base)[rs2*4], t1 # src2
-	cmpibl t0, t1, 1f
-	b next_instruction
-1:	
-	addo pc, immediate, pc  
-	b instruction_decoder_body
-rv32_bltu:
-	ld (gpr_base)[rs1*4], t0 # src1
-	ld (gpr_base)[rs2*4], t1 # src2
-	cmpobl t0, t1, 1f
-	b next_instruction
-1:	
-	addo pc, immediate, pc  
-	b instruction_decoder_body
-rv32_bge:
-	ld (gpr_base)[rs1*4], t0 # src1
-	ld (gpr_base)[rs2*4], t1 # src2
-	cmpibge t0, t1, 1f
-	b next_instruction
-1:	
-	addo pc, immediate, pc  
-	b instruction_decoder_body
-rv32_bgeu:
-	ld (gpr_base)[rs1*4], t0 # src1
-	ld (gpr_base)[rs2*4], t1 # src2
-	cmpobge t0, t1, 1f
-	b next_instruction
-1:	
-	addo pc, immediate, pc  
-	b instruction_decoder_body
 rv32_fence:
 	# do nothing right now
 	ldconst 0x8330000F, t0
@@ -455,55 +407,6 @@ rv32_ecall:
 	bbs 20, instruction, rv32_ebreak
 	b next_instruction
 rv32_ebreak:
-	b next_instruction
-rv32_lb:
-	ld (gpr_base)[rs1*4], t0 # base
-	ldib (t0)[immediate], t1 # dest
-	st t1, (gpr_base)[rd*4]
-	b next_instruction
-rv32_lh:
-	ld (gpr_base)[rs1*4], t0 # base
-	ldis (t0)[immediate], t1 # dest
-	st t1, (gpr_base)[rd*4]
-	b next_instruction
-rv32_lw:
-	ld (gpr_base)[rs1*4], t0 # base
-	ld (t0)[immediate], t1 # dest
-	st t1, (gpr_base)[rd*4]
-	b next_instruction
-rv32_lbu:
-	ld (gpr_base)[rs1*4], t0 # base
-	ldob (t0)[immediate], t1 # dest
-	st t1, (gpr_base)[rd*4]
-	b next_instruction
-rv32_lhu:
-	ld (gpr_base)[rs1*4], t0 # base
-	ldos (t0)[immediate], t1 # dest
-	st t1, (gpr_base)[rd*4]
-	b next_instruction
-rv32_sb:
-	# rs1 -> base register index
-	# rs2 -> src register index
-	# g3 -> immediate
-	ld (gpr_base)[rs1*4], t0 # base
-	ld (gpr_base)[rs2*4], t1 # src
-	stob t1, (t0)[immediate] # compute the address
-	b next_instruction
-rv32_sh:
-	# rs1 -> base register index
-	# rs2 -> src register index
-	# g3 -> immediate
-	ld (gpr_base)[rs1*4], t0 # base
-	ld (gpr_base)[rs2*4], t1 # src
-	stos t1, (t0)[immediate] # compute the address
-	b next_instruction
-rv32_sw:
-	# rs1 -> base register index
-	# rs2 -> src register index
-	# g3 -> immediate
-	ld (gpr_base)[rs1*4], t0 # base
-	ld (gpr_base)[rs2*4], t1 # src
-	st t1, (t0)[immediate] # compute the address
 	b next_instruction
 # Here are some of the extensions I want to implement
 # RV32M extension
@@ -593,6 +496,31 @@ rv32_load_primary:
 	shri 20, instruction, immediate # compute the immediate with sign extension
 	extract_funct3 t0, instruction # now figure out where to go by getting funct3
 	bx rv32_load_instruction_table[t0*4]
+rv32_lb:
+	ld (gpr_base)[rs1*4], t0 # base
+	ldib (t0)[immediate], t1 # dest
+	st t1, (gpr_base)[rd*4]
+	b next_instruction
+rv32_lh:
+	ld (gpr_base)[rs1*4], t0 # base
+	ldis (t0)[immediate], t1 # dest
+	st t1, (gpr_base)[rd*4]
+	b next_instruction
+rv32_lw:
+	ld (gpr_base)[rs1*4], t0 # base
+	ld (t0)[immediate], t1 # dest
+	st t1, (gpr_base)[rd*4]
+	b next_instruction
+rv32_lbu:
+	ld (gpr_base)[rs1*4], t0 # base
+	ldob (t0)[immediate], t1 # dest
+	st t1, (gpr_base)[rd*4]
+	b next_instruction
+rv32_lhu:
+	ld (gpr_base)[rs1*4], t0 # base
+	ldos (t0)[immediate], t1 # dest
+	st t1, (gpr_base)[rd*4]
+	b next_instruction
 
 # PRIMARY OPCODE: STORE
 rv32_store_primary:
@@ -607,6 +535,30 @@ rv32_store_primary:
 	extract_rs2		  # extract rs2 index (src)
 	extract_funct3 t0, instruction # now figure out where to go by getting funct3
 	bx rv32_store_instruction_table[t0*4]
+rv32_sb:
+	# rs1 -> base register index
+	# rs2 -> src register index
+	# g3 -> immediate
+	ld (gpr_base)[rs1*4], t0 # base
+	ld (gpr_base)[rs2*4], t1 # src
+	stob t1, (t0)[immediate] # compute the address
+	b next_instruction
+rv32_sh:
+	# rs1 -> base register index
+	# rs2 -> src register index
+	# g3 -> immediate
+	ld (gpr_base)[rs1*4], t0 # base
+	ld (gpr_base)[rs2*4], t1 # src
+	stos t1, (t0)[immediate] # compute the address
+	b next_instruction
+rv32_sw:
+	# rs1 -> base register index
+	# rs2 -> src register index
+	# g3 -> immediate
+	ld (gpr_base)[rs1*4], t0 # base
+	ld (gpr_base)[rs2*4], t1 # src
+	st t1, (t0)[immediate] # compute the address
+	b next_instruction
 # PRIMARY OPCODE: SYSTEM
 rv32_system:
 	extract_rd
@@ -641,8 +593,71 @@ rv32_misc_mem:
 	bx rv32_misc_mem_instruction_table[t0*4]
 # PRIMARY OPCODE: BRANCH
 rv32_branch_primary:
-# @todo implement
+# imm[12|10:5]...imm[4:1|11]
+	extract4 25, 6, instruction, t0 # imm10:5
+	shlo 6, t0, t0 
+	extract4 8, 4, instruction, t1 # imm4:1, skip imm11
+	shlo 1, t1, t1
+	or t0, t1, t0 # combine these two together
+	chkbit 7, instruction # check imm11
+	alterbit 11, t0, t0 # shift that over
+	bbc 31, instruction, 1f # if most significant bit of instruction is clear then no need to shift over
+	ldconst -4096, t1
+	or t0, t1, t0 # combine with t0 to make negative
+1:
+	clrbit 0, t0, immediate # clear imm0 to do the proper alignment
+	extract_rs1
+	extract_rs2
+	extract_funct3 t0, instruction
+	bx rv32_branch_instruction_table[t0*4]
+rv32_beq:
+	ld (gpr_base)[rs1*4], t0 # src1
+	ld (gpr_base)[rs2*4], t1 # src2
+	cmpibe t0, t1, 1f
 	b next_instruction
+1:	
+	addo pc, immediate, pc  
+	b instruction_decoder_body
+rv32_bne:
+	ld (gpr_base)[rs1*4], t0 # src1
+	ld (gpr_base)[rs2*4], t1 # src2
+	cmpibne t0, t1, 1f
+	b next_instruction
+1:	
+	addo pc, immediate, pc  
+	b instruction_decoder_body
+rv32_blt:
+	ld (gpr_base)[rs1*4], t0 # src1
+	ld (gpr_base)[rs2*4], t1 # src2
+	cmpibl t0, t1, 1f
+	b next_instruction
+1:	
+	addo pc, immediate, pc  
+	b instruction_decoder_body
+rv32_bltu:
+	ld (gpr_base)[rs1*4], t0 # src1
+	ld (gpr_base)[rs2*4], t1 # src2
+	cmpobl t0, t1, 1f
+	b next_instruction
+1:	
+	addo pc, immediate, pc  
+	b instruction_decoder_body
+rv32_bge:
+	ld (gpr_base)[rs1*4], t0 # src1
+	ld (gpr_base)[rs2*4], t1 # src2
+	cmpibge t0, t1, 1f
+	b next_instruction
+1:	
+	addo pc, immediate, pc  
+	b instruction_decoder_body
+rv32_bgeu:
+	ld (gpr_base)[rs1*4], t0 # src1
+	ld (gpr_base)[rs2*4], t1 # src2
+	cmpobge t0, t1, 1f
+	b next_instruction
+1:	
+	addo pc, immediate, pc  
+	b instruction_decoder_body
 # dispatch tables start
 .align 6
 rv32_direct_execution_dispatch_table:
