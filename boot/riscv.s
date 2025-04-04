@@ -144,68 +144,62 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # ADDI - Add Immediate
 rv32_addi:
 	extract_rd
-	skip_if_rd_is_x0 1f
+	skip_if_rd_is_x0 next_instruction
 	extract_rs1
 	extract_imm11_itype
 	ld (gpr_base)[rs1*4], t0 # load rs1 contents
 	addo immediate, t0, t1    # add rs1 with the immediate
 	st t1, (gpr_base)[rd*4] # save to the register
-1:
 	b next_instruction
 # SLTI - Set Less Than Immediate (place the value 1 in register rd if register
 #		rs1 is less than the sign-extended immediate when both are treated as
 #		signed numbers)
 rv32_slti:
 	extract_rd
-	skip_if_rd_is_x0 1f
+	skip_if_rd_is_x0 next_instruction
 	extract_rs1
 	extract_imm11_itype
 	ld (gpr_base)[rs1*4], t0 # load rs1 contents
 	cmpi t0, immediate 	   # compare t0 to immediate 
 	testl t1		   # check and see if t0 < immediate
 	st t1, (gpr_base)[rd*4] # save the result to the dest register
-1:
 	b next_instruction
 rv32_sltiu:
 	extract_rd
-	skip_if_rd_is_x0 1f
+	skip_if_rd_is_x0 next_instruction
 	extract_rs1
 	extract_imm11_itype
 	ld (gpr_base)[rs1*4], t0 # load rs1 contents
 	cmpo t0, immediate 	   # compare t0 to immediate (ordinal)
 	testl t1		   # check and see if t0 < immediate
 	st t1, (gpr_base)[rd*4] # save the result to the dest register
-1:
 	b next_instruction
 rv32_andi:
 	extract_rd
-	skip_if_rd_is_x0 1f
+	skip_if_rd_is_x0 next_instruction
 	extract_rs1
 	extract_imm11_itype
 	ld (gpr_base)[rs1*4], t0 # load rs1 contents
 	and immediate, t0, t1    # add rs1 with the immediate
 	st t1, (gpr_base)[rd*4] # save to the register
-1:
 	b next_instruction
 rv32_ori:
 	extract_rd
-	skip_if_rd_is_x0 1f
+	skip_if_rd_is_x0 next_instruction
 	extract_rs1
 	extract_imm11_itype
 	ld (gpr_base)[rs1*4], t0 # load rs1 contents
 	or immediate, t0, t1    # add rs1 with the immediate
 	st t1, (gpr_base)[rd*4] # save to the register
-1:
 	b next_instruction
 rv32_xori:
 	extract_rd
-	skip_if_rd_is_x0 1f
+	skip_if_rd_is_x0 next_instruction
 	extract_rs1
 	extract_imm11_itype
 	ld (gpr_base)[rs1*4], t0 # load rs1 contents
 	xor immediate, t0, t1    # add rs1 with the immediate
 	st t1, (gpr_base)[rd*4] # save to the register
-1:
 	b next_instruction
 rv32_shift_right_immediate_dispatch:
 	bbs 30, instruction, rv32_srai
@@ -216,59 +210,54 @@ rv32_shift_left_immediate_dispatch:
 # SLLI - Shift Left Logical Immediate
 rv32_slli:
 	extract_rd
-	skip_if_rd_is_x0 1f
+	skip_if_rd_is_x0 next_instruction
 	extract_rs1
 	extract4 20, 5, instruction, t0 # extract imm[4:0]
 	ld (gpr_base)[rs1*4], t1
 	shlo t0, t1, t2        # do the shift left
 	st t2, (gpr_base)[rd*4]	   # save the result
-1:
 	b next_instruction
 # SRLI - Shift Right Logical Immediate
 rv32_srli:
 	extract_rd
-	skip_if_rd_is_x0 1f
+	skip_if_rd_is_x0 next_instruction
 	extract_rs1
 	extract4 20, 5, instruction, t0 # extract imm[4:0]
 	ld (gpr_base)[rs1*4], t1	   # get the contents of rs1
 	shro t0, t1, t2        # do the shift right
 	st t2, (gpr_base)[rd*4]	   # save the result
-1:
 	b next_instruction
 # SRAI - Shift Right Arithmetic Immediate
 rv32_srai:
 	extract_rd
-	skip_if_rd_is_x0 1f
+	skip_if_rd_is_x0 next_instruction
 	extract_rs1
 	extract4 20, 5, instruction, t0 # extract imm[4:0]
 	ld (gpr_base)[rs1*4], t1	   # get the contents of rs1
 	shri t0, t1, t2        # do the shift right (but do the integer version)
 	st t2, (gpr_base)[rd*4]	   # save the result
-1:
 	b next_instruction
 # AUIPC - Add Upper Immediate to PC
 rv32_auipc:
 	extract_rd 			               # where we are going to save things to
-	skip_if_rd_is_x0 1f 			   # skip the actual act of saving if the destination is x0, this is a hint
+	skip_if_rd_is_x0 next_instruction  # skip the actual act of saving if the destination is x0, this is a hint
 	ldconst 0xFFFFF000, t0             # load a mask into memory
 	and instruction, t0, t1		               # construct the offset
 	addo pc, t1, t2 	               # add it to the program counter
 	st t2, (gpr_base)[rd*4] 				   # save the result to a register
-1:
 	b next_instruction
 # LUI - Load Upper Immediate
 rv32_lui:
 	extract_rd 						   
-	skip_if_rd_is_x0 1f # skip if destination is x0 since it is a hint
+	skip_if_rd_is_x0 next_instruction # skip if destination is x0 since it is a hint
 	shri 12, instruction, t0
 	shro 12, t0, t1
 	st t1, (gpr_base)[rd*4]
-1:
 	b next_instruction
 # ADD - Add (check the funct7 code)
 rv32_add:
 	extract_rd
-	skip_if_rd_is_x0 1f
+	skip_if_rd_is_x0 next_instruction
 	extract_rs1
 	ld (gpr_base)[rs1*4], t0 # load rs1
 	extract_rs2
@@ -276,7 +265,6 @@ rv32_add:
 	bbs 30, instruction, rv32_sub # check funct7 to see if we should do a subtract instead
 	addo t0, t1, t2    # do the addition operation, use ordinal form to prevent integer overflow fault
 	st t2, (gpr_base)[rd*4]
-1:
 	b next_instruction
 rv32_sub:
 	subo t1, t0, t2		# x[rd] = x[rs1] - x[rs2] 
@@ -285,7 +273,7 @@ rv32_sub:
 # SLT - Set Less Than
 rv32_slt:
 	extract_rd
-	skip_if_rd_is_x0 1f
+	skip_if_rd_is_x0 next_instruction
 	extract_rs1
 	ld (gpr_base)[rs1*4], t0 # load rs1
 	extract_rs2
@@ -293,11 +281,10 @@ rv32_slt:
 	cmpi t0, t1		   # compare t0, t1
 	testl t2		   # test to see if we got a less than
 	st t2, (gpr_base)[rd*4]
-1:
 	b next_instruction
 rv32_sltu:
 	extract_rd
-	skip_if_rd_is_x0 1f
+	skip_if_rd_is_x0 next_instruction
 	extract_rs1
 	ld (gpr_base)[rs1*4], t0 # load rs1
 	extract_rs2
@@ -305,57 +292,52 @@ rv32_sltu:
 	cmpo t0, t1		   # compare t0, t1
 	testl t2		   # test to see if we got a less than
 	st t2, (gpr_base)[rd*4]
-1:
 	b next_instruction
 rv32_and:
 	extract_rd
-	skip_if_rd_is_x0 1f
+	skip_if_rd_is_x0 next_instruction
 	extract_rs1
 	ld (gpr_base)[rs1*4], t0 # load rs1
 	extract_rs2
 	ld (gpr_base)[rs2*4], t1 # load rs2
 	and t0, t1, t2    
 	st t2, (gpr_base)[rd*4]
-1:
 	b next_instruction
 rv32_or:
 	extract_rd
-	skip_if_rd_is_x0 1f
+	skip_if_rd_is_x0 next_instruction
 	extract_rs1
 	ld (gpr_base)[rs1*4], t0 # load rs1
 	extract_rs2
 	ld (gpr_base)[rs2*4], t1 # load rs2
 	or t0, t1, t2    
 	st t2, (gpr_base)[rd*4]
-1:
 	b next_instruction
 rv32_xor:
 	extract_rd
-	skip_if_rd_is_x0 1f
+	skip_if_rd_is_x0 next_instruction
 	extract_rs1
 	ld (gpr_base)[rs1*4], t0 # load rs1
 	extract_rs2
 	ld (gpr_base)[rs2*4], t1 # load rs2
 	xor t0, t1, t2    
 	st t2, (gpr_base)[rd*4]
-1:
 	b next_instruction
 # SLL - Shift Left Logical
 rv32_sll:
 	extract_rd
-	skip_if_rd_is_x0 1f
+	skip_if_rd_is_x0 next_instruction
 	extract_rs1
 	ld (gpr_base)[rs1*4], t0 # load rs1
 	extract_rs2
 	ld (gpr_base)[rs2*4], t1 # load rs2
 	shlo t0, t1, t2    
 	st t2, (gpr_base)[rd*4]
-1:
 	b next_instruction
 # SRL - Shift Right Logical
 rv32_srl:
 	extract_rd
-	skip_if_rd_is_x0 1f
+	skip_if_rd_is_x0 next_instruction
 	extract_rs1
 	ld (gpr_base)[rs1*4], t0 # load rs1
 	extract_rs2
@@ -363,7 +345,6 @@ rv32_srl:
 	bbs 30, instruction, rv32_sra
 	shro t0, t1, t2    
 	st t2, (gpr_base)[rd*4]
-1:
 	b next_instruction
 # SUB - Subtract x[rs1] - x[rs2] -> x[rd]
 # SRA - Shift Right Arithmetic
