@@ -447,15 +447,6 @@ rv32_ecall:
 	b next_instruction
 rv32_ebreak:
 	b next_instruction
-# PRIMARY OPCODE: LOAD
-rv32_load_primary:
-	extract_rd
-	skip_if_rd_is_x0 1f
-	extract_rs1
-	shri 20, instruction, immediate # compute the immediate with sign extension
-	funct3_dispatch 
-1:
-	b next_instruction
 rv32_lb:
 	ld (gpr_base)[rs1*4], t0 # base
 	ldib (t0)[immediate], t1 # dest
@@ -624,8 +615,7 @@ instruction_decoder_body:
 	# the i960 has to talk to the AVR/RP2350 chip when it wants to access table data
 	# instead, we should allow the dispatch table to be encoded into the onboard instruction cache by using instructions like cmpobe
 	# however, this will introduce quite a bit of overhead for compare and dispatch
-	ldq rv32_opcode_dispatch_table[t0*16], dispatch_table_base # load the two addresses necessary for execution
-	bx (func_addr) # jump to func_addr, subfunc_addr has the secondary table, subsubfunc_addr has the tertiary table, subsubsubfunc_addr is the quaternary table
+	bx rv32_direct_execution_dispatch_table[t0*4]
 rv32_undefined_instruction:
 next_instruction:
 	addo pc, 4, pc # go to the next instruction
@@ -668,49 +658,67 @@ rv32_direct_execution_dispatch_table:
 	b rv32_undefined_instruction
 	b rv32_undefined_instruction
 	b rv32_undefined_instruction
+# PRIMARY OPCODE: LOAD
+rv32_load_primary:
+	extract_rd
+	skip_if_rd_is_x0 next_instruction
+	extract_rs1
+	shri 20, instruction, immediate # compute the immediate with sign extension
+	extract_funct3 t0, instruction # now figure out where to go by getting funct3
+	bx rv32_load_instruction_table[t0*4]
+
+rv32_load_instruction_table:
+	b rv32_lb
+	b rv32_lh
+	b rv32_lw
+	b rv32_ld # from the Zilsd extension
+	b rv32_lbu
+	b rv32_lhu
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
 
 .align 6
 # all 32 real entries for the 0b11 form
-rv32_opcode_dispatch_table:
-	instruction_dispatch rv32_load_primary, rv32_load_instruction_table
-	unimplemented_opcode # load-fp
-	unimplemented_opcode # custom0
-	instruction_dispatch rv32_misc_mem, rv32_misc_mem_instruction_table
-
-	instruction_dispatch rv32_op_imm, rv32_op_imm_instruction_table
-	instruction_dispatch rv32_auipc
-	unimplemented_opcode # OP-IMM-32 (can be used for custom instructions in rv32 mode)
-	unimplemented_opcode # 48b mode?
-
-	instruction_dispatch rv32_store_primary, rv32_store_instruction_table
-	unimplemented_opcode # store-fp
-	unimplemented_opcode # custom-1
-	unimplemented_opcode # AMO
-
-	instruction_dispatch rv32_op_primary, rv32_op_instruction_table
-	instruction_dispatch rv32_lui
-	unimplemented_opcode # op-32
-	unimplemented_opcode # 64b
-
-	unimplemented_opcode # we don't support madd right now
-	unimplemented_opcode # msub
-	unimplemented_opcode # nmsub
-	unimplemented_opcode # nmadd
-
-	unimplemented_opcode # op-fp
-	unimplemented_opcode # op-v
-	unimplemented_opcode # custom-2/rv128
-	unimplemented_opcode # 48b
-
-	instruction_dispatch rv32_branch_primary, rv32_branch_instruction_table
-	instruction_dispatch rv32_jalr
-	unimplemented_opcode # reserved
-	instruction_dispatch rv32_jal
-
-	instruction_dispatch rv32_system, rv32_system_instruction_table
-	unimplemented_opcode # op-ve
-	unimplemented_opcode # custom-3/rv128
-	unimplemented_opcode # >=8b
+#rv32_opcode_dispatch_table:
+#	instruction_dispatch rv32_load_primary, rv32_load_instruction_table
+#	unimplemented_opcode # load-fp
+#	unimplemented_opcode # custom0
+#	instruction_dispatch rv32_misc_mem, rv32_misc_mem_instruction_table
+#
+#	instruction_dispatch rv32_op_imm, rv32_op_imm_instruction_table
+#	instruction_dispatch rv32_auipc
+#	unimplemented_opcode # OP-IMM-32 (can be used for custom instructions in rv32 mode)
+#	unimplemented_opcode # 48b mode?
+#
+#	instruction_dispatch rv32_store_primary, rv32_store_instruction_table
+#	unimplemented_opcode # store-fp
+#	unimplemented_opcode # custom-1
+#	unimplemented_opcode # AMO
+#
+#	instruction_dispatch rv32_op_primary, rv32_op_instruction_table
+#	instruction_dispatch rv32_lui
+#	unimplemented_opcode # op-32
+#	unimplemented_opcode # 64b
+#
+#	unimplemented_opcode # we don't support madd right now
+#	unimplemented_opcode # msub
+#	unimplemented_opcode # nmsub
+#	unimplemented_opcode # nmadd
+#
+#	unimplemented_opcode # op-fp
+#	unimplemented_opcode # op-v
+#	unimplemented_opcode # custom-2/rv128
+#	unimplemented_opcode # 48b
+#
+#	instruction_dispatch rv32_branch_primary, rv32_branch_instruction_table
+#	instruction_dispatch rv32_jalr
+#	unimplemented_opcode # reserved
+#	instruction_dispatch rv32_jal
+#
+#	instruction_dispatch rv32_system, rv32_system_instruction_table
+#	unimplemented_opcode # op-ve
+#	unimplemented_opcode # custom-3/rv128
+#	unimplemented_opcode # >=8b
 
 # PRIMARY OPCODE: SYSTEM
 rv32_system:
@@ -812,16 +820,6 @@ rv32_branch_instruction_table:
 	.word rv32_bge
 	.word rv32_bltu
 	.word rv32_bgeu
-.align 4
-rv32_load_instruction_table:
-	.word rv32_lb
-	.word rv32_lh
-	.word rv32_lw
-	.word rv32_ld # from the Zilsd extension
-	.word rv32_lbu 
-	.word rv32_lhu 
-	.word rv32_undefined_instruction
-	.word rv32_undefined_instruction
 .align 4
 rv32_store_instruction_table:
 	.word rv32_sb
