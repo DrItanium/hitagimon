@@ -63,6 +63,38 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # that way, we can actually keep the lowest 64 megabytes completely free. 
 .include "macros.s"
 # taken from the isa overview
+.set OPCODE_LOAD,      (0b0000011 >> 2)
+.set OPCODE_STORE,     (0b0100011 >> 2)
+.set OPCODE_MADD,      (0b1000011 >> 2)
+.set OPCODE_BRANCH,    (0b1100011 >> 2)
+.set OPCODE_LOAD_FP,   (0b0000111 >> 2)
+.set OPCODE_STORE_FP,  (0b0100111 >> 2)
+.set OPCODE_MSUB, 	   (0b1000111 >> 2)
+.set OPCODE_JALR,      (0b1100111 >> 2)
+.set OPCODE_CUSTOM_0,  (0b0001011 >> 2)
+.set OPCODE_CUSTOM_1,  (0b0101011 >> 2)
+.set OPCODE_NMSUB,     (0b1001011 >> 2)
+.set OPCODE_RESERVED,  (0b1101011 >> 2)
+.set OPCODE_MISC_MEM,  (0b0001111 >> 2)
+.set OPCODE_AMO,       (0b0101111 >> 2)
+.set OPCODE_NMADD,     (0b1001111 >> 2)
+.set OPCODE_JAL,       (0b1101111 >> 2)
+.set OPCODE_OP_IMM,    (0b0010011 >> 2)
+.set OPCODE_OP,        (0b0110011 >> 2)
+.set OPCODE_FP,        (0b1010011 >> 2)
+.set OPCODE_SYSTEM,    (0b1110011 >> 2)
+.set OPCODE_AUIPC,     (0b0010111 >> 2)
+.set OPCODE_LUI,       (0b0110111 >> 2)
+.set OPCODE_OP_V,      (0b1010111 >> 2)
+.set OPCODE_OP_VE,     (0b1110111 >> 2)
+.set OPCODE_OP_IMM_32, (0b0011011 >> 2)
+.set OPCODE_OP_32,     (0b0111011 >> 2)
+.set OPCODE_CUSTOM_2,  (0b1011011 >> 2)
+.set OPCODE_CUSTOM_3,  (0b1111011 >> 2)
+.set OPCODE_48B, 	   (0b0011111 >> 2)
+.set OPCODE_64B, 	   (0b0111111 >> 2)
+.set OPCODE_48B_2, 	   (0b1011111 >> 2)
+.set OPCODE_80B,       (0b1111111 >> 2)
 
 .macro instruction_dispatch target, subtable=0, subsubtable=0, subsubsubtable=0
 	.word \target, \subtable, \subsubtable, \subsubsubtable
@@ -379,10 +411,6 @@ rv32_jalr:
 	addo immediate, t0, pc    # update PC
 	# @todo generate an exception if the target address is not aligned to a four byte boundary
 	b instruction_decoder_body
-# PRIMARY OPCODE: BRANCH
-rv32_branch_primary:
-# @todo implement
-	b next_instruction
 rv32_beq:
 	ld (gpr_base)[rs1*4], t0 # src1
 	ld (gpr_base)[rs2*4], t1 # src2
@@ -472,18 +500,6 @@ rv32_lhu:
 	ldos (t0)[immediate], t1 # dest
 	st t1, (gpr_base)[rd*4]
 	b next_instruction
-# PRIMARY OPCODE: STORE
-rv32_store_primary:
-    #extract4 7, 5, instruction, t0 # get imm[4:0]
-	shro 7, instruction, t0	# extract imm[4:0]
-	and 31, t0, t0 			# mask it 
-	shri 25, instruction, t1	# grab imm[11:5] but make sure that immediates are sign-extended
-	shlo 5, t1, t1    # move it into position
-	or t0, t1, immediate 	  # immediate has been computed
-					  # compute rs1
-	extract_rs1		  # extract rs1 index (base)
-	extract_rs2		  # extract rs2 index (src)
-	funct3_dispatch
 rv32_sb:
 	# rs1 -> base register index
 	# rs2 -> src register index
@@ -559,38 +575,6 @@ rv32_xnor:
 # Zicsr extension
 # Zifencei extension?
 .align 6
-.set OPCODE_LOAD,      (0b0000011 >> 2)
-.set OPCODE_STORE,     (0b0100011 >> 2)
-.set OPCODE_MADD,      (0b1000011 >> 2)
-.set OPCODE_BRANCH,    (0b1100011 >> 2)
-.set OPCODE_LOAD_FP,   (0b0000111 >> 2)
-.set OPCODE_STORE_FP,  (0b0100111 >> 2)
-.set OPCODE_MSUB, 	   (0b1000111 >> 2)
-.set OPCODE_JALR,      (0b1100111 >> 2)
-.set OPCODE_CUSTOM_0,  (0b0001011 >> 2)
-.set OPCODE_CUSTOM_1,  (0b0101011 >> 2)
-.set OPCODE_NMSUB,     (0b1001011 >> 2)
-.set OPCODE_RESERVED,  (0b1101011 >> 2)
-.set OPCODE_MISC_MEM,  (0b0001111 >> 2)
-.set OPCODE_AMO,       (0b0101111 >> 2)
-.set OPCODE_NMADD,     (0b1001111 >> 2)
-.set OPCODE_JAL,       (0b1101111 >> 2)
-.set OPCODE_OP_IMM,    (0b0010011 >> 2)
-.set OPCODE_OP,        (0b0110011 >> 2)
-.set OPCODE_FP,        (0b1010011 >> 2)
-.set OPCODE_SYSTEM,    (0b1110011 >> 2)
-.set OPCODE_AUIPC,     (0b0010111 >> 2)
-.set OPCODE_LUI,       (0b0110111 >> 2)
-.set OPCODE_OP_V,      (0b1010111 >> 2)
-.set OPCODE_OP_VE,     (0b1110111 >> 2)
-.set OPCODE_OP_IMM_32, (0b0011011 >> 2)
-.set OPCODE_OP_32,     (0b0111011 >> 2)
-.set OPCODE_CUSTOM_2,  (0b1011011 >> 2)
-.set OPCODE_CUSTOM_3,  (0b1111011 >> 2)
-.set OPCODE_48B, 	   (0b0011111 >> 2)
-.set OPCODE_64B, 	   (0b0111111 >> 2)
-.set OPCODE_48B_2, 	   (0b1011111 >> 2)
-.set OPCODE_80B,       (0b1111111 >> 2)
 .global riscv_emulator_start
 riscv_emulator_start:
 	# clear all temporaries ahead of time
@@ -620,6 +604,65 @@ rv32_undefined_instruction:
 next_instruction:
 	addo pc, 4, pc # go to the next instruction
 	b instruction_decoder_body 
+# PRIMARY OPCODE: LOAD
+rv32_load_primary:
+	extract_rd
+	skip_if_rd_is_x0 next_instruction
+	extract_rs1
+	shri 20, instruction, immediate # compute the immediate with sign extension
+	extract_funct3 t0, instruction # now figure out where to go by getting funct3
+	bx rv32_load_instruction_table[t0*4]
+
+# PRIMARY OPCODE: STORE
+rv32_store_primary:
+    #extract4 7, 5, instruction, t0 # get imm[4:0]
+	shro 7, instruction, t0	# extract imm[4:0]
+	and 31, t0, t0 			# mask it 
+	shri 25, instruction, t1	# grab imm[11:5] but make sure that immediates are sign-extended
+	shlo 5, t1, t1    # move it into position
+	or t0, t1, immediate 	  # immediate has been computed
+					  # compute rs1
+	extract_rs1		  # extract rs1 index (base)
+	extract_rs2		  # extract rs2 index (src)
+	extract_funct3 t0, instruction # now figure out where to go by getting funct3
+	bx rv32_store_instruction_table[t0*4]
+# PRIMARY OPCODE: SYSTEM
+rv32_system:
+	extract_rd
+	skip_if_rd_is_x0 next_instruction
+	extract_rs1
+	shri 20, instruction, immediate # compute the immediate with sign extension
+	extract_funct3 t0, instruction
+	bx rv32_system_instruction_table[t0*4]
+# PRIMARY OPCODE: OP
+rv32_op_primary:
+	extract_rd
+	skip_if_rd_is_x0 next_instruction
+	extract_rs1
+	shri 20, instruction, immediate # compute the immediate with sign extension
+	extract_funct3 t0, instruction
+	bx rv32_op_instruction_table[t0*4]
+# PRIMARY OPCODE: OP-IMM
+rv32_op_imm:
+	extract_rd
+	skip_if_rd_is_x0 next_instruction
+	extract_rs1
+	shri 20, instruction, immediate # compute the immediate with sign extension
+	extract_funct3 t0, instruction
+	bx rv32_op_imm_instruction_table[t0*4]
+# PRIMARY OPCODE: MISC-MEM
+rv32_misc_mem:
+	extract_rd
+	skip_if_rd_is_x0 next_instruction
+	extract_rs1
+	shri 20, instruction, immediate # compute the immediate with sign extension
+	extract_funct3 t0, instruction
+	bx rv32_misc_mem_instruction_table[t0*4]
+# PRIMARY OPCODE: BRANCH
+rv32_branch_primary:
+# @todo implement
+	b next_instruction
+# dispatch tables start
 .align 6
 rv32_direct_execution_dispatch_table:
 # we cache the jump tables into the instruction cache by using jump instructions
@@ -658,15 +701,6 @@ rv32_direct_execution_dispatch_table:
 	b rv32_undefined_instruction
 	b rv32_undefined_instruction
 	b rv32_undefined_instruction
-# PRIMARY OPCODE: LOAD
-rv32_load_primary:
-	extract_rd
-	skip_if_rd_is_x0 next_instruction
-	extract_rs1
-	shri 20, instruction, immediate # compute the immediate with sign extension
-	extract_funct3 t0, instruction # now figure out where to go by getting funct3
-	bx rv32_load_instruction_table[t0*4]
-
 rv32_load_instruction_table:
 	b rv32_lb
 	b rv32_lh
@@ -676,6 +710,62 @@ rv32_load_instruction_table:
 	b rv32_lhu
 	b rv32_undefined_instruction
 	b rv32_undefined_instruction
+rv32_store_instruction_table:
+	b rv32_sb
+	b rv32_sh
+	b rv32_sw
+	b rv32_sd # from the Zilsd extension
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+rv32_system_instruction_table:
+	b rv32_ecall # ecall/ebreak
+	b rv32_undefined_instruction # csrrw
+	b rv32_undefined_instruction # csrrs
+	b rv32_undefined_instruction # csrrc
+	b rv32_undefined_instruction # undefined
+	b rv32_undefined_instruction # csrrsi
+	b rv32_undefined_instruction # csrrwi
+	b rv32_undefined_instruction # csrrsi
+	b rv32_undefined_instruction # csrrci
+rv32_misc_mem_instruction_table:
+	b rv32_fence
+	b rv32_undefined_instruction # fence.i
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+rv32_op_instruction_table:
+	b rv32_add # add, sub, or mul handled here
+	b rv32_sll # sll or mulh handled here
+	b rv32_slt # slt or mulhsu
+	b rv32_sltu # sltu or mulhu
+	b rv32_xor # xor or div
+	b rv32_srl # sra, srl or divu
+	b rv32_or  # 'or' | rem
+	b rv32_and # and  | remu
+rv32_op_imm_instruction_table:
+	b rv32_addi
+	b rv32_shift_left_immediate_dispatch # 0b001
+	b rv32_slti
+	b rv32_sltiu
+	b rv32_xori
+	b rv32_shift_right_immediate_dispatch # 0b101
+	b rv32_ori
+	b rv32_andi
+rv32_branch_instruction_table:
+	b rv32_beq
+	b rv32_bne
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+	b rv32_blt
+	b rv32_bge
+	b rv32_bltu
+	b rv32_bgeu
 
 .align 6
 # all 32 real entries for the 0b11 form
@@ -720,34 +810,6 @@ rv32_load_instruction_table:
 #	unimplemented_opcode # custom-3/rv128
 #	unimplemented_opcode # >=8b
 
-# PRIMARY OPCODE: SYSTEM
-rv32_system:
-	extract_rd
-	skip_if_rd_is_x0 next_instruction
-	extract_rs1
-	shri 20, instruction, immediate # compute the immediate with sign extension
-	funct3_dispatch 
-# PRIMARY OPCODE: OP
-rv32_op_primary:
-	extract_rd
-	skip_if_rd_is_x0 next_instruction
-	extract_rs1
-	shri 20, instruction, immediate # compute the immediate with sign extension
-	funct3_dispatch 
-# PRIMARY OPCODE: OP-IMM
-rv32_op_imm:
-	extract_rd
-	skip_if_rd_is_x0 next_instruction
-	extract_rs1
-	shri 20, instruction, immediate # compute the immediate with sign extension
-	funct3_dispatch 
-# PRIMARY OPCODE: MISC-MEM
-rv32_misc_mem:
-	extract_rd
-	skip_if_rd_is_x0 next_instruction
-	extract_rs1
-	shri 20, instruction, immediate # compute the immediate with sign extension
-	funct3_dispatch 
 # this will hold the opcode dispatch table, aligned to be as easy to work on as possible
 # however, they 
 # this design allows for the actual jump tables to be embedded in the onboard instruction cache
@@ -755,80 +817,6 @@ rv32_misc_mem:
 # offset in the table. Each entry in the table is a branch instruction. We also allow the 16-byte lines
 # to be cached in the instruction cache this way. We don't hit the AVR on _each_ instruction. Only
 # when our jump tables are actually 
-.macro def_funct3_jump_table title, op0, op1=rv32_undefined_instruction, op2=rv32_undefined_instruction, op3=rv32_undefined_instruction, op4=rv32_undefined_instruction, op5=rv32_undefined_instruction, op6=rv32_undefined_instructon, op7=rv32_undefined_instruction
-.text
-.align 6
-\title : 
-	b \op0
-	b \op1
-	b \op2
-	b \op3
-	b \op4
-	b \op5
-	b \op6
-	b \op7
-.endm
 .align 4
-rv32_system_instruction_table:
-	.word rv32_ecall # ecall/ebreak
-	.word rv32_undefined_instruction # csrrw
-	.word rv32_undefined_instruction # csrrs
-	.word rv32_undefined_instruction # csrrc
-	.word rv32_undefined_instruction # undefined
-	.word rv32_undefined_instruction # csrrsi
-	.word rv32_undefined_instruction # csrrwi
-	.word rv32_undefined_instruction # csrrsi
-	.word rv32_undefined_instruction # csrrci
-.align 4
-rv32_misc_mem_instruction_table:
-	.word rv32_fence
-	.word rv32_undefined_instruction # fence.i
-	.word rv32_undefined_instruction
-	.word rv32_undefined_instruction
-	.word rv32_undefined_instruction
-	.word rv32_undefined_instruction
-	.word rv32_undefined_instruction
-	.word rv32_undefined_instruction
-	.word rv32_undefined_instruction
-.align 4
-rv32_op_instruction_table:
-	.word rv32_add # add, sub, or mul handled here
-	.word rv32_sll # sll or mulh handled here
-	.word rv32_slt # slt or mulhsu
-	.word rv32_sltu # sltu or mulhu
-	.word rv32_xor # xor or div
-	.word rv32_srl # sra, srl or divu
-	.word rv32_or  # 'or' | rem
-	.word rv32_and # and  | remu
-.align 4
-rv32_op_imm_instruction_table:
-	.word rv32_addi
-	.word rv32_shift_left_immediate_dispatch # 0b001
-	.word rv32_slti
-	.word rv32_sltiu
-	.word rv32_xori
-	.word rv32_shift_right_immediate_dispatch # 0b101
-	.word rv32_ori
-	.word rv32_andi
-.align 4
-rv32_branch_instruction_table:
-	.word rv32_beq
-	.word rv32_bne
-	.word rv32_undefined_instruction
-	.word rv32_undefined_instruction
-	.word rv32_blt
-	.word rv32_bge
-	.word rv32_bltu
-	.word rv32_bgeu
-.align 4
-rv32_store_instruction_table:
-	.word rv32_sb
-	.word rv32_sh
-	.word rv32_sw
-	.word rv32_sd # from the Zilsd extension
-	.word rv32_undefined_instruction
-	.word rv32_undefined_instruction
-	.word rv32_undefined_instruction
-	.word rv32_undefined_instruction
 
 .bss hart0_gpr_register_file, 128, 6
