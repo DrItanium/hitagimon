@@ -799,4 +799,4 @@ rv32_branch_instruction_table:
 # when our jump tables are actually 
 .align 4
 
-.bss hart0_gpr_register_file, 128, 6
+.bss hart0_gpr_register_file, (32*4), 6

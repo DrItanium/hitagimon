@@ -1,9 +1,9 @@
-
+/* First 128k are reserved for the emulator */
 MEMORY /* describe the partitioning of the memory space for the application */ 
 {
     imi (!r) : ORIGIN = 0, l = 32,
-	sram_cache(!rx) : ORIGIN = 0xFE002000, l = 4096,
-	sim_program(!r) : ORIGIN = 0xFE010000, l = 64k
+	sim_program(!r) : ORIGIN = 32 , l = 64K,
+	sram_cache(!rx) : ORIGIN = 64K, l = 64K
 }
 
 /* Define a symbol that your code can reference. The linker adds the symbol. */ 
