@@ -408,56 +408,6 @@ rv32_ecall:
 	b next_instruction
 rv32_ebreak:
 	b next_instruction
-# Here are some of the extensions I want to implement
-# RV32M extension
-# RV32F extension
-# RV32D extension
-# Zilsd (Load/Store pair for RV32)
-# ld - Load doubleword to even/odd register pair, 32-bit encoding
-rv32_ld:
-	b next_instruction
-# sd - Store doubleword from even/odd register pair, 32-bit encoding
-rv32_sd:
-	b next_instruction
-# B Extension (bit manipulation) [Zba, Zbb, Zbs]
-# Zba -> address generation
-# SH1ADD: Shift left by 1 and add
-# lda (rs2)[rs1*2], rd
-rv32_sh1add:
-	b next_instruction
-# SH2ADD: Shift left by 2 and add
-# lda (rs2)[rs1*4], rd
-rv32_sh2add:
-	b next_instruction
-# SH3ADD: Shift left by 3 and add
-# lda (rs2)[rs1*8], rd
-rv32_sh3add:
-	b next_instruction
-# Zbb -> basic bit manipulation
-# logical with negate
-# ANDN -> and with inverted operand
-# andnot/notand depending on what is needed
-rv32_andn:
-	b next_instruction
-# ORN -> or with inverted operand
-# ornot/notor depending on what is needed
-rv32_orn:
-	b next_instruction
-# XNOR -> exclusive nor
-# use the xnor instruction
-rv32_xnor:
-	b next_instruction
-# Zbs -> single bit instructions
-# bclr -> single-bit clear | clrbit
-# bclri -> single-bit clear (immediate) | clrbit
-# bext -> single-bit extract | chkbit + teste
-# bexti -> single-bit extract (immediate) | chkbit + teste
-# binv -> single-bit invert | notbit 
-# binvi -> single-bit invert (immediate) | notbit
-# bset -> single-bit set | setbit
-# bseti -> single-bit set (immediate) | setbit
-# Zicsr extension
-# Zifencei extension?
 .align 6
 .global riscv_emulator_start
 riscv_emulator_start:
@@ -658,6 +608,40 @@ rv32_bgeu:
 1:	
 	addo pc, immediate, pc  
 	b instruction_decoder_body
+# Here are some of the extensions I want to implement
+# RV32M extension
+# RV32F extension
+# RV32D extension
+# Zilsd (Load/Store pair for RV32)
+# ld - Load doubleword to even/odd register pair, 32-bit encoding
+# sd - Store doubleword from even/odd register pair, 32-bit encoding
+# B Extension (bit manipulation) [Zba, Zbb, Zbs]
+# Zba -> address generation
+# SH1ADD: Shift left by 1 and add
+# lda (rs2)[rs1*2], rd
+# SH2ADD: Shift left by 2 and add
+# lda (rs2)[rs1*4], rd
+# SH3ADD: Shift left by 3 and add
+# lda (rs2)[rs1*8], rd
+# Zbb -> basic bit manipulation
+# logical with negate
+# ANDN -> and with inverted operand
+# andnot/notand depending on what is needed
+# ORN -> or with inverted operand
+# ornot/notor depending on what is needed
+# XNOR -> exclusive nor
+# use the xnor instruction
+# Zbs -> single bit instructions
+# bclr -> single-bit clear | clrbit
+# bclri -> single-bit clear (immediate) | clrbit
+# bext -> single-bit extract | chkbit + teste
+# bexti -> single-bit extract (immediate) | chkbit + teste
+# binv -> single-bit invert | notbit 
+# binvi -> single-bit invert (immediate) | notbit
+# bset -> single-bit set | setbit
+# bseti -> single-bit set (immediate) | setbit
+# Zicsr extension
+# Zifencei extension?
 # dispatch tables start
 .align 6
 rv32_direct_execution_dispatch_table:
@@ -701,7 +685,7 @@ rv32_load_instruction_table:
 	b rv32_lb
 	b rv32_lh
 	b rv32_lw
-	b rv32_ld # from the Zilsd extension
+	b rv32_undefined_instruction # ld from the Zilsd extension
 	b rv32_lbu
 	b rv32_lhu
 	b rv32_undefined_instruction
@@ -710,7 +694,7 @@ rv32_store_instruction_table:
 	b rv32_sb
 	b rv32_sh
 	b rv32_sw
-	b rv32_sd # from the Zilsd extension
+	b rv32_undefined_instruction # sd from the Zilsd extension
 	b rv32_undefined_instruction
 	b rv32_undefined_instruction
 	b rv32_undefined_instruction
