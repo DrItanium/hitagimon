@@ -34,10 +34,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # r5 -> t1  // temporary
 # r6 -> t2  // temporary
 # r7 -> t3  // temporary
-# r8 -> opcode function address / dispatch_table_base / func_addr
-# r9 -> opcode subfunction address  / subfunc_addr
-# r10 -> opcode subsubfunction address / subsubfunc_addr
-# r11 -> opcode subsubsubfunction address / subsubsubfunc_addr
+# r8 -> 
+# r9 -> 
+# r10 -> 
+# r11 -> 
 # r12 -> 
 # r13 -> 
 # r14 -> 
@@ -109,11 +109,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 .macro extract_funct3 rdest=t0, rinst=instruction
 	extract4 12, 3, \rinst, \rdest
-.endm
-.macro funct3_dispatch rtmp=t0, rtable=subfunc_addr, rinst=instruction
-	extract_funct3 \rtmp, \rinst # now figure out where to go by getting funct3
-	ld (\rtable)[\rtmp*4], \rtmp  # dispatch to address pointed by rtable
-	bx (\rtmp)
 .endm
 .macro extract_rs1 dest=rs1, rinst=instruction
 	shro 15, \rinst, \dest
