@@ -127,6 +127,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mov \src, \dest
 	bx (g14)
 .endm
+.macro load_and_return src, dest=r14
+	mov \src, \dest
+	bx (g14)
+.endm
 
 .text
 # x0 - zero
@@ -144,6 +148,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # x12 -   (g11)
 # x13 -   (g12)
 # x14 -   (g13)
+.set GPR_BASE_OFFSET, -128
 rv32_abi_store_register:
 	# rd - index
 	# r14 - value
@@ -166,7 +171,8 @@ rv32_abi_store_register:
 	store_and_return g12 
 	store_and_return g13 
 2:
-	st r15, hart0_gpr_register_file[r14*4]
+	# we are saving to the stack so all that we need to do is make it sp - 128
+	st r14, GPR_BASE_OFFSET(sp)[rd*4]
 	bx (g14)
 rv32_abi_load_register_rs2:
 	mov rs2, r14 
@@ -178,10 +184,6 @@ rv32_abi_load_register:
 	cmpobge 16, r14, 2f 
 	bx 1f[r14*8]
 1:
-.macro load_and_return src, dest=r14
-	mov \src, \dest
-	bx (g14)
-.endm
 	load_and_return 0
 	load_and_return g0
 	load_and_return g1
@@ -198,7 +200,8 @@ rv32_abi_load_register:
 	load_and_return g12
 	load_and_return g13
 2:
-	ld hart0_gpr_register_file[r14*4], r14
+# stack pointer refers to the register file
+	ld GPR_BASE_OFFSET(sp)[r14*4], r14
 	bx (g14)
 .align 6
 # I have decided to ignore hint instructions completely.
@@ -697,7 +700,23 @@ riscv_emulator_start:
 	setbit 12, r3, r3 # mask integer overflow faults
 	setbit 15, r3, r3 # no imprecise faults (doesn't really do anything on i960Sx but make sure)
 	modac r3, r3, r3 # update arithmetic controls
+# use the i960 stack to actually stash the register file to
+# first clear the memory on the stack
+	movq 0, r8
+	stq r8, 0(sp) # clear x0, x1, x2, x3
+	stq r8, 16(sp) # clear x4, x5, x6, x7
+	stq r8, 32(sp) # clear x8, x9, x10, x11
+	stq r8, 48(sp) # clear x8, x9, x10, x11
+# then move the stack frame up to make sure that the register file is secure
+# normally, this would be very insane but the thing to keep in mind is that we
+# will never return from this "call" so it is safe to do this. 
 
+	ldconst 32*4, r3
+	addo sp, r3, sp # okay now the frame for registers is secure
+# to allocate space for floating point registers, we just increase the stack further
+# then it becomes fp+64+128 for the base addresss of the floating point registers
+# or it is sp - 256 for fpr
+# then it is sp - 384 for the rv32 state
 	b instruction_decoder_body
 rv32_save_r14_to_register_file:
 	bal rv32_abi_store_register 	   # store it to the register file (this will cause x0 to be ignored)
@@ -752,4 +771,4 @@ rv32_direct_execution_dispatch_table:
 	b rv32_undefined_instruction # op-ve
 	b rv32_undefined_instruction # custom-3/rv128
 	b rv32_undefined_instruction # >=80b
-.bss hart0_gpr_register_file, (32*4), 6
+# use the stack for the register file since it will always be aligned properly
