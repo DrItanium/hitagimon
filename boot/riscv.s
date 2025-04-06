@@ -113,7 +113,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	and 31, \dest, \dest
 .endm
 .macro extract_rd dest=rd, rinst=instruction
-	shro 5, \rinst, \dest
+	shro 7, \rinst, \dest
 	and 31, \dest, \dest
 .endm
 .macro skip_if_rd_is_x0 dest, target=rd
@@ -582,6 +582,7 @@ rv32_bgeu:
 rv32_branch_taken:
 	addo pc, immediate, pc  
 	b instruction_decoder_body
+	
 # Here are some of the extensions I want to implement
 # RV32M extension
 # RV32F extension
