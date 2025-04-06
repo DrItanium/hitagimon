@@ -126,29 +126,73 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .text
 # x0 - zero
-# x1 - ra (g13)
-# x2 - sp (g12)
-# x3 - gp (g11)
+# x1 - ra (g0)
+# x2 - sp (g1)
+# x3 - gp (g2)
+# x4 -    (g3)
+# x5 -    (g4)
+# x6 -    (g5)
+# x7 -    (g6)
+# x8 -    (g7)
+# x9 -    (g8)
+# x10 -   (g9)
+# x11 -   (g10)
+# x12 -   (g11)
+# x13 -   (g12)
+# x14 -   (g13)
 rv32_abi_load_register:
-	# g0 - index
-	cmpobge 4, g0, 1f
-	bx rv32_abi_load_register_handler[g0*8]
-1:
-	ld (gpr_base)[g0*4], g0
-	bx (g14)
+	# r14 - index
+	cmpobge 16, r14, rv32_x15
+	bx rv32_abi_load_register_handler[r14*8]
 
 rv32_abi_load_register_handler:
 rv32_x0:
-	mov 0, g0
+	mov 0, r14
 	bx (g14)
 rv32_x1:
-	mov g13, g0
+	mov g0, r14
 	bx (g14)
 rv32_x2:
-	mov g12, g0
+	mov g1, r14
 	bx (g14)
 rv32_x3:
-	mov g11, g0
+	mov g2, r14
+	bx (g14)
+rv32_x4:
+	mov g3, r14
+	bx (g14)
+rv32_x5:
+	mov g4, r14
+	bx (g14)
+rv32_x6:
+	mov g5, r14
+	bx (g14)
+rv32_x7:
+	mov g6, r14
+	bx (g14)
+rv32_x8:
+	mov g7, r14
+	bx (g14)
+rv32_x9:
+	mov g8, r14
+	bx (g14)
+rv32_x10:
+	mov g9, r14
+	bx (g14)
+rv32_x11:
+	mov g10, r14
+	bx (g14)
+rv32_x12:
+	mov g11, r14
+	bx (g14)
+rv32_x13:
+	mov g12, r14
+	bx (g14)
+rv32_x14:
+	mov g13, r14
+	bx (g14)
+rv32_x15:
+	ld (gpr_base)[r14*4], r14
 	bx (g14)
 .align 6
 # I have decided to ignore hint instructions completely.
