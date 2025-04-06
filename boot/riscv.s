@@ -42,8 +42,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # r13 -> pc
 # r14 -> 
 # r15 -> 
-# g0 -> 
-# g1 -> 
+# g0 -> return argument / arg0
+# g1 -> arg1
 # g2 -> 
 # g3 -> 
 # g4 -> 
@@ -56,7 +56,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # g11 -> 
 # g12 -> 
 # g13 -> 
-# g14 -> 
+# g14 -> link register
 # fp -> i960 frame pointer
 
 # we want to actually map the emulator code into the microcontroller itself
@@ -122,6 +122,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro extract_imm11_itype dest=immediate, src=instruction
 	shri 20, \src, \dest # construct a sign extended version of imm[11:0]
 .endm
+
 
 .text
 
@@ -397,36 +398,6 @@ rv32_ecall:
 	b next_instruction
 rv32_ebreak:
 	b next_instruction
-.align 6
-.global riscv_emulator_start
-riscv_emulator_start:
-	# clear all temporaries ahead of time
-	mov 0, r3 
-	movq 0, r4
-	movq 0, r8
-	movq 0, r12
-	movq 0, g0 
-	movq 0, g4
-	movq 0, g8
-	movt 0, g12
-	ldconst hart0_gpr_register_file, gpr_base
-	b instruction_decoder_body
-rv32_undefined_instruction:
-next_instruction:
-	addo pc, 4, pc
-instruction_decoder_body:
-	ld 0(pc), instruction # load the current instruction
-	mov instruction, t0    # make a copy of it
-	extract 0, 7, t0 # opcode extraction
-	and 3, t0, t1 # check the lowest two bits
-	cmpobne 3, t1, rv32_undefined_instruction # it is an illegal instruction
-	shro 2, instruction, t0 # remove the lowest two bits since we know it is 0b11
-	and 31, t0, t0 # now get the remaining 5 bits to figure out where to dispatch to
-	# the lack of an onboard data cache means that constantly accessing the lookup table is actually extremely inefficient
-	# the i960 has to talk to the AVR/RP2350 chip when it wants to access table data
-	# instead, we should allow the dispatch table to be encoded into the onboard instruction cache by using instructions like cmpobe
-	# however, this will introduce quite a bit of overhead for compare and dispatch
-	bx rv32_direct_execution_dispatch_table[t0*4]
 # PRIMARY OPCODE: LOAD
 rv32_load_primary:
 	extract_rd
@@ -435,6 +406,15 @@ rv32_load_primary:
 	shri 20, instruction, immediate # compute the immediate with sign extension
 	extract_funct3 t0, instruction # now figure out where to go by getting funct3
 	bx rv32_load_instruction_table[t0*4]
+rv32_load_instruction_table:
+	b rv32_lb
+	b rv32_lh
+	b rv32_lw
+	b rv32_undefined_instruction # ld from the Zilsd extension
+	b rv32_lbu
+	b rv32_lhu
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
 rv32_lb:
 	ld (gpr_base)[rs1*4], t0 # base
 	ldib (t0)[immediate], t1 # dest
@@ -474,6 +454,15 @@ rv32_store_primary:
 	extract_rs2		  # extract rs2 index (src)
 	extract_funct3 t0, instruction # now figure out where to go by getting funct3
 	bx rv32_store_instruction_table[t0*4]
+rv32_store_instruction_table:
+	b rv32_sb
+	b rv32_sh
+	b rv32_sw
+	b rv32_undefined_instruction # sd from the Zilsd extension
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
+	b rv32_undefined_instruction
 rv32_sb:
 	# rs1 -> base register index
 	# rs2 -> src register index
@@ -656,24 +645,6 @@ rv32_direct_execution_dispatch_table:
 	b rv32_undefined_instruction
 	b rv32_undefined_instruction
 	b rv32_undefined_instruction
-rv32_load_instruction_table:
-	b rv32_lb
-	b rv32_lh
-	b rv32_lw
-	b rv32_undefined_instruction # ld from the Zilsd extension
-	b rv32_lbu
-	b rv32_lhu
-	b rv32_undefined_instruction
-	b rv32_undefined_instruction
-rv32_store_instruction_table:
-	b rv32_sb
-	b rv32_sh
-	b rv32_sw
-	b rv32_undefined_instruction # sd from the Zilsd extension
-	b rv32_undefined_instruction
-	b rv32_undefined_instruction
-	b rv32_undefined_instruction
-	b rv32_undefined_instruction
 rv32_system_instruction_table:
 	b rv32_ecall # ecall/ebreak
 	b rv32_undefined_instruction # csrrw
@@ -721,6 +692,34 @@ rv32_branch_instruction_table:
 	b rv32_bge
 	b rv32_bltu
 	b rv32_bgeu
-
-
+.align 6
+.global riscv_emulator_start
+riscv_emulator_start:
+	# clear all temporaries ahead of time
+	mov 0, r3 
+	movq 0, r4
+	movq 0, r8
+	movq 0, r12
+	movq 0, g0 
+	movq 0, g4
+	movq 0, g8
+	movt 0, g12
+	ldconst hart0_gpr_register_file, gpr_base
+	b instruction_decoder_body
+rv32_undefined_instruction:
+next_instruction:
+	addo pc, 4, pc
+instruction_decoder_body:
+	ld 0(pc), instruction # load the current instruction
+	mov instruction, t0    # make a copy of it
+	extract 0, 7, t0 # opcode extraction
+	and 3, t0, t1 # check the lowest two bits
+	cmpobne 3, t1, rv32_undefined_instruction # it is an illegal instruction
+	shro 2, instruction, t0 # remove the lowest two bits since we know it is 0b11
+	and 31, t0, t0 # now get the remaining 5 bits to figure out where to dispatch to
+	# the lack of an onboard data cache means that constantly accessing the lookup table is actually extremely inefficient
+	# the i960 has to talk to the AVR/RP2350 chip when it wants to access table data
+	# instead, we should allow the dispatch table to be encoded into the onboard instruction cache by using instructions like cmpobe
+	# however, this will introduce quite a bit of overhead for compare and dispatch
+	bx rv32_direct_execution_dispatch_table[t0*4]
 .bss hart0_gpr_register_file, (32*4), 6
