@@ -468,17 +468,9 @@ rv32_op_imm_instruction_table:
 	b rv32_andi
 # ADDI - Add Immediate
 rv32_addi:
-	cmpobe 0, rd, rv32_nop_hint # check and see if we should do a nop or not
 	bal rv32_abi_load_register_rs1 # rs1 contents
 	addo immediate, r14, r14    # add rs1 with the immediate
 	b rv32_save_r14_to_register_file
-rv32_nop_hint:
-	addo rs1, immediate, t0 # see if either is not 0
-	cmpobne 0, t0, rv32_hint
-	b next_instruction # nop
-rv32_hint:
-	# 2^17 -1 code points available
-	b next_instruction
 # SLTI - Set Less Than Immediate (place the value 1 in register rd if register
 #		rs1 is less than the sign-extended immediate when both are treated as
 #		signed numbers)
