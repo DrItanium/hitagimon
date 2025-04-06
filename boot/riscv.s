@@ -108,7 +108,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	extract \bitpos, \len, \dest
 .endm
 .macro extract_funct3 rdest=t0, rinst=instruction
-	extract4 12, 3, \rinst, \rdest
+	shro 12, \rinst, \rdest
+	and 7, \rdest, \rdest
 .endm
 .macro extract_rs1 dest=rs1, rinst=instruction
 	shro 15, \rinst, \dest
