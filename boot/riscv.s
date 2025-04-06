@@ -34,18 +34,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # r5 -> t1  // temporary
 # r6 -> t2  // temporary
 # r7 -> t3  // temporary
-# r8 -> 
-# r9 -> 
-# r10 -> 
-# r11 -> 
-# r12 -> 
-# r13 -> 
+# r8 -> rs1
+# r9 -> rs2
+# r10 -> rd
+# r11 -> immediate
+# r12 -> gpr_base
+# r13 -> pc
 # r14 -> 
 # r15 -> 
-# g0 -> rs1
-# g1 -> rs2
-# g2 -> rd
-# g3 -> immediate
+# g0 -> 
+# g1 -> 
+# g2 -> 
+# g3 -> 
 # g4 -> 
 # g5 -> 
 # g6 -> 
@@ -53,10 +53,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # g8 -> 
 # g9 -> 
 # g10 -> 
-# g11 -> FPR base address / fpr_base
-# g12 -> GPR base address / gpr_base
-# g13 -> pc
-# g14 -> i960 link register 
+# g11 -> 
+# g12 -> 
+# g13 -> 
+# g14 -> 
 # fp -> i960 frame pointer
 
 # we want to actually map the emulator code into the microcontroller itself
