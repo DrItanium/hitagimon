@@ -677,42 +677,38 @@ instruction_decoder_body:
 	# instead, we should allow the dispatch table to be encoded into the onboard instruction cache by using instructions like cmpobe
 	# however, this will introduce quite a bit of overhead for compare and dispatch
 	bx rv32_direct_execution_dispatch_table[t0*4]
-.align 6
 rv32_direct_execution_dispatch_table:
 # we cache the jump tables into the instruction cache by using jump instructions
 # remember, the i960Sx does not have a data cache!
 	b rv32_load_primary
-	b rv32_undefined_instruction
-	b rv32_undefined_instruction
+	b rv32_undefined_instruction # load-fp
+	b rv32_undefined_instruction # custom-0
 	b rv32_misc_mem
-
-	b rv32_op_imm
+	b rv32_op_imm 
 	b rv32_auipc
-	b rv32_undefined_instruction
-	b rv32_undefined_instruction
-
-	b rv32_store_primary
+	b rv32_undefined_instruction # op-imm-32
+	b rv32_undefined_instruction # 48b
+	b rv32_store_primary		 
+	b rv32_undefined_instruction # store-fp
+	b rv32_undefined_instruction # custom-1
+	b rv32_undefined_instruction # amo
+	b rv32_op_primary 
 	b rv32_lui
-	b rv32_undefined_instruction
-	b rv32_undefined_instruction
-
-	b rv32_undefined_instruction
-	b rv32_undefined_instruction
-	b rv32_undefined_instruction
-	b rv32_undefined_instruction
-
-	b rv32_undefined_instruction
-	b rv32_undefined_instruction
-	b rv32_undefined_instruction
-	b rv32_undefined_instruction
-
+	b rv32_undefined_instruction # op-32
+	b rv32_undefined_instruction # 64b
+	b rv32_undefined_instruction # madd
+	b rv32_undefined_instruction # msub
+	b rv32_undefined_instruction # nmadd
+	b rv32_undefined_instruction # op-fp
+	b rv32_undefined_instruction # op-v
+	b rv32_undefined_instruction # custom-2/rv128
+	b rv32_undefined_instruction # 48b
 	b rv32_branch_primary
 	b rv32_jalr
-	b rv32_undefined_instruction
+	b rv32_undefined_instruction # reserved
 	b rv32_jal
-
 	b rv32_system
-	b rv32_undefined_instruction
-	b rv32_undefined_instruction
-	b rv32_undefined_instruction
+	b rv32_undefined_instruction # op-ve
+	b rv32_undefined_instruction # custom-3/rv128
+	b rv32_undefined_instruction # >=80b
 .bss hart0_gpr_register_file, (32*4), 6
