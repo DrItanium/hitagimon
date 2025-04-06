@@ -38,24 +38,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # r9 -> rs2
 # r10 -> rd
 # r11 -> immediate
-# r12 -> gpr_base
+# r12 -> 
 # r13 -> pc
-# r14 -> 
+# r14 -> arg0
 # r15 -> 
-# g0 -> return argument / arg0
-# g1 -> arg1
-# g2 -> 
-# g3 -> 
-# g4 -> 
-# g5 -> 
-# g6 -> 
-# g7 -> 
-# g8 -> 
-# g9 -> 
-# g10 -> 
-# g11 -> 
-# g12 -> 
-# g13 -> return address (x1)
+# g0 -> x1
+# g1 -> x2
+# g2 -> x3
+# g3 -> x4
+# g4 -> x5
+# g5 -> x6
+# g6 -> x7
+# g7 -> x8
+# g8 -> x9
+# g9 -> x10
+# g10 -> x11
+# g11 -> x12
+# g12 -> x13
+# g13 -> x14
 # g14 -> link register
 # fp -> i960 frame pointer
 
@@ -123,6 +123,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	shri 20, \src, \dest # construct a sign extended version of imm[11:0]
 .endm
 
+.macro store_and_return dest, src=r15
+	mov \src, \dest
+	bx (g14)
+.endm
 
 .text
 # x0 - zero
@@ -140,58 +144,56 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # x12 -   (g11)
 # x13 -   (g12)
 # x14 -   (g13)
+rv32_abi_store_register:
+	# r14 - index
+	# r15 - value
+	cmpobge 16, r14, rv32_store_to_register_file
+	bx rv32_abi_store_register_handler[r14*8]
+rv32_abi_store_register_handler:
+	store_and_return r15 # do nothing
+	store_and_return g0 
+	store_and_return g1 
+	store_and_return g2 
+	store_and_return g3 
+	store_and_return g4 
+	store_and_return g5 
+	store_and_return g6 
+	store_and_return g7 
+	store_and_return g8 
+	store_and_return g9 
+	store_and_return g10 
+	store_and_return g11 
+	store_and_return g12 
+	store_and_return g13 
+rv32_store_to_register_file:
+	st r15, hart0_gpr_register_file[r14*4]
+	bx (g14)
+
 rv32_abi_load_register:
 	# r14 - index
-	cmpobge 16, r14, rv32_x15
+	cmpobge 16, r14, rv32_load_from_register_file
 	bx rv32_abi_load_register_handler[r14*8]
-
 rv32_abi_load_register_handler:
-rv32_x0:
-	mov 0, r14
+.macro load_and_return src, dest=r14
+	mov \src, \dest
 	bx (g14)
-rv32_x1:
-	mov g0, r14
-	bx (g14)
-rv32_x2:
-	mov g1, r14
-	bx (g14)
-rv32_x3:
-	mov g2, r14
-	bx (g14)
-rv32_x4:
-	mov g3, r14
-	bx (g14)
-rv32_x5:
-	mov g4, r14
-	bx (g14)
-rv32_x6:
-	mov g5, r14
-	bx (g14)
-rv32_x7:
-	mov g6, r14
-	bx (g14)
-rv32_x8:
-	mov g7, r14
-	bx (g14)
-rv32_x9:
-	mov g8, r14
-	bx (g14)
-rv32_x10:
-	mov g9, r14
-	bx (g14)
-rv32_x11:
-	mov g10, r14
-	bx (g14)
-rv32_x12:
-	mov g11, r14
-	bx (g14)
-rv32_x13:
-	mov g12, r14
-	bx (g14)
-rv32_x14:
-	mov g13, r14
-	bx (g14)
-rv32_x15:
+.endm
+	load_and_return 0
+	load_and_return g0
+	load_and_return g1
+	load_and_return g2
+	load_and_return g3
+	load_and_return g4
+	load_and_return g5
+	load_and_return g6
+	load_and_return g7
+	load_and_return g8
+	load_and_return g9
+	load_and_return g10
+	load_and_return g11
+	load_and_return g12
+	load_and_return g13
+rv32_load_from_register_file:
 	ld hart0_gpr_register_file[r14*4], r14
 	bx (g14)
 .align 6
@@ -205,8 +207,8 @@ rv32_auipc:
 	skip_if_rd_is_x0 next_instruction  # skip the actual act of saving if the destination is x0, this is a hint
 	ldconst 0xFFFFF000, t0             # load a mask into memory
 	and instruction, t0, t1		               # construct the offset
-	addo pc, t1, t2 	               # add it to the program counter
-	st t2, hart0_gpr_register_file[rd*4] 				   # save the result to a register
+	addo pc, t1, t0 	               # add it to the program counter
+	st t0, hart0_gpr_register_file[rd*4] 				   # save the result to a register
 	b next_instruction
 # LUI - Load Upper Immediate
 rv32_lui:
@@ -394,7 +396,7 @@ rv32_add:
 	extract_rs2
 	ld hart0_gpr_register_file[rs2*4], t1 # load rs2
 	bbs 30, instruction, rv32_sub # check funct7 to see if we should do a subtract instead
-	addo t0, t1, t2    # do the addition operation, use ordinal form to prevent integer overflow fault
+	addo t0, t1, t1    # do the addition operation, use ordinal form to prevent integer overflow fault
 	st t2, hart0_gpr_register_file[rd*4]
 	b next_instruction
 # SUB - Subtract x[rs1] - x[rs2] -> x[rd]
@@ -772,7 +774,6 @@ riscv_emulator_start:
 	movq 0, g4
 	movq 0, g8
 	movt 0, g12
-	ldconst hart0_gpr_register_file, gpr_base
 	b instruction_decoder_body
 rv32_undefined_instruction:
 next_instruction:
