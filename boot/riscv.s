@@ -371,8 +371,12 @@ rv32_op_primary:
 	extract_rd
 	extract_rs1
 	extract_rs2
+	shro 25, instruction, immediate # extract funct7
 	extract_funct3 t0, instruction
+	cmpobe 1, immediate, 1f
 	bx rv32_op_instruction_table[t0*4]
+1: # for the M extension
+	bx rv32_op_instruction_table2[t0*4]
 rv32_op_instruction_table:
 	b rv32_add # add, sub, or mul handled here
 	b rv32_sll # sll or mulh handled here
@@ -382,18 +386,49 @@ rv32_op_instruction_table:
 	b rv32_srl # sra, srl or divu
 	b rv32_or  # 'or' | rem
 	b rv32_and # and  | remu
+rv32_op_instruction_table2:
+	b rv32_mul
+	b rv32_mulh
+	b rv32_mulhsu
+	b rv32_mulhu
+	b rv32_div
+	b rv32_divu
+	b rv32_rem
+	b rv32_remu
 # ADD - Add (check the funct7 code)
 rv32_add:
 	bal rv32_abi_load_register_rs1
 	mov r14, t0
 	bal rv32_abi_load_register_rs2
-	bbs 30, instruction, rv32_sub # check funct7 to see if we should do a subtract instead
+	bbs 30, instruction, rv32_sub
 	addo t0, r14, r14    # do the addition operation, use ordinal form to prevent integer overflow fault
 	b rv32_save_r14_to_register_file   # save the result
 # SUB - Subtract x[rs1] - x[rs2] -> x[rd]
 rv32_sub:
 	subo r14, t0, r14		# x[rd] = x[rs1] - x[rs2] 
 	b rv32_save_r14_to_register_file   # save the result
+rv32_mul:
+	bal rv32_abi_load_register_rs1
+	mov r14, t0
+	bal rv32_abi_load_register_rs2
+	mulo r14, t0, r14
+	b rv32_save_r14_to_register_file
+rv32_mulh:
+	bal rv32_abi_load_register_rs1
+	mov r14, t0
+	bal rv32_abi_load_register_rs2
+	emul r14, t0, r14 # r15 and r14 will be overwritten with this
+	mov r15, r14      # move upper half to r14
+	b rv32_save_r14_to_register_file
+rv32_mulhsu:
+rv32_mulhu:
+rv32_div:
+rv32_divu:
+rv32_rem:
+rv32_remu:
+	b next_instruction
+	
+
 # SLT - Set Less Than
 rv32_slt:
 	bal rv32_abi_load_register_rs1
@@ -657,6 +692,12 @@ riscv_emulator_start:
 	movq 0, g4
 	movq 0, g8
 	movt 0, g12
+# turn off interger overflow faults to make it easier to better adapt to how rv32 does things
+	modac 0, 0, r3 # get the contents of ac
+	setbit 12, r3, r3 # mask integer overflow faults
+	setbit 15, r3, r3 # no imprecise faults (doesn't really do anything on i960Sx but make sure)
+	modac r3, r3, r3 # update arithmetic controls
+
 	b instruction_decoder_body
 rv32_save_r14_to_register_file:
 	bal rv32_abi_store_register 	   # store it to the register file (this will cause x0 to be ignored)
