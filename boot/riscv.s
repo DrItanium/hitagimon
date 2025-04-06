@@ -642,6 +642,38 @@ rv32_branch_taken:
 # Zifencei extension?
 # dispatch tables start
 .align 6
+.global riscv_emulator_start
+riscv_emulator_start:
+	# clear all temporaries ahead of time
+	mov 0, r3 
+	movq 0, r4
+	movq 0, r8
+	movq 0, r12
+	movq 0, g0 
+	movq 0, g4
+	movq 0, g8
+	movt 0, g12
+	b instruction_decoder_body
+rv32_save_r14_to_register_file:
+	bal rv32_abi_store_register 	   # store it to the register file (this will cause x0 to be ignored)
+	b next_instruction
+rv32_undefined_instruction:
+next_instruction:
+	addo pc, 4, pc
+instruction_decoder_body:
+	ld 0(pc), instruction # load the current instruction
+	mov instruction, t0    # make a copy of it
+	extract 0, 7, t0 # opcode extraction
+	and 3, t0, t1 # check the lowest two bits
+	cmpobne 3, t1, rv32_undefined_instruction # it is an illegal instruction
+	shro 2, instruction, t0 # remove the lowest two bits since we know it is 0b11
+	and 31, t0, t0 # now get the remaining 5 bits to figure out where to dispatch to
+	# the lack of an onboard data cache means that constantly accessing the lookup table is actually extremely inefficient
+	# the i960 has to talk to the AVR/RP2350 chip when it wants to access table data
+	# instead, we should allow the dispatch table to be encoded into the onboard instruction cache by using instructions like cmpobe
+	# however, this will introduce quite a bit of overhead for compare and dispatch
+	bx rv32_direct_execution_dispatch_table[t0*4]
+.align 6
 rv32_direct_execution_dispatch_table:
 # we cache the jump tables into the instruction cache by using jump instructions
 # remember, the i960Sx does not have a data cache!
@@ -679,36 +711,4 @@ rv32_direct_execution_dispatch_table:
 	b rv32_undefined_instruction
 	b rv32_undefined_instruction
 	b rv32_undefined_instruction
-.align 6
-.global riscv_emulator_start
-riscv_emulator_start:
-	# clear all temporaries ahead of time
-	mov 0, r3 
-	movq 0, r4
-	movq 0, r8
-	movq 0, r12
-	movq 0, g0 
-	movq 0, g4
-	movq 0, g8
-	movt 0, g12
-	b instruction_decoder_body
-rv32_save_r14_to_register_file:
-	bal rv32_abi_store_register 	   # store it to the register file (this will cause x0 to be ignored)
-	b next_instruction
-rv32_undefined_instruction:
-next_instruction:
-	addo pc, 4, pc
-instruction_decoder_body:
-	ld 0(pc), instruction # load the current instruction
-	mov instruction, t0    # make a copy of it
-	extract 0, 7, t0 # opcode extraction
-	and 3, t0, t1 # check the lowest two bits
-	cmpobne 3, t1, rv32_undefined_instruction # it is an illegal instruction
-	shro 2, instruction, t0 # remove the lowest two bits since we know it is 0b11
-	and 31, t0, t0 # now get the remaining 5 bits to figure out where to dispatch to
-	# the lack of an onboard data cache means that constantly accessing the lookup table is actually extremely inefficient
-	# the i960 has to talk to the AVR/RP2350 chip when it wants to access table data
-	# instead, we should allow the dispatch table to be encoded into the onboard instruction cache by using instructions like cmpobe
-	# however, this will introduce quite a bit of overhead for compare and dispatch
-	bx rv32_direct_execution_dispatch_table[t0*4]
 .bss hart0_gpr_register_file, (32*4), 6
