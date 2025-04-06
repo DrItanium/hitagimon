@@ -168,7 +168,11 @@ rv32_abi_store_register:
 2:
 	st r15, hart0_gpr_register_file[r14*4]
 	bx (g14)
-
+rv32_abi_load_register_rs2:
+	mov rs2, r14 
+	b rv32_abi_load_register
+rv32_abi_load_register_rs1:
+	mov rs1, r14 # fallthrough
 rv32_abi_load_register:
 	# r14 - index
 	cmpobge 16, r14, 2f 
@@ -247,8 +251,7 @@ rv32_jalr:
 	shri 20, instruction, immediate # we want to make a sign extended version of imm[11:0]
 	addo 4, pc, r14 # pc+4
 	bal rv32_abi_store_register # x0 will be ignored
-	mov rs1, r14
-	bal rv32_abi_load_register
+	bal rv32_abi_load_register_rs1
 	addo immediate, r14, pc    # update PC
 	# @todo generate an exception if the target address is not aligned to a four byte boundary
 	b instruction_decoder_body
@@ -270,29 +273,29 @@ rv32_load_instruction_table:
 	b rv32_undefined_instruction
 	b rv32_undefined_instruction
 rv32_lb:
-	ld hart0_gpr_register_file[rs1*4], t0 # base
-	ldib (t0)[immediate], t1 # dest
-	st t1, hart0_gpr_register_file[rd*4]
+	bal rv32_abi_load_register_rs1 # base
+	ldib (r14)[immediate], r14 # dest
+	bal rv32_abi_store_register
 	b next_instruction
 rv32_lh:
-	ld hart0_gpr_register_file[rs1*4], t0 # base
-	ldis (t0)[immediate], t1 # dest
-	st t1, hart0_gpr_register_file[rd*4]
+	bal rv32_abi_load_register_rs1 # base
+	ldis (r14)[immediate], r14 # dest
+	bal rv32_abi_store_register
 	b next_instruction
 rv32_lw:
-	ld hart0_gpr_register_file[rs1*4], t0 # base
-	ld (t0)[immediate], t1 # dest
-	st t1, hart0_gpr_register_file[rd*4]
+	bal rv32_abi_load_register_rs1 # base
+	ld (r14)[immediate], r14 # dest
+	bal rv32_abi_store_register
 	b next_instruction
 rv32_lbu:
-	ld hart0_gpr_register_file[rs1*4], t0 # base
-	ldob (t0)[immediate], t1 # dest
-	st t1, hart0_gpr_register_file[rd*4]
+	bal rv32_abi_load_register_rs1 # base
+	ldob (r14)[immediate], r14 # dest
+	bal rv32_abi_store_register
 	b next_instruction
 rv32_lhu:
-	ld hart0_gpr_register_file[rs1*4], t0 # base
-	ldos (t0)[immediate], t1 # dest
-	st t1, hart0_gpr_register_file[rd*4]
+	bal rv32_abi_load_register_rs1 # base
+	ldos (r14)[immediate], r14 # dest
+	bal rv32_abi_store_register
 	b next_instruction
 
 # PRIMARY OPCODE: STORE
@@ -321,26 +324,33 @@ rv32_sb:
 	# rs1 -> base register index
 	# rs2 -> src register index
 	# g3 -> immediate
-	ld hart0_gpr_register_file[rs1*4], t0 # base
-	ld hart0_gpr_register_file[rs2*4], t1 # src
+	bal rv32_abi_load_register_rs1 # base
+	mov r14, t0
+	bal rv32_abi_load_register_rs2 # src
+	mov r14, t1
 	stob t1, (t0)[immediate] # compute the address
 	b next_instruction
 rv32_sh:
 	# rs1 -> base register index
 	# rs2 -> src register index
 	# g3 -> immediate
-	ld hart0_gpr_register_file[rs1*4], t0 # base
-	ld hart0_gpr_register_file[rs2*4], t1 # src
+	bal rv32_abi_load_register_rs1 # base
+	mov r14, t0
+	bal rv32_abi_load_register_rs2 # src
+	mov r14, t1
 	stos t1, (t0)[immediate] # compute the address
 	b next_instruction
 rv32_sw:
 	# rs1 -> base register index
 	# rs2 -> src register index
 	# g3 -> immediate
-	ld hart0_gpr_register_file[rs1*4], t0 # base
-	ld hart0_gpr_register_file[rs2*4], t1 # src
+	bal rv32_abi_load_register_rs1 # base
+	mov r14, t0
+	bal rv32_abi_load_register_rs2 # src
+	mov r14, t1
 	st t1, (t0)[immediate] # compute the address
 	b next_instruction
+	
 # PRIMARY OPCODE: SYSTEM
 rv32_system:
 	extract_rd
