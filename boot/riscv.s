@@ -247,16 +247,16 @@ rv32_jalr:
 	extract_rs1
 	extract_rd
 	shri 20, instruction, immediate # we want to make a sign extended version of imm[11:0]
-	addo 4, pc, r14 # pc+4
-	bal rv32_abi_store_register # x0 will be ignored
 	bal rv32_abi_load_register_rs1
-	addo immediate, r14, pc    # update PC
-	# @todo generate an exception if the target address is not aligned to a four byte boundary
+	addo immediate, r14, rs1    # compute pc right now and stash in rs1
+	addo 4, pc, r14 # pc+4		
+	bal rv32_abi_store_register # x0 will be ignored
+	mov rs1, pc # update pc after the store is completed
+	# @todo what about unaligned accesses?
 	b instruction_decoder_body
 # PRIMARY OPCODE: LOAD
 rv32_load_primary:
 	extract_rd
-	skip_if_rd_is_x0 next_instruction
 	extract_rs1
 	shri 20, instruction, immediate # compute the immediate with sign extension
 	extract_funct3 t0, instruction # now figure out where to go by getting funct3
@@ -361,8 +361,10 @@ rv32_system_instruction_table:
 	b rv32_undefined_instruction # csrrci
 rv32_ecall:
 	bbs 20, instruction, rv32_ebreak
+	# @todo implement ecall mechanism
 	b next_instruction
 rv32_ebreak:
+	# @todo implement ebreak mechanism
 	b next_instruction
 # PRIMARY OPCODE: OP
 rv32_op_primary:
@@ -466,9 +468,17 @@ rv32_op_imm_instruction_table:
 	b rv32_andi
 # ADDI - Add Immediate
 rv32_addi:
+	cmpobe 0, rd, rv32_nop_hint # check and see if we should do a nop or not
 	bal rv32_abi_load_register_rs1 # rs1 contents
 	addo immediate, r14, r14    # add rs1 with the immediate
 	b rv32_save_r14_to_register_file
+rv32_nop_hint:
+	addo rs1, immediate, t0 # see if either is not 0
+	cmpobne 0, t0, rv32_hint
+	b next_instruction # nop
+rv32_hint:
+	# 2^17 -1 code points available
+	b next_instruction
 # SLTI - Set Less Than Immediate (place the value 1 in register rd if register
 #		rs1 is less than the sign-extended immediate when both are treated as
 #		signed numbers)
@@ -509,9 +519,11 @@ rv32_shift_left_immediate_dispatch:
 	bbs 30, instruction, rv32_undefined_instruction
 # SLLI - Shift Left Logical Immediate
 	and 31, immediate, t0 # extract imm[4:0]
+
 	bal rv32_abi_load_register_rs1
 	shlo t0, r14, r14        # do the shift left
 	b rv32_save_r14_to_register_file
+
 # PRIMARY OPCODE: MISC-MEM
 rv32_misc_mem:
 	extract_rd
