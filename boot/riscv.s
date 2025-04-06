@@ -123,7 +123,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	shri 20, \src, \dest # construct a sign extended version of imm[11:0]
 .endm
 
-.macro store_and_return dest, src=r15
+.macro store_and_return dest, src=r14
 	mov \src, \dest
 	bx (g14)
 .endm
@@ -145,12 +145,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # x13 -   (g12)
 # x14 -   (g13)
 rv32_abi_store_register:
-	# r14 - index
-	# r15 - value
-	cmpobge 16, r14, rv32_store_to_register_file
-	bx rv32_abi_store_register_handler[r14*8]
-rv32_abi_store_register_handler:
-	store_and_return r15 # do nothing
+	# rd - index
+	# r14 - value
+	cmpobge 16, rd, 2f 
+	bx 1f[rd*8]
+1:
+	store_and_return r14 # do nothing
 	store_and_return g0 
 	store_and_return g1 
 	store_and_return g2 
@@ -165,15 +165,15 @@ rv32_abi_store_register_handler:
 	store_and_return g11 
 	store_and_return g12 
 	store_and_return g13 
-rv32_store_to_register_file:
+2:
 	st r15, hart0_gpr_register_file[r14*4]
 	bx (g14)
 
 rv32_abi_load_register:
 	# r14 - index
-	cmpobge 16, r14, rv32_load_from_register_file
-	bx rv32_abi_load_register_handler[r14*8]
-rv32_abi_load_register_handler:
+	cmpobge 16, r14, 2f 
+	bx 1f[r14*8]
+1:
 .macro load_and_return src, dest=r14
 	mov \src, \dest
 	bx (g14)
@@ -193,7 +193,7 @@ rv32_abi_load_register_handler:
 	load_and_return g11
 	load_and_return g12
 	load_and_return g13
-rv32_load_from_register_file:
+2:
 	ld hart0_gpr_register_file[r14*4], r14
 	bx (g14)
 .align 6
@@ -204,19 +204,17 @@ rv32_load_from_register_file:
 # AUIPC - Add Upper Immediate to PC
 rv32_auipc:
 	extract_rd 			               # where we are going to save things to
-	skip_if_rd_is_x0 next_instruction  # skip the actual act of saving if the destination is x0, this is a hint
 	ldconst 0xFFFFF000, t0             # load a mask into memory
-	and instruction, t0, t1		               # construct the offset
-	addo pc, t1, t0 	               # add it to the program counter
-	st t0, hart0_gpr_register_file[rd*4] 				   # save the result to a register
+	and instruction, t0, t1		       # construct the offset
+	addo pc, t1, r14 	               # add it to the program counter
+	bal rv32_abi_store_register 	   # store it to the register file (this will cause x0 to be ignored)
 	b next_instruction
 # LUI - Load Upper Immediate
 rv32_lui:
 	extract_rd 						   
-	skip_if_rd_is_x0 next_instruction # skip if destination is x0 since it is a hint
 	shri 12, instruction, t0
-	shro 12, t0, t1
-	st t1, hart0_gpr_register_file[rd*4]
+	shro 12, t0, r14
+	bal rv32_abi_store_register
 	b next_instruction
 rv32_jal:
 	# jal has a strange immediate of [20|10:1|11|19:12] in that order
@@ -235,11 +233,8 @@ rv32_jal:
 	or t1, t3, t2			# merge [imm11:0] with imm[19:12]
 	or t0, t2, immediate			# this should get us our proper imm[20:1] value
 	extract_rd
-#	@todo implement the actual jump portion
-	skip_if_rd_is_x0 1f # skip if destination is x0
-	addo 4, pc, t0 		# the address to return to
-	st t0, hart0_gpr_register_file[rd*4]		# save the return address in the given register (usually, this is ra but for now, do not worry about that fact)
-1:	
+	addo 4, pc, r14 		# the address to return to
+	bal rv32_abi_store_register # if x0 then the store doesn't actually happen
 	addo pc, immediate, pc  # jump to the relative offset
 	b instruction_decoder_body
 
@@ -250,12 +245,11 @@ rv32_jalr:
 	extract_rs1
 	extract_rd
 	shri 20, instruction, immediate # we want to make a sign extended version of imm[11:0]
-	skip_if_rd_is_x0 1f # skip if destination is x0
-	addo 4, pc, t0 # pc+4
-	st t0, hart0_gpr_register_file[rd*4]	# save the return address to wherever we need to go
-1: 
-	ld hart0_gpr_register_file[rs1*4], t0
-	addo immediate, t0, pc    # update PC
+	addo 4, pc, r14 # pc+4
+	bal rv32_abi_store_register # x0 will be ignored
+	mov rs1, r14
+	bal rv32_abi_load_register
+	addo immediate, r14, pc    # update PC
 	# @todo generate an exception if the target address is not aligned to a four byte boundary
 	b instruction_decoder_body
 # PRIMARY OPCODE: LOAD
