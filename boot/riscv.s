@@ -410,6 +410,10 @@ riscv_emulator_start:
 	movq 0, g8
 	movt 0, g12
 	ldconst hart0_gpr_register_file, gpr_base
+	b instruction_decoder_body
+rv32_undefined_instruction:
+next_instruction:
+	addo pc, 4, pc
 instruction_decoder_body:
 	ld 0(pc), instruction # load the current instruction
 	mov instruction, t0    # make a copy of it
@@ -423,10 +427,6 @@ instruction_decoder_body:
 	# instead, we should allow the dispatch table to be encoded into the onboard instruction cache by using instructions like cmpobe
 	# however, this will introduce quite a bit of overhead for compare and dispatch
 	bx rv32_direct_execution_dispatch_table[t0*4]
-rv32_undefined_instruction:
-next_instruction:
-	addo pc, 4, pc # go to the next instruction
-	b instruction_decoder_body 
 # PRIMARY OPCODE: LOAD
 rv32_load_primary:
 	extract_rd
