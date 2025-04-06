@@ -96,13 +96,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .set OPCODE_48B_2, 	   (0b1011111 >> 2)
 .set OPCODE_80B,       (0b1111111 >> 2)
 
-.macro instruction_dispatch target, subtable=0, subsubtable=0, subsubsubtable=0
-	.word \target, \subtable, \subsubtable, \subsubsubtable
-.endm
-.macro unimplemented_opcode 
-	instruction_dispatch rv32_undefined_instruction
-.endm
-
 .macro extract4 bitpos, len, src, dest
 	mov \src, \dest
 	extract \bitpos, \len, \dest
@@ -126,6 +119,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro skip_if_rd_is_x0 dest, target=rd
 	cmpobe 0, \target, \dest
 .endm
+.macro extract_imm11_itype dest=immediate, src=instruction
+	shri 20, \src, \dest # construct a sign extended version of imm[11:0]
+.endm
 
 .text
 
@@ -134,9 +130,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # At some point, I may use them for something.
 # some of these hint instructions are interesting, specifically
 # ---- INSTRUCTION IMPLEMENTATIONS BEGIN ----
-.macro extract_imm11_itype dest=immediate, src=instruction
-	shri 20, \src, \dest # construct a sign extended version of imm[11:0]
-.endm
 # ADDI - Add Immediate
 rv32_addi:
 	extract_rd
@@ -262,6 +255,7 @@ rv32_add:
 	addo t0, t1, t2    # do the addition operation, use ordinal form to prevent integer overflow fault
 	st t2, (gpr_base)[rd*4]
 	b next_instruction
+# SUB - Subtract x[rs1] - x[rs2] -> x[rd]
 rv32_sub:
 	subo t1, t0, t2		# x[rd] = x[rs1] - x[rs2] 
 	st t2, (gpr_base)[rd*4]
@@ -342,7 +336,6 @@ rv32_srl:
 	shro t0, t1, t2    
 	st t2, (gpr_base)[rd*4]
 	b next_instruction
-# SUB - Subtract x[rs1] - x[rs2] -> x[rd]
 # SRA - Shift Right Arithmetic
 rv32_sra:
 	shri t1, t0, t2 
@@ -559,49 +552,34 @@ rv32_branch_primary:
 rv32_beq:
 	ld (gpr_base)[rs1*4], t0 # src1
 	ld (gpr_base)[rs2*4], t1 # src2
-	cmpibe t0, t1, 1f
+	cmpibe t0, t1, rv32_branch_taken
 	b next_instruction
-1:	
-	addo pc, immediate, pc  
-	b instruction_decoder_body
 rv32_bne:
 	ld (gpr_base)[rs1*4], t0 # src1
 	ld (gpr_base)[rs2*4], t1 # src2
-	cmpibne t0, t1, 1f
+	cmpibne t0, t1, rv32_branch_taken
 	b next_instruction
-1:	
-	addo pc, immediate, pc  
-	b instruction_decoder_body
 rv32_blt:
 	ld (gpr_base)[rs1*4], t0 # src1
 	ld (gpr_base)[rs2*4], t1 # src2
-	cmpibl t0, t1, 1f
+	cmpibl t0, t1, rv32_branch_taken
 	b next_instruction
-1:	
-	addo pc, immediate, pc  
-	b instruction_decoder_body
 rv32_bltu:
 	ld (gpr_base)[rs1*4], t0 # src1
 	ld (gpr_base)[rs2*4], t1 # src2
-	cmpobl t0, t1, 1f
+	cmpobl t0, t1, rv32_branch_taken
 	b next_instruction
-1:	
-	addo pc, immediate, pc  
-	b instruction_decoder_body
 rv32_bge:
 	ld (gpr_base)[rs1*4], t0 # src1
 	ld (gpr_base)[rs2*4], t1 # src2
-	cmpibge t0, t1, 1f
+	cmpibge t0, t1, rv32_branch_taken
 	b next_instruction
-1:	
-	addo pc, immediate, pc  
-	b instruction_decoder_body
 rv32_bgeu:
 	ld (gpr_base)[rs1*4], t0 # src1
 	ld (gpr_base)[rs2*4], t1 # src2
-	cmpobge t0, t1, 1f
+	cmpobge t0, t1, rv32_branch_taken
 	b next_instruction
-1:	
+rv32_branch_taken:
 	addo pc, immediate, pc  
 	b instruction_decoder_body
 # Here are some of the extensions I want to implement
@@ -743,56 +721,5 @@ rv32_branch_instruction_table:
 	b rv32_bltu
 	b rv32_bgeu
 
-.align 6
-# all 32 real entries for the 0b11 form
-#rv32_opcode_dispatch_table:
-#	instruction_dispatch rv32_load_primary, rv32_load_instruction_table
-#	unimplemented_opcode # load-fp
-#	unimplemented_opcode # custom0
-#	instruction_dispatch rv32_misc_mem, rv32_misc_mem_instruction_table
-#
-#	instruction_dispatch rv32_op_imm, rv32_op_imm_instruction_table
-#	instruction_dispatch rv32_auipc
-#	unimplemented_opcode # OP-IMM-32 (can be used for custom instructions in rv32 mode)
-#	unimplemented_opcode # 48b mode?
-#
-#	instruction_dispatch rv32_store_primary, rv32_store_instruction_table
-#	unimplemented_opcode # store-fp
-#	unimplemented_opcode # custom-1
-#	unimplemented_opcode # AMO
-#
-#	instruction_dispatch rv32_op_primary, rv32_op_instruction_table
-#	instruction_dispatch rv32_lui
-#	unimplemented_opcode # op-32
-#	unimplemented_opcode # 64b
-#
-#	unimplemented_opcode # we don't support madd right now
-#	unimplemented_opcode # msub
-#	unimplemented_opcode # nmsub
-#	unimplemented_opcode # nmadd
-#
-#	unimplemented_opcode # op-fp
-#	unimplemented_opcode # op-v
-#	unimplemented_opcode # custom-2/rv128
-#	unimplemented_opcode # 48b
-#
-#	instruction_dispatch rv32_branch_primary, rv32_branch_instruction_table
-#	instruction_dispatch rv32_jalr
-#	unimplemented_opcode # reserved
-#	instruction_dispatch rv32_jal
-#
-#	instruction_dispatch rv32_system, rv32_system_instruction_table
-#	unimplemented_opcode # op-ve
-#	unimplemented_opcode # custom-3/rv128
-#	unimplemented_opcode # >=8b
-
-# this will hold the opcode dispatch table, aligned to be as easy to work on as possible
-# however, they 
-# this design allows for the actual jump tables to be embedded in the onboard instruction cache
-# without sacrificing performance. Instead of a offset ld followed by a jump, we just jump to the 
-# offset in the table. Each entry in the table is a branch instruction. We also allow the 16-byte lines
-# to be cached in the instruction cache this way. We don't hit the AVR on _each_ instruction. Only
-# when our jump tables are actually 
-.align 4
 
 .bss hart0_gpr_register_file, (32*4), 6
