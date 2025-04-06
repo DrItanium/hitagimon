@@ -55,7 +55,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # g10 -> 
 # g11 -> 
 # g12 -> 
-# g13 -> 
+# g13 -> return address (x1)
 # g14 -> link register
 # fp -> i960 frame pointer
 
@@ -125,7 +125,31 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 .text
+# x0 - zero
+# x1 - ra (g13)
+# x2 - sp (g12)
+# x3 - gp (g11)
+rv32_abi_load_register:
+	# g0 - index
+	cmpobge 4, g0, 1f
+	bx rv32_abi_load_register_handler[g0*8]
+1:
+	ld (gpr_base)[g0*4], g0
+	bx (g14)
 
+rv32_abi_load_register_handler:
+rv32_x0:
+	mov 0, g0
+	bx (g14)
+rv32_x1:
+	mov g13, g0
+	bx (g14)
+rv32_x2:
+	mov g12, g0
+	bx (g14)
+rv32_x3:
+	mov g11, g0
+	bx (g14)
 .align 6
 # I have decided to ignore hint instructions completely.
 # At some point, I may use them for something.
