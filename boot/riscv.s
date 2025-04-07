@@ -140,6 +140,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
    Since the C/C++ compiler is so janky, this emulator provides me the ability to use a widely
    supported instruction set that basically will never die.
+
+   If we read four instructions at a time then we have some things to keep in mind:
+
+   1. The idea of sequential execution can get very... interesting. The program counter will need
+      to be advanced properly.
+   2. Branches (and jumps) will require that we restart the four instructions
+      to execute at the new destination
+   3. When we run out of instructions to process, the next four instructions need to be loaded
+   4. Keeping track of which instruction we are processing may require link register use
+
 */
 
 /* RISCV32 emulator begin */
