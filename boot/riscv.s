@@ -22,13 +22,132 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+/*
+   The actual system that the i960Sx runs in is a little strange.
+   It is a combination of an ATMEGA2560 (the 2560) and ATMEGA4808 (the 4808).
+   There is 64 megabytes of PSRAM (Over a 5MHz SPI link) and a 1 Megabyte cache
+   (two 512k*8bit SRAM chips). 
+
+   The 4808 generates the clock signals for the entire system. Including:
+   - 20MHz clock (from the internal oscillator) that drives the 2560 and the i960 (if configured as such)
+   - 10MHz clock (from the internal oscillator fed into a CCL divider circuit)
+   - 5MHz clock (from the 10MHz signal fed into another CCL divider circuit)
+
+   In all cases, the 2560 will run at 20MHz. The i960Sx runs with a CLK2 of
+   either 20 or 10MHz depending on a jumper. This translates to a CLK1 value of
+   10 or 5MHz respectively which is the actual clock rate of the i960. I have been running
+   the i960 at 5MHz CLK1 to make sure that the 2560 has the ability to execute
+   up to four instructions for each i960 cycle. If I raise the CLK1 to 10MHz
+   then it drops to two instructions instead. 
+
+   This clock arrangement allows for all of the devices in the system to run clock synchronized. 
+
+   The 2560 is responsible for:
+
+   - Responding to memory requests by the i960 (this is the primary task)
+   -- Includes detecting a new address state (uses one of the external interrupt lines but does not trigger an interrupt)
+   -- Signalling ready uses some external hardware to allow toggling a pin to quickly tell the i960 precisely to continue execution
+   -- Ready signalling also has a feedback pulse to tell the 2560 when to continue with execution (plus some timing chicanery)
+   -- Some of the peripherals of the 2560 are exposed to the i960 through a MMIO scheme
+   - Handling the SDCard
+   -- This is used to install the initial memory image that the i960 runs
+   - Interfacing with the parallel cache and PSRAM (EBI and SPI)
+   -- 64 Megabytes of PSRAM are spread across eight different chips
+   -- The Parallel cache is used to increase cache hit rate (more on this later since it is one of the major factors of why this emulator is coded how it is)
+   - I2C access
+   - SDCard Access
+   - Serial Console Access
+
+   For the riscv32 emulator, there are aspects of this design that have to be
+   taken into account.  First, the i960Sx only has 512 bytes of instruction
+   cache. There is no data cache at all! So, constantly accessing main memory
+   is very expensive. The i960 instruction set has ways to load/store up to four
+   registers worth of data at a time but that will incur an initial overhead. Thus, having jump tables
+   is fine as long as you are jumping _to_ the table instead of loading the contents of the table into
+   register. The former can actually be cached on chip since it is treated as code. 
+
+   The parallel cache of the 2560 is a hybrid approach where the data lines and
+   lowest five address lines of the 2560's EBI are connected to two 512k*8 SRAM
+   chips. The lower four address lines are connected to A0-A3 with the remaining
+   address line used to choose the SRAM chip to access. This means that there is a 32-byte window
+   visible at any time to the 2560. The remaining address lines that the SRAM chips have are 
+   connected directly to the i960's Address Lines. This greatly accelerates lookup time of cache
+   lines by having the i960 automatically select the 32-byte window that the 2560 can access at any
+   given time. This allows for a 16-byte cache line plus extra tracking data for each line. 
+
+   A comparison is still needed to see if there is a cache miss. If there is,
+   then the current cache line is saved back to PSRAM and the new cache line is
+   loaded into the parallel cache. If the cache line on the chip has not been modified then
+   only the new cache line is loaded in. The design of the cache is a direct
+   mapped one but we at least have access to 512k out of the 1MB that is provided for this effort.
+   Not all of the space is used either so it is flexible. 
+
+   After the check, the 16-byte cache line is walked by the AVR for
+   reads/writes during the memory transaction. The spin up time was around
+   2.2us the last time I looked which isn't horrible but is still quite some
+   overhead. The i960 will stall while it waits for its bus transactions to be
+   completed.
+
+   While we cannot keep the entire RV32 emulator state on chip, it is possible
+   to hold onto a lot of it using the instruction cache and the 27 registers
+   that are generically available (pfp, sp, rip, g14, and fp all have hardware
+   requirements).  Right now, I have x1-x14 cached on chip (g0-g13) [remember
+   x0 doesn't need to be cached]. Thus x15-x31 are saved to the register file
+   space allocated on the stack.  Using the i960 stack allows me to isolate the
+   state of the current hart and prevent conflicts with other harts (if I wanted
+   to simulate more of them).
+
+   Eventually, I want to do some register analysis to figure out which registers are the most frequently accessed.
+   This analysis will allow me to accelerate the most common operations. 
+
+   So an instruction requiring more cycles but saving space is sometimes a
+   better fit for the limited instruction cache. 
+
+   I currently load each riscv instruction at the start of execution and then operate on it without
+   going to main memory (unless I need to get register contents not directly mapped). This is actually
+   a _very_ bad idea because I am constantly hitting main memory.
+
+   Ideally, we want to load four instructions at a time since it only takes up one load instruction
+   and makes it possible to not only identify 
+
+   Each of these instructions need to be processed individually. In some cases, these individual 
+   instructions can be fused into more complex instructions!
+
+   The other thing that we have to contend with is the fact that there is a
+   30-bit encoding space in the rv32 instructions. I do not support compressed instructions
+   right now to keep the design as simple as possible. It also simplifies the design of this
+   emulator as well:
+   1. Check the lowest two bits of the instruction
+   2. If they are not 0b11 then error out
+   3. Otherwise, take the opcode field and shift right by two (creating a 32 entry distance)
+   4. Jump to the branch statement found in the 32 entry jump table
+
+   This increases flexibility while not nuking performance.
+
+   Then we perform other actions to carry out the instruction to execute. 
+
+   If I were to expand the first table to be based off of the lowest 12 or 15
+   bits then it becomes possible to increase performance at the cost of increase program size.
+   I could directly operate on specific combinations. The rs1 and rs2 fields
+   would still be dynamically accessed...
+
+   Right now, the idea to keep as much on chip as possible. Even having a faster memory subsystem
+   would not totally alleviate this problem since the i960 itself has to perform the translation. 
+
+   By using four registers for processing instructions, I would be able to stay off the memory bus
+   for quite a long time. With the exception of cases where registers being accesssed are those
+   which are on the stack...
+
+   Since the C/C++ compiler is so janky, this emulator provides me the ability to use a widely
+   supported instruction set that basically will never die.
+*/
 
 /* RISCV32 emulator begin */
 # rv32 -> i960 like found in the riscv teaching book
 # Use i960 assembly as the microcode for this "simulator"
-# pfp -> i960 previous frame pointer
+# pfp -> i960 previous frame pointer 
 # sp ->  i960 stack pointer
-# rip -> i960 return instruction pointer
+# rip -> i960 return instruction pointer 
 # r3 -> instruction // contents
 # r4 -> t0 // temporary
 # r5 -> t1  // temporary
@@ -404,17 +523,17 @@ rv32_add:
 	mov r14, t0
 	bal rv32_abi_load_register_rs2
 	bbs 30, instruction, rv32_sub
-	addo t0, r14, r14    # do the addition operation, use ordinal form to prevent integer overflow fault
+	addi t0, r14, r14
 	b rv32_save_r14_to_register_file   # save the result
 # SUB - Subtract x[rs1] - x[rs2] -> x[rd]
 rv32_sub:
-	subo r14, t0, r14		# x[rd] = x[rs1] - x[rs2] 
+	subi r14, t0, r14		# x[rd] = x[rs1] - x[rs2] 
 	b rv32_save_r14_to_register_file   # save the result
 rv32_mul:
 	bal rv32_abi_load_register_rs1
 	mov r14, t0
 	bal rv32_abi_load_register_rs2
-	mulo r14, t0, r14
+	muli r14, t0, r14
 	b rv32_save_r14_to_register_file
 rv32_mulh:
 	bal rv32_abi_load_register_rs1
@@ -424,10 +543,15 @@ rv32_mulh:
 	mov r15, r14      # move upper half to r14
 	b rv32_save_r14_to_register_file
 rv32_mulhsu:
+	b next_instruction
 rv32_mulhu:
+	b next_instruction
 rv32_div:
+	b next_instruction
 rv32_divu:
+	b next_instruction
 rv32_rem:
+	b next_instruction
 rv32_remu:
 	b next_instruction
 	
@@ -507,7 +631,7 @@ rv32_op_imm_instruction_table:
 # ADDI - Add Immediate
 rv32_addi:
 	bal rv32_abi_load_register_rs1 # rs1 contents
-	addo immediate, r14, r14    # add rs1 with the immediate
+	addi immediate, r14, r14    # add rs1 with the immediate
 	b rv32_save_r14_to_register_file
 # SLTI - Set Less Than Immediate (place the value 1 in register rd if register
 #		rs1 is less than the sign-extended immediate when both are treated as
@@ -686,7 +810,6 @@ rv32_branch_taken:
 .align 6
 .global riscv_emulator_start
 riscv_emulator_start:
-	# clear all temporaries ahead of time
 	mov 0, r3 
 	movq 0, r4
 	movq 0, r8
@@ -695,6 +818,7 @@ riscv_emulator_start:
 	movq 0, g4
 	movq 0, g8
 	movt 0, g12
+# leave fp alone
 # turn off interger overflow faults to make it easier to better adapt to how rv32 does things
 	modac 0, 0, r3 # get the contents of ac
 	setbit 12, r3, r3 # mask integer overflow faults
@@ -718,6 +842,7 @@ riscv_emulator_start:
 # or it is sp - 256 for fpr
 # then it is sp - 384 for the rv32 state
 	b instruction_decoder_body
+
 rv32_save_r14_to_register_file:
 	bal rv32_abi_store_register 	   # store it to the register file (this will cause x0 to be ignored)
 	b next_instruction
@@ -725,6 +850,11 @@ rv32_undefined_instruction:
 next_instruction:
 	addo pc, 4, pc
 instruction_decoder_body:
+	# normally the idea would be to read each instruction individually but this is _very_ expensive overall when talking to the 
+	# AVR chipset. Each time a request is made, you pay at least a 2.2us wait for the transaction to spin up. It is even longer
+	# on a cache miss. 
+	# 
+	# 
 	ld 0(pc), instruction # load the current instruction
 	mov instruction, t0    # make a copy of it
 	extract 0, 7, t0 # opcode extraction
