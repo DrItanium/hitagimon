@@ -92,13 +92,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    to hold onto a lot of it using the instruction cache and the 27 registers
    that are generically available (pfp, sp, rip, g14, and fp all have hardware
    requirements).  Right now, I have x1-x14 cached on chip (g0-g13) [remember
-   x0 doesn't need to be cached]. Thus x15-x31 are saved to the register file
-   space allocated on the stack.  Using the i960 stack allows me to isolate the
-   state of the current hart and prevent conflicts with other harts (if I wanted
-   to simulate more of them).
+   x0 doesn't need to be cached].Thu Thus x15-x31 are saved to the register file
+   space allocated in .bss.  Using the bss section allows me to always be able
+   to access the state of the current hart and prevent conflicts with other
+   harts (if I wanted to simulate more of them).
 
-   Eventually, I want to do some register analysis to figure out which registers are the most frequently accessed.
-   This analysis will allow me to accelerate the most common operations. 
+   Eventually, I want to do some register analysis to figure out which
+   registers are the most frequently accessed.  This analysis will allow me to
+   accelerate the most common operations. 
 
    So an instruction requiring more cycles but saving space is sometimes a
    better fit for the limited instruction cache. 
