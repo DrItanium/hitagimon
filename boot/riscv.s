@@ -277,7 +277,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # x12 -   (g11)
 # x13 -   (g12)
 # x14 -   (g13)
-.set GPR_BASE_OFFSET, -128
 rv32_abi_store_register:
 	# rd - index
 	# r14 - value
@@ -895,5 +894,4 @@ rv32_direct_execution_dispatch_table:
 	b rv32_undefined_instruction # custom-3/rv128
 	b rv32_undefined_instruction # >=80b
 	.bss hart0_gprs, (32*4), 6
-
 	.bss hart0_fprs, (32*8), 6
