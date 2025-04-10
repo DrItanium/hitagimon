@@ -300,20 +300,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .text
 # x0 - zero gcc never alloc'd
-# x1 - ra (g0) gcc alloc: 15
-# x2 - sp (g1) gcc never alloc'd
-# x3 - gp (g2) gcc never alloc'd
-# x4 - tp (g3) gcc never alloc'd
-# x5 - t0 (g4) gcc alloc: 13
-# x6 - t1 (g5) gcc alloc: 8
-# x7 - t2 (g6) gcc alloc: 14
-# x8 - s0 (g7) gcc alloc: 16
-# x9 - s1 (g8) gcc alloc: 17
-# x10 - a0 (g9) gcc alloc: 5
-# x11 - a1 (g10) gcc alloc: 4
-# x12 - a2 (g11) gcc alloc: 3
-# x13 - a3 (g12) gcc alloc: 2
-# x14 - a4 (g13) gcc alloc: 1
+# x1 - ra (memory) gcc alloc: 15
+# x2 - sp (memory) gcc never alloc'd
+# x3 - gp (memory) gcc never alloc'd
+# x4 - tp (memory) gcc never alloc'd
+# x5 - t0 (memory) gcc alloc: 13
+# x6 - t1 (memory) gcc alloc: 8
+# x7 - t2 (memory) gcc alloc: 14
+# x8 - s0 (memory) gcc alloc: 16
+# x9 - s1 (memory) gcc alloc: 17
+# x10 - a0 (memory) gcc alloc: 5
+# x11 - a1 (memory) gcc alloc: 4
+# x12 - a2 (memory) gcc alloc: 3
+# x13 - a3 (memory) gcc alloc: 2
+# x14 - a4 (memory) gcc alloc: 1
 # x15 - a5 (memory) gcc alloc: 0
 # x16 - a6 (memory)  gcc alloc: 6
 # x17 - a7 (memory) gcc alloc: 7
@@ -366,55 +366,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 rv32_abi_store_register:
 	# rd - index
 	# r14 - value
-	cmpobge 16, rd, 2f 
-	bx 1f[rd*8]
-1:
-	store_and_return r14 # do nothing
-	store_and_return g0 
-	store_and_return g1 
-	store_and_return g2 
-	store_and_return g3 
-	store_and_return g4 
-	store_and_return g5 
-	store_and_return g6 
-	store_and_return g7 
-	store_and_return g8 
-	store_and_return g9 
-	store_and_return g10 
-	store_and_return g11 
-	store_and_return g12 
-	store_and_return g13 
-2:
-	# we are saving to the stack so all that we need to do is make it sp - 128
 	st r14, hart0_gprs[rd*4]
 	bx (g14)
 rv32_abi_load_register_rs2:
-	mov rs2, r14 
-	b rv32_abi_load_register
+	ld hart0_gprs[rs2*4], r14
+	bx (g14)
 rv32_abi_load_register_rs1:
-	mov rs1, r14 # fallthrough
+	ld hart0_gprs[rs1*4], r14
+	bx (g14)
+
 rv32_abi_load_register:
 	# r14 - index
-	cmpobge 16, r14, 2f 
-	bx 1f[r14*8]
-1:
-	load_and_return 0
-	load_and_return g0
-	load_and_return g1
-	load_and_return g2
-	load_and_return g3
-	load_and_return g4
-	load_and_return g5
-	load_and_return g6
-	load_and_return g7
-	load_and_return g8
-	load_and_return g9
-	load_and_return g10
-	load_and_return g11
-	load_and_return g12
-	load_and_return g13
-2:
-# stack pointer refers to the register file
 	ld hart0_gprs[r14*4], r14
 	bx (g14)
 .align 6
