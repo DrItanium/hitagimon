@@ -150,6 +150,42 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       to execute at the new destination
    3. When we run out of instructions to process, the next four instructions need to be loaded
    4. Keeping track of which instruction we are processing may require link register use
+*/
+
+/* 
+   4/10/2025
+	After re-reading the MC, Kx, and Sx manuals; I better understand how the
+	scoreboarding system is setup. Register usage is being constantly tracked
+	by the CPU's Instruction Execution Unit (IEU). 
+
+	From the 80960KB Programmer's Reference Manual (note: I fixed some examples as they were broken...):
+
+	"""
+		The register scoreboard provides scoreboarding for the global and local reigsters. When, one 
+		or more registers are being used in an operation, they are marked as in use. The register
+		scoreboarding mechanism allows the processor to continue executing subsequent instructions,
+		as long as those instructions do not require the contents of the scoreboarded registers.
+	
+		A typical even that would cause scoreboarding is a load operation. For a load from memory,
+		the contents of the affected registers are not valid until the BCL fetches the data and the 
+		registers are loaded. For example, consider the sequence:
+
+		ld (g1), g0     # NOTE: The arguments were originally swapped
+		addi g2, g3, g4
+		addi g5, g4, g6
+		subi g0, g6, g6
+
+		Here, when the BCL initiates the ld operation, register g0 is scoreboarded. As long as
+		subsequent instructions do not require the contents of g0, the ID continues to dispatch
+		instructions. For example, the two addi instructions above are executed while the BCL is
+		fetching the data for g0. If g0 is not loaded by the time the subi instruction is ready to
+		be executed, the IEU delays execution of the instructions until the
+		loading of g0 has been completed.
+	"""
+
+	This means it is far more important to organize the emulator code to not be
+	stalled by the load operations. We should be actually starting the load and
+	then continue execution while we wait. 
 
 */
 
@@ -263,21 +299,70 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .text
-# x0 - zero
-# x1 - ra (g0)
-# x2 - sp (g1)
-# x3 - gp (g2)
-# x4 -    (g3)
-# x5 -    (g4)
-# x6 -    (g5)
-# x7 -    (g6)
-# x8 -    (g7)
-# x9 -    (g8)
-# x10 -   (g9)
-# x11 -   (g10)
-# x12 -   (g11)
-# x13 -   (g12)
-# x14 -   (g13)
+# x0 - zero gcc never alloc'd
+# x1 - ra (g0) gcc alloc: 15
+# x2 - sp (g1) gcc never alloc'd
+# x3 - gp (g2) gcc never alloc'd
+# x4 - tp (g3) gcc never alloc'd
+# x5 - t0 (g4) gcc alloc: 13
+# x6 - t1 (g5) gcc alloc: 8
+# x7 - t2 (g6) gcc alloc: 14
+# x8 - s0 (g7) gcc alloc: 16
+# x9 - s1 (g8) gcc alloc: 17
+# x10 - a0 (g9) gcc alloc: 5
+# x11 - a1 (g10) gcc alloc: 4
+# x12 - a2 (g11) gcc alloc: 3
+# x13 - a3 (g12) gcc alloc: 2
+# x14 - a4 (g13) gcc alloc: 1
+# x15 - a5 (memory) gcc alloc: 0
+# x16 - a6 (memory)  gcc alloc: 6
+# x17 - a7 (memory) gcc alloc: 7
+# x18 - s2 (memory) gcc alloc: 18
+# x19 - s3 (memory) gcc alloc: 19
+# x20 - s4 (memory) gcc alloc: 20
+# x21 - s5 (memory) gcc alloc: 21
+# x22 - s6 (memory) gcc alloc: 22
+# x23 - s7 (memory) gcc alloc: 23
+# x24 - s8 (memory) gcc alloc: 24
+# x25 - s9 (memory) gcc alloc: 25
+# x26 - s10 (memory) gcc alloc: 26
+# x27 - s11 (memory) gcc alloc: 27
+# x28 - t3 (memory) gcc alloc: 9
+# x29 - t4 (memory) gcc alloc: 10
+# x30 - t5 (memory) gcc alloc: 11
+# x31 - t6 (memory) gcc alloc: 12
+# f0 - 
+# f1 - 
+# f2 - 
+# f3 - 
+# f4 - 
+# f5 - 
+# f6 - 
+# f7 - 
+# f8 - 
+# f9 - 
+# f10 - 
+# f11 - 
+# f12 - 
+# f13 - 
+# f14 - 
+# f15 - 
+# f16 - 
+# f17 - 
+# f18 - 
+# f19 - 
+# f20 - 
+# f21 - 
+# f22 - 
+# f23 - 
+# f24 - 
+# f25 - 
+# f26 - 
+# f27 - 
+# f28 - 
+# f29 - 
+# f30 - 
+# f31 - 
 rv32_abi_store_register:
 	# rd - index
 	# r14 - value
@@ -896,3 +981,4 @@ rv32_direct_execution_dispatch_table:
 	b rv32_undefined_instruction # >=80b
 	.bss hart0_gprs, (32*4), 6
 	.bss hart0_fprs, (32*8), 6
+
