@@ -187,6 +187,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stalled by the load operations. We should be actually starting the load and
 	then continue execution while we wait. 
 
+	Because of this new understanding, I have decided to actually eliminate
+	keeping as many registers on chip as possible for now. Instead, we can just
+	be very careful in how we perform execution. 
 */
 
 /* RISCV32 emulator begin */
