@@ -366,18 +366,28 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 rv32_abi_store_register:
 	# rd - index
 	# r14 - value
+	cmpobe 0, rd, 1f # skip over if it is x0
 	st r14, hart0_gprs[rd*4]
+1:
 	bx (g14)
 rv32_abi_load_register_rs2:
+	mov rs2, r14
+	cmpobe 0, rs2, 1f # skip if x0
 	ld hart0_gprs[rs2*4], r14
+1:
 	bx (g14)
 rv32_abi_load_register_rs1:
+	mov rs1, r14
+	cmpobe 0, rs1, 1f # skip if x0
 	ld hart0_gprs[rs1*4], r14
+1:
 	bx (g14)
 
 rv32_abi_load_register:
 	# r14 - index
+	cmpobe 0, r14, 1f # skip if x0
 	ld hart0_gprs[r14*4], r14
+1:
 	bx (g14)
 .align 6
 # I have decided to ignore hint instructions completely.
