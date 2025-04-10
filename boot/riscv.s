@@ -424,9 +424,9 @@ rv32_jalr:
 	extract_funct3 t0
 	cmpobne 0, t0, rv32_undefined_instruction # this may be wrong in the future
 	extract_rs1
+	bal rv32_abi_load_register_rs1
 	extract_rd
 	shri 20, instruction, immediate # we want to make a sign extended version of imm[11:0]
-	bal rv32_abi_load_register_rs1
 	addo immediate, r14, rs1    # compute pc right now and stash in rs1
 	addo 4, pc, r14 # pc+4		
 	bal rv32_abi_store_register # x0 will be ignored
@@ -435,9 +435,7 @@ rv32_jalr:
 	b instruction_decoder_body
 # PRIMARY OPCODE: LOAD
 rv32_load_primary:
-	extract_rd
 	extract_rs1
-	shri 20, instruction, immediate # compute the immediate with sign extension
 	extract_funct3 t0, instruction # now figure out where to go by getting funct3
 	bx rv32_load_instruction_table[t0*4]
 rv32_load_instruction_table:
@@ -451,23 +449,33 @@ rv32_load_instruction_table:
 	b rv32_undefined_instruction
 rv32_lb:
 	bal rv32_abi_load_register_rs1 # base
+	shri 20, instruction, immediate # compute the immediate with sign extension
 	ldib (r14)[immediate], r14 # dest
+	extract_rd
 	b rv32_save_r14_to_register_file   # save the result
 rv32_lh:
 	bal rv32_abi_load_register_rs1 # base
+	shri 20, instruction, immediate # compute the immediate with sign extension
 	ldis (r14)[immediate], r14 # dest
+	extract_rd
 	b rv32_save_r14_to_register_file   # save the result
 rv32_lw:
 	bal rv32_abi_load_register_rs1 # base
+	shri 20, instruction, immediate # compute the immediate with sign extension
 	ld (r14)[immediate], r14 # dest
+	extract_rd
 	b rv32_save_r14_to_register_file   # save the result
 rv32_lbu:
 	bal rv32_abi_load_register_rs1 # base
+	shri 20, instruction, immediate # compute the immediate with sign extension
 	ldob (r14)[immediate], r14 # dest
+	extract_rd
 	b rv32_save_r14_to_register_file   # save the result
 rv32_lhu:
 	bal rv32_abi_load_register_rs1 # base
+	shri 20, instruction, immediate # compute the immediate with sign extension
 	ldos (r14)[immediate], r14 # dest
+	extract_rd
 	b rv32_save_r14_to_register_file   # save the result
 
 # PRIMARY OPCODE: STORE
@@ -895,7 +903,7 @@ instruction_decoder_body:
 	# on a cache miss. 
 	# 
 	# 
-	ld 0(pc), instruction # load the current instruction
+	ld 0(pc), instruction # load the current instruction, this is a single point of stalling...
 	mov instruction, t0    # make a copy of it
 	extract 0, 7, t0 # opcode extraction
 	and 3, t0, t1 # check the lowest two bits
