@@ -33,8 +33,11 @@ namespace microshell {
         *ch = fgetc(stdin);
         return 1;
 #else
-        *ch = cortex::ChipsetBasicFunctions::Console::read();
-        return 1;
+        uint16_t result = cortex::ChipsetBasicFunctions::Console::read();
+        if (result != 0xFFFF) {
+            *ch = result;
+        }
+        return result != 0xFFFF;
 #endif
     }
 
