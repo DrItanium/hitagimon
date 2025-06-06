@@ -19,8 +19,8 @@ namespace cortex
                 //
                 uint32_t ms;
                 uint32_t us;
-                uint16_t _eepromCapacity;
-                uint16_t _sramCapacity;
+                uint32_t _eepromCapacity;
+                uint32_t _sramCapacity;
                 // rtc functions
                 uint32_t _unixtime;
                 uint32_t _secondstime;

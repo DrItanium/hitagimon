@@ -1356,117 +1356,117 @@ namespace microshell {
     };
     ush_node_object binNode;
     const ush_file_descriptor binDesc[] = {
-            {
-                "quodigious",
-                        "Run the 32-bit linear quodigious benchmark",
-                        "usage: quodigious {0-9}+\n",
-                        quodigious_benchmark,
-                        nullptr,
-                        nullptr,
-                        nullptr,
-            },
-            {
-                    "spanbit",
-                    "invoke the spanbit instruction" ,
-                    "usage: spanbit value\n",
-                    doSpanbitOperation, // exec
-                    nullptr, // get_data
-                    nullptr, // set_data
-                    nullptr, // process
-            },
-            {
-                    "scanbit",
-                    "invoke the scanbit instruction" ,
-                    "usage: scanbit value\n", // help
-                    doScanbitOperation, // exec
-                    nullptr, // get_data
-                    nullptr, // set_data
-                    nullptr, // process
-            },
-            {
-                    "rotate",
-                    "inspect the results of the rotate instruction",
-                    "usage: rotate src len",
-                    doRotateOperation,
-                    nullptr,
-                    nullptr,
-                    nullptr,
+        {
+            "quodigious",
+            "Run the 32-bit linear quodigious benchmark",
+            "usage: quodigious {0-9}+\n",
+            quodigious_benchmark,
+            nullptr,
+            nullptr,
+            nullptr,
+        },
+        {
+            "spanbit",
+            "invoke the spanbit instruction" ,
+            "usage: spanbit value\n",
+            doSpanbitOperation, // exec
+            nullptr, // get_data
+            nullptr, // set_data
+            nullptr, // process
+        },
+        {
+            "scanbit",
+            "invoke the scanbit instruction" ,
+            "usage: scanbit value\n", // help
+            doScanbitOperation, // exec
+            nullptr, // get_data
+            nullptr, // set_data
+            nullptr, // process
+        },
+        {
+            "rotate",
+            "inspect the results of the rotate instruction",
+            "usage: rotate src len",
+            doRotateOperation,
+            nullptr,
+            nullptr,
+            nullptr,
 
-            },
-            {
-                    "addc_u64",
-                    "compare results of different ways to add 64-bit unsigned values",
-                    "usage: addc_u64 src1 src2",
-                    doU64AddTest,
-                    nullptr,
-                    nullptr,
-                    nullptr,
-            },
-            {
-                    "addc_s64",
-                    "compare results of different ways to add 64-bit signed values",
-                    "usage: addc_s64 src1 src2",
-                    doS64AddTest,
-                    nullptr,
-                    nullptr,
-                    nullptr,
-            },
-            {
-                    "subc_u64",
-                    "compare results of different ways to subtract 64-bit unsigned values",
-                    "usage: subc_u64 src1 src2",
-                    doU64SubTest,
-                    nullptr,
-                    nullptr,
-                    nullptr,
-            },
-            {
-                    "subc_s64",
-                    "compare results of different ways to subtract 64-bit signed values",
-                    "usage: subc_s64 src1 src2",
-                    doS64SubTest,
-                    nullptr,
-                    nullptr,
-                    nullptr,
-            },
-            {
-                    "flops64",
-                    "run flops double precision benchmark" ,
-                    nullptr, // help
-                    doFlops64Execution, // exec
-                    nullptr, // get_data
-                    nullptr, // set_data
-                    nullptr, // process
-            },
-            {
-                    "flops32",
-                    "run flops single precision benchmark" ,
-                    nullptr, // help
-                    doFlops32Execution, // exec
-                    nullptr, // get_data
-                    nullptr, // set_data
-                    nullptr, // process
-            },
-            {
-                    "run_benchmark",
-                    "run a series of benchmarks",
-                    nullptr,
-                    runFullBenchmark,
-                    nullptr,
-                    nullptr,
-                    nullptr,
-            },
+        },
+        {
+            "addc_u64",
+            "compare results of different ways to add 64-bit unsigned values",
+            "usage: addc_u64 src1 src2",
+            doU64AddTest,
+            nullptr,
+            nullptr,
+            nullptr,
+        },
+        {
+            "addc_s64",
+            "compare results of different ways to add 64-bit signed values",
+            "usage: addc_s64 src1 src2",
+            doS64AddTest,
+            nullptr,
+            nullptr,
+            nullptr,
+        },
+        {
+            "subc_u64",
+            "compare results of different ways to subtract 64-bit unsigned values",
+            "usage: subc_u64 src1 src2",
+            doU64SubTest,
+            nullptr,
+            nullptr,
+            nullptr,
+        },
+        {
+            "subc_s64",
+            "compare results of different ways to subtract 64-bit signed values",
+            "usage: subc_s64 src1 src2",
+            doS64SubTest,
+            nullptr,
+            nullptr,
+            nullptr,
+        },
+        {
+            "flops64",
+            "run flops double precision benchmark" ,
+            nullptr, // help
+            doFlops64Execution, // exec
+            nullptr, // get_data
+            nullptr, // set_data
+            nullptr, // process
+        },
+        {
+            "flops32",
+            "run flops single precision benchmark" ,
+            nullptr, // help
+            doFlops32Execution, // exec
+            nullptr, // get_data
+            nullptr, // set_data
+            nullptr, // process
+        },
+        {
+            "run_benchmark",
+            "run a series of benchmarks",
+            nullptr,
+            runFullBenchmark,
+            nullptr,
+            nullptr,
+            nullptr,
+        },
     };
     void
-    setup() {
-        ush_init(&microshellObject, &microshellDescriptor);
-        ush_commands_add(&microshellObject, &cmd, cmdFiles, sizeof(cmdFiles) / sizeof(cmdFiles[0]));
-        ush_node_mount(&microshellObject, "/", &fsroot, rootDesc, sizeof(rootDesc) / sizeof(rootDesc[0]));
-        ush_node_mount(&microshellObject, "/bin", &binNode, binDesc, sizeof(binDesc)/sizeof(binDesc[0]));
-        ush_node_mount(&microshellObject, "/dev", &devNode, devDesc, sizeof(devDesc)/sizeof(devDesc[0]));
-        ush_node_mount(&microshellObject, "/dev/eeprom", &eepromRoot, eepromDesc, sizeof(eepromDesc) / sizeof(eepromDesc[0]));
-        ush_node_mount(&microshellObject, "/dev/sram", &sramRoot, sramDesc, sizeof(sramDesc) / sizeof(sramDesc[0]));
-    }
+        setup() {
+            ush_init(&microshellObject, &microshellDescriptor);
+            ush_commands_add(&microshellObject, &cmd, cmdFiles, sizeof(cmdFiles) / sizeof(cmdFiles[0]));
+            ush_node_mount(&microshellObject, "/", &fsroot, rootDesc, sizeof(rootDesc) / sizeof(rootDesc[0]));
+            ush_node_mount(&microshellObject, "/bin", &binNode, binDesc, sizeof(binDesc)/sizeof(binDesc[0]));
+            ush_node_mount(&microshellObject, "/dev", &devNode, devDesc, sizeof(devDesc)/sizeof(devDesc[0]));
+            ush_node_mount(&microshellObject, "/dev/eeprom", &eepromRoot, eepromDesc, sizeof(eepromDesc) / sizeof(eepromDesc[0]));
+            ush_node_mount(&microshellObject, "/dev/sram", &sramRoot, sramDesc, sizeof(sramDesc) / sizeof(sramDesc[0]));
+        }
 }
 
 //char* argv[] = { "hitagimon", };
