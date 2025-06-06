@@ -818,16 +818,12 @@ struct FlopsCode {
 
 FlopsCode<double> fc("double precision");
 FlopsCode<float> fc2("single precision");
-FlopsCode<long double> fc3("extended precision");
 namespace microshell {
     void doFlops64Execution(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         fc.doIt();
     }
     void doFlops32Execution(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         fc2.doIt();
-    }
-    void doFlops80Execution(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-        fc3.doIt();
     }
     void doU64AddTest(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         if (argc != 3) {
@@ -1447,15 +1443,6 @@ namespace microshell {
                     "run flops single precision benchmark" ,
                     nullptr, // help
                     doFlops32Execution, // exec
-                    nullptr, // get_data
-                    nullptr, // set_data
-                    nullptr, // process
-            },
-            {
-                    "flops80",
-                    "run flops extended precision (fp80) benchmark" ,
-                    nullptr, // help
-                    doFlops80Execution, // exec
                     nullptr, // get_data
                     nullptr, // set_data
                     nullptr, // process
