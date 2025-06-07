@@ -29,26 +29,16 @@ extern "C" {
 namespace microshell {
 
     int read(ush_object*, char*ch) {
-#if 0
-        *ch = fgetc(stdin);
-        return 1;
-#else
         uint16_t result = cortex::ChipsetBasicFunctions::Console::read();
         if (result != 0xFFFF) {
             *ch = result;
         }
         return result != 0xFFFF;
-#endif
     }
 
     int write(ush_object*, char ch) {
-#if 0
-        char c = fputc(ch, stdout);
-        return (c != ch) ? 0 : 1;
-#else
         cortex::ChipsetBasicFunctions::Console::write(ch);
         return 1;
-#endif
     }
 
     const ush_io_interface microshellIOInterface = {
@@ -1233,52 +1223,51 @@ namespace microshell {
     }
     ush_node_object devNode;
     const ush_file_descriptor devDesc[] = {
-            {
-                "millis",
-                nullptr,
-                nullptr,
-                nullptr,
-                millis_get_data_callback,
-                nullptr,
-                nullptr
-            },
-            {
-                    "micros",
-                    nullptr,
-                    nullptr,
-                    nullptr,
-                    micros_get_data_callback,
-                    nullptr,
-                    nullptr
-            },
-            {
-                    "unixtime",
-                    nullptr,
-                    nullptr,
-                    nullptr,
-                    unixtime_get_data_callback,
-                    nullptr,
-                    nullptr
-            },
-            {
-                    "secondstime",
-                    nullptr,
-                    nullptr,
-                    nullptr,
-                    secondstime_get_data_callback,
-                    nullptr,
-                    nullptr
-            },
-            {
-                    "system_counter",
-                    nullptr,
-                    nullptr,
-                    nullptr,
-                    systemcounter_get_data_callback,
-                    nullptr,
-                    nullptr
-
-            }
+        {
+            "millis",
+            nullptr,
+            nullptr,
+            nullptr,
+            millis_get_data_callback,
+            nullptr,
+            nullptr
+        },
+        {
+            "micros",
+            nullptr,
+            nullptr,
+            nullptr,
+            micros_get_data_callback,
+            nullptr,
+            nullptr
+        },
+        {
+            "unixtime",
+            nullptr,
+            nullptr,
+            nullptr,
+            unixtime_get_data_callback,
+            nullptr,
+            nullptr
+        },
+        {
+            "secondstime",
+            nullptr,
+            nullptr,
+            nullptr,
+            secondstime_get_data_callback,
+            nullptr,
+            nullptr
+        },
+        {
+            "system_counter",
+            nullptr,
+            nullptr,
+            nullptr,
+            systemcounter_get_data_callback,
+            nullptr,
+            nullptr
+        }
     };
     size_t eeprom_capacity_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
         static char timeBuffer[16];
@@ -1458,25 +1447,21 @@ namespace microshell {
         },
     };
     void
-        setup() {
-            ush_init(&microshellObject, &microshellDescriptor);
-            ush_commands_add(&microshellObject, &cmd, cmdFiles, sizeof(cmdFiles) / sizeof(cmdFiles[0]));
-            ush_node_mount(&microshellObject, "/", &fsroot, rootDesc, sizeof(rootDesc) / sizeof(rootDesc[0]));
-            ush_node_mount(&microshellObject, "/bin", &binNode, binDesc, sizeof(binDesc)/sizeof(binDesc[0]));
-            ush_node_mount(&microshellObject, "/dev", &devNode, devDesc, sizeof(devDesc)/sizeof(devDesc[0]));
-            ush_node_mount(&microshellObject, "/dev/eeprom", &eepromRoot, eepromDesc, sizeof(eepromDesc) / sizeof(eepromDesc[0]));
-            ush_node_mount(&microshellObject, "/dev/sram", &sramRoot, sramDesc, sizeof(sramDesc) / sizeof(sramDesc[0]));
-        }
+    setup() {
+        ush_init(&microshellObject, &microshellDescriptor);
+        ush_commands_add(&microshellObject, &cmd, cmdFiles, sizeof(cmdFiles) / sizeof(cmdFiles[0]));
+        ush_node_mount(&microshellObject, "/", &fsroot, rootDesc, sizeof(rootDesc) / sizeof(rootDesc[0]));
+        ush_node_mount(&microshellObject, "/bin", &binNode, binDesc, sizeof(binDesc)/sizeof(binDesc[0]));
+        ush_node_mount(&microshellObject, "/dev", &devNode, devDesc, sizeof(devDesc)/sizeof(devDesc[0]));
+        ush_node_mount(&microshellObject, "/dev/eeprom", &eepromRoot, eepromDesc, sizeof(eepromDesc) / sizeof(eepromDesc[0]));
+        ush_node_mount(&microshellObject, "/dev/sram", &sramRoot, sramDesc, sizeof(sramDesc) / sizeof(sramDesc[0]));
+    }
 }
 
 //char* argv[] = { "hitagimon", };
 int main(void) {
     init();
     setup();
-    //fc.doIt();
-    //fc2.doIt();
-    //int argc = 1;
-    //return scheme_main(argc, argv);
     for (;; ) {
         loop();
     }
