@@ -8,6 +8,7 @@
 
 namespace cortex
 {
+    typedef uint8_t IOPage[256];
     struct IOSpace {
         union {
             uint8_t bytes[256];
@@ -26,6 +27,12 @@ namespace cortex
                 uint32_t _secondstime;
                 float _rtcTemperature;
                 uint32_t _configure32k;
+                // random entropy
+                uint32_t _hardwareRandomSource;
+                uint32_t _unused0;
+                uint32_t _unused1;
+                uint32_t _unused2;
+                
             };
         } builtin;
         uint8_t unmappedPages[7][256];
