@@ -1539,6 +1539,15 @@ namespace microshell {
             nullptr,
             nullptr,
         },
+        {
+            "fill_screen_test",
+            "Do Adafruit_GFX style fill screen test",
+            nullptr, // help
+            doFillScreen, // exec
+            nullptr,
+            nullptr,
+            nullptr,
+        },
     };
     void
     setup() {
