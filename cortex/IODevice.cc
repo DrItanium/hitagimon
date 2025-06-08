@@ -62,16 +62,16 @@ namespace cortex
         inline bool rtc_32kEnabled() volatile noexcept { return builtin._configure32k; }
         inline void rtc_enable32k() volatile noexcept { builtin._configure32k = 1; }
         inline void rtc_disable32k() volatile noexcept { builtin._configure32k = 0; }
-        inline void gfx_oled_drawPixel(uint16_t x, uint16_t y, uint16_t color) volatile noexcept  {
-            builtin.operation = 1; // drawPixel
-            builtin.arg0 = x;
-            builtin.arg1 = y;
-            builtin.arg2 = color;
+        inline void gfx_command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2) volatile noexcept  {
+            builtin.operation = cmd;
+            builtin.arg0 = arg0;
+            builtin.arg1 = arg1;
+            builtin.arg2 = arg2;
             builtin.executeGfx = 0xFFFF;
         }
-        inline void gfx_oled_fillScreen(uint16_t color) volatile noexcept {
-            builtin.operation = 2;
-            builtin.arg0 = color;
+        inline void gfx_command(uint16_t cmd, uint16_t arg0) volatile noexcept {
+            builtin.operation = cmd;
+            builtin.arg0 = arg0;
             builtin.executeGfx = 0xFFFF;
         }
     } __attribute__((packed));
@@ -164,11 +164,11 @@ namespace cortex
             }
         }
         namespace OLED {
-            void drawPixel(uint16_t x, uint16_t y, uint16_t color) noexcept {
-                getIOSpace().gfx_oled_drawPixel(x, y, color);
+            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2) {
+                getIOSpace().gfx_command(cmd, arg0, arg1, arg2);
             }
-            void fillScreen(uint16_t color) noexcept {
-                getIOSpace().gfx_oled_fillScreen(color);
+            void command(uint16_t cmd, uint16_t arg0) {
+                getIOSpace().gfx_command(cmd, arg0);
             }
         }
         namespace Random {

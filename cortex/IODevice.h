@@ -78,14 +78,8 @@ namespace cortex {
             uint32_t getChipsetClockSpeed() noexcept;
         } // end namespace Info
         namespace OLED {
-            void drawPixel(uint16_t x, uint16_t y, uint16_t color) noexcept;
-            void fillScreen(uint16_t color) noexcept;
-            inline uint16_t color565(uint8_t r, uint8_t g, uint8_t b) noexcept {
-                // taken from the Adafruit_GFX SPITFT implementation
-                return (static_cast<uint16_t>(r & 0xF8) << 8) |
-                       (static_cast<uint16_t>(g & 0xFC) << 3) |
-                       (static_cast<uint16_t>(b) >> 3);
-            }
+            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2);
+            void command(uint16_t cmd, uint16_t arg0);
         }
         namespace Random {
             uint32_t getHardwareRandomNumber() noexcept;

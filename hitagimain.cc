@@ -809,6 +809,28 @@ struct FlopsCode {
 
 FlopsCode<double> fc("double precision");
 FlopsCode<float> fc2("single precision");
+namespace GraphicsOpcodes {
+    enum Opcodes {
+        Nothing = 0,
+        DrawPixel,
+        FillScreen,
+    };
+}
+inline uint16_t color565(uint8_t r, uint8_t g, uint8_t b) noexcept {
+    // taken from the Adafruit_GFX SPITFT implementation
+    return (static_cast<uint16_t>(r & 0xF8) << 8) |
+        (static_cast<uint16_t>(g & 0xFC) << 3) |
+        (static_cast<uint16_t>(b) >> 3);
+}
+void fillScreen(uint16_t color) noexcept {
+    cortex::ChipsetBasicFunctions::OLED::command(GraphicsOpcodes::FillScreen, color);
+}
+void fillScreen(uint8_t r, uint8_t g, uint8_t b) noexcept {
+    fillScreen(color565(r, g, b));
+}
+void drawPixel(uint16_t x, uint16_t y, uint16_t color) noexcept {
+    cortex::ChipsetBasicFunctions::OLED::command(GraphicsOpcodes::DrawPixel, x, y, color);
+}
 namespace microshell {
     void doFlops64Execution(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         fc.doIt();
@@ -818,10 +840,10 @@ namespace microshell {
     }
     void doFizzleFade(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         // taken from fabien sanglards FizzleFade C example
-        cortex::ChipsetBasicFunctions::OLED::fillScreen(0);
+        fillScreen(0);
         uint32_t rndval = 1;
         uint32_t baseColor = rand();
-        uint16_t selectedColor = cortex::ChipsetBasicFunctions::OLED::color565(
+        uint16_t selectedColor = color565(
                 static_cast<uint8_t>(baseColor),
                 static_cast<uint8_t>(baseColor >> 8),
                 static_cast<uint8_t>(baseColor >> 16));
@@ -835,10 +857,16 @@ namespace microshell {
             }
             // assume 128x128 display
             if (x < 128 && y < 128) {
-                cortex::ChipsetBasicFunctions::OLED::drawPixel(x, y, selectedColor);
+                drawPixel(x, y, selectedColor);
             }
         } while (rndval != 1);
-
+    }
+    void doFillScreen(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        fillScreen(0);
+        fillScreen(255, 0, 0);
+        fillScreen(0, 255, 0);
+        fillScreen(0, 0, 255);
+        fillScreen(0);
     }
     void doU64AddTest(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         if (argc != 3) {
