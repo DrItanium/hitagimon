@@ -861,6 +861,29 @@ namespace microshell {
             }
         } while (rndval != 1);
     }
+    void doScreenClear(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        if (argc != 4) {
+            fillScreen(0);
+            return;
+        }
+        uint64_t r = 0;
+        uint64_t g = 0;
+        uint64_t b = 0;
+        if (sscanf(argv[1], "%llx", &r) == EOF) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+            return;
+        }
+        if (sscanf(argv[2], "%llx", &g) == EOF) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+            return;
+        }
+        if (sscanf(argv[3], "%llx", &b) == EOF) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+            return;
+        }
+        // most of the precision will be lost
+        fillScreen(r, g, b);
+    }
     void doFillScreen(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         fillScreen(0);
         fillScreen(255, 0, 0);
@@ -1548,6 +1571,16 @@ namespace microshell {
             nullptr,
             nullptr,
         },
+        {
+            "clear_screen",
+            "clear oled screen",
+            "usage: clear_screen [r g b]", // help
+            doScreenClear, // exec
+            nullptr,
+            nullptr,
+            nullptr,
+        },
+
     };
     void
     setup() {
