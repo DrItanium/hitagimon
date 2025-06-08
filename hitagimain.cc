@@ -827,7 +827,7 @@ namespace microshell {
                 static_cast<uint8_t>(baseColor >> 16));
         do {
             uint16_t y = rndval & 0x000FF; // Y = low 8 bits
-            uint16_t x = rndval & 0x1FF00; // X = high 9 bits
+            uint16_t x = (rndval & 0x1FF00) >> 8; // X = high 9 bits
             unsigned lsb = rndval & 1; // get the output bit
             rndval >>= 1; // shift register
             if (lsb) {
