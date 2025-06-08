@@ -1502,6 +1502,15 @@ namespace microshell {
             nullptr,
             nullptr,
         },
+        {
+            "fizzle_fade",
+            "do the Wolf3d FizzleFade sequence on the oled",
+            nullptr, // help
+            doFizzleFade, // exec
+            nullptr,
+            nullptr,
+            nullptr,
+        },
     };
     void
     setup() {
