@@ -32,7 +32,18 @@ namespace cortex
                 uint32_t _unused0;
                 uint32_t _unused1;
                 uint32_t _unused2;
-                
+                // simple oled gfx
+                uint16_t executeGfx;
+                uint16_t operation;
+
+                uint16_t arg0;
+                uint16_t arg1;
+
+                uint16_t arg2;
+                uint16_t arg3;
+
+                uint16_t arg4;
+                uint16_t arg5;
             };
         } builtin;
         uint8_t unmappedPages[7][256];
@@ -51,6 +62,18 @@ namespace cortex
         inline bool rtc_32kEnabled() volatile noexcept { return builtin._configure32k; }
         inline void rtc_enable32k() volatile noexcept { builtin._configure32k = 1; }
         inline void rtc_disable32k() volatile noexcept { builtin._configure32k = 0; }
+        inline void gfx_oled_drawPixel(uint16_t x, uint16_t y, uint16_t color) volatile noexcept  {
+            builtin.operation = 1; // drawPixel
+            builtin.arg0 = x;
+            builtin.arg1 = y;
+            builtin.arg2 = color;
+            builtin.executeGfx = 0xFFFF;
+        }
+        inline void gfx_oled_fillScreen(uint16_t color) volatile noexcept {
+            builtin.operation = 2;
+            builtin.arg0 = color;
+            builtin.executeGfx = 0xFFFF;
+        }
     } __attribute__((packed));
     volatile IOSpace& getIOSpace() noexcept {
         return memory<IOSpace>(0xFE000000);
@@ -139,7 +162,14 @@ namespace cortex
             getChipsetClockSpeed() noexcept {
                 return getIOSpace().builtin.chipsetClockSpeed;
             }
-
+        }
+        namespace OLED {
+            void drawPixel(uint16_t x, uint16_t y, uint16_t color) noexcept {
+                getIOSpace().gfx_oled_drawPixel(x, y, color);
+            }
+            void fillScreen(uint16_t color) noexcept {
+                getIOSpace().gfx_oled_fillScreen(color);
+            }
         }
         void
         begin() noexcept {
