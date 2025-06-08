@@ -171,6 +171,11 @@ namespace cortex
                 getIOSpace().gfx_oled_fillScreen(color);
             }
         }
+        namespace Random {
+            uint32_t getHardwareRandomNumber() noexcept {
+                return getIOSpace().builtin._hardwareRandomSource;
+            }
+        }
         void
         begin() noexcept {
         }

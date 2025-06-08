@@ -68,6 +68,7 @@ init()
     cortex::ChipsetBasicFunctions::begin();
     // make sure that we configured the c runtime to not buffer the inputs and outputs
     // this should allow each character to be printed out
+    srandom(cortex::ChipsetBasicFunctions::Random::getHardwareRandomNumber());
 }
 void
 printSegmentDescriptor(std::ostream& out, cortex::SegmentDescriptor& curr) {
@@ -814,6 +815,30 @@ namespace microshell {
     }
     void doFlops32Execution(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         fc2.doIt();
+    }
+    void doFizzleFade(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        // taken from fabien sanglards FizzleFade C example
+        cortex::ChipsetBasicFunctions::OLED::fillScreen(0);
+        uint32_t rndval = 1;
+        uint32_t baseColor = rand();
+        uint16_t selectedColor = cortex::ChipsetBasicFunctions::OLED::color565(
+                static_cast<uint8_t>(baseColor),
+                static_cast<uint8_t>(baseColor >> 8),
+                static_cast<uint8_t>(baseColor >> 16));
+        do {
+            uint16_t y = rndval & 0x000FF; // Y = low 8 bits
+            uint16_t x = rndval & 0x1FF00; // X = high 9 bits
+            unsigned lsb = rndval & 1; // get the output bit
+            rndval >>= 1; // shift register
+            if (lsb) {
+                rndval ^= 0x00012000;
+            }
+            // assume 128x128 display
+            if (x < 128 && y < 128) {
+                cortex::ChipsetBasicFunctions::OLED::drawPixel(x, y, selectedColor);
+            }
+        } while (rndval != 1);
+
     }
     void doU64AddTest(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         if (argc != 3) {

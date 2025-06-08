@@ -87,6 +87,9 @@ namespace cortex {
                        (static_cast<uint16_t>(b) >> 3);
             }
         }
+        namespace Random {
+            uint32_t getHardwareRandomNumber() noexcept;
+        }
         void begin() noexcept;
     } // end namespace ChipsetBasicFunctions
     inline uint32_t
