@@ -1221,6 +1221,20 @@ namespace microshell {
         *data = (uint8_t*)timeBuffer;
         return strlen((char*)(*data));
     }
+    size_t clk2_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
+        static char buf[32];
+        snprintf(buf, sizeof(buf), "%lu\n", cortex::ChipsetBasicFunctions::Info::getChipsetClockSpeed());
+        buf[sizeof(buf) - 1] = 0;
+        *data = (uint8_t*)buf;
+        return strlen((char*)(*data));
+    }
+    size_t clk1_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
+        static char buf[32];
+        snprintf(buf, sizeof(buf), "%lu\n", cortex::ChipsetBasicFunctions::Info::getCPUClockSpeed());
+        buf[sizeof(buf) - 1] = 0;
+        *data = (uint8_t*)buf;
+        return strlen((char*)(*data));
+    }
     ush_node_object devNode;
     const ush_file_descriptor devDesc[] = {
         {
@@ -1267,7 +1281,25 @@ namespace microshell {
             systemcounter_get_data_callback,
             nullptr,
             nullptr
-        }
+        }, 
+        {
+            "clk2",
+            nullptr,
+            nullptr,
+            nullptr,
+            clk2_get_data_callback,
+            nullptr,
+            nullptr
+        },
+        {
+            "clk1",
+            nullptr,
+            nullptr,
+            nullptr,
+            clk1_get_data_callback,
+            nullptr,
+            nullptr
+        },
     };
     size_t eeprom_capacity_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
         static char timeBuffer[16];
