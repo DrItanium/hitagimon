@@ -917,6 +917,14 @@ void fillRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h, int16_t radius,
 }
 uint32_t millis() noexcept { return cortex::ChipsetBasicFunctions::Timer::millis(); }
 uint32_t micros() noexcept { return cortex::ChipsetBasicFunctions::Timer::micros(); }
+void delayMicroseconds(uint32_t wait) noexcept {
+    uint32_t end = wait + micros();
+    while (end < micros()) { }
+}
+void delayMilliseconds(uint32_t wait) noexcept {
+    uint32_t end = wait + millis();
+    while (end < millis()) { }
+}
 // graphicstest.ino functions
 const uint16_t ColorBlack = color565(0, 0, 0);
 const uint16_t ColorWhite = color565(255, 255, 255);
@@ -1102,7 +1110,35 @@ testFilledTriangles() noexcept {
     return t;
 }
 
+
 namespace microshell {
+    void doGraphicsTest(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        printf("Running graphicstest\n");
+        printf("Format: benchmark name:\ttime (usec)\n");
+        delayMilliseconds(10);
+        printf("Screen fill:\t%lu us\n", testFillScreen());
+        delayMilliseconds(500);
+        /// @todo add support for testText
+        printf("Lines:\t%lu us\n", testLines(randomColor()));
+        delayMilliseconds(500);
+        printf("Horiz/Vert Lines:\t%lu us\n", testFastLines(randomColor(), randomColor()));
+        delayMilliseconds(500);
+        printf("Rectangles (outline):\t%lu us\n", testRects(randomColor()));
+        delayMilliseconds(500);
+        printf("Rectangles (filled):\t%lu us\n", testFilledRects(randomColor(), randomColor()));
+        delayMilliseconds(500);
+        printf("Circles (filled):\t%lu us\n", testFilledCircles(10, randomColor()));
+        delayMilliseconds(500);
+        printf("Circles (outline):\t%lu us\n", testCircles(10, randomColor()));
+        delayMilliseconds(500);
+        printf("Triangles (outline):\t%lu us\n", testTriangles());
+        delayMilliseconds(500);
+        printf("Triangles (filled):\t%lu us\n", testFilledTriangles());
+        delayMilliseconds(500);
+        /// @todo add support for rounded rects tests
+
+        printf("Done!\n");
+    }
     void doTestTriangles(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         testTriangles();
     }
@@ -1974,6 +2010,15 @@ namespace microshell {
             "Run testFilledTriangles from graphicstest.ino",
             nullptr,
             doTestFilledTriangles,
+            nullptr,
+            nullptr,
+            nullptr,
+        },
+        {
+            "graphicstest.ino",
+            "Run a simple benchmark tool based off of graphicstest.ino",
+            nullptr,
+            doGraphicsTest,
             nullptr,
             nullptr,
             nullptr,
