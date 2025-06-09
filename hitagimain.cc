@@ -1960,6 +1960,24 @@ namespace microshell {
             nullptr,
             nullptr,
         },
+        {
+            "triangles_test",
+            "Run testTriangles from graphicstest.ino",
+            nullptr,
+            doTestTriangles,
+            nullptr,
+            nullptr,
+            nullptr,
+        },
+        {
+            "filled_triangles_test",
+            "Run testFilledTriangles from graphicstest.ino",
+            nullptr,
+            doTestFilledTriangles,
+            nullptr,
+            nullptr,
+            nullptr,
+        },
     };
     void
     setup() {
