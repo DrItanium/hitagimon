@@ -56,10 +56,21 @@ namespace cortex
                 X(13);
 #undef X
                 uint16_t rotation;
+                uint16_t brightness;
+
                 uint16_t width;
                 uint16_t height;
+
                 uint16_t cursorX;
                 uint16_t cursorY;
+                union {
+                    uint16_t raw;
+                    struct {
+                        uint8_t sx;
+                        uint8_t sy;
+                    } rect;
+                    uint8_t square;
+                } textSize;
             } __attribute__((packed));
         } gfx;
         uint8_t unmappedPages[6][256];

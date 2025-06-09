@@ -1113,6 +1113,31 @@ testFilledTriangles() noexcept {
     }
     return t;
 }
+uint32_t
+testRoundRects() noexcept {
+    int cx = screenWidth() / 2 - 1;
+    int cy = screenHeight() / 2 - 1;
+    clearScreen();
+    int w = std::min(screenWidth(), screenHeight());
+    uint32_t start = micros();
+    for (int i = 0; i < w; i+=6) {
+        int i2 = i / 2;
+        drawRoundRect(cx - i2, cy - i2, i, i, i/8, color565(i,0,0));
+    }
+    return micros() - start;
+}
+uint32_t
+testFilledRoundRects() noexcept {
+    clearScreen();
+    int cx = screenWidth() / 2 - 1;
+    int cy = screenHeight() / 2 - 1;
+    uint32_t start = micros();
+    for (int i = std::min(screenWidth(), screenHeight()); i > 20; i-=6) {
+        int i2 = i / 2;
+        fillRoundRect(cx - i2, cy - i2, i, i, i / 8, color565(0, i, 0));
+    }
+    return micros() - start;
+}
 void
 FizzleFade(int w, int h, uint16_t color) noexcept {
     // taken from fabien sanglards FizzleFade C example
@@ -1157,7 +1182,10 @@ namespace microshell {
         delayMilliseconds(500);
         printf("Triangles (filled):\t%lu us\n", testFilledTriangles());
         delayMilliseconds(500);
-        /// @todo add support for rounded rects tests
+        printf("Rounded rects (outline):\t%lu us\n", testRoundRects());
+        delayMilliseconds(500);
+        printf("Rounded rects (filled):\t%lu us\n", testFilledRoundRects());
+        delayMilliseconds(500);
 
         printf("Done!\n");
     }
