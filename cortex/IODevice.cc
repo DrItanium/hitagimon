@@ -63,14 +63,7 @@ namespace cortex
 
                 uint16_t cursorX;
                 uint16_t cursorY;
-                union {
-                    uint16_t raw;
-                    struct {
-                        uint8_t sx;
-                        uint8_t sy;
-                    } rect;
-                    uint8_t square;
-                } textSize;
+                uint16_t textSize;
             } __attribute__((packed));
         } gfx;
         uint8_t unmappedPages[6][256];
@@ -89,6 +82,12 @@ namespace cortex
         inline bool rtc_32kEnabled() volatile noexcept { return builtin._configure32k; }
         inline void rtc_enable32k() volatile noexcept { builtin._configure32k = 1; }
         inline void rtc_disable32k() volatile noexcept { builtin._configure32k = 0; }
+        inline void gfx_set_text_size(uint8_t sx, uint8_t sy) noexcept {
+            gfx.textSize = static_cast<uint16_t>(sx) | (static_cast<uint16_t>(sy) << 8);
+        }
+        inline void gfx_set_text_size(uint8_t sx) noexcept {
+            gfx_set_text_size(sx, sx);
+        }
         inline void gfx_command(uint16_t cmd, uint16_t arg0) volatile noexcept {
             gfx.operation = cmd;
             gfx.arg0 = arg0;
