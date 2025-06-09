@@ -162,6 +162,8 @@ namespace cortex
             gfx.arg7 = arg7;
             gfx.execute = 0xFFFF;
         }
+        inline uint16_t gfx_width() volatile noexcept { return gfx.width; }
+        inline uint16_t gfx_height() volatile noexcept { return gfx.height; }
     } __attribute__((packed));
     volatile IOSpace& getIOSpace() noexcept {
         return memory<IOSpace>(0xFE000000);
@@ -267,6 +269,8 @@ namespace cortex
             void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4) {
                 getIOSpace().gfx_command(cmd, arg0, arg1, arg2, arg3, arg4);
             }
+            uint16_t width() { return getIOSpace().gfx_width(); }
+            uint16_t height() { return getIOSpace().gfx_height(); }
         }
         namespace Random {
             uint32_t getHardwareRandomNumber() noexcept {

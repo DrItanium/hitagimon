@@ -845,6 +845,12 @@ void drawPixel(uint16_t x, uint16_t y, uint16_t color) noexcept {
 void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) noexcept {
     cortex::ChipsetBasicFunctions::OLED::command(GraphicsOpcodes::DrawLine, x0, y0, x1, y1, color);
 }
+uint16_t randomColor() noexcept {
+    uint32_t baseColor = rand();
+    return color565(static_cast<uint8_t>(baseColor),
+            static_cast<uint8_t>(baseColor >> 8),
+            static_cast<uint8_t>(baseColor >> 16));
+}
 namespace microshell {
     void doFlops64Execution(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         fc.doIt();
@@ -856,11 +862,7 @@ namespace microshell {
         // taken from fabien sanglards FizzleFade C example
         fillScreen(0);
         uint32_t rndval = 1;
-        uint32_t baseColor = rand();
-        uint16_t selectedColor = color565(
-                static_cast<uint8_t>(baseColor),
-                static_cast<uint8_t>(baseColor >> 8),
-                static_cast<uint8_t>(baseColor >> 16));
+        uint16_t selectedColor = randomColor();
         do {
             uint16_t y = rndval & 0x000FF; // Y = low 8 bits
             uint16_t x = (rndval & 0x1FF00) >> 8; // X = high 9 bits
@@ -904,6 +906,58 @@ namespace microshell {
         fillScreen(0, 255, 0);
         fillScreen(0, 0, 255);
         fillScreen(0);
+    }
+    void doTestLines(uint16_t color) {
+        int w = cortex::ChipsetBasicFunctions::OLED::width();
+        int h = cortex::ChipsetBasicFunctions::OLED::height();
+        int x1 = 0, 
+            y1 = 0;
+        int y2 = h -1;
+        int x2 = 0;
+        fillScreen(0);
+        for (x2 = 0; x2 < w; x2 += 6) {
+            drawLine(x1, y1, x2, y2, color);
+        }
+        x2 = w - 1;
+        for (y2 = 0; y2 < h; y2 += 6) {
+            drawLine(x1, y1, x2, y2, color);
+        }
+        fillScreen(0);
+        x1 = w - 1;
+        y1 = 0;
+        y2 = h - 1;
+        for (x2 = 0; x2 < w; x2+=6) {
+            drawLine(x1, y1, x2, y2, color);
+        }
+        x2 = 0;
+        for (y2 = 0; y2 < h; y2 += 6) {
+            drawLine(x1, y1, x2, y2, color);
+        }
+        fillScreen(0);
+        x1 = 0;
+        y1 = h - 1;
+        y2 = 0;
+        for (x2 = 0; x2 < w; x2+=6) {
+            drawLine(x1, y1, x2, y2, color);
+        }
+        x2 = w - 1;
+        for (y2 = 0; y2 < h; y2 += 6) {
+            drawLine(x1, y1, x2, y2, color);
+        }
+        fillScreen(0);
+        x1 = w - 1;
+        y1 = h - 1;
+        y2 = 0;
+        for (x2 = 0; x2 < w; x2+=6) {
+            drawLine(x1, y1, x2, y2, color);
+        }
+        x2 = 0;
+        for (y2 = 0; y2 < h; y2 += 6) {
+            drawLine(x1, y1, x2, y2, color);
+        }
+    }
+    void doTestLines(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        doTestLines(randomColor());
     }
     void doU64AddTest(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         if (argc != 3) {
