@@ -918,13 +918,17 @@ void fillRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h, int16_t radius,
 uint32_t millis() noexcept { return cortex::ChipsetBasicFunctions::Timer::millis(); }
 uint32_t micros() noexcept { return cortex::ChipsetBasicFunctions::Timer::micros(); }
 void delayMicroseconds(uint32_t wait) noexcept {
-    uint32_t end = wait + micros();
+    volatile uint32_t end = wait + micros();
     while (end < micros()) { }
 }
 void delayMilliseconds(uint32_t wait) noexcept {
-    uint32_t end = wait + millis();
+    volatile uint32_t end = wait + millis();
     while (end < millis()) { }
 }
+void setRotation(uint8_t value) noexcept {
+    cortex::ChipsetBasicFunctions::OLED::setRotation(value);
+}
+
 // graphicstest.ino functions
 const uint16_t ColorBlack = color565(0, 0, 0);
 const uint16_t ColorWhite = color565(255, 255, 255);
@@ -1109,6 +1113,24 @@ testFilledTriangles() noexcept {
     }
     return t;
 }
+void
+FizzleFade(int w, int h, uint16_t color) noexcept {
+    // taken from fabien sanglards FizzleFade C example
+    clearScreen();
+    uint32_t rndval = 1;
+    do {
+        uint16_t y = rndval & 0x000FF; // Y = low 8 bits
+        uint16_t x = (rndval & 0x1FF00) >> 8; // X = high 9 bits
+        unsigned lsb = rndval & 1; // get the output bit
+        rndval >>= 1; // shift register
+        if (lsb) {
+            rndval ^= 0x00012000;
+        }
+        if (x < w && y < h) {
+            drawPixel(x, y, color);
+        }
+    } while (rndval != 1);
+}
 
 
 namespace microshell {
@@ -1179,24 +1201,9 @@ namespace microshell {
         fc2.doIt();
     }
     void doFizzleFade(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-        // taken from fabien sanglards FizzleFade C example
-        clearScreen();
-        uint32_t rndval = 1;
-        uint16_t selectedColor = randomColor();
-        int w = screenWidth();
-        int h = screenHeight();
-        do {
-            uint16_t y = rndval & 0x000FF; // Y = low 8 bits
-            uint16_t x = (rndval & 0x1FF00) >> 8; // X = high 9 bits
-            unsigned lsb = rndval & 1; // get the output bit
-            rndval >>= 1; // shift register
-            if (lsb) {
-                rndval ^= 0x00012000;
-            }
-            if (x < w && y < h) {
-                drawPixel(x, y, selectedColor);
-            }
-        } while (rndval != 1);
+        uint16_t w = std::min(screenWidth(), static_cast<uint16_t>(128));
+        uint16_t h = std::min(screenHeight(), static_cast<uint16_t>(128));
+        FizzleFade(w, h, randomColor());
     }
     void doScreenClear(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         if (argc != 4) {
@@ -1641,20 +1648,6 @@ namespace microshell {
         *data = (uint8_t*)buf;
         return strlen((char*)(*data));
     }
-    size_t oled_width_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
-        static char buf[32];
-        snprintf(buf, sizeof(buf), "%u\n", cortex::ChipsetBasicFunctions::OLED::width());
-        buf[sizeof(buf) - 1] = 0;
-        *data = (uint8_t*)buf;
-        return strlen((char*)(*data));
-    }
-    size_t oled_height_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
-        static char buf[32];
-        snprintf(buf, sizeof(buf), "%u\n", cortex::ChipsetBasicFunctions::OLED::height());
-        buf[sizeof(buf) - 1] = 0;
-        *data = (uint8_t*)buf;
-        return strlen((char*)(*data));
-    }
     ush_node_object devNode;
     const ush_file_descriptor devDesc[] = {
         {
@@ -1720,8 +1713,37 @@ namespace microshell {
             nullptr,
             nullptr
         },
+    };
+    size_t oled_width_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
+        static char buf[32];
+        snprintf(buf, sizeof(buf), "%u\n", cortex::ChipsetBasicFunctions::OLED::width());
+        buf[sizeof(buf) - 1] = 0;
+        *data = (uint8_t*)buf;
+        return strlen((char*)(*data));
+    }
+    size_t oled_height_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
+        static char buf[32];
+        snprintf(buf, sizeof(buf), "%u\n", cortex::ChipsetBasicFunctions::OLED::height());
+        buf[sizeof(buf) - 1] = 0;
+        *data = (uint8_t*)buf;
+        return strlen((char*)(*data));
+    }
+    size_t oled_rotation_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
+        static char buf[32];
+        snprintf(buf, sizeof(buf), "%u\n", cortex::ChipsetBasicFunctions::OLED::getRotation());
+        buf[sizeof(buf) - 1] = 0;
+        *data = (uint8_t*)buf;
+        return strlen((char*)(*data));
+    }
+    void oled_rotation_set_data_callback(struct ush_object*, struct ush_file_descriptor const*, uint8_t* data, size_t size) {
+        if (size > 0) {
+            cortex::ChipsetBasicFunctions::OLED::setRotation(data[0]);
+        }
+    }
+    ush_node_object oledNode;
+    const ush_file_descriptor oledDesc[] = {
         {
-            "oled_width",
+            "width",
             nullptr,
             nullptr,
             nullptr,
@@ -1730,12 +1752,21 @@ namespace microshell {
             nullptr,
         },
         {
-            "oled_height",
+            "height",
             nullptr,
             nullptr,
             nullptr,
             oled_height_get_data_callback,
             nullptr,
+            nullptr,
+        },
+        {
+            "rotation",
+            nullptr,
+            nullptr,
+            nullptr,
+            oled_rotation_get_data_callback,
+            oled_rotation_set_data_callback,
             nullptr,
         },
     };
@@ -2033,6 +2064,8 @@ namespace microshell {
         ush_node_mount(&microshellObject, "/dev", &devNode, devDesc, sizeof(devDesc)/sizeof(devDesc[0]));
         ush_node_mount(&microshellObject, "/dev/eeprom", &eepromRoot, eepromDesc, sizeof(eepromDesc) / sizeof(eepromDesc[0]));
         ush_node_mount(&microshellObject, "/dev/sram", &sramRoot, sramDesc, sizeof(sramDesc) / sizeof(sramDesc[0]));
+        ush_node_mount(&microshellObject, "/dev/oled", &oledNode, oledDesc, sizeof(oledDesc) / sizeof(oledDesc[0]));
+
     }
 }
 

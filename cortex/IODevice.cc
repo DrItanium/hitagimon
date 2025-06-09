@@ -148,6 +148,8 @@ namespace cortex
         }
         inline uint16_t gfx_width() volatile noexcept { return gfx.width; }
         inline uint16_t gfx_height() volatile noexcept { return gfx.height; }
+        inline uint16_t gfx_rotation() volatile noexcept { return gfx.rotation; }
+        inline void gfx_set_rotation(uint16_t value) volatile noexcept { gfx.rotation = value; }
     } __attribute__((packed));
     volatile IOSpace& getIOSpace() noexcept {
         return memory<IOSpace>(0xFE000000);
@@ -261,6 +263,8 @@ namespace cortex
             }
             uint16_t width() { return getIOSpace().gfx_width(); }
             uint16_t height() { return getIOSpace().gfx_height(); }
+            uint8_t getRotation() { return getIOSpace().gfx_rotation(); }
+            void setRotation(uint8_t value) { getIOSpace().gfx_set_rotation(value); }
         }
         namespace Random {
             uint32_t getHardwareRandomNumber() noexcept {
