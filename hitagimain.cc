@@ -851,6 +851,15 @@ uint16_t randomColor() noexcept {
             static_cast<uint8_t>(baseColor >> 8),
             static_cast<uint8_t>(baseColor >> 16));
 }
+uint16_t screenWidth() noexcept { return cortex::ChipsetBasicFunctions::OLED::width(); }
+uint16_t screenHeight() noexcept { return cortex::ChipsetBasicFunctions::OLED::height(); }
+void clearScreen() noexcept { fillScreen(0); }
+void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color) noexcept {
+    cortex::ChipsetBasicFunctions::OLED::command(GraphicsOpcodes::DrawFastVLine, x, y, h, color);
+}
+void drawFastHLine(int16_t x, int16_t y, int16_t h, uint16_t color) noexcept {
+    cortex::ChipsetBasicFunctions::OLED::command(GraphicsOpcodes::DrawFastHLine, x, y, h, color);
+}
 namespace microshell {
     void doFlops64Execution(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         fc.doIt();
@@ -907,14 +916,28 @@ namespace microshell {
         fillScreen(0, 0, 255);
         fillScreen(0);
     }
-    void doTestLines(uint16_t color) {
-        int w = cortex::ChipsetBasicFunctions::OLED::width();
-        int h = cortex::ChipsetBasicFunctions::OLED::height();
+    void doTestFastLines(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        uint16_t color1 = randomColor();
+        uint16_t color2 = randomColor();
+        int w = screenWidth(),
+            h = screenHeight();
+        clearScreen();
+        for (int y = 0; y < h; y += 5) {
+            drawFastHLine(0, y, w, color1);
+        }
+        for (int x = 0; x < w; x += 5) {
+            drawFastVLine(x, 0, h, color2);
+        }
+    }
+    void doTestLines(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        uint16_t color = randomColor();
+        int w = screenWidth(),
+            h = screenHeight();
         int x1 = 0, 
-            y1 = 0;
-        int y2 = h -1;
-        int x2 = 0;
-        fillScreen(0);
+            y1 = 0,
+            y2 = h - 1,
+            x2 = 0;
+        clearScreen();
         for (x2 = 0; x2 < w; x2 += 6) {
             drawLine(x1, y1, x2, y2, color);
         }
@@ -922,7 +945,7 @@ namespace microshell {
         for (y2 = 0; y2 < h; y2 += 6) {
             drawLine(x1, y1, x2, y2, color);
         }
-        fillScreen(0);
+        clearScreen();
         x1 = w - 1;
         y1 = 0;
         y2 = h - 1;
@@ -933,7 +956,7 @@ namespace microshell {
         for (y2 = 0; y2 < h; y2 += 6) {
             drawLine(x1, y1, x2, y2, color);
         }
-        fillScreen(0);
+        clearScreen();
         x1 = 0;
         y1 = h - 1;
         y2 = 0;
@@ -944,7 +967,7 @@ namespace microshell {
         for (y2 = 0; y2 < h; y2 += 6) {
             drawLine(x1, y1, x2, y2, color);
         }
-        fillScreen(0);
+        clearScreen();
         x1 = w - 1;
         y1 = h - 1;
         y2 = 0;
@@ -956,16 +979,13 @@ namespace microshell {
             drawLine(x1, y1, x2, y2, color);
         }
     }
-    void doTestLines(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-        doTestLines(randomColor());
-    }
     void doU64AddTest(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         if (argc != 3) {
            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
            return;
         }
-        uint64_t a = 0;
-        uint64_t b = 0;
+        uint64_t a = 0,
+                 b = 0;
         if (sscanf(argv[1], "%llx", &a) == EOF) {
             ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
             return;
