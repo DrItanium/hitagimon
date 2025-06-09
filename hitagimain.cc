@@ -917,13 +917,17 @@ void fillRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h, int16_t radius,
 }
 uint32_t millis() noexcept { return cortex::ChipsetBasicFunctions::Timer::millis(); }
 uint32_t micros() noexcept { return cortex::ChipsetBasicFunctions::Timer::micros(); }
-void delayMicroseconds(uint32_t wait) noexcept {
+void __attribute__((noinline)) delayMicroseconds(uint32_t wait) noexcept {
     volatile uint32_t end = wait + micros();
-    while (end < micros()) { }
+    while (end < micros()) { 
+
+    }
 }
-void delayMilliseconds(uint32_t wait) noexcept {
+void __attribute__((noinline)) delayMilliseconds(uint32_t wait) noexcept {
     volatile uint32_t end = wait + millis();
-    while (end < millis()) { }
+    while (end < millis()) { 
+
+    }
 }
 void setRotation(uint8_t value) noexcept {
     cortex::ChipsetBasicFunctions::OLED::setRotation(value);
