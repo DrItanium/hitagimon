@@ -252,11 +252,20 @@ namespace cortex
             }
         }
         namespace OLED {
+            void command(uint16_t cmd, uint16_t arg0) {
+                getIOSpace().gfx_command(cmd, arg0);
+            }
+            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1) {
+                getIOSpace().gfx_command(cmd, arg0, arg1);
+            }
             void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2) {
                 getIOSpace().gfx_command(cmd, arg0, arg1, arg2);
             }
-            void command(uint16_t cmd, uint16_t arg0) {
-                getIOSpace().gfx_command(cmd, arg0);
+            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3) {
+                getIOSpace().gfx_command(cmd, arg0, arg1, arg2, arg3);
+            }
+            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4) {
+                getIOSpace().gfx_command(cmd, arg0, arg1, arg2, arg3, arg4);
             }
         }
         namespace Random {

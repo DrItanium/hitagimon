@@ -78,8 +78,11 @@ namespace cortex {
             uint32_t getChipsetClockSpeed() noexcept;
         } // end namespace Info
         namespace OLED {
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2);
             void command(uint16_t cmd, uint16_t arg0);
+            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1);
+            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2);
+            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3);
+            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4);
         }
         namespace Random {
             uint32_t getHardwareRandomNumber() noexcept;

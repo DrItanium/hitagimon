@@ -814,6 +814,17 @@ namespace GraphicsOpcodes {
         Nothing = 0,
         DrawPixel,
         FillScreen,
+        DrawLine,
+        DrawFastVLine,
+        DrawFastHLine,
+        DrawRect,
+        FillRect,
+        DrawCircle,
+        FillCircle,
+        DrawTriangle,
+        FillTriangle,
+        DrawRoundRect,
+        FillRoundRect,
     };
 }
 inline uint16_t color565(uint8_t r, uint8_t g, uint8_t b) noexcept {
@@ -830,6 +841,9 @@ void fillScreen(uint8_t r, uint8_t g, uint8_t b) noexcept {
 }
 void drawPixel(uint16_t x, uint16_t y, uint16_t color) noexcept {
     cortex::ChipsetBasicFunctions::OLED::command(GraphicsOpcodes::DrawPixel, x, y, color);
+}
+void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) noexcept {
+    cortex::ChipsetBasicFunctions::OLED::command(GraphicsOpcodes::DrawLine, x0, y0, x1, y1, color);
 }
 namespace microshell {
     void doFlops64Execution(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
