@@ -872,6 +872,8 @@ namespace microshell {
         fillScreen(0);
         uint32_t rndval = 1;
         uint16_t selectedColor = randomColor();
+        int w = screenWidth();
+        int h = screenHeight();
         do {
             uint16_t y = rndval & 0x000FF; // Y = low 8 bits
             uint16_t x = (rndval & 0x1FF00) >> 8; // X = high 9 bits
@@ -880,8 +882,7 @@ namespace microshell {
             if (lsb) {
                 rndval ^= 0x00012000;
             }
-            // assume 128x128 display
-            if (x < 128 && y < 128) {
+            if (x < w && y < h) {
                 drawPixel(x, y, selectedColor);
             }
         } while (rndval != 1);
@@ -1399,6 +1400,20 @@ namespace microshell {
         *data = (uint8_t*)buf;
         return strlen((char*)(*data));
     }
+    size_t oled_width_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
+        static char buf[32];
+        snprintf(buf, sizeof(buf), "%u\n", cortex::ChipsetBasicFunctions::OLED::width());
+        buf[sizeof(buf) - 1] = 0;
+        *data = (uint8_t*)buf;
+        return strlen((char*)(*data));
+    }
+    size_t oled_height_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
+        static char buf[32];
+        snprintf(buf, sizeof(buf), "%u\n", cortex::ChipsetBasicFunctions::OLED::height());
+        buf[sizeof(buf) - 1] = 0;
+        *data = (uint8_t*)buf;
+        return strlen((char*)(*data));
+    }
     ush_node_object devNode;
     const ush_file_descriptor devDesc[] = {
         {
@@ -1463,6 +1478,24 @@ namespace microshell {
             clk1_get_data_callback,
             nullptr,
             nullptr
+        },
+        {
+            "oled_width",
+            nullptr,
+            nullptr,
+            nullptr,
+            oled_width_get_data_callback,
+            nullptr,
+            nullptr,
+        },
+        {
+            "oled_height",
+            nullptr,
+            nullptr,
+            nullptr,
+            oled_height_get_data_callback,
+            nullptr,
+            nullptr,
         },
     };
     size_t eeprom_capacity_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
@@ -1670,18 +1703,18 @@ namespace microshell {
         },
         {
             "lines_test",
+            "Run testLiens from graphicstest.ino",
             nullptr,
-            nullptr,
-            doScreenClear, // exec
+            doTestLines, // exec
             nullptr,
             nullptr,
             nullptr,
         },
         {
             "fast_lines_test",
+            "Run testFastLines from graphicstest.ino",
             nullptr,
-            nullptr,
-            doScreenClear, // exec
+            doTestFastLines, // exec
             nullptr,
             nullptr,
             nullptr,

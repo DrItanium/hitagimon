@@ -32,20 +32,6 @@ namespace cortex
                 uint32_t _unused0;
                 uint32_t _unused1;
                 uint32_t _unused2;
-                // simple oled gfx
-                uint16_t executeGfx;
-                uint16_t operation;
-
-                uint16_t arg0;
-                uint16_t arg1;
-
-                uint16_t arg2;
-                uint16_t arg3;
-
-                uint16_t arg4;
-                uint16_t arg5;
-                // simple oled gfx continued
-                // simple oled ctrl
             };
         } builtin;
         union {
@@ -68,15 +54,13 @@ namespace cortex
                 X(11);
                 X(12);
                 X(13);
-                X(14);
-                X(15);
 #undef X
                 uint16_t rotation;
                 uint16_t width;
                 uint16_t height;
                 uint16_t cursorX;
                 uint16_t cursorY;
-            };
+            } __attribute__((packed));
         } gfx;
         uint8_t unmappedPages[6][256];
         uint8_t sramCache[2048];
