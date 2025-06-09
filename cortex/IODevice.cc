@@ -44,9 +44,41 @@ namespace cortex
 
                 uint16_t arg4;
                 uint16_t arg5;
+                // simple oled gfx continued
+                // simple oled ctrl
             };
         } builtin;
-        uint8_t unmappedPages[7][256];
+        union {
+            uint8_t bytes[256];
+            struct {
+                uint16_t execute;
+                uint16_t operation;
+#define X(index) uint16_t arg ## index 
+                X(0);
+                X(1);
+                X(2);
+                X(3);
+                X(4);
+                X(5);
+                X(6);
+                X(7);
+                X(8);
+                X(9);
+                X(10);
+                X(11);
+                X(12);
+                X(13);
+                X(14);
+                X(15);
+#undef X
+                uint16_t rotation;
+                uint16_t width;
+                uint16_t height;
+                uint16_t cursorX;
+                uint16_t cursorY;
+            };
+        } gfx;
+        uint8_t unmappedPages[6][256];
         uint8_t sramCache[2048];
         uint8_t eeprom[4096];
         inline uint16_t read() volatile noexcept { return builtin.SerialRW; }
@@ -62,17 +94,73 @@ namespace cortex
         inline bool rtc_32kEnabled() volatile noexcept { return builtin._configure32k; }
         inline void rtc_enable32k() volatile noexcept { builtin._configure32k = 1; }
         inline void rtc_disable32k() volatile noexcept { builtin._configure32k = 0; }
-        inline void gfx_command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2) volatile noexcept  {
-            builtin.operation = cmd;
-            builtin.arg0 = arg0;
-            builtin.arg1 = arg1;
-            builtin.arg2 = arg2;
-            builtin.executeGfx = 0xFFFF;
-        }
         inline void gfx_command(uint16_t cmd, uint16_t arg0) volatile noexcept {
-            builtin.operation = cmd;
-            builtin.arg0 = arg0;
-            builtin.executeGfx = 0xFFFF;
+            gfx.operation = cmd;
+            gfx.arg0 = arg0;
+            gfx.execute = 0xFFFF;
+        }
+        inline void gfx_command(uint16_t cmd, uint16_t arg0, uint16_t arg1) volatile noexcept {
+            gfx.operation = cmd;
+            gfx.arg0 = arg0;
+            gfx.arg1 = arg1;
+            gfx.execute = 0xFFFF;
+        }
+        inline void gfx_command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2) volatile noexcept  {
+            gfx.operation = cmd;
+            gfx.arg0 = arg0;
+            gfx.arg1 = arg1;
+            gfx.arg2 = arg2;
+            gfx.execute = 0xFFFF;
+        }
+        inline void gfx_command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3) volatile noexcept  {
+            gfx.operation = cmd;
+            gfx.arg0 = arg0;
+            gfx.arg1 = arg1;
+            gfx.arg2 = arg2;
+            gfx.arg3 = arg3;
+            gfx.execute = 0xFFFF;
+        }
+        inline void gfx_command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4) volatile noexcept  {
+            gfx.operation = cmd;
+            gfx.arg0 = arg0;
+            gfx.arg1 = arg1;
+            gfx.arg2 = arg2;
+            gfx.arg3 = arg3;
+            gfx.arg4 = arg4;
+            gfx.execute = 0xFFFF;
+        }
+        inline void gfx_command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5) volatile noexcept {
+            gfx.operation = cmd;
+            gfx.arg0 = arg0;
+            gfx.arg1 = arg1;
+            gfx.arg2 = arg2;
+            gfx.arg3 = arg3;
+            gfx.arg4 = arg4;
+            gfx.arg5 = arg5;
+            gfx.execute = 0xFFFF;
+        }
+        inline void gfx_command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5, uint16_t arg6) volatile noexcept {
+            gfx.operation = cmd;
+            gfx.arg0 = arg0;
+            gfx.arg1 = arg1;
+            gfx.arg2 = arg2;
+            gfx.arg3 = arg3;
+            gfx.arg4 = arg4;
+            gfx.arg5 = arg5;
+            gfx.arg6 = arg6;
+            gfx.execute = 0xFFFF;
+        }
+        inline void gfx_command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5, uint16_t arg6, uint16_t arg7) volatile noexcept {
+            gfx.operation = cmd;
+            gfx.arg0 = arg0;
+            gfx.arg1 = arg1;
+            gfx.arg2 = arg2;
+            gfx.arg3 = arg3;
+            gfx.arg4 = arg4;
+            gfx.arg5 = arg5;
+            gfx.arg6 = arg6;
+            gfx.arg7 = arg7;
+            gfx.execute = 0xFFFF;
         }
     } __attribute__((packed));
     volatile IOSpace& getIOSpace() noexcept {
