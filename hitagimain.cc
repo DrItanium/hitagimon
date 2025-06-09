@@ -1668,6 +1668,24 @@ namespace microshell {
             nullptr,
             nullptr,
         },
+        {
+            "lines_test",
+            nullptr,
+            nullptr,
+            doScreenClear, // exec
+            nullptr,
+            nullptr,
+            nullptr,
+        },
+        {
+            "fast_lines_test",
+            nullptr,
+            nullptr,
+            doScreenClear, // exec
+            nullptr,
+            nullptr,
+            nullptr,
+        },
 
     };
     void
