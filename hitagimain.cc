@@ -833,33 +833,225 @@ inline uint16_t color565(uint8_t r, uint8_t g, uint8_t b) noexcept {
         (static_cast<uint16_t>(g & 0xFC) << 3) |
         (static_cast<uint16_t>(b) >> 3);
 }
-void fillScreen(uint16_t color) noexcept {
-    cortex::ChipsetBasicFunctions::OLED::command(GraphicsOpcodes::FillScreen, color);
-}
-void fillScreen(uint8_t r, uint8_t g, uint8_t b) noexcept {
-    fillScreen(color565(r, g, b));
-}
-void drawPixel(uint16_t x, uint16_t y, uint16_t color) noexcept {
-    cortex::ChipsetBasicFunctions::OLED::command(GraphicsOpcodes::DrawPixel, x, y, color);
-}
-void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) noexcept {
-    cortex::ChipsetBasicFunctions::OLED::command(GraphicsOpcodes::DrawLine, x0, y0, x1, y1, color);
-}
 uint16_t randomColor() noexcept {
     uint32_t baseColor = rand();
     return color565(static_cast<uint8_t>(baseColor),
             static_cast<uint8_t>(baseColor >> 8),
             static_cast<uint8_t>(baseColor >> 16));
 }
+
 uint16_t screenWidth() noexcept { return cortex::ChipsetBasicFunctions::OLED::width(); }
 uint16_t screenHeight() noexcept { return cortex::ChipsetBasicFunctions::OLED::height(); }
+
+template<GraphicsOpcodes::Opcodes opcode>
+void graphicsCommand(uint16_t arg0) noexcept { 
+    cortex::ChipsetBasicFunctions::OLED::command(opcode, arg0); 
+}
+template<GraphicsOpcodes::Opcodes opcode>
+void graphicsCommand(uint16_t arg0, uint16_t arg1) noexcept { 
+    cortex::ChipsetBasicFunctions::OLED::command(opcode, arg0, arg1); 
+}
+template<GraphicsOpcodes::Opcodes opcode>
+void graphicsCommand(uint16_t arg0, uint16_t arg1, uint16_t arg2) noexcept { 
+    cortex::ChipsetBasicFunctions::OLED::command(opcode, arg0, arg1, arg2); 
+}
+template<GraphicsOpcodes::Opcodes opcode>
+void graphicsCommand(uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3) noexcept { 
+    cortex::ChipsetBasicFunctions::OLED::command(opcode, arg0, arg1, arg2, arg3); 
+}
+template<GraphicsOpcodes::Opcodes opcode>
+void graphicsCommand(uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4) noexcept { 
+    cortex::ChipsetBasicFunctions::OLED::command(opcode, arg0, arg1, arg2, arg3, arg4); 
+}
+template<GraphicsOpcodes::Opcodes opcode>
+void graphicsCommand(uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5) noexcept { 
+    cortex::ChipsetBasicFunctions::OLED::command(opcode, arg0, arg1, arg2, arg3, arg4, arg5); 
+}
+template<GraphicsOpcodes::Opcodes opcode>
+void graphicsCommand(uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5, uint16_t arg6) noexcept { 
+    cortex::ChipsetBasicFunctions::OLED::command(opcode, arg0, arg1, arg2, arg3, arg4, arg5, arg6); 
+}
+void fillScreen(uint16_t color) noexcept {
+    graphicsCommand<GraphicsOpcodes::FillScreen>(color);
+}
+void fillScreen(uint8_t r, uint8_t g, uint8_t b) noexcept {
+    fillScreen(color565(r, g, b));
+}
 void clearScreen() noexcept { fillScreen(0); }
+
+void drawPixel(uint16_t x, uint16_t y, uint16_t color) noexcept {
+    graphicsCommand<GraphicsOpcodes::DrawPixel>(x, y, color);
+}
+void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) noexcept {
+    graphicsCommand<GraphicsOpcodes::DrawLine>(x0, y0, x1, y1, color);
+}
 void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color) noexcept {
-    cortex::ChipsetBasicFunctions::OLED::command(GraphicsOpcodes::DrawFastVLine, x, y, h, color);
+    graphicsCommand<GraphicsOpcodes::DrawFastVLine>(x, y, h, color);
 }
 void drawFastHLine(int16_t x, int16_t y, int16_t h, uint16_t color) noexcept {
-    cortex::ChipsetBasicFunctions::OLED::command(GraphicsOpcodes::DrawFastHLine, x, y, h, color);
+    graphicsCommand<GraphicsOpcodes::DrawFastHLine>(x, y, h, color);
 }
+void drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) noexcept {
+    graphicsCommand<GraphicsOpcodes::DrawRect>(x, y, w, h, color);
+}
+void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) noexcept {
+    graphicsCommand<GraphicsOpcodes::FillRect>(x, y, w, h, color);
+}
+void drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color) noexcept {
+    graphicsCommand<GraphicsOpcodes::DrawCircle>(x0, y0, r, color);
+}
+void fillCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color) noexcept {
+    graphicsCommand<GraphicsOpcodes::FillCircle>(x0, y0, r, color);
+}
+uint32_t millis() noexcept { return cortex::ChipsetBasicFunctions::Timer::millis(); }
+uint32_t micros() noexcept { return cortex::ChipsetBasicFunctions::Timer::micros(); }
+// graphicstest.ino functions
+const uint16_t ColorBlack = color565(0, 0, 0);
+const uint16_t ColorRed = color565(255, 0, 0);
+const uint16_t ColorGreen = color565(0, 255, 0);
+const uint16_t ColorBlue = color565(0, 0, 255);
+uint32_t testFillScreen() noexcept {
+    uint32_t start = micros();
+    fillScreen(ColorBlack);
+    fillScreen(ColorRed);
+    fillScreen(ColorGreen);
+    fillScreen(ColorBlue);
+    fillScreen(ColorBlack);
+    return micros() - start;
+}
+uint32_t 
+testLines(uint16_t color) noexcept {
+    uint32_t start, t;
+    int w = screenWidth(),
+        h = screenHeight();
+    clearScreen();
+    int x1 = 0, 
+        y1 = 0,
+        y2 = h - 1,
+        x2 = 0;
+    start = micros();
+    for (x2 = 0; x2 < w; x2 += 6) {
+        drawLine(x1, y1, x2, y2, color);
+    }
+    x2 = w - 1;
+    for (y2 = 0; y2 < h; y2 += 6) {
+        drawLine(x1, y1, x2, y2, color);
+    }
+    t = micros() - start;
+    clearScreen();
+    x1 = w - 1;
+    y1 = 0;
+    y2 = h - 1;
+    start = micros();
+    for (x2 = 0; x2 < w; x2+=6) {
+        drawLine(x1, y1, x2, y2, color);
+    }
+    x2 = 0;
+    for (y2 = 0; y2 < h; y2 += 6) {
+        drawLine(x1, y1, x2, y2, color);
+    }
+    t += micros() - start;
+    clearScreen();
+    x1 = 0;
+    y1 = h - 1;
+    y2 = 0;
+    start = micros();
+    for (x2 = 0; x2 < w; x2+=6) {
+        drawLine(x1, y1, x2, y2, color);
+    }
+    x2 = w - 1;
+    for (y2 = 0; y2 < h; y2 += 6) {
+        drawLine(x1, y1, x2, y2, color);
+    }
+    t += micros() - start;
+    clearScreen();
+    x1 = w - 1;
+    y1 = h - 1;
+    y2 = 0;
+    start = micros();
+    for (x2 = 0; x2 < w; x2+=6) {
+        drawLine(x1, y1, x2, y2, color);
+    }
+    x2 = 0;
+    for (y2 = 0; y2 < h; y2 += 6) {
+        drawLine(x1, y1, x2, y2, color);
+    }
+    t += micros() - start;
+    return t;
+}
+uint32_t
+testFastLines(uint16_t color1, uint16_t color2) noexcept {
+    uint32_t start;
+    int w = screenWidth(),
+        h = screenHeight();
+    clearScreen();
+    start = micros();
+    for (int y = 0; y < h; y += 5) {
+        drawFastHLine(0, y, w, color1);
+    }
+    for (int x = 0; x < w; x += 5) {
+        drawFastVLine(x, 0, h, color2);
+    }
+    return micros() - start;
+}
+uint32_t
+testRects(uint16_t color) noexcept {
+    uint32_t start;
+    int cx = screenWidth() / 2,
+        cy = screenHeight() / 2;
+    clearScreen();
+    int n = std::min(screenWidth(), screenHeight());
+    start = micros();
+    for (int i = 2; i < n; i += 6) {
+        int i2 = i / 2;
+        drawRect(cx-i2, cy-i2, i, i, color);
+    }
+    return micros() - start;
+}
+uint32_t
+testFilledRects(uint16_t color1, uint16_t color2) noexcept {
+    uint32_t start, t = 0;
+    int cx = screenWidth() / 2 - 1,
+        cy = screenHeight() / 2 - 1;
+    clearScreen();
+    int n = std::min(screenWidth(), screenHeight());
+    for (int i = 2; i < n; i += 6) {
+        int i2 = i / 2;
+        start = micros();
+        fillRect(cx-i2, cy-i2, i, i, color1);
+        t += micros() - start;
+        drawRect(cx-i2, cy-i2, i, i, color2);
+    }
+    return t;
+}
+uint32_t
+testFilledCircles(uint8_t radius, uint16_t color) noexcept {
+    int w = screenWidth(),
+        h = screenHeight(),
+        r2 = radius * 2;
+    clearScreen();
+    uint32_t start = micros();
+    for (int x = radius; x < w; x += r2) {
+        for (int y = radius; y < h; y += r2) {
+            fillCircle(x, y, radius, color);
+        }
+    }
+    return micros() - start;
+}
+uint32_t
+testCircles(uint8_t radius, uint16_t color) {
+    int r2 = radius * 2,
+        w = screenWidth() + radius,
+        h = screenHeight() + radius;
+    uint32_t start = micros();
+    for (int x = 0;x < w; x+=r2) {
+        for (int y = 0; y < h; y+=r2) {
+            drawCircle(x, y, radius, color);
+        }
+    }
+    return micros() - start;
+}
+
 namespace microshell {
     void doFlops64Execution(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         fc.doIt();
@@ -869,7 +1061,7 @@ namespace microshell {
     }
     void doFizzleFade(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         // taken from fabien sanglards FizzleFade C example
-        fillScreen(0);
+        clearScreen();
         uint32_t rndval = 1;
         uint16_t selectedColor = randomColor();
         int w = screenWidth();
@@ -911,74 +1103,25 @@ namespace microshell {
         fillScreen(r, g, b);
     }
     void doFillScreen(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-        fillScreen(0);
-        fillScreen(255, 0, 0);
-        fillScreen(0, 255, 0);
-        fillScreen(0, 0, 255);
-        fillScreen(0);
+        (void)testFillScreen();
+    }
+    void doTestRects(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        uint16_t color = randomColor();
+        (void)testRects(color);
+    }
+    void doTestFilledRects(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        uint16_t color1 = randomColor();
+        uint16_t color2 = randomColor();
+        (void)testFilledRects(color1, color2);
     }
     void doTestFastLines(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         uint16_t color1 = randomColor();
         uint16_t color2 = randomColor();
-        int w = screenWidth(),
-            h = screenHeight();
-        clearScreen();
-        for (int y = 0; y < h; y += 5) {
-            drawFastHLine(0, y, w, color1);
-        }
-        for (int x = 0; x < w; x += 5) {
-            drawFastVLine(x, 0, h, color2);
-        }
+        (void)testFastLines(color1, color2);
     }
     void doTestLines(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         uint16_t color = randomColor();
-        int w = screenWidth(),
-            h = screenHeight();
-        int x1 = 0, 
-            y1 = 0,
-            y2 = h - 1,
-            x2 = 0;
-        clearScreen();
-        for (x2 = 0; x2 < w; x2 += 6) {
-            drawLine(x1, y1, x2, y2, color);
-        }
-        x2 = w - 1;
-        for (y2 = 0; y2 < h; y2 += 6) {
-            drawLine(x1, y1, x2, y2, color);
-        }
-        clearScreen();
-        x1 = w - 1;
-        y1 = 0;
-        y2 = h - 1;
-        for (x2 = 0; x2 < w; x2+=6) {
-            drawLine(x1, y1, x2, y2, color);
-        }
-        x2 = 0;
-        for (y2 = 0; y2 < h; y2 += 6) {
-            drawLine(x1, y1, x2, y2, color);
-        }
-        clearScreen();
-        x1 = 0;
-        y1 = h - 1;
-        y2 = 0;
-        for (x2 = 0; x2 < w; x2+=6) {
-            drawLine(x1, y1, x2, y2, color);
-        }
-        x2 = w - 1;
-        for (y2 = 0; y2 < h; y2 += 6) {
-            drawLine(x1, y1, x2, y2, color);
-        }
-        clearScreen();
-        x1 = w - 1;
-        y1 = h - 1;
-        y2 = 0;
-        for (x2 = 0; x2 < w; x2+=6) {
-            drawLine(x1, y1, x2, y2, color);
-        }
-        x2 = 0;
-        for (y2 = 0; y2 < h; y2 += 6) {
-            drawLine(x1, y1, x2, y2, color);
-        }
+        (void)testLines(color);
     }
     void doU64AddTest(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         if (argc != 3) {
@@ -1719,7 +1862,25 @@ namespace microshell {
             nullptr,
             nullptr,
         },
-
+        {
+            "rects_test",
+            "Run testRects from graphicstest.ino",
+            nullptr,
+            doTestRects, // exec
+            nullptr,
+            nullptr,
+            nullptr,
+        },
+        {
+            "filled_rects_test",
+            "Run testFilledRects from graphicstest.ino",
+            nullptr,
+            doTestRects, // exec
+            nullptr,
+            nullptr,
+            nullptr,
+        },
+        
     };
     void
     setup() {

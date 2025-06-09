@@ -253,6 +253,12 @@ namespace cortex
             void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4) {
                 getIOSpace().gfx_command(cmd, arg0, arg1, arg2, arg3, arg4);
             }
+            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5) {
+                getIOSpace().gfx_command(cmd, arg0, arg1, arg2, arg3, arg4, arg5);
+            }
+            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5, uint16_t arg6) {
+                getIOSpace().gfx_command(cmd, arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+            }
             uint16_t width() { return getIOSpace().gfx_width(); }
             uint16_t height() { return getIOSpace().gfx_height(); }
         }
