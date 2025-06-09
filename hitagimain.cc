@@ -903,13 +903,27 @@ void drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color) noexcept {
 void fillCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color) noexcept {
     graphicsCommand<GraphicsOpcodes::FillCircle>(x0, y0, r, color);
 }
+void drawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color) noexcept {
+    graphicsCommand<GraphicsOpcodes::DrawTriangle>(x0, y0, x1, y1, x2, y2, color);
+}
+void fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color) noexcept {
+    graphicsCommand<GraphicsOpcodes::FillTriangle>(x0, y0, x1, y1, x2, y2, color);
+}
+void drawRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h, int16_t radius, uint16_t color) noexcept {
+    graphicsCommand<GraphicsOpcodes::DrawRoundRect>(x0, y0, w, h, radius, color);
+}
+void fillRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h, int16_t radius, uint16_t color) noexcept {
+    graphicsCommand<GraphicsOpcodes::FillRoundRect>(x0, y0, w, h, radius, color);
+}
 uint32_t millis() noexcept { return cortex::ChipsetBasicFunctions::Timer::millis(); }
 uint32_t micros() noexcept { return cortex::ChipsetBasicFunctions::Timer::micros(); }
 // graphicstest.ino functions
 const uint16_t ColorBlack = color565(0, 0, 0);
+const uint16_t ColorWhite = color565(255, 255, 255);
 const uint16_t ColorRed = color565(255, 0, 0);
 const uint16_t ColorGreen = color565(0, 255, 0);
 const uint16_t ColorBlue = color565(0, 0, 255);
+const uint16_t ColorMagenta = color565(255, 0, 255);
 uint32_t testFillScreen() noexcept {
     uint32_t start = micros();
     fillScreen(ColorBlack);
@@ -1052,7 +1066,76 @@ testCircles(uint8_t radius, uint16_t color) {
     return micros() - start;
 }
 
+uint32_t
+testTriangles() noexcept {
+    int cx = screenWidth() / 2 - 1,
+        cy = screenHeight() / 2 - 1;
+    clearScreen();
+    int n = std::min(cx, cy);
+    uint32_t start = micros();
+    for (int i = 0; i < n; i+=5) {
+        drawTriangle(
+                cx, cy - i, // peak
+                cx - i, cy + i, // bottom left
+                cx + i, cy + i, // bottom right
+                color565(i, i, i));
+    }
+    return micros() - start;
+}
+
+uint32_t
+testFilledTriangles() noexcept {
+    int cx = screenWidth() / 2 - 1,
+        cy = screenHeight() / 2 - 1;
+    clearScreen();
+    uint32_t t = 0;
+    for (int i = std::min(cx, cy); i > 10; i-=5) {
+        uint32_t start = micros();
+        fillTriangle(cx, cy - i, cx - i, cy + i, cx + i, cy + i, color565(0, i * 10, i * 10));
+        t += micros() - start;
+        drawTriangle(
+                cx, cy - i, // peak
+                cx - i, cy + i, // bottom left
+                cx + i, cy + i, // bottom right
+                color565(i*10, i*10, 0));
+    }
+    return t;
+}
+
 namespace microshell {
+    void doTestTriangles(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        testTriangles();
+    }
+    void doTestFilledTriangles(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        testFilledTriangles();
+    }
+    void doFilledCircleTest(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        testFilledCircles(10, randomColor());
+    }
+    void doCircleTest(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        testCircles(10, randomColor());
+    }
+    void doFillScreen(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        (void)testFillScreen();
+    }
+    void doTestRects(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        uint16_t color = randomColor();
+        (void)testRects(color);
+    }
+    void doTestFilledRects(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        uint16_t color1 = randomColor();
+        uint16_t color2 = randomColor();
+        (void)testFilledRects(color1, color2);
+    }
+    void doTestFastLines(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        uint16_t color1 = randomColor();
+        uint16_t color2 = randomColor();
+        (void)testFastLines(color1, color2);
+    }
+    void doTestLines(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        uint16_t color = randomColor();
+        (void)testLines(color);
+    }
     void doFlops64Execution(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         fc.doIt();
     }
@@ -1101,27 +1184,6 @@ namespace microshell {
         }
         // most of the precision will be lost
         fillScreen(r, g, b);
-    }
-    void doFillScreen(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-        (void)testFillScreen();
-    }
-    void doTestRects(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-        uint16_t color = randomColor();
-        (void)testRects(color);
-    }
-    void doTestFilledRects(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-        uint16_t color1 = randomColor();
-        uint16_t color2 = randomColor();
-        (void)testFilledRects(color1, color2);
-    }
-    void doTestFastLines(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-        uint16_t color1 = randomColor();
-        uint16_t color2 = randomColor();
-        (void)testFastLines(color1, color2);
-    }
-    void doTestLines(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-        uint16_t color = randomColor();
-        (void)testLines(color);
     }
     void doU64AddTest(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         if (argc != 3) {
@@ -1880,7 +1942,24 @@ namespace microshell {
             nullptr,
             nullptr,
         },
-        
+        {
+            "circles_test",
+            "Run testCircles(10, randomColor()) from graphicstest.ino",
+            nullptr,
+            doCircleTest,
+            nullptr,
+            nullptr,
+            nullptr,
+        },
+        {
+            "filled_circles_test",
+            "Run testFilledCircles(10, randomColor()) from graphicstest.ino",
+            nullptr,
+            doFilledCircleTest,
+            nullptr,
+            nullptr,
+            nullptr,
+        },
     };
     void
     setup() {
