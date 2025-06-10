@@ -50,11 +50,6 @@ namespace cortex {
     }
 } // end namespace cortex
 
-void
-IncrementSystemCounter() {
-    ++cortex::_coreSystemCounter;
-}
-
 ISR(INT0) {
-    IncrementSystemCounter();
+    ++cortex::_coreSystemCounter;
 }

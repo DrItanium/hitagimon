@@ -69,51 +69,10 @@ init()
     // make sure that we configured the c runtime to not buffer the inputs and outputs
     // this should allow each character to be printed out
     srandom(cortex::ChipsetBasicFunctions::Random::getHardwareRandomNumber());
+    __builtin_i960_set_interrupt_control_reg(0xFCFDFEFF);
     cortex::clearSystemCounter();
     cortex::enableSystemCounter();
-}
-void
-printSegmentDescriptor(std::ostream& out, cortex::SegmentDescriptor& curr) {
-    out << "\t\t\tValid: " << std::boolalpha << curr.operator bool() << std::endl;
-    if (curr) {
-        out << "\t\t\tKind: ";
-        if (curr.isSmallSegmentTable()) {
-            out << "small segment" << std::endl;
-        } else if (curr.isLargeSegmentTable()) {
-            out << "large segment" << std::endl;
-        } else if (curr.isSimpleRegion()) {
-            out << "simple region" << std::endl;
-        } else if (curr.isProcedureTable()) {
-            out << "procedure table" << std::endl;
-        } else {
-            out << "unknown" << std::endl;
-        }
-    }
-    out << "\t\t\tData:" << std::endl;
-    for (int j = 0; j < 4; ++j) {
-        out << "\t\t\t\t" << std::dec << j << ": 0x" << std::hex << curr.backingStorage[j] << std::endl;
-    }
-}
-int
-computeSegmentSelector(int index) noexcept {
-    return static_cast<int>((index << 6) | 0x3f);
-}
-void
-printBaseSegmentTable(std::ostream& out, cortex::SegmentTable& segTable, int count) {
-    out << "\tKind: ";
-    if (segTable.isSmallSegmentTable()) {
-        out << "Small" << std::endl;
-    } else if (segTable.isLargeSegmentTable()) {
-        out << "Large" << std::endl;
-    } else {
-        out << "Unknown!" << std::endl;
-    }
-    // print out the first eight entries
-    out << "\tFirst " << std::dec << count << " Entries:" << std::endl;
-    for (int i = 0; i < count; ++i) {
-        out << "\t\t" << std::dec << i << " (0x" << std::hex << computeSegmentSelector(i) << "):" << std::endl;
-        printSegmentDescriptor(out, segTable.getDescriptor(i));
-    }
+    
 }
 /**
  * @brief Compute the duration of execution and stash the result in a provided rusage type
@@ -140,19 +99,6 @@ setup() {
 void loop() {
     microshell::doMicroshell();
 }
-
-
-extern "C"
-void
-vect_INT0(void) {
-
-}
-extern "C"
-void
-vect_INT1(void) {
-
-}
-
 
 
 /*--------------------- Start flops.c source code ----------------------*/
@@ -1661,11 +1607,29 @@ namespace microshell {
         *data = (uint8_t*)timeBuffer;
         return strlen((char*)(*data));
     }
+
+    void isr_set_data_callback(struct ush_object* self, struct ush_file_descriptor const*, uint8_t* data, size_t size) {
+        uint32_t value = 0;
+        if (sscanf((const char*)data, "%lu", &value) == EOF) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+            return;
+        }
+        __builtin_i960_set_interrupt_control_reg(value);
+    }
+    size_t isr_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
+        static char buf[16];
+        uint32_t curr = __builtin_i960_get_interrupt_control_reg();
+        printf("curr: %lu\n", curr);
+        snprintf(buf, sizeof(buf), "%lu\n", curr);
+        buf[sizeof(buf) - 1] = 0;
+        *data = (uint8_t*)buf;
+        return strlen((char*)(*data));
+    }
     size_t systemcounter_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
-        static char timeBuffer[32];
-        snprintf(timeBuffer, sizeof(timeBuffer), "%llu\n", cortex::getSystemCounter());
-        timeBuffer[sizeof(timeBuffer) - 1] = 0;
-        *data = (uint8_t*)timeBuffer;
+        static char buf[32];
+        snprintf(buf, sizeof(buf), "%llu\n", cortex::getSystemCounter());
+        buf[sizeof(buf) - 1] = 0;
+        *data = (uint8_t*)buf;
         return strlen((char*)(*data));
     }
     size_t clk2_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
@@ -1684,6 +1648,15 @@ namespace microshell {
     }
     ush_node_object devNode;
     const ush_file_descriptor devDesc[] = {
+        {
+            "isr",
+            nullptr,
+            nullptr,
+            nullptr,
+            isr_get_data_callback,
+            isr_set_data_callback,
+            nullptr
+        },
         {
             "millis",
             nullptr,
