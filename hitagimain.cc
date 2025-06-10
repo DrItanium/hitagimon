@@ -69,6 +69,8 @@ init()
     // make sure that we configured the c runtime to not buffer the inputs and outputs
     // this should allow each character to be printed out
     srandom(cortex::ChipsetBasicFunctions::Random::getHardwareRandomNumber());
+    cortex::clearSystemCounter();
+    cortex::enableSystemCounter();
 }
 void
 printSegmentDescriptor(std::ostream& out, cortex::SegmentDescriptor& curr) {
