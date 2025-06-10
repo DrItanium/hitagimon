@@ -1619,7 +1619,6 @@ namespace microshell {
     size_t isr_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
         static char buf[16];
         uint32_t curr = __builtin_i960_get_interrupt_control_reg();
-        printf("curr: %lu\n", curr);
         snprintf(buf, sizeof(buf), "%lu\n", curr);
         buf[sizeof(buf) - 1] = 0;
         *data = (uint8_t*)buf;
