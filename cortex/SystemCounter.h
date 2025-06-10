@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace cortex {
     void clearSystemCounter() noexcept;
     uint64_t getSystemCounter() noexcept;
-    void enableSystemCounter(uint16_t compare, uint8_t prescaler) noexcept;
+    void enableSystemCounter() noexcept;
     void disableSystemCounter() noexcept;
     /// @todo add support for installing handlers when the system timer is incremented
 } // end namespace cortex

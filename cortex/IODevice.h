@@ -71,8 +71,12 @@ namespace cortex {
             uint32_t millis() noexcept;
             uint32_t micros() noexcept;
             float getRTCTemperature() noexcept;
-
         }
+        namespace SystemCounter {
+            bool active() noexcept;
+            void enable() noexcept;
+            void disable() noexcept;
+        } // end namespace SystemCounter
         namespace Info {
             uint32_t getCPUClockSpeed() noexcept;
             uint32_t getChipsetClockSpeed() noexcept;

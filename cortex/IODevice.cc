@@ -29,7 +29,8 @@ namespace cortex
                 uint32_t _configure32k;
                 // random entropy
                 uint32_t _hardwareRandomSource;
-                uint32_t _unused0;
+                uint16_t _systemCounterStatus;
+                uint16_t _unused0;
                 uint32_t _unused1;
                 uint32_t _unused2;
             };
@@ -160,6 +161,15 @@ namespace cortex
         inline uint16_t gfx_height() volatile noexcept { return gfx.height; }
         inline uint16_t gfx_rotation() volatile noexcept { return gfx.rotation; }
         inline void gfx_set_rotation(uint16_t value) volatile noexcept { gfx.rotation = value; }
+        bool systemCounterActive() volatile noexcept {
+            return builtin._systemCounterStatus != 0;
+        }
+        void enableSystemCounter() volatile noexcept {
+            builtin._systemCounterStatus = 0xFFFF;
+        }
+        void disableSystemCounter() volatile noexcept {
+            builtin._systemCounterStatus = 0;
+        }
     } __attribute__((packed));
     volatile IOSpace& getIOSpace() noexcept {
         return memory<IOSpace>(0xFE000000);
@@ -279,6 +289,17 @@ namespace cortex
         namespace Random {
             uint32_t getHardwareRandomNumber() noexcept {
                 return getIOSpace().builtin._hardwareRandomSource;
+            }
+        }
+        namespace SystemCounter {
+            bool active() noexcept { 
+                return getIOSpace().systemCounterActive(); 
+            }
+            void enable() noexcept { 
+                getIOSpace().enableSystemCounter();
+            }
+            void disable() noexcept {
+                getIOSpace().disableSystemCounter();
             }
         }
         void
