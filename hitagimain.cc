@@ -30,10 +30,11 @@ namespace microshell {
 
     int read(ush_object*, char*ch) {
         uint16_t result = cortex::ChipsetBasicFunctions::Console::read();
-        if (result != 0xFFFF) {
+        bool validResult = result != 0xFFFF;
+        if (validResult) {
             *ch = result;
         }
-        return result != 0xFFFF;
+        return validResult;
     }
 
     int write(ush_object*, char ch) {
