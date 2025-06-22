@@ -19,9 +19,9 @@ add_compile_options(-Wall)
 #add_link_options(-Wl,--as-needed -nostdlib -static -T ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT} -ffreestanding -Wl,--allow-multiple-definition)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmc -mnumerics -O2")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mmc -mnumerics -O2")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mka -msoft-float")
-#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mka -msoft-float")
 set(CMAKE_ASM-ATT_FLAGS "${CMAKE_ASM_FLAGS} -AMC -I${CMAKE_SOURCE_DIR}/boot")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmc -msoft-float -O2")
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mmc -msoft-float -O2")
 #set(CMAKE_ASM-ATT_FLAGS "${CMAKE_ASM_FLAGS} -AKA -I${CMAKE_SOURCE_DIR}/boot")
 #add_link_options(-mmc -mnumerics)
 #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--as-needed -nostdlib -static -T ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT} -msb -mnumerics -ffreestanding")
@@ -198,7 +198,7 @@ target_link_options(hitagimon
 		PRIVATE -T ${CMAKE_SOURCE_DIR}/start.ld
 		PRIVATE -ffreestanding
 		PRIVATE -Wl,--allow-multiple-definition
-        PRIVATE -msoft-float
+        #PRIVATE -msoft-float
 		#PRIVATE -mmc
 		#PRIVATE -mnumerics
 )

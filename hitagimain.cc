@@ -420,12 +420,12 @@ doFlops(const std::string& msg) {
     sa = x * (sa + 2.0 * s) / 2.0;                /* sin(x) Results.   */
     sb = 0.5;                                       /*********************/
     sc = sa - sb;
-    T[11] = one / T[10];
+    FloatType t11 = one / T[10];
     /*********************/
     /*   DO NOT REMOVE   */
     /*   THIS PRINTOUT!  */
     /*********************/
-    printf("     3   %13.4le  %10.4lf  %10.4lf\n", sc, T[9], T[11]);
+    printf("     3   %13.4le  %10.4lf  %10.4lf\n", sc, T[9], t11);
 
     /************************************************************/
     /* Module 4.  Calculate Integral of cos(x) from 0.0 to PI/3 */
@@ -449,23 +449,23 @@ doFlops(const std::string& msg) {
     }
     dtime(TimeArray);
     T[12] = T[1] * TimeArray[1] - nulltime;
-    static const FloatType Module4_u = piref / 3.0;
-    u = Module4_u;
+
+    u = piref / 3.0;
     w = u * u;
     sa = w * (w * (w * (w * (w * (B6 * w + B5) + B4) + B3) + B2) + B1) + one;
 
     T[13] = T[12] / 15.0;                             /*******************/
     sa = x * (sa + one + 2.0 * s) / 2.0;            /* Module 4 Result */
-    u = Module4_u;
+    u = piref / 3.0;                               /*******************/
     w = u * u;
     sb = u * ((((((A6 * w + A5) * w + A4) * w + A3) * w + A2) * w + A1) * w + A0);
     sc = sa - sb;
-    T[14] = one / T[13];
+    FloatType t14 = one / T[13];
     /*********************/
     /*   DO NOT REMOVE   */
     /*   THIS PRINTOUT!  */
     /*********************/
-    printf("     4   %13.4le  %10.4lf  %10.4lf\n", sc, T[12], T[14]);
+    printf("     4   %13.4le  %10.4lf  %10.4lf\n", sc, T[12], t14);
 
     /************************************************************/
     /* Module 5.  Calculate Integral of tan(x) from 0.0 to PI/3 */
