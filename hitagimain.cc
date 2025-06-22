@@ -199,24 +199,12 @@ void loop() {
 template<typename FloatType = double>
 struct FlopsCode {
     std::string _msg;
-    FloatType nulltime, TimeArray[3];   /* Variables needed for 'dtime()'.     */
-    FloatType TLimit;                   /* Threshold to determine Number of    */
-/* Loops to run. Fixed at 15.0 seconds.*/
+    FloatType TimeArray[3];   /* Variables needed for 'dtime()'.     */
 
     FloatType T[36];                    /* Global Array used to hold timing    */
 /* results and other information.      */
 
-    FloatType sa, sb, sc, sd; 
-    FloatType piprg;
-    FloatType pierr;
-    FloatType A3, A5;
-    FloatType scale;
-    FlopsCode(const std::string& kind) : _msg(kind) {
-        A3 = 0.198412715551283E-3;
-        A5 = 0.2507059876207E-7;
-
-
-    }
+    FlopsCode(const std::string& kind) : _msg(kind) { }
 /* Loops to run. Fixed at 15.0 seconds.*/
 
 
@@ -235,18 +223,18 @@ struct FlopsCode {
         static const FloatType A0 = 1.0;
         static const FloatType A1 = -0.1666666666671334;
         static const FloatType A2 = 0.833333333809067E-2;
+        FloatType A3 = 0.198412715551283E-3;
+        FloatType A5 = 0.2507059876207E-7;
         static const FloatType A4 = 0.27557589750762E-5;
         static const FloatType A6 = 0.164105986683E-9;
         register FloatType s, u, v, w, x;
-
-        long loops, NLimit;
         register long i, m, n;
 
         printf("\n");
         printf("   FLOPS C Program (%s), V2.0 18 Dec 1992\n\n", _msg.c_str());
 
         /****************************/
-        loops = 15625;        /* Initial number of loops. */
+        static const long loops = 15625;        /* Initial number of loops. */
         /*     DO NOT CHANGE!       */
         /****************************/
 
@@ -266,8 +254,10 @@ struct FlopsCode {
 
         T[1] = 1.0E+06 / (FloatType) loops;
 
-        TLimit = 15.0;
-        NLimit = 512000000;
+        static const FloatType TLimit = 15.0; // threshold to determine number
+                                              // of loops to run. Fixed at 15.0
+                                              // seconds
+        static const long NLimit = 512000000;
 
         static const FloatType piref = 3.14159265358979324;
         static const FloatType one = 1.0;
@@ -275,7 +265,7 @@ struct FlopsCode {
         static const FloatType three = 3.0;
         static const FloatType four = 4.0;
         static const FloatType five = 5.0;
-        scale = one;
+        FloatType scale = one;
 
         printf("   Module     Error        RunTime      MFLOPS\n");
         printf("                            (usec)\n");
@@ -283,8 +273,8 @@ struct FlopsCode {
 /* Initialize the timer. */
 /*************************/
 
-        dtime(TimeArray);
-        dtime(TimeArray);
+        dtime();
+        dtime();
 
 /*******************************************************/
 /* Module 1.  Calculate integral of df(x)/f(x) defined */
@@ -295,7 +285,9 @@ struct FlopsCode {
 /*            50.0% +, 00.0% -, 42.9% *, and 07.1% /   */
 /*******************************************************/
         n = loops;
-        sa = 0.0;
+        FloatType sa = 0.0;
+        FloatType sb = 0.0;
+        FloatType sc = 0.0;
 
         while (sa < TLimit) {
             n = 2 * n;
@@ -304,13 +296,13 @@ struct FlopsCode {
             v = 0.0;                                        /*********************/
             w = one;
 
-            dtime(TimeArray);
+            dtime();
             for (i = 1; i <= n - 1; i++) {
                 v = v + w;
                 u = v * x;
                 s = s + (D1 + u * (D2 + u * D3)) / (w + u * (D1 + u * (E2 + u * E3)));
             }
-            dtime(TimeArray);
+            dtime();
             sa = TimeArray[1];
 
             if (n == NLimit) break;
@@ -323,11 +315,11 @@ struct FlopsCode {
 /****************************************/
 /* Estimate nulltime ('for' loop time). */
 /****************************************/
-        dtime(TimeArray);
+        dtime();
         for (i = 1; i <= n - 1; i++) {
         }
-        dtime(TimeArray);
-        nulltime = T[1] * TimeArray[1];
+        dtime();
+        FloatType nulltime = T[1] * TimeArray[1];
         if (nulltime < 0.0) nulltime = 0.0;
 
         T[2] = T[1] * sa - nulltime;
@@ -361,12 +353,12 @@ struct FlopsCode {
         s = -five;                                      /********************/
         sa = -one;                                       /* Loop 2.          */
         /********************/
-        dtime(TimeArray);
+        dtime();
         for (i = 1; i <= m; i++) {
             s = -s;
             sa = sa + s;
         }
-        dtime(TimeArray);
+        dtime();
         T[5] = T[1] * TimeArray[1];
         if (T[5] < 0.0) T[5] = 0.0;
 
@@ -377,7 +369,7 @@ struct FlopsCode {
         w = 0.0;                                        /*********************/
         x = 0.0;
 
-        dtime(TimeArray);
+        dtime();
         for (i = 1; i <= m; i++) {
             s = -s;
             sa = sa + s;
@@ -386,7 +378,7 @@ struct FlopsCode {
             v = v - s * u;
             w = w + s / u;
         }
-        dtime(TimeArray);
+        dtime();
         T[6] = T[1] * TimeArray[1];
 
         T[7] = (T[6] - T[5]) / 7.0;                   /*********************/
@@ -394,8 +386,8 @@ struct FlopsCode {
         sa = four * w / five;                           /*********************/
         sb = sa + five / v;
         sc = 31.25;
-        piprg = sb - sc / (v * v * v);
-        pierr = piprg - piref;
+        FloatType piprg = sb - sc / (v * v * v);
+        FloatType pierr = piprg - piref;
         T[8] = one / T[7];
         /*********************/
         /*   DO NOT REMOVE   */
@@ -416,14 +408,14 @@ struct FlopsCode {
         s = 0.0;                                        /*  Loop 4.          */
         v = 0.0;                                        /*********************/
 
-        dtime(TimeArray);
+        dtime();
         for (i = 1; i <= m - 1; i++) {
             v = v + one;
             u = v * x;
             w = u * u;
             s = s + u * ((((((A6 * w - A5) * w + A4) * w - A3) * w + A2) * w + A1) * w + one);
         }
-        dtime(TimeArray);
+        dtime();
         T[9] = T[1] * TimeArray[1] - nulltime;
 
         u = piref / three;
@@ -455,13 +447,13 @@ struct FlopsCode {
         s = 0.0;                                        /*  Loop 5.          */
         v = 0.0;                                        /*********************/
 
-        dtime(TimeArray);
+        dtime();
         for (i = 1; i <= m - 1; i++) {
             u = (FloatType) i * x;
             w = u * u;
             s = s + w * (w * (w * (w * (w * (B6 * w + B5) + B4) + B3) + B2) + B1) + one;
         }
-        dtime(TimeArray);
+        dtime();
         T[12] = T[1] * TimeArray[1] - nulltime;
 
         u = piref / three;
@@ -494,14 +486,14 @@ struct FlopsCode {
         s = 0.0;                                        /*  Loop 6.          */
         v = 0.0;                                        /*********************/
 
-        dtime(TimeArray);
+        dtime();
         for (i = 1; i <= m - 1; i++) {
             u = (FloatType) i * x;
             w = u * u;
             v = u * ((((((A6 * w + A5) * w + A4) * w + A3) * w + A2) * w + A1) * w + one);
             s = s + v / (w * (w * (w * (w * (w * (B6 * w + B5) + B4) + B3) + B2) + B1) + one);
         }
-        dtime(TimeArray);
+        dtime();
         T[15] = T[1] * TimeArray[1] - nulltime;
 
         u = piref / three;
@@ -534,14 +526,14 @@ struct FlopsCode {
         s = 0.0;                                        /*  Loop 7.          */
         v = 0.0;                                        /*********************/
 
-        dtime(TimeArray);
+        dtime();
         for (i = 1; i <= m - 1; i++) {
             u = (FloatType) i * x;
             w = u * u;
             v = u * ((((((A6 * w + A5) * w + A4) * w + A3) * w + A2) * w + A1) * w + one);
             s = s + v * (w * (w * (w * (w * (w * (B6 * w + B5) + B4) + B3) + B2) + B1) + one);
         }
-        dtime(TimeArray);
+        dtime();
         T[18] = T[1] * TimeArray[1] - nulltime;
 
         u = piref / four;
@@ -578,13 +570,13 @@ struct FlopsCode {
         sa = 102.3321513995275;
         v = sa / (FloatType) m;
 
-        dtime(TimeArray);
+        dtime();
         for (i = 1; i <= m - 1; i++) {
             x = (FloatType) i * v;
             u = x * x;
             s = s - w / (x + w) - x / (u + w) - u / (x * u + w);
         }
-        dtime(TimeArray);
+        dtime();
         T[21] = T[1] * TimeArray[1] - nulltime;
         /*********************/
         /* Module 7 Results  */
@@ -620,14 +612,14 @@ struct FlopsCode {
         s = 0.0;                                        /*  Loop 9.          */
         v = 0.0;                                        /*********************/
 
-        dtime(TimeArray);
+        dtime();
         for (i = 1; i <= m - 1; i++) {
             u = (FloatType) i * x;
             w = u * u;
             v = w * (w * (w * (w * (w * (B6 * w + B5) + B4) + B3) + B2) + B1) + one;
             s = s + v * v * u * ((((((A6 * w + A5) * w + A4) * w + A3) * w + A2) * w + A1) * w + one);
         }
-        dtime(TimeArray);
+        dtime();
         T[24] = T[1] * TimeArray[1] - nulltime;
 
         u = piref / three;
@@ -727,14 +719,14 @@ struct FlopsCode {
 
     struct rusage rusage;
 
-    __attribute((noinline)) int dtime(FloatType p[]) {
-        FloatType q = p[2];
+    __attribute((noinline)) int dtime() {
+        FloatType q = TimeArray[2];
 
         getrusage(RUSAGE_SELF, &rusage);
 
-        p[2] = (FloatType) (rusage.ru_utime.tv_sec);
-        p[2] = p[2] + (FloatType) (rusage.ru_utime.tv_usec) * 1.0e-06;
-        p[1] = p[2] - q;
+        TimeArray[2] = (FloatType) (rusage.ru_utime.tv_sec);
+        TimeArray[2] = TimeArray[2] + (FloatType) (rusage.ru_utime.tv_usec) * 1.0e-06;
+        TimeArray[1] = TimeArray[2] - q;
 
         return 0;
     }
