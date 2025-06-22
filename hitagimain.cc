@@ -206,47 +206,16 @@ struct FlopsCode {
     FloatType T[36];                    /* Global Array used to hold timing    */
 /* results and other information.      */
 
-    FloatType sa, sb, sc, sd, one, two, three;
-    FloatType four, five, piref, piprg;
-    FloatType scale, pierr;
-    FloatType A0, A1, A2, A3, A4, A5, A6;
-    FloatType B0, B1, B2, B3, B4, B5, B6;
-    FloatType C0, C1, C2, C3, C4, C5, C6, C7, C8;
-    FloatType D1, D2, D3;
-    //FloatType E2, E3;
+    FloatType sa, sb, sc, sd; 
+    FloatType piprg;
+    FloatType pierr;
+    FloatType A3, A5;
+    FloatType scale;
     FlopsCode(const std::string& kind) : _msg(kind) {
-        A0 = 1.0;
-        A1 = -0.1666666666671334;
-        A2 = 0.833333333809067E-2;
         A3 = 0.198412715551283E-3;
-        A4 = 0.27557589750762E-5;
         A5 = 0.2507059876207E-7;
-        A6 = 0.164105986683E-9;
 
-        B0 = 1.0;
-        B1 = -0.4999999999982;
-        B2 = 0.4166666664651E-1;
-        B3 = -0.1388888805755E-2;
-        B4 = 0.24801428034E-4;
-        B5 = -0.2754213324E-6;
-        B6 = 0.20189405E-8;
 
-        C0 = 1.0;
-        C1 = 0.99999999668;
-        C2 = 0.49999995173;
-        C3 = 0.16666704243;
-        C4 = 0.4166685027E-1;
-        C5 = 0.832672635E-2;
-        C6 = 0.140836136E-2;
-        C7 = 0.17358267E-3;
-        C8 = 0.3931683E-4;
-
-        D1 = 0.3999999946405E-1;
-        D2 = 0.96E-3;
-        D3 = 0.1233153E-5;
-
-        //E2 = 0.48E-3;
-        //E3 = 0.411051E-6;
     }
 /* Loops to run. Fixed at 15.0 seconds.*/
 
@@ -254,6 +223,20 @@ struct FlopsCode {
     int doIt() {
         static const FloatType E2 = 0.48E-3;
         static const FloatType E3 = 0.411051E-6;
+        static const FloatType D1 = 0.3999999946405E-1;
+        static const FloatType D2 = 0.96E-3;
+        static const FloatType D3 = 0.1233153E-5;
+        static const FloatType B1 = -0.4999999999982;
+        static const FloatType B2 = 0.4166666664651E-1;
+        static const FloatType B3 = -0.1388888805755E-2;
+        static const FloatType B4 = 0.24801428034E-4;
+        static const FloatType B5 = -0.2754213324E-6;
+        static const FloatType B6 = 0.20189405E-8;
+        static const FloatType A0 = 1.0;
+        static const FloatType A1 = -0.1666666666671334;
+        static const FloatType A2 = 0.833333333809067E-2;
+        static const FloatType A4 = 0.27557589750762E-5;
+        static const FloatType A6 = 0.164105986683E-9;
         register FloatType s, u, v, w, x;
 
         long loops, NLimit;
@@ -286,12 +269,12 @@ struct FlopsCode {
         TLimit = 15.0;
         NLimit = 512000000;
 
-        piref = 3.14159265358979324;
-        one = 1.0;
-        two = 2.0;
-        three = 3.0;
-        four = 4.0;
-        five = 5.0;
+        static const FloatType piref = 3.14159265358979324;
+        static const FloatType one = 1.0;
+        static const FloatType two = 2.0;
+        static const FloatType three = 3.0;
+        static const FloatType four = 4.0;
+        static const FloatType five = 5.0;
         scale = one;
 
         printf("   Module     Error        RunTime      MFLOPS\n");
