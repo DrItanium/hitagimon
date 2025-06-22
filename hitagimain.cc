@@ -196,18 +196,27 @@ void loop() {
    Al Aburto
    aburto@nosc.mil
 */
-template<typename FloatType = double>
-struct FlopsCode {
-    std::string _msg;
+namespace FlopsCode {
 
-    FloatType T[36];                    /* Global Array used to hold timing    */
-/* results and other information.      */
 
-    FlopsCode(const std::string& kind) : _msg(kind) { }
 /* Loops to run. Fixed at 15.0 seconds.*/
 
+template<typename FloatType>
+    __attribute((noinline)) static int dtime(FloatType ta[]) {
+        struct rusage rusage;
+        FloatType q = ta[2];
 
-    int doIt() {
+        getrusage(RUSAGE_SELF, &rusage);
+
+        ta[2] = (FloatType) (rusage.ru_utime.tv_sec);
+        ta[2] = ta[2] + (FloatType) (rusage.ru_utime.tv_usec) * 1.0e-06;
+        ta[1] = ta[2] - q;
+
+        return 0;
+    }
+    
+template<typename FloatType>
+    int doFlops(const std::string& msg) {
         static const FloatType E2 = 0.48E-3;
         static const FloatType E3 = 0.411051E-6;
         static const FloatType D1 = 0.3999999946405E-1;
@@ -227,10 +236,13 @@ struct FlopsCode {
         static const FloatType A4 = 0.27557589750762E-5;
         static const FloatType A6 = 0.164105986683E-9;
         register FloatType s, u, v, w, x;
-        register long i, m, n;
+        register long m, n;
+        FloatType TimeArray[3]; // variables needed for 'dtime()'
+        FloatType T[36];                    /* Global Array used to hold timing    */
+        /* results and other information.      */
 
         printf("\n");
-        printf("   FLOPS C Program (%s), V2.0 18 Dec 1992\n\n", _msg.c_str());
+        printf("   FLOPS C Program (%s), V2.0 18 Dec 1992\n\n", msg.c_str());
 
         /****************************/
         static const long loops = 15625;        /* Initial number of loops. */
@@ -265,7 +277,6 @@ struct FlopsCode {
         static const FloatType four = 4.0;
         static const FloatType five = 5.0;
         FloatType scale = one;
-        FloatType TimeArray[3]; // variables needed for 'dtime()'
         printf("   Module     Error        RunTime      MFLOPS\n");
         printf("                            (usec)\n");
 /*************************/
@@ -294,7 +305,7 @@ struct FlopsCode {
             w = one;
 
             dtime(TimeArray);
-            for (i = 1; i <= n - 1; i++) {
+            for (long i = 1; i <= n - 1; i++) {
                 v = v + w;
                 u = v * x;
                 s = s + (D1 + u * (D2 + u * D3)) / (w + u * (D1 + u * (E2 + u * E3)));
@@ -313,7 +324,7 @@ struct FlopsCode {
 /* Estimate nulltime ('for' loop time). */
 /****************************************/
         dtime(TimeArray);
-        for (i = 1; i <= n - 1; i++) {
+        for (long i = 1; i <= n - 1; i++) {
         }
         dtime(TimeArray);
         FloatType nulltime = T[1] * TimeArray[1];
@@ -351,7 +362,7 @@ struct FlopsCode {
         sa = -one;                                       /* Loop 2.          */
         /********************/
         dtime(TimeArray);
-        for (i = 1; i <= m; i++) {
+        for (long i = 1; i <= m; i++) {
             s = -s;
             sa = sa + s;
         }
@@ -367,7 +378,7 @@ struct FlopsCode {
         x = 0.0;
 
         dtime(TimeArray);
-        for (i = 1; i <= m; i++) {
+        for (long i = 1; i <= m; i++) {
             s = -s;
             sa = sa + s;
             u = u + two;
@@ -406,7 +417,7 @@ struct FlopsCode {
         v = 0.0;                                        /*********************/
 
         dtime(TimeArray);
-        for (i = 1; i <= m - 1; i++) {
+        for (long i = 1; i <= m - 1; i++) {
             v = v + one;
             u = v * x;
             w = u * u;
@@ -445,7 +456,7 @@ struct FlopsCode {
         v = 0.0;                                        /*********************/
 
         dtime(TimeArray);
-        for (i = 1; i <= m - 1; i++) {
+        for (long i = 1; i <= m - 1; i++) {
             u = (FloatType) i * x;
             w = u * u;
             s = s + w * (w * (w * (w * (w * (B6 * w + B5) + B4) + B3) + B2) + B1) + one;
@@ -484,7 +495,7 @@ struct FlopsCode {
         v = 0.0;                                        /*********************/
 
         dtime(TimeArray);
-        for (i = 1; i <= m - 1; i++) {
+        for (long i = 1; i <= m - 1; i++) {
             u = (FloatType) i * x;
             w = u * u;
             v = u * ((((((A6 * w + A5) * w + A4) * w + A3) * w + A2) * w + A1) * w + one);
@@ -524,7 +535,7 @@ struct FlopsCode {
         v = 0.0;                                        /*********************/
 
         dtime(TimeArray);
-        for (i = 1; i <= m - 1; i++) {
+        for (long i = 1; i <= m - 1; i++) {
             u = (FloatType) i * x;
             w = u * u;
             v = u * ((((((A6 * w + A5) * w + A4) * w + A3) * w + A2) * w + A1) * w + one);
@@ -568,7 +579,7 @@ struct FlopsCode {
         v = sa / (FloatType) m;
 
         dtime(TimeArray);
-        for (i = 1; i <= m - 1; i++) {
+        for (long i = 1; i <= m - 1; i++) {
             x = (FloatType) i * v;
             u = x * x;
             s = s - w / (x + w) - x / (u + w) - u / (x * u + w);
@@ -610,7 +621,7 @@ struct FlopsCode {
         v = 0.0;                                        /*********************/
 
         dtime(TimeArray);
-        for (i = 1; i <= m - 1; i++) {
+        for (long i = 1; i <= m - 1; i++) {
             u = (FloatType) i * x;
             w = u * u;
             v = w * (w * (w * (w * (w * (B6 * w + B5) + B4) + B3) + B2) + B1) + one;
@@ -714,24 +725,10 @@ struct FlopsCode {
 /*  HP-UX Addition by: Bo Thide', bt@irfu.se         */
 /*****************************************************/
 
-    struct rusage rusage;
 
-    __attribute((noinline)) int dtime(FloatType ta[]) {
-        FloatType q = ta[2];
-
-        getrusage(RUSAGE_SELF, &rusage);
-
-        ta[2] = (FloatType) (rusage.ru_utime.tv_sec);
-        ta[2] = ta[2] + (FloatType) (rusage.ru_utime.tv_usec) * 1.0e-06;
-        ta[1] = ta[2] - q;
-
-        return 0;
-    }
-};
+}
 /*------ End flops.c code, say good night Jan! (Sep 1992) ------*/
 
-FlopsCode<double> fc("double precision");
-FlopsCode<float> fc2("single precision");
 namespace GraphicsOpcodes {
     enum Opcodes {
         Nothing = 0,
@@ -1150,10 +1147,10 @@ namespace microshell {
         (void)testLines(color);
     }
     void doFlops64Execution(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-        fc.doIt();
+        FlopsCode::doFlops<double>("double precision");
     }
     void doFlops32Execution(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-        fc2.doIt();
+        FlopsCode::doFlops<float>("single precision");
     }
     void doFizzleFade(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         uint16_t w = std::min(screenWidth(), static_cast<uint16_t>(128));
@@ -1435,12 +1432,12 @@ namespace microshell {
             printf("Running flops32\n\n");
             {
                 DurationTimer dt(components[1]._duration);
-                fc2.doIt();
+                FlopsCode::doFlops<float>("single precision");
             }
             printf("\nRunning flops64\n\n");
             {
                 DurationTimer dt(components[2]._duration);
-                fc.doIt();
+                FlopsCode::doFlops<double>("double precision");
 
                 printf("\nRunning quodigious 1-9\n\n");
                 {
