@@ -198,6 +198,7 @@ void loop() {
 */
 template<typename FloatType = double>
 struct FlopsCode {
+    std::string _msg;
     FloatType nulltime, TimeArray[3];   /* Variables needed for 'dtime()'.     */
     FloatType TLimit;                   /* Threshold to determine Number of    */
 /* Loops to run. Fixed at 15.0 seconds.*/
@@ -212,8 +213,7 @@ struct FlopsCode {
     FloatType B0, B1, B2, B3, B4, B5, B6;
     FloatType C0, C1, C2, C3, C4, C5, C6, C7, C8;
     FloatType D1, D2, D3;
-    FloatType E2, E3;
-    std::string _msg;
+    //FloatType E2, E3;
     FlopsCode(const std::string& kind) : _msg(kind) {
         A0 = 1.0;
         A1 = -0.1666666666671334;
@@ -245,13 +245,15 @@ struct FlopsCode {
         D2 = 0.96E-3;
         D3 = 0.1233153E-5;
 
-        E2 = 0.48E-3;
-        E3 = 0.411051E-6;
+        //E2 = 0.48E-3;
+        //E3 = 0.411051E-6;
     }
 /* Loops to run. Fixed at 15.0 seconds.*/
 
 
     int doIt() {
+        static const FloatType E2 = 0.48E-3;
+        static const FloatType E3 = 0.411051E-6;
         register FloatType s, u, v, w, x;
 
         long loops, NLimit;
@@ -329,7 +331,7 @@ struct FlopsCode {
             sa = TimeArray[1];
 
             if (n == NLimit) break;
-            /* printf(" %10ld  %12.5lf\n",n,sa); */
+             //printf(" %10ld  %12.5lf\n",n,sa); 
         }
 
         scale = 1.0E+06 / (FloatType) n;
@@ -742,7 +744,7 @@ struct FlopsCode {
 
     struct rusage rusage;
 
-    int dtime(FloatType p[]) {
+    __attribute((noinline)) int dtime(FloatType p[]) {
         FloatType q = p[2];
 
         getrusage(RUSAGE_SELF, &rusage);
