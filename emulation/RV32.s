@@ -79,17 +79,24 @@ InterruptContextEnter:
 
 	.global FaultContextEnter
 # faults are basically system exceptions
+# I will need to figure out how RV32 handles these
 FaultContextEnter:
-	ldconst 64, r3
-	addo sp, r3, sp
-	stq g0, -64(sp)
-	stq g4, -48(sp)
-	stq g8, -32(sp)
-	stt g12, -16(sp)
-
-	ldq -64(sp), g0
-	ldq -48(sp), g4
-	ldq -32(sp), g8
-	ldt -16(sp), g12
+#	ldconst 64, r3
+#	addo sp, r3, sp
+#	stq g0, -64(sp)
+#	stq g4, -48(sp)
+#	stq g8, -32(sp)
+#	stt g12, -16(sp)
+#
+#	ldq -64(sp), g0
+#	ldq -48(sp), g4
+#	ldq -32(sp), g8
+#	ldt -16(sp), g12
 	ret
 	
+.global SystemCallEnter
+# system calls are special because the global arguments need to passed and
+# returned so it will be necessary to only save the necessary pieces that are not the argument registers
+SystemCallEnter:
+	
+	ret

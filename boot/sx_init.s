@@ -359,8 +359,8 @@ fault_proc_table:
 .macro DefFaultDispatcher name
 .text
 _user_\()\name\()_core:
-	save_globals
 	flushreg
+	save_globals
 	lda	-48(fp), g0	/* pass fault data */
 	callx _user_\()\name
 	restore_globals
