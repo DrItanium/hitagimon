@@ -32,9 +32,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * This contains concepts necessary for executing pre-translated rv32 assembly
  * instructions under the i960 itself. This of this more like documentation
  */
+namespace rv32 {
 
-struct RV32ExecutionEnvironment {
+struct ControlRegisters {
     uint32_t csrs[4096];
+    // up to 4096 registers
+};
+
+struct ExecutionEnvironment {
+    ControlRegisters csrs;
     // Since riscv does not use register windows or an upward growing stack, we
     // need to emulate it. Thus we have actually 6 stacks to worry about at any
     // given point. Three of them are meant for the i960 hardware. The other
@@ -47,4 +53,5 @@ struct RV32ExecutionEnvironment {
     uint32_t kernelStackAddress;
 };
 
+}
 #endif //HITAGIMON_RV32_H
