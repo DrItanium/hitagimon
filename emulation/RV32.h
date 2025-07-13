@@ -60,5 +60,25 @@ struct ExecutionEnvironment {
 
 extern "C" ExecutionEnvironment* getExecutionEnvironment();
 
+
 }
+#ifdef __cplusplus
+extern "C" {
+#endif
+// allow the compiler to generate instruction sequences
+inline uint32_t __builtin_rv32_sltu(uint32_t rs1, uint32_t rs2) { return rs1 < rs2; }
+inline uint32_t __builtin_rv32_maxu(uint32_t rs1, uint32_t rs2) { return rs1 < rs2 ? rs2 : rs1; }
+inline int32_t __builtin_rv32_max(int32_t rs1, int32_t rs2) { return rs1 < rs2 ? rs2 : rs1; }
+inline uint32_t __builtin_rv32_minu(uint32_t rs1, uint32_t rs2) { return rs1 > rs2 ? rs2 : rs1; }
+inline int32_t __builtin_rv32_min(int32_t rs1, int32_t rs2) { return rs1 > rs2 ? rs2 : rs1; }
+inline uint32_t __builtin_rv32_andn(uint32_t rs1, uint32_t rs2) { return (~rs2) & rs1; }
+inline int32_t __builtin_rv32_sext_h(int16_t rs1) { return static_cast<int32_t>(rs1); }
+inline int32_t __builtin_rv32_sext_b(int8_t rs1) { return static_cast<int32_t>(rs1); }
+inline uint32_t __builtin_rv32_sh1add(uint32_t rs1, uint32_t rs2) { return rs2 + (rs1 << 1); }
+inline uint32_t __builtin_rv32_sh2add(uint32_t rs1, uint32_t rs2) { return rs2 + (rs1 << 2); }
+inline uint32_t __builtin_rv32_sh3add(uint32_t rs1, uint32_t rs2) { return rs2 + (rs1 << 3); }
+
+#ifdef __cplusplus
+}
+#endif
 #endif //HITAGIMON_RV32_H

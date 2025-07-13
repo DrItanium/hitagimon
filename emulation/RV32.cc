@@ -28,3 +28,40 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace RV32 {
 
 }
+
+uint32_t testApplication(uint32_t a, uint32_t b) { return __builtin_rv32_maxu(a, b); }
+int32_t testApplication2(int32_t a, int32_t b) { return __builtin_rv32_max(a, b); }
+
+uint32_t testApplication3(uint32_t a, uint32_t b) {
+    return __builtin_rv32_andn(a, b);
+}
+
+uint32_t testApplication4(int16_t a) {
+    return __builtin_rv32_sext_h(a);
+}
+
+uint32_t testApplication5(int8_t a) {
+    return __builtin_rv32_sext_b(a);
+}
+
+uint32_t testApplication6(uint32_t a, uint32_t b) { return __builtin_rv32_sh1add(a, b); }
+uint32_t testApplication7(uint32_t a, uint32_t b) { return __builtin_rv32_sh2add(a, b); }
+uint32_t testApplication8(uint32_t a, uint32_t b) { return __builtin_rv32_sh3add(a, b); }
+
+uint32_t testApplication9(uint32_t a, uint32_t b) { return __builtin_rv32_minu(a, b); }
+int32_t testApplication10(int32_t a, int32_t b) { return __builtin_rv32_min(a, b); }
+
+uint64_t testApplication11(uint64_t a, uint64_t b) { return a * b; }
+int64_t testApplication11a(int64_t a, int64_t b) { return a * b; }
+uint64_t testApplication12(uint64_t a, uint64_t b) { return a / b; }
+int64_t testApplication12a(int64_t a, int64_t b) { return a / b; }
+
+uint32_t testApplication13(uint32_t value) {
+    uint32_t result = 0;
+    // count leading zeros
+    asm volatile (
+            "scanbit %1, %0\n\t"
+            "subo %0, 31, %0" : "=r" (result) : "r"(value) );
+
+    return result;
+}
