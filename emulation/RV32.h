@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 struct RV32ExecutionEnvironment {
+    uint32_t csrs[4096];
     // Since riscv does not use register windows or an upward growing stack, we
     // need to emulate it. Thus we have actually 6 stacks to worry about at any
     // given point. Three of them are meant for the i960 hardware. The other
@@ -44,7 +45,6 @@ struct RV32ExecutionEnvironment {
     uint32_t userStackAddress;
     uint32_t supervisorStackAddress;
     uint32_t kernelStackAddress;
-
 };
 
 #endif //HITAGIMON_RV32_H

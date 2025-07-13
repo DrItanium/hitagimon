@@ -455,5 +455,87 @@ namespace cortex {
             uint32_t field5;
         };
     } __attribute__((packed));
+
+    union REGInstruction {
+        uint32_t raw;
+        struct {
+            uint32_t src1 : 5;
+            uint32_t : 2;
+            uint32_t opcodeLo : 4;
+            uint32_t m1 : 1;
+            uint32_t m2 : 1;
+            uint32_t m3 : 1;
+            uint32_t src2 : 5;
+            uint32_t srcDest : 5;
+            uint32_t opcode : 8;
+        };
+        uint32_t getOpcode() const noexcept {
+            uint32_t value = opcode;
+            value <<= 4;
+            return (value | opcodeLo) & 0xFFF;
+        }
+    } __attribute__((packed));
+    union COBRInstruction {
+        uint32_t raw;
+        struct {
+            int32_t displacement : 13;
+            uint32_t m1 : 1;
+            uint32_t src2 : 5;
+            uint32_t src1 : 5;
+            uint32_t opcode : 8;
+        };
+        int32_t getDisplacement() const noexcept {
+            return displacement & 0xFFFFFFFC; // mask out the lowest two bits
+        }
+    } __attribute__((packed));
+    union CTRLInstruction {
+        uint32_t raw;
+        struct {
+            int32_t displacement : 24;
+            uint32_t opcode : 8;
+        };
+        int32_t getDisplacement() const noexcept {
+            return displacement & 0xFFFFFFFC;
+        }
+    } __attribute__((packed));
+    union MEMAInstruction {
+        uint32_t raw;
+        struct {
+            uint32_t offset : 12;
+            uint32_t : 1;
+            uint32_t mode : 1;
+            uint32_t abase : 5;
+            uint32_t srcDst : 5;
+            uint32_t opcode : 8;
+        };
+    } __attribute__((packed));
+    union MEMBInstruction {
+        uint64_t blob;
+        struct {
+            union {
+                uint32_t raw;
+                struct {
+                    uint32_t index : 5;
+                    uint32_t : 2;
+                    uint32_t scale : 3;
+                    uint32_t mode : 4;
+                    uint32_t abase : 5;
+                    uint32_t srcDst : 5;
+                    uint32_t opcode : 8;
+                };
+            };
+            int32_t displacement;
+        };
+        bool isDoubleWide() const noexcept {
+            switch (mode) {
+                case 4: // 0b0100 - (abase)
+                case 6: // 0b0110 - reserved
+                case 7: // 0b0111 - (abase) + (index) * 2^scale
+                    return false;
+                default:
+                    return true;
+            }
+        }
+    } __attribute__((packed));
 }
 #endif //HITAGIMON_SYSEXAMINE_H
