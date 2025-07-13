@@ -161,6 +161,7 @@ add_library(hitagiemul
         emulation/Domain.h
         emulation/RV32.h
         emulation/RV32.cc
+        emulation/RV32.s
     )
 
 target_include_directories(hitagiemul PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
