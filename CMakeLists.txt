@@ -155,7 +155,13 @@ target_compile_definitions(
 )
 set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/start.ld)
 add_library(hitagiemul
-        emulation/Segment.cc emulation/Segment.h emulation/Domain.cc emulation/Domain.h)
+        emulation/Segment.cc 
+        emulation/Segment.h 
+        emulation/Domain.cc 
+        emulation/Domain.h
+        emulation/RV32.h
+        emulation/RV32.cc
+    )
 
 target_include_directories(hitagiemul PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
