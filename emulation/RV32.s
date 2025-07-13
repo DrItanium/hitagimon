@@ -74,5 +74,22 @@ InterruptContextEnter:
 # 	 or we are already in kernel context. The former we will be starting from scratch. 
 #    In the later the stack is already setup.
 #
-#	 I cannot see how one would be able to do a user -> interrupt -> user call setup without returning from the interrupt back into the user setup
+# All of the functions which an interrupt context could call do not care where the stack is located or what it is. So "user" code is fine. 
+# the question is if I need to preserve the top of the stack and save that to the context...
 
+	.global FaultContextEnter
+# faults are basically system exceptions
+FaultContextEnter:
+	ldconst 64, r3
+	addo sp, r3, sp
+	stq g0, -64(sp)
+	stq g4, -48(sp)
+	stq g8, -32(sp)
+	stt g12, -16(sp)
+
+	ldq -64(sp), g0
+	ldq -48(sp), g4
+	ldq -32(sp), g8
+	ldt -16(sp), g12
+	ret
+	
