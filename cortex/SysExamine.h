@@ -537,5 +537,17 @@ namespace cortex {
             }
         }
     } __attribute__((packed));
+
+    union PreviousFramePointer {
+        uint32_t raw;
+        struct {
+            uint32_t rrr : 3;
+            uint32_t p : 1;
+            uint32_t contents : 28;
+        };
+        uint32_t getReturnAddress() const noexcept {
+            return raw & 0xFFFFFFF0;
+        }
+    } __attribute__((packed));
 }
 #endif //HITAGIMON_SYSEXAMINE_H

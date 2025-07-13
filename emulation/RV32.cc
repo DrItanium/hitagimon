@@ -24,3 +24,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "emulation/RV32.h"
+
+namespace RV32 {
+
+}

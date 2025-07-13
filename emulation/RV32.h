@@ -53,5 +53,7 @@ struct ExecutionEnvironment {
     uint32_t kernelStackAddress;
 };
 
+extern "C" ExecutionEnvironment* getExecutionEnvironment();
+
 }
 #endif //HITAGIMON_RV32_H
