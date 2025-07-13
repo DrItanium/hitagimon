@@ -59,8 +59,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .align 4
 .global _\()\name
 _\()\name:
-lda \index, g13
-calls g13
+lda \index, r3
+calls r3
 ret
 .endm
 
