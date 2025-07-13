@@ -98,6 +98,30 @@ namespace cortex {
             uint32_t : 8;
         };
     } __attribute((packed));
+    union FaultHeader {
+        uint32_t whole;
+        uint8_t bytes[4];
+        struct {
+            uint8_t subtype;
+            uint8_t unused;
+            uint8_t type;
+            uint8_t flags;
+        };
+    } __attribute__((packed));
+    union FaultRecord {
+        uint8_t bytes[48];
+        uint32_t ordinals[48/sizeof(uint32_t)];
+        struct {
+            uint32_t unused0;
+            uint32_t overrideFaultData[3];
+            uint32_t faultData[3];
+            FaultHeader overrideDataHeader;
+            ProcessControls processControls;
+            ArithmeticControls arithmeticControls;
+            FaultHeader faultDataHeader;
+            uint32_t faultingInstructionAddress;
+        };
+    } __attribute__((packed));
     struct FaultTableEntry {
         typedef void(*FaultOperation)();
         uint32_t handlerRaw;
@@ -420,5 +444,16 @@ namespace cortex {
         uint32_t queueStatus;
         QueueHeader priorityQueues[32];
     };
+    union IACMessagePacket {
+        uint32_t words[4];
+        struct {
+            uint16_t field2;
+            uint8_t field1;
+            uint8_t type;
+            uint32_t field3;
+            uint32_t field4;
+            uint32_t field5;
+        };
+    } __attribute__((packed));
 }
 #endif //HITAGIMON_SYSEXAMINE_H
