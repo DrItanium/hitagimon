@@ -39,4 +39,4 @@ InterruptContextEnter:
 	ldq -48(sp), g4
 	ldq -32(sp), g8
 	ldt -16(sp), g12
-	ret ; drop back to previous stack
+	ret # drop back to previous stack
