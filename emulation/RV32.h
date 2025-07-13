@@ -51,6 +51,11 @@ struct ExecutionEnvironment {
     uint32_t userStackAddress;
     uint32_t supervisorStackAddress;
     uint32_t kernelStackAddress;
+
+    // registers that aren't directly mapped to i960 registers
+    uint32_t gp;
+    uint32_t tp;
+    uint32_t s8, s9, s10, s11;
 };
 
 extern "C" ExecutionEnvironment* getExecutionEnvironment();
