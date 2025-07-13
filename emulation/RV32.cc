@@ -89,14 +89,6 @@ uint32_t populationCount(uint32_t value) {
 
 
 
-namespace rv32 {
-uint32_t
-ExecutionEnvironment::getCSR(uint16_t a) const {
-    return csrs[a & 0xFFF];
-}
-
-}
-
 uint32_t 
 rotateLeft(uint32_t rs1, uint32_t rs2) {
     uint32_t shamt = rs2 & 0x1f;

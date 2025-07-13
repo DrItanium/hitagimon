@@ -36,7 +36,6 @@ namespace rv32 {
 
 
 struct ExecutionEnvironment {
-    uint32_t csrs[4096];
     // Since riscv does not use register windows or an upward growing stack, we
     // need to emulate it. Thus we have actually 6 stacks to worry about at any
     // given point. Three of them are meant for the i960 hardware. The other
@@ -53,7 +52,6 @@ struct ExecutionEnvironment {
     uint32_t tp;
     uint32_t s8, s9, s10, s11;
 
-    uint32_t getCSR(uint16_t offset) const;
 };
 
 extern "C" ExecutionEnvironment* getExecutionEnvironment();
