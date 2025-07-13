@@ -23,6 +23,11 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 /* fault table */
+# We can specify the table to look into
+# 0x2bf is the fault procedure table
+# 0x27f could be used to access the system procedure table (but this will result in problems where tracing is concerned)
+# 0 is used for local calls (which bypasses the trace infinite loop problem)
+# This fault table is the important part, it is a dispatch table that describes where to go
 .macro FaultEntry index, code=0x2, table=0x2bf
 .word (\index << 2) | \code
 .word \table
