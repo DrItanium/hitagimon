@@ -271,3 +271,13 @@ DeclareSegment 0, 0, \addr, 0x204000fb
 .macro this_instruction_address dest
 	lda -8(ip), \dest
 .endm
+
+.macro linkret dest=g14
+	bx (\dest)
+.endm
+
+.macro nop 
+	# pfp is rarely used directly so it should't hose the scoreboard
+	# it is also aligned to prevent problems as well
+	mov pfp, pfp
+.endm
