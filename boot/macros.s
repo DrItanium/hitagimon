@@ -136,3 +136,45 @@ DeclareSegment 0, 0, \addr, 0x204000fb
 .macro blsbs src, dest
 	bbs 0, \src, \dest
 .endm
+
+# compare integer and branch if equal zero
+.macro cmpibez src, dest
+	cmpibe 0, \src, \dest
+.endm
+
+# compare ordinal and branch if not equal zero 
+.macro cmpobez src, dest
+	cmpobe 0, \src, \dest
+.endm
+
+.macro nandl src1l, src1h, src2l, src2h, destl, desth
+	nand \src1l, \src2l, \destl
+	nand \src1h, \src2h, \desth
+.endm
+
+.macro norl src1l, src1h, src2l, src2h, destl, desth
+	nor \src1l, \src2l, \destl
+	nor \src1h, \src2h, \desth
+.endm
+
+.macro andl src1l, src1h, src2l, src2h, destl, desth
+	and \src1l, \src2l, \destl
+	and \src1h, \src2h, \desth
+.endm
+.macro orl src1l, src1h, src2l, src2h, destl, desth
+	or \src1l, \src2l, \destl
+	or \src1h, \src2h, \desth
+.endm
+.macro xorl src1l, src1h, src2l, src2h, destl, desth
+	xor \src1l, \src2l, \destl
+	xor \src1h, \src2h, \desth
+.endm
+.macro xnorl src1l, src1h, src2l, src2h, destl, desth
+	xnor \src1l, \src2l, \destl
+	xnor \src1h, \src2h, \desth
+.endm
+
+.macro notl srcl, srch, destl, desth
+	not \srcl, \destl
+	not \srch, \desth
+.endm
