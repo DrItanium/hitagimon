@@ -248,3 +248,26 @@ DeclareSegment 0, 0, \addr, 0x204000fb
 .endm
 # @todo implement more cmpxtesty operations
 # @todo implement more compare with zero and branch instructions
+
+.macro rangecmpo bottom, value, top
+	cmpo \value, \bottom
+	concmpo \value, \top
+.endm
+
+.macro rangecmpi bottom, value, top
+	cmpi \value, \bottom
+	concmpi \value, \top
+.endm
+
+# riscv version of being able to add a register to an immediate offset
+.macro addimmo imm, src, dest
+	lda \imm(\src), \dest
+.endm
+
+.macro next_instruction_address dest
+	lda 0(ip), \dest
+.endm
+
+.macro this_instruction_address dest
+	lda -8(ip), \dest
+.endm
