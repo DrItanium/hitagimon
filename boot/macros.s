@@ -211,3 +211,40 @@ DeclareSegment 0, 0, \addr, 0x204000fb
 .macro subli src1l, src1h, src2l, src2h, destl, desth
 	sublo \src1l, \src1h, \src2l, \src2h, \destl, \desth
 .endm
+
+.macro cmpytestx cmpKind, testKind, src1, src2, dest
+	cmp\()\cmpKind \src1, \src2
+	test\()\testKind \dest
+.endm
+
+.macro cmpotestx testKind, src1, src2, dest
+	cmpytestx o, \testKind, \src1, \src2, \dest
+.endm
+
+.macro cmpitestx testKind, src1, src2, dest
+	cmpytestx i, \testKind, \src1, \src2, \dest
+.endm
+
+.macro cmpotestl src1, src2, dest
+	cmpotestx l, \src1, \src2, \dest
+.endm
+
+.macro cmpitestl src1, src2, dest
+	cmpitestx l, \src1, \src2, \dest
+.endm
+.macro cmpoteste src1, src2, dest
+	cmpotestx e, \src1, \src2, \dest
+.endm
+
+.macro cmpiteste src1, src2, dest
+	cmpitestx e, \src1, \src2, \dest
+.endm
+.macro cmpotestne src1, src2, dest
+	cmpotestx ne, \src1, \src2, \dest
+.endm
+
+.macro cmpitestne src1, src2, dest
+	cmpitestx ne, \src1, \src2, \dest
+.endm
+# @todo implement more cmpxtesty operations
+# @todo implement more compare with zero and branch instructions
