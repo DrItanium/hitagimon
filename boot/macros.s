@@ -178,3 +178,11 @@ DeclareSegment 0, 0, \addr, 0x204000fb
 	not \srcl, \destl
 	not \srch, \desth
 .endm
+
+.macro set_carry_flag
+    cmpo 0, 0 # do not clear the carry flag but set it instead
+.endm
+
+.macro clear_carry_flag
+	cmpo 1, 0 # clear the carry flag
+.endm
