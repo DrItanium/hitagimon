@@ -186,3 +186,28 @@ DeclareSegment 0, 0, \addr, 0x204000fb
 .macro clear_carry_flag
 	cmpo 1, 0 # clear the carry flag
 .endm
+
+.macro addlo src1l, src1h, src2l, src2h, destl, desth
+	clear_carry_flag
+	addc \src1l, \src2l, \destl
+	addc \src1h, \src2h, \desth
+.endm
+
+.macro addli src1l, src1h, src2l, src2h, destl, desth
+	addlo \src1l, \src1h, \src2l, \src2h, \destl, \desth
+.endm
+
+#    cmpo 0, 0 # do not clear the carry flag but set it instead
+#    subc g2, g0, g0 # start at the lower half and move up
+#    subc g3, g1, g1 # Now to the upper part
+
+
+.macro sublo src1l, src1h, src2l, src2h, destl, desth
+	set_carry_flag
+	subc \src2l, \src1l, \destl
+	subc \src2h, \src1h, \desth
+.endm
+
+.macro subli src1l, src1h, src2l, src2h, destl, desth
+	sublo \src1l, \src1h, \src2l, \src2h, \destl, \desth
+.endm
