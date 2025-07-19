@@ -116,3 +116,23 @@ DeclareSegment 0, 0, \addr, 0x204000fb
     restore_globals
     ret
 .endm
+
+# branch if most significant bit clear
+.macro bmsbc src, dest
+	bbc 31, \src, \dest
+.endm
+
+# branch if most significant bit set
+.macro bmsbs src, dest
+	bbs 31, \src, \dest
+.endm
+
+# branch if least significant bit clear
+.macro blsbc src, dest
+	bbc 0, \src, \dest
+.endm
+
+# branch if least significant bit set
+.macro blsbs src, dest
+	bbs 0, \src, \dest
+.endm
