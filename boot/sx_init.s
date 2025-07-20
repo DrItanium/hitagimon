@@ -209,6 +209,67 @@ prcb_ptr:
     .space 48 # 80 - resumption record
     .space 44 # 128 - system  error fault record
 
+
+# below is the fault table for calls to the fault handler.
+# this table is provided because the above table (supervisor table) will allow
+# tracing of trace-fault events (creating an endless loop), whereas this table will
+# not allow tracing of trace-fault events.
+.macro FaultTableEntry name
+DefTableEntry _user_\()\name\()_core
+.endm
+    .align 6
+fault_proc_table:
+    .word 0 # Reserved
+    .word 0 # Reserved
+    .word 0 # Reserved
+    .word _sup_stack # Supervisor stack pointer
+    .word 0 # Preserved
+    .word 0 # Preserved
+    .word 0 # Preserved
+    .word 0 # Preserved
+    .word 0 # Preserved
+    .word 0 # Preserved
+    .word 0 # Preserved
+    .word 0 # Preserved
+    FaultTableEntry override # entry 0
+    FaultTableEntry trace
+    FaultTableEntry operation
+    FaultTableEntry arithmetic
+    FaultTableEntry floating_point
+    FaultTableEntry constraint
+    FaultTableEntry virtual_memory
+    FaultTableEntry protection
+    FaultTableEntry machine
+    FaultTableEntry structural
+    FaultTableEntry type
+    FaultTableEntry process # process
+    FaultTableEntry descriptor
+    FaultTableEntry event
+    FaultTableEntry reserved
+.macro DefFaultDispatcher name
+.text
+_user_\()\name\()_core:
+	lda	-48(fp), g0	/* pass fault data as the first argument */
+	callx _user_\()\name
+	ret
+.endm
+# We pass the fault data by grabbing it and passing it via g0 to the function itself
+DefFaultDispatcher override
+DefFaultDispatcher trace
+DefFaultDispatcher operation
+DefFaultDispatcher arithmetic
+DefFaultDispatcher floating_point
+DefFaultDispatcher constraint
+DefFaultDispatcher protection
+DefFaultDispatcher machine
+DefFaultDispatcher type
+DefFaultDispatcher virtual_memory
+DefFaultDispatcher structural
+DefFaultDispatcher process
+DefFaultDispatcher descriptor
+DefFaultDispatcher event
+DefFaultDispatcher reserved
+
 # the system procedure table will _only_ be used if the user make a supervisor procedure call
     .align 6
 
@@ -315,66 +376,6 @@ sys_proc_table:
 	.word 0, 0 # 256-259
 	#.word	(_console_io + 0x2)	# Calls 0 - console I/O routines
 # up to a total of 260 entries
-
-# below is the fault table for calls to the fault handler.
-# this table is provided because the above table (supervisor table) will allow
-# tracing of trace-fault events (creating an endless loop), whereas this table will
-# not allow tracing of trace-fault events.
-.macro FaultTableEntry name
-DefTableEntry _user_\()\name\()_core
-.endm
-    .align 6
-fault_proc_table:
-    .word 0 # Reserved
-    .word 0 # Reserved
-    .word 0 # Reserved
-    .word _sup_stack # Supervisor stack pointer
-    .word 0 # Preserved
-    .word 0 # Preserved
-    .word 0 # Preserved
-    .word 0 # Preserved
-    .word 0 # Preserved
-    .word 0 # Preserved
-    .word 0 # Preserved
-    .word 0 # Preserved
-    FaultTableEntry override # entry 0
-    FaultTableEntry trace
-    FaultTableEntry operation
-    FaultTableEntry arithmetic
-    FaultTableEntry floating_point
-    FaultTableEntry constraint
-    FaultTableEntry virtual_memory
-    FaultTableEntry protection
-    FaultTableEntry machine
-    FaultTableEntry structural
-    FaultTableEntry type
-    FaultTableEntry process # process
-    FaultTableEntry descriptor
-    FaultTableEntry event
-    FaultTableEntry reserved
-.macro DefFaultDispatcher name
-.text
-_user_\()\name\()_core:
-	lda	-48(fp), g0	/* pass fault data as the first argument */
-	callx _user_\()\name
-	ret
-.endm
-# We pass the fault data by grabbing it and passing it via g0 to the function itself
-DefFaultDispatcher override
-DefFaultDispatcher trace
-DefFaultDispatcher operation
-DefFaultDispatcher arithmetic
-DefFaultDispatcher floating_point
-DefFaultDispatcher constraint
-DefFaultDispatcher protection
-DefFaultDispatcher machine
-DefFaultDispatcher type
-DefFaultDispatcher virtual_memory
-DefFaultDispatcher structural
-DefFaultDispatcher process
-DefFaultDispatcher descriptor
-DefFaultDispatcher event
-DefFaultDispatcher reserved
 # reserved entries
 def_system_call 7, _sys_unlink
 #def_system_call 8, _sys_getpid
