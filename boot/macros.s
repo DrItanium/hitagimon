@@ -59,10 +59,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .align 4
 .global _\()\name
 _\()\name:
-lda \index, g13
-calls g13
+.if \index >= 32
+    ldconst \index, r3
+    calls r3
+.else
+    calls \index
+.endif
 ret
 .endm
+
 
 .macro DeclareSegment a, b, c, d
 .word \a

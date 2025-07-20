@@ -100,6 +100,17 @@ add_executable(hitagimon
 		hitagimain.cc
 		start.ld
 )
+
+# Make assembly files depend on macros.s so they get reassembled when macros.s changes
+set_source_files_properties(
+    boot/sx_init.s
+    boot/f_table.s
+    boot/i_handle.s
+    boot/i_table.s
+    PROPERTIES
+    OBJECT_DEPENDS ${CMAKE_SOURCE_DIR}/boot/macros.s
+)
+
 # add the microshell library directly since I get an infinite loop otherwise
 #add_library(microshell
 #        microshell/src/inc/ush.h

@@ -65,23 +65,19 @@ fault, and system procedure tables, and then vectors to a user defined routine. 
     .word 0
     .word -1
  # processor starts execution at this spot upon power-up after self-test.
-.macro print_text name
-ldconst \name, g0
-bal boot_print
-.endm
 .macro transfer_data size,src,dest,offset
 ldconst \size, g0
 ldconst \src, g1
 ldconst \dest, g2
-ldconst \offset, g4
+ldconst \offset, g3
 bal move_data
 .endm
 /* -- Below is a software loop to move data */
 move_data:
-    ldq (g1)[g4*1], g8 # load 4 words into g8
-    stq g8, (g2)[g4*1] # store 4 words into RAM
-    addi g4, 16, g4    # increment index
-    cmpibg g0, g4, move_data # loop until done
+    ldq (g1)[g3*1], g4 # load 4 words into g8
+    stq g4, (g2)[g3*1] # store 4 words into RAM
+    addo g3, 16, g3    # increment index
+    cmpibg g0, g3, move_data # loop until done
     bx (g14)
  start_ip:
     clear_g14
@@ -150,7 +146,7 @@ _init_fp:
 
 setupInterruptHandler:
     # setup the interrupt handlers to work correctly
-    lda 0xff000004, g5
+    ldconst 0xff000004, g5
     # give maximum priority to the interrupt handlers
     ldconst 0xFCFDFEFF, g6 # load the interrupt handler defualt value
     synmov g5, g6
@@ -359,9 +355,8 @@ fault_proc_table:
 .macro DefFaultDispatcher name
 .text
 _user_\()\name\()_core:
-	lda	-48(fp), g0	/* pass fault data */
+	lda	-48(fp), g0	/* pass fault data as the first argument */
 	callx _user_\()\name
-	flushreg
 	ret
 .endm
 # We pass the fault data by grabbing it and passing it via g0 to the function itself
