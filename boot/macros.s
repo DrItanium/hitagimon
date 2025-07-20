@@ -121,3 +121,8 @@ DeclareSegment 0, 0, \addr, 0x204000fb
     restore_globals
     ret
 .endm
+
+# This macro is used to define a no-operation instruction and uses pfp by default to prevent scoreboard issues
+.macro nop reg=pfp
+    mov \reg, \reg
+.endm
