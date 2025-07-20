@@ -27,9 +27,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
 #include <cortex/IODevice.h>
-
+#include <paths.h>
+FILE devZero;
 extern "C"
 int
 hitagi_open (char* file, int flags, int mode) {
+    // support the /dev/zero file
+    // support the /dev/null file
     return -1;
 }
