@@ -26,6 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <unistd.h>
 #include <errno.h>
 #include <sys/stat.h>
+#include <cortex/IODevice.h>
 
 extern "C"
 int hitagi_access(const char* pathName, int mode) {
@@ -93,14 +94,75 @@ hitagi_link (const char* path1, const char* path2) {
     return -1;
 }
 
+extern "C"
+off_t
+hitagi_lseek(int fd, off_t offset, int whence) {
+    if (fd >= 3) {
+        errno = EBADF;
+        return -1;
+    } else {
+        // builtin files
+        switch (fd) {
+            case STDIN_FILENO:
+                return 0;
+            default:
+                errno = EBADF;
+                return -1;
+        }
+    }
+}
+
+extern "C"
+int
+hitagi_read(int fd, void *buf, size_t sz, int *nread) {
+    *nread = 0;
+    if (fd > 2) {
+        return EBADF;
+    } else {
+        // builtin files
+        switch (fd) {
+            case STDIN_FILENO:
+                *nread = cortex::ChipsetBasicFunctions::Console::read(reinterpret_cast<char *>(buf), sz);
+                return 0;
+            default:
+                return EBADF;
+        }
+    }
+}
+extern "C"
+int
+hitagi_write(int fd, const void *buf, size_t sz, int *nwrite) {
+    *nwrite = 0;
+    if (fd > 2) {
+        // we don't currently support opening files
+        return EBADF;
+    } else {
+        // builtin files
+        switch (fd) {
+            case STDOUT_FILENO:
+            case STDERR_FILENO:
+                *nwrite = cortex::ChipsetBasicFunctions::Console::write(reinterpret_cast<char *>(const_cast<void *>(buf)), sz);
+                break;
+            default:
+                return EBADF;
+        }
+        return 0;
+    }
+}
+
+
 
 // Linkage for the system calls that are used by the C library
+extern "C" int _sys_read(int fd, void* buf, size_t sz, int* nread);
+extern "C" int _sys_write(int fd, const void* buf, size_t sz, int* nwrite);
+extern "C" off_t _sys_lseek(int fd, off_t offset, int whence);
 extern "C" int _sys_open(const char* pathName, int flags, int mode);
 extern "C" int _sys_access(const char*, int);
 extern "C" int _sys_unlink(const char* path);
 extern "C" int _sys_fstat(int file, struct stat* st);
 extern "C" int _sys_link(const char* path1, const char* path2);
 extern "C" int _sys_isatty(int file);
+extern "C" int _sys_close(int fd);
 
 extern "C" int access(const char* pathName, int mode) { return _sys_access(pathName, mode); }
 extern "C" int unlink(const char* path) { return _sys_unlink(path); }
@@ -108,4 +170,24 @@ extern "C" int open(const char* pathName, int flags, int mode) { return _sys_ope
 extern "C" int fstat(int file, struct stat* st) { return _sys_fstat(file, st); }
 extern "C" int link(const char* path1, const char* path2) { return _sys_link(path1, path2); }
 extern "C" int isatty(int file) { return _sys_isatty(file); }
+extern "C" off_t lseek(int fd, off_t offset, int whence) { return _sys_lseek(fd, offset, whence); }
+extern "C" int read(int fd, void* buf, size_t sz) {
+    int nread = 0;
+    int r = _sys_read(fd, buf, sz, &nread);
+    if (r != 0) {
+        errno = r;
+        return -1;
+    }
+    return nread;
+}
 
+extern "C" int write(int fd, const void* buf, size_t sz) {
+    int nwrite = 0;
+    int r = _sys_write(fd, buf, sz, &nwrite);
+    if (r != 0) {
+        errno = r;
+        return -1;
+    }
+    return nwrite;
+}
+extern "C" int close(int fd) { return _sys_close(fd); }

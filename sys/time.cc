@@ -70,8 +70,8 @@ hitagi_gettimeofday(struct timeval* tv, void*) {
 }
 
 extern "C" int _sys_getrusage(int who, struct rusage*);
-extern "C" int getrusage(int who, struct rusage* usage) { return _sys_getrusage(who, usage); }
 extern "C" int _sys_gettimeofday(struct timeval*, void*);
-extern "C" int gettimeofday(struct timeval* tv, void* tz) { return _sys_gettimeofday(tv, tz); }
 extern "C" int _sys_setitimer(int which, const struct itimerval* newValue, struct itimerval* oldValue);
+extern "C" int getrusage(int who, struct rusage* usage) { return _sys_getrusage(who, usage); }
+extern "C" int gettimeofday(struct timeval* tv, void* tz) { return _sys_gettimeofday(tv, tz); }
 extern "C" int setitimer(int which, const struct itimerval* newValue, struct itimerval* oldValue) { return _sys_setitimer(which, newValue, oldValue); }

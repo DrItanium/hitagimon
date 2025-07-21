@@ -31,13 +31,10 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 add_library(hitagisys
 		# disabled entries are because mon960 provides the implementations for them
-		sys/lseek.cc
-		sys/write.cc
-		sys/read.cc
+        sys/brk.cc
         sys/kill.cc
         sys/getpid.cc
 		sys/_exit.cc
-        sys/unlink.cc
         sys/time.cc
         sys/filesystem.cc)
 add_library(hitagicortex

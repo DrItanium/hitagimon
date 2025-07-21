@@ -33,7 +33,7 @@ static char* heapEnd = 0;
 
 extern "C"
 void*
-sbrk(intptr_t increment) {
+hitagi_sbrk(intptr_t increment) {
     if (heapEnd == 0) {
         heapEnd = reinterpret_cast<char*>(&end);
     }
@@ -45,11 +45,5 @@ sbrk(intptr_t increment) {
 
 
 
-
-
-
-
-
-
-
-
+extern "C" void* _sys_sbrk(intptr_t increment);
+extern "C" void* sbrk(intptr_t increment) { return _sys_sbrk(increment); }

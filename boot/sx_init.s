@@ -533,14 +533,6 @@ sys_proc_table:
 	ReservedTableEntry # 240
 	ReservedTableEntry # 241
 	ReservedTableEntry # 242
-	ReservedTableEntry # 243
-	ReservedTableEntry # 244
-	ReservedTableEntry # 245
-	ReservedTableEntry # 246
-	ReservedTableEntry # 247
-	#ReservedTableEntry # _hitagi_getpid
-	#ReservedTableEntry # _hitagi_fstat
-	#ReservedTableEntry # sbrk
 	#ReservedTableEntry #_hitagi_argvlen
 	#ReservedTableEntry # _hitagi_argv
 	#ReservedTableEntry # _hitagi_chdir
@@ -548,13 +540,15 @@ sys_proc_table:
     #ReservedTableEntry # _hitagi_chmod
     #ReservedTableEntry # _hitagi_utime
     #ReservedTableEntry # _hitagi_time
-    #DefTableEntry _hitagi_gettimeofday
-    #DefTableEntry _hitagi_setitimer
-    #DefTableEntry _hitagi_getrusage
     #DefTableEntry _hitagi_access
     #DefTableEntry _hitagi_isatty # 23
-	ReservedTableEntry # 248
-	ReservedTableEntry # 249
+	DefTableEntry _hitagi_access # 243
+	DefTableEntry _hitagi_link # 244
+	DefTableEntry _hitagi_isatty # 245
+	DefTableEntry _hitagi_setitimer # 246
+	DefTableEntry _hitagi_gettimeofday # 247
+    DefTableEntry _hitagi_getrusage # 248
+	DefTableEntry _hitagi_sbrk # 249
 	DefTableEntry _hitagi_fstat # 250
 	DefTableEntry _hitagi_getpid # 251
 	DefTableEntry _hitagi_unlink # 252
@@ -567,8 +561,6 @@ sys_proc_table:
 	DefTableEntry _hitagi_exit # 259
 # up to a total of 260 entries
 # reserved entries
-#def_system_call 10, _sys_fstat
-#def_system_call 11, _sys_sbrk
 #def_system_call 12, _sys_argvlen
 #def_system_call 13, _sys_argv
 #def_system_call 14, _sys_chdir
@@ -576,11 +568,13 @@ sys_proc_table:
 #def_system_call 16, _sys_chmod
 #def_system_call 17, _sys_utime
 #def_system_call 18, _sys_time
-#def_system_call 19, _sys_gettimeofday
-#def_system_call 20, _sys_setitimer
-#def_system_call 21, _sys_getrusage
-#def_system_call 22, _sys_access
-#def_system_call 23, isatty # 23
+def_system_call 243, _sys_access
+def_system_call 244, _sys_link
+def_system_call 245, _sys_isatty
+def_system_call 246, _sys_setitimer
+def_system_call 247, _sys_gettimeofday
+def_system_call 248, _sys_getrusage
+def_system_call 249, _sys_sbrk
 def_system_call 250, _sys_fstat
 def_system_call 251, _sys_getpid
 def_system_call 252, _sys_unlink
