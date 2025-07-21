@@ -289,8 +289,13 @@ sys_proc_table:
     .word 0 # Preserved
 # up to 260 entries!
     # example entry
-	.word 0, 0, 0, 0 # 0-3
-	.word 0, 0, 0    # 4-6
+	ReservedTableEntry # 0
+	ReservedTableEntry # 1
+	ReservedTableEntry # 2
+	ReservedTableEntry # 3
+	ReservedTableEntry # 4
+	ReservedTableEntry # 5
+	ReservedTableEntry # 6
 	DefTableEntry _hitagi_unlink
 	ReservedTableEntry # _hitagi_getpid
 	ReservedTableEntry # _hitagi_kill
@@ -306,75 +311,245 @@ sys_proc_table:
     DefTableEntry _hitagi_gettimeofday
     DefTableEntry _hitagi_setitimer
     DefTableEntry _hitagi_getrusage
-	.word 0, 0 # 22-23
-	.word 0, 0, 0, 0 # 24-27
-	.word 0, 0, 0, 0 # 28-31
-	.word 0, 0, 0, 0 # 32-35
-	.word 0, 0, 0, 0 # 36-39
-	.word 0, 0, 0, 0 # 40-43
-	.word 0, 0, 0, 0 # 44-47
-	.word 0, 0, 0, 0 # 48-51
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
-	.word 0, 0, 0, 0 # 4-7
+    DefTableEntry _hitagi_access
+    ReservedTableEntry # 23
+    ReservedTableEntry # 24
+    ReservedTableEntry # 25
+    ReservedTableEntry # 26
+    ReservedTableEntry # 27
+    ReservedTableEntry # 28
+    ReservedTableEntry # 29
+    ReservedTableEntry # 30
+    ReservedTableEntry # 31
+    ReservedTableEntry # 32
+    ReservedTableEntry # 33
+    ReservedTableEntry # 34
+    ReservedTableEntry # 35
+    ReservedTableEntry # 36
+    ReservedTableEntry # 37
+    ReservedTableEntry # 38
+    ReservedTableEntry # 39
+    ReservedTableEntry # 40
+    ReservedTableEntry # 41
+    ReservedTableEntry # 42
+    ReservedTableEntry # 43
+    ReservedTableEntry # 44
+    ReservedTableEntry # 45
+    ReservedTableEntry # 46
+    ReservedTableEntry # 47
+    ReservedTableEntry # 48
+    ReservedTableEntry # 49
+    ReservedTableEntry # 50
+    ReservedTableEntry # 51
+    ReservedTableEntry # 52
+    ReservedTableEntry # 53
+    ReservedTableEntry # 54
+    ReservedTableEntry # 55
+    ReservedTableEntry # 56
+    ReservedTableEntry # 57
+    ReservedTableEntry # 58
+    ReservedTableEntry # 59
+    ReservedTableEntry # 60
+    ReservedTableEntry # 61
+    ReservedTableEntry # 62
+    ReservedTableEntry # 63
+    ReservedTableEntry # 64
+    ReservedTableEntry # 65
+    ReservedTableEntry # 66
+    ReservedTableEntry # 67
+    ReservedTableEntry # 68
+    ReservedTableEntry # 69
+    ReservedTableEntry # 70
+    ReservedTableEntry # 71
+    ReservedTableEntry # 72
+    ReservedTableEntry # 73
+    ReservedTableEntry # 74
+    ReservedTableEntry # 75
+    ReservedTableEntry # 76
+    ReservedTableEntry # 77
+    ReservedTableEntry # 78
+    ReservedTableEntry # 79
+    ReservedTableEntry # 80
+    ReservedTableEntry # 81
+    ReservedTableEntry # 82
+    ReservedTableEntry # 83
+    ReservedTableEntry # 84
+    ReservedTableEntry # 85
+    ReservedTableEntry # 86
+    ReservedTableEntry # 87
+    ReservedTableEntry # 88
+    ReservedTableEntry # 89
+    ReservedTableEntry # 90
+    ReservedTableEntry # 91
+    ReservedTableEntry # 92
+    ReservedTableEntry # 93
+    ReservedTableEntry # 94
+    ReservedTableEntry # 95
+    ReservedTableEntry # 96
+    ReservedTableEntry # 97
+    ReservedTableEntry # 98
+    ReservedTableEntry # 99
+    ReservedTableEntry # 100
+    ReservedTableEntry # 101
+    ReservedTableEntry # 102
+    ReservedTableEntry # 103
+    ReservedTableEntry # 104
+    ReservedTableEntry # 105
+    ReservedTableEntry # 106
+    ReservedTableEntry # 107
+    ReservedTableEntry # 108
+    ReservedTableEntry # 109
+    ReservedTableEntry # 110
+    ReservedTableEntry # 111
+    ReservedTableEntry # 112
+    ReservedTableEntry # 113
+    ReservedTableEntry # 114
+    ReservedTableEntry # 115
+    ReservedTableEntry # 116
+    ReservedTableEntry # 117
+    ReservedTableEntry # 118
+    ReservedTableEntry # 119
+    ReservedTableEntry # 120
+    ReservedTableEntry # 121
+    ReservedTableEntry # 122
+    ReservedTableEntry # 123
+    ReservedTableEntry # 124
+    ReservedTableEntry # 125
+    ReservedTableEntry # 126
+    ReservedTableEntry # 127
+    ReservedTableEntry # 128
+    ReservedTableEntry # 129
+    ReservedTableEntry # 130
+    ReservedTableEntry # 131
+    ReservedTableEntry # 132
+    ReservedTableEntry # 133
+    ReservedTableEntry # 134
+    ReservedTableEntry # 135
+    ReservedTableEntry # 136
+    ReservedTableEntry # 137
+    ReservedTableEntry # 138
+    ReservedTableEntry # 139
+    ReservedTableEntry # 140
+    ReservedTableEntry # 141
+    ReservedTableEntry # 142
+    ReservedTableEntry # 143
+    ReservedTableEntry # 144
+    ReservedTableEntry # 145
+    ReservedTableEntry # 146
+    ReservedTableEntry # 147
+    ReservedTableEntry # 148
+    ReservedTableEntry # 149
+    ReservedTableEntry # 150
+    ReservedTableEntry # 151
+    ReservedTableEntry # 152
+    ReservedTableEntry # 153
+    ReservedTableEntry # 154
+    ReservedTableEntry # 155
+    ReservedTableEntry # 156
+    ReservedTableEntry # 157
+    ReservedTableEntry # 158
+    ReservedTableEntry # 159
+    ReservedTableEntry # 160
+    ReservedTableEntry # 161
+    ReservedTableEntry # 162
+    ReservedTableEntry # 163
+    ReservedTableEntry # 164
+    ReservedTableEntry # 165
+    ReservedTableEntry # 166
+    ReservedTableEntry # 167
+    ReservedTableEntry # 168
+    ReservedTableEntry # 169
+    ReservedTableEntry # 170
+    ReservedTableEntry # 171
+    ReservedTableEntry # 172
+    ReservedTableEntry # 173
+    ReservedTableEntry # 174
+    ReservedTableEntry # 175
+    ReservedTableEntry # 176
+    ReservedTableEntry # 177
+    ReservedTableEntry # 178
+    ReservedTableEntry # 179
+    ReservedTableEntry # 180
+    ReservedTableEntry # 181
+    ReservedTableEntry # 182
+    ReservedTableEntry # 183
+    ReservedTableEntry # 184
+    ReservedTableEntry # 185
+    ReservedTableEntry # 186
+    ReservedTableEntry # 187
+    ReservedTableEntry # 188
+    ReservedTableEntry # 189
+    ReservedTableEntry # 190
+    ReservedTableEntry # 191
+    ReservedTableEntry # 192
+    ReservedTableEntry # 193
+    ReservedTableEntry # 194
+    ReservedTableEntry # 195
+    ReservedTableEntry # 196
+    ReservedTableEntry # 197
+    ReservedTableEntry # 198
+    ReservedTableEntry # 199
+    ReservedTableEntry # 200
+    ReservedTableEntry # 201
+    ReservedTableEntry # 202
+    ReservedTableEntry # 203
+    ReservedTableEntry # 204
+    ReservedTableEntry # 205
+    ReservedTableEntry # 206
+    ReservedTableEntry # 207
+    ReservedTableEntry # 208
+    ReservedTableEntry # 209
+    ReservedTableEntry # 210
+    ReservedTableEntry # 211
+    ReservedTableEntry # 212
+    ReservedTableEntry # 213
+    ReservedTableEntry # 214
+    ReservedTableEntry # 215
+    ReservedTableEntry # 216
+    ReservedTableEntry # 217
+    ReservedTableEntry # 218
+    ReservedTableEntry # 219
+    ReservedTableEntry # 220
+    ReservedTableEntry # 221
+    ReservedTableEntry # 222
+    ReservedTableEntry # 223
+    ReservedTableEntry # 224
+    ReservedTableEntry # 225
+    ReservedTableEntry # 226
+    ReservedTableEntry # 227
 	# mon960 registrations
-	.word 0, 0
-	DefTableEntry _hitagi_open
-	DefTableEntry _hitagi_read
-	DefTableEntry _hitagi_write
-	DefTableEntry _hitagi_lseek
-	DefTableEntry _hitagi_close
-	.word 0
-	.word 0, 0, 0, 0 # 236-239
-	.word 0, 0, 0, 0 # 240-243
-	.word 0, 0, 0, 0 # 244-247
-	.word 0, 0, 0, 0 # 248-251
-	.word 0, 0, 0, 0 # 252-255
-	.word 0
-	DefTableEntry _hitagi_exit
-	.word 0, 0 # 256-259
-	#.word	(_console_io + 0x2)	# Calls 0 - console I/O routines
+	ReservedTableEntry  # 228
+	ReservedTableEntry  # 229
+	DefTableEntry _hitagi_open # 230
+	DefTableEntry _hitagi_read # 231
+	DefTableEntry _hitagi_write # 232
+	DefTableEntry _hitagi_lseek # 233
+	DefTableEntry _hitagi_close # 234
+	ReservedTableEntry # 235
+	ReservedTableEntry # 236
+	ReservedTableEntry # 237
+	ReservedTableEntry # 238
+	ReservedTableEntry # 239
+	ReservedTableEntry # 240
+	ReservedTableEntry # 241
+	ReservedTableEntry # 242
+	ReservedTableEntry # 243
+	ReservedTableEntry # 244
+	ReservedTableEntry # 245
+	ReservedTableEntry # 246
+	ReservedTableEntry # 247
+	ReservedTableEntry # 248
+	ReservedTableEntry # 249
+	ReservedTableEntry # 250
+	ReservedTableEntry # 251
+	ReservedTableEntry # 252
+	ReservedTableEntry # 253
+	ReservedTableEntry # 254
+	ReservedTableEntry # 255
+	ReservedTableEntry # 256
+	DefTableEntry _hitagi_exit # 257
+	ReservedTableEntry # 258
+	ReservedTableEntry # 259
 # up to a total of 260 entries
 # reserved entries
 def_system_call 7, _sys_unlink
@@ -392,6 +567,7 @@ def_system_call 7, _sys_unlink
 def_system_call 19, _sys_gettimeofday
 def_system_call 20, _sys_setitimer
 def_system_call 21, _sys_getrusage
+def_system_call 22, _sys_access
 
 /* -- define RAM area to copy the PRCB and interrupt table
  *    to after initial bootup from EPROM/FLASH
