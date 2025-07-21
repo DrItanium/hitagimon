@@ -72,7 +72,5 @@ hitagi_isatty(int file) {
     return file < 3;
 }
 // Linkage for the system calls that are used by the C library
-extern "C" int _sys_isatty(int);
 extern "C" int _sys_access(const char*, int);
 extern "C" int access(const char* pathName, int mode) { return _sys_access(pathName, mode); }
-extern "C" int isatty (int file) { return _sys_isatty(file); }

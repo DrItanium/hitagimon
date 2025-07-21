@@ -2049,6 +2049,9 @@ namespace microshell {
 int main(void) {
     init();
     setup();
+    if (isatty(STDOUT_FILENO)) {
+        printf("STDOUT is a terminal\n");
+    }
     for (;; ) {
         loop();
     }

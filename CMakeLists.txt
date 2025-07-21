@@ -113,12 +113,11 @@ target_link_libraries(hitagimon
 		hitagiemul
         microshell
 		tinyscheme
-		mon960
 		stdc++
 		c
 		m
 		gcc # necessary for soft float support, will need to provide my own custom routines ahead of this point to access the fpu
-		mon960
+		#mon960
 		hitagicortex
 		)
 
