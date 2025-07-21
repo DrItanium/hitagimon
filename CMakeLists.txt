@@ -40,8 +40,7 @@ add_library(hitagisys
 		sys/open.cc
 		#sys/kill.cc
         sys/close.cc
-		sys/gettimeofday.cc
-		sys/access.cc
+        sys/access.cc
 		#sys/getpid.cc
 		sys/_exit.cc
 		sys/link.cc

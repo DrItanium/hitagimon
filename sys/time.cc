@@ -22,16 +22,16 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-extern "C" {
 #include <sys/time.h>
-#include <sys/resource.h>
+extern "C" {
+    #include <sys/resource.h>
 }
+#include <stdint.h>
 #include <cortex/SystemCounter.h>
 #include <cortex/IODevice.h>
 
 extern "C" int _sys_getrusage(int who, struct rusage*);
-extern "C"
-int
+extern "C" int
 getrusage(int who, struct rusage* usage) {
     return _sys_getrusage(who, usage);
 }
@@ -61,5 +61,15 @@ extern "C"
 int
 hitagi_setitimer(int which, const struct itimerval* newValue, struct itimerval* oldValue) {
     /// @todo use arduino timers to satisfy this, we use the interrupts to trigger timers
+    return 0;
+}
+
+extern "C"
+int
+hitagi_gettimeofday(struct timeval* tv, void*) {
+    // read the unix time from the rtc connected to the microcontroller
+    uint32_t theTime = cortex::ChipsetBasicFunctions::Timer::unixtime();
+    tv->tv_sec = theTime;
+    tv->tv_usec = theTime * 1000000;
     return 0;
 }
