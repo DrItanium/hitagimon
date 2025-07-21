@@ -37,7 +37,7 @@ add_library(hitagisys
         sys/kill.cc
         sys/getpid.cc
 		sys/_exit.cc
-        sys/unlink.cc sys/linkage.cc
+        sys/unlink.cc
         sys/time.cc
         sys/filesystem.cc)
 add_library(hitagicortex
