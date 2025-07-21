@@ -186,3 +186,58 @@ _modify32:
     # g2 -> mask
     modify g2, g1, g0
     ret
+
+
+
+.global _cos
+_cos:
+    cosrl g0, g0
+    ret
+
+.global _sin
+_sin:
+    sinrl g0, g0
+    ret
+
+.global _tan
+_tan:
+    tanrl g0, g0
+    ret
+
+.global _sqrt
+_sqrt:
+    sqrtrl g0, g0
+    ret
+
+.global _cosf
+_cosf:
+    cosr g0, g0
+    ret
+
+.global _sinf
+_sinf:
+    sinr g0, g0
+    ret
+
+.global _tanf
+_tanf:
+    tanr g0, g0
+    ret
+
+.global _sqrtf
+_sqrtf:
+    sqrtr g0, g0
+    ret
+
+.global _atan2
+_atan2:
+    # g0 -> y
+    # g1 -> x
+    atanrl g2, g0, g0
+    ret
+.global _atan2f
+_atan2f:
+    # g0 -> y
+    # g1 -> x
+    atanr g2, g0, g0
+    ret

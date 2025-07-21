@@ -590,14 +590,3 @@ def_system_call 259, _exit
  .bss _sup_stack,  0x8000, 6
  .bss intr_ram, 1028, 6
  .bss _prcb_ram, 176, 6
-
-.text
-.global _cos
-_cos:
-    cosrl g0, g0
-    ret
-
-.global _sin
-_sin:
-    sinrl g0, g0
-    ret
