@@ -533,15 +533,11 @@ sys_proc_table:
 	ReservedTableEntry # 240
 	ReservedTableEntry # 241
 	ReservedTableEntry # 242
-	#ReservedTableEntry #_hitagi_argvlen
-	#ReservedTableEntry # _hitagi_argv
 	#ReservedTableEntry # _hitagi_chdir
 	#ReservedTableEntry # _hitagi_stat
     #ReservedTableEntry # _hitagi_chmod
     #ReservedTableEntry # _hitagi_utime
     #ReservedTableEntry # _hitagi_time
-    #DefTableEntry _hitagi_access
-    #DefTableEntry _hitagi_isatty # 23
 	DefTableEntry _hitagi_access # 243
 	DefTableEntry _hitagi_link # 244
 	DefTableEntry _hitagi_isatty # 245
@@ -594,3 +590,14 @@ def_system_call 259, _exit
  .bss _sup_stack,  0x8000, 6
  .bss intr_ram, 1028, 6
  .bss _prcb_ram, 176, 6
+
+.text
+.global _cos
+_cos:
+    cosrl g0, g0
+    ret
+
+.global _sin
+_sin:
+    sinrl g0, g0
+    ret

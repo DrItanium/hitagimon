@@ -18,6 +18,7 @@ extern "C" {
 #include <sys/resource.h>
 #include <stdio.h>
 #include <microshell.h>
+#include <math.h>
 }
 /* 'Uncomment' the line below to run   */
 /* with 'register double' variables    */
@@ -2045,13 +2046,10 @@ namespace microshell {
     }
 }
 
-//char* argv[] = { "hitagimon", };
 int main(void) {
     init();
     setup();
-    if (isatty(STDOUT_FILENO)) {
-        printf("STDOUT is a terminal\n");
-    }
+    printf("%f\n", cos(128.0));
     for (;; ) {
         loop();
     }
