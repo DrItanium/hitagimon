@@ -34,8 +34,8 @@ add_library(hitagisys
 		sys/lseek.cc
 		sys/write.cc
 		sys/read.cc
-        #sys/kill.cc
-        #sys/getpid.cc
+        sys/kill.cc
+        sys/getpid.cc
 		sys/_exit.cc
         sys/unlink.cc sys/linkage.cc
         sys/time.cc
