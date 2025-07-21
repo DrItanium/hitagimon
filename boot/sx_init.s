@@ -312,7 +312,7 @@ sys_proc_table:
     DefTableEntry _hitagi_setitimer
     DefTableEntry _hitagi_getrusage
     DefTableEntry _hitagi_access
-    ReservedTableEntry # 23
+    DefTableEntry _hitagi_isatty # 23
     ReservedTableEntry # 24
     ReservedTableEntry # 25
     ReservedTableEntry # 26
@@ -568,6 +568,7 @@ def_system_call 19, _sys_gettimeofday
 def_system_call 20, _sys_setitimer
 def_system_call 21, _sys_getrusage
 def_system_call 22, _sys_access
+def_system_call 23, _sys_isatty # 23
 
 /* -- define RAM area to copy the PRCB and interrupt table
  *    to after initial bootup from EPROM/FLASH

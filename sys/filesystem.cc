@@ -25,9 +25,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <unistd.h>
 #include <errno.h>
+#include <sys/stat.h>
 
-extern "C" int _sys_access(const char*, int);
-extern "C" int access(const char* pathName, int mode) { return _sys_access(pathName, mode); }
 extern "C"
 int hitagi_access(const char* pathName, int mode) {
     //printf("access(\"%s\", %d)\n", pathName, mode);
@@ -60,3 +59,20 @@ hitagi_close(int fd) {
         return -1;
     }
 }
+extern "C"
+int
+hitagi_fstat (int file, struct stat* st) {
+    st->st_mode = S_IFCHR;
+    return 0;
+}
+
+extern "C"
+int
+hitagi_isatty(int file) {
+    return file < 3;
+}
+// Linkage for the system calls that are used by the C library
+extern "C" int _sys_isatty(int);
+extern "C" int _sys_access(const char*, int);
+extern "C" int access(const char* pathName, int mode) { return _sys_access(pathName, mode); }
+extern "C" int isatty (int file) { return _sys_isatty(file); }
