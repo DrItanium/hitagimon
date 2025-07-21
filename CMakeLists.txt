@@ -95,13 +95,6 @@ target_include_directories(hitagicortex PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagisys PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagimon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_library(tinyscheme
-	tinyscheme/scheme.h
-	tinyscheme/scheme-private.h
-	tinyscheme/scheme.c
-)
-target_include_directories(tinyscheme PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-
 target_link_libraries(hitagimon
 		gcc
 		c
@@ -110,12 +103,10 @@ target_link_libraries(hitagimon
 		hitagisys
 		hitagiemul
         microshell
-		tinyscheme
 		stdc++
 		c
 		m
 		gcc # necessary for soft float support, will need to provide my own custom routines ahead of this point to access the fpu
-		#mon960
 		hitagicortex
 		)
 
