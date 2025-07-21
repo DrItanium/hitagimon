@@ -2049,7 +2049,6 @@ namespace microshell {
 int main(void) {
     init();
     setup();
-    printf("%f\n", cos(128.0));
     for (;; ) {
         loop();
     }
