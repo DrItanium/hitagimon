@@ -32,3 +32,7 @@ int
 hitagi_getpid() {
     return -1;
 }
+
+// linkage
+extern "C" int _sys_getpid();
+extern "C" int getpid() { return _sys_getpid(); }

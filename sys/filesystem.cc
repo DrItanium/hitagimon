@@ -71,6 +71,41 @@ int
 hitagi_isatty(int file) {
     return file < 3;
 }
+extern "C"
+int
+hitagi_unlink(const char* path) {
+    errno = ENOSYS;
+    return -1;
+}
+
+extern "C"
+int
+hitagi_open (char* file, int flags, int mode) {
+    // support the /dev/zero file
+    // support the /dev/null file
+    return -1;
+}
+
+extern "C"
+int
+hitagi_link (const char* path1, const char* path2) {
+    errno = ENOSYS;
+    return -1;
+}
+
+
 // Linkage for the system calls that are used by the C library
+extern "C" int _sys_open(const char* pathName, int flags, int mode);
 extern "C" int _sys_access(const char*, int);
+extern "C" int _sys_unlink(const char* path);
+extern "C" int _sys_fstat(int file, struct stat* st);
+extern "C" int _sys_link(const char* path1, const char* path2);
+extern "C" int _sys_isatty(int file);
+
 extern "C" int access(const char* pathName, int mode) { return _sys_access(pathName, mode); }
+extern "C" int unlink(const char* path) { return _sys_unlink(path); }
+extern "C" int open(const char* pathName, int flags, int mode) { return _sys_open(pathName, flags, mode); }
+extern "C" int fstat(int file, struct stat* st) { return _sys_fstat(file, st); }
+extern "C" int link(const char* path1, const char* path2) { return _sys_link(path1, path2); }
+extern "C" int isatty(int file) { return _sys_isatty(file); }
+

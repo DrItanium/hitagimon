@@ -34,12 +34,10 @@ add_library(hitagisys
 		sys/lseek.cc
 		sys/write.cc
 		sys/read.cc
-		sys/open.cc
-		#sys/kill.cc
+        #sys/kill.cc
         #sys/getpid.cc
 		sys/_exit.cc
-		sys/link.cc
-		sys/unlink.cc sys/linkage.cc
+        sys/unlink.cc sys/linkage.cc
         sys/time.cc
         sys/filesystem.cc)
 add_library(hitagicortex

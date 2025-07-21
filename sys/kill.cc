@@ -32,3 +32,7 @@ int
 hitagi_kill (int pid, int signal) {
     exit (signal);
 }
+
+// linkage
+extern "C" int _sys_kill (int pid, int signal);
+extern "C" kill (int pid, int signal) { return _sys_kill(pid, signal); }

@@ -296,23 +296,23 @@ sys_proc_table:
 	ReservedTableEntry # 4
 	ReservedTableEntry # 5
 	ReservedTableEntry # 6
-	DefTableEntry _hitagi_unlink
-	ReservedTableEntry # _hitagi_getpid
-	ReservedTableEntry # _hitagi_kill
-	ReservedTableEntry # _hitagi_fstat
-	ReservedTableEntry # sbrk
-	ReservedTableEntry #_hitagi_argvlen
-	ReservedTableEntry # _hitagi_argv
-	ReservedTableEntry # _hitagi_chdir
-	ReservedTableEntry # _hitagi_stat
-    ReservedTableEntry # _hitagi_chmod
-    ReservedTableEntry # _hitagi_utime
-    ReservedTableEntry # _hitagi_time
-    DefTableEntry _hitagi_gettimeofday
-    DefTableEntry _hitagi_setitimer
-    DefTableEntry _hitagi_getrusage
-    DefTableEntry _hitagi_access
-    DefTableEntry _hitagi_isatty # 23
+	ReservedTableEntry # 7
+	ReservedTableEntry # 8
+	ReservedTableEntry # 9
+	ReservedTableEntry # 10
+	ReservedTableEntry # 11
+	ReservedTableEntry # 12
+	ReservedTableEntry # 13
+	ReservedTableEntry # 14
+	ReservedTableEntry # 15
+	ReservedTableEntry # 16
+	ReservedTableEntry # 17
+	ReservedTableEntry # 18
+	ReservedTableEntry # 19
+	ReservedTableEntry # 20
+	ReservedTableEntry # 21
+	ReservedTableEntry # 22
+	ReservedTableEntry # 23
     ReservedTableEntry # 24
     ReservedTableEntry # 25
     ReservedTableEntry # 26
@@ -520,11 +520,11 @@ sys_proc_table:
 	# mon960 registrations
 	ReservedTableEntry  # 228
 	ReservedTableEntry  # 229
-	DefTableEntry _hitagi_open # 230
-	DefTableEntry _hitagi_read # 231
-	DefTableEntry _hitagi_write # 232
-	DefTableEntry _hitagi_lseek # 233
-	DefTableEntry _hitagi_close # 234
+	ReservedTableEntry  # 230
+	ReservedTableEntry  # 231
+	ReservedTableEntry  # 232
+	ReservedTableEntry  # 233
+	ReservedTableEntry  # 234
 	ReservedTableEntry # 235
 	ReservedTableEntry # 236
 	ReservedTableEntry # 237
@@ -538,23 +538,35 @@ sys_proc_table:
 	ReservedTableEntry # 245
 	ReservedTableEntry # 246
 	ReservedTableEntry # 247
+	#ReservedTableEntry # _hitagi_getpid
+	#ReservedTableEntry # _hitagi_fstat
+	#ReservedTableEntry # sbrk
+	#ReservedTableEntry #_hitagi_argvlen
+	#ReservedTableEntry # _hitagi_argv
+	#ReservedTableEntry # _hitagi_chdir
+	#ReservedTableEntry # _hitagi_stat
+    #ReservedTableEntry # _hitagi_chmod
+    #ReservedTableEntry # _hitagi_utime
+    #ReservedTableEntry # _hitagi_time
+    #DefTableEntry _hitagi_gettimeofday
+    #DefTableEntry _hitagi_setitimer
+    #DefTableEntry _hitagi_getrusage
+    #DefTableEntry _hitagi_access
+    #DefTableEntry _hitagi_isatty # 23
 	ReservedTableEntry # 248
 	ReservedTableEntry # 249
-	ReservedTableEntry # 250
-	ReservedTableEntry # 251
-	ReservedTableEntry # 252
-	ReservedTableEntry # 253
-	ReservedTableEntry # 254
-	ReservedTableEntry # 255
-	ReservedTableEntry # 256
-	DefTableEntry _hitagi_exit # 257
-	ReservedTableEntry # 258
-	ReservedTableEntry # 259
+	DefTableEntry _hitagi_fstat # 250
+	DefTableEntry _hitagi_getpid # 251
+	DefTableEntry _hitagi_unlink # 252
+    DefTableEntry _hitagi_kill # 253
+	DefTableEntry _hitagi_open # 254
+	DefTableEntry _hitagi_read # 255
+	DefTableEntry _hitagi_write # 256
+	DefTableEntry _hitagi_lseek # 257
+	DefTableEntry _hitagi_close # 258
+	DefTableEntry _hitagi_exit # 259
 # up to a total of 260 entries
 # reserved entries
-def_system_call 7, _sys_unlink
-#def_system_call 8, _sys_getpid
-#def_system_call 9, _sys_kill
 #def_system_call 10, _sys_fstat
 #def_system_call 11, _sys_sbrk
 #def_system_call 12, _sys_argvlen
@@ -564,11 +576,21 @@ def_system_call 7, _sys_unlink
 #def_system_call 16, _sys_chmod
 #def_system_call 17, _sys_utime
 #def_system_call 18, _sys_time
-def_system_call 19, _sys_gettimeofday
-def_system_call 20, _sys_setitimer
-def_system_call 21, _sys_getrusage
-def_system_call 22, _sys_access
-def_system_call 23, isatty # 23
+#def_system_call 19, _sys_gettimeofday
+#def_system_call 20, _sys_setitimer
+#def_system_call 21, _sys_getrusage
+#def_system_call 22, _sys_access
+#def_system_call 23, isatty # 23
+def_system_call 250, _sys_fstat
+def_system_call 251, _sys_getpid
+def_system_call 252, _sys_unlink
+def_system_call 253, _sys_kill
+def_system_call 254, _sys_open
+def_system_call 255, _sys_read
+def_system_call 256, _sys_write
+def_system_call 257, _sys_lseek
+def_system_call 258, _sys_close
+def_system_call 259, _exit
 
 /* -- define RAM area to copy the PRCB and interrupt table
  *    to after initial bootup from EPROM/FLASH
