@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 // a minor hack to rename the main function, so we can call it from C++
-#define main(ignore) coremark_main(void)
+//#define main(ignore) coremark_main(void)
 
 #define FLAGS_STR "(flags unknown)"
 
@@ -101,7 +101,7 @@ typedef uint8_t  ee_u8;
 typedef uint32_t ee_u32;
 typedef uintptr_t ee_ptr_int;
 typedef size_t ee_size_t;
-#define NULL ((void *)0)
+//#define NULL ((void *)0)
 /* align_mem :
 	This macro is used to align an offset to point to a 32b value. It is used in the Matrix algorithm to initialize the input memory blocks.
 */
@@ -170,7 +170,7 @@ typedef ee_u32 CORE_TICKS;
 	This flag only matters if MULTITHREAD has been defined to a value greater then 1.
 */
 #ifndef MAIN_HAS_NOARGC 
-#define MAIN_HAS_NOARGC 1
+#define MAIN_HAS_NOARGC 0
 #endif
 
 /* Configuration : MAIN_HAS_NORETURN

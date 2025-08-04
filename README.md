@@ -13,4 +13,4 @@ The design of this program is broken up into several components:
 - cortex - Wrapper classes around C library functionality plus anything else that C++ makes easier, it also contains the routines to interface with IO devices
 - reference - NINDY source code reference
 - emulation - Code relating to emulating other platforms
-- coremark - https://github.com/PaulStoffregen/CoreMark
+- coremark - modified version of https://github.com/PaulStoffregen/CoreMark

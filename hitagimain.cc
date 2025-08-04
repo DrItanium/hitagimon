@@ -19,6 +19,8 @@ extern "C" {
 #include <stdio.h>
 #include <microshell.h>
 #include <math.h>
+#include <coremark/coremark.h>
+#include <stdarg.h>
 }
 /* 'Uncomment' the line below to run   */
 /* with 'register double' variables    */
@@ -1080,8 +1082,11 @@ FizzleFade(int w, int h, uint16_t color) noexcept {
     } while (rndval != 1);
 }
 
-
+extern "C" int coremark_main(int argc, char* argv[]);
 namespace microshell {
+    void doCoremark(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        (void)coremark_main(argc, argv);
+    }
     void doGraphicsTest(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         printf("Running graphicstest\n");
         printf("Format: benchmark name:\ttime (usec)\n");
@@ -2031,6 +2036,15 @@ namespace microshell {
             nullptr,
             nullptr,
         },
+        {
+            "coremark",
+            "Run coremark from https://github.com/PaulStoffregen/CoreMark.git",
+            nullptr,
+            doCoremark,
+            nullptr,
+            nullptr,
+            nullptr,
+        },
     };
     void
     setup() {
@@ -2053,4 +2067,15 @@ int main(void) {
         loop();
     }
     return 0;
+}
+
+extern "C" int ee_printf(const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+    int result = vprintf(format, args);
+    va_end(args);
+    return result;
+}
+extern "C" uint32_t Arduino_millis(void) {
+    return millis();
 }

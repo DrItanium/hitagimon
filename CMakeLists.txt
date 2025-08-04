@@ -29,6 +29,16 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+add_library(coremark
+	coremark/core_list_join.c
+	coremark/core_main.c
+	coremark/coremark.h
+	coremark/core_matrix.c
+	coremark/core_portme.c
+	coremark/core_portme.h
+	coremark/core_state.c
+	coremark/core_util.c
+)
 add_library(hitagisys
 		# disabled entries are because mon960 provides the implementations for them
         sys/brk.cc
@@ -91,6 +101,7 @@ target_include_directories(hitagiemul PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagicortex PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagisys PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(hitagimon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(coremark PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(hitagimon
 		gcc
@@ -100,6 +111,7 @@ target_link_libraries(hitagimon
 		hitagisys
 		hitagiemul
         microshell
+		coremark
 		stdc++
 		c
 		m
