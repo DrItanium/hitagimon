@@ -30,7 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *    and store data to that spot. We will take advantage of
  *    the fact that this will be allocated at the first spot on the stack
  */
-		lda 64(sp), sp
+		ldconst 64, r3
+		addo sp, r3, sp
         stq     g0, -64(sp)
         stq     g4, -48(sp)
         stq     g8, -32(sp)
@@ -115,16 +116,9 @@ DeclareSegment 0, 0, \addr, 0x204000fb
 .macro DefInterruptHandler name,toCall
 .global \name
 \name:
-	lda 64(sp), sp
-	movq g0, r4
-	movq g4, r8
-	movq g8, r12
-    stt     g12, -16(sp)
+	save_globals
     c_call _vect_\toCall
-	movq r4, g0
-	movq r8, g4
-	movq r12, g8
-    ldt     -16(sp), g12
+	restore_globals
     ret
 .endm
 
