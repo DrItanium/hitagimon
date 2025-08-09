@@ -142,9 +142,6 @@ _init_fp:
     movre   fp0, fp1
     movre   fp1, fp2
     movre   fp2, fp3
-	# disable the floating point faults since they are not necessary and just cause problems
-	ldconst 0x1F000000, r3
-	modac  r3, r3, r3
     ret
 
 setupInterruptHandler:
@@ -169,7 +166,7 @@ fix_stack:
 
     ldconst 0x1f0002, g0
     st  g0, -16(fp)     # store contrived PC
-    ldconst 0x3b001000, g0  # setup arithmetic controls
+    ldconst 0x3f001000, g0  # setup arithmetic controls (disable all of the faults for floating point)
     st  g0, -12(fp)     # store contrived AC
     ret
 
