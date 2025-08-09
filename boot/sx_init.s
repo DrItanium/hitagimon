@@ -142,6 +142,9 @@ _init_fp:
     movre   fp0, fp1
     movre   fp1, fp2
     movre   fp2, fp3
+	# disable the floating point faults since they are not necessary and just cause problems
+	ldconst 0x1F000000, r3
+	modac  r3, r3, r3
     ret
 
 setupInterruptHandler:
