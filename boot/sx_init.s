@@ -249,6 +249,8 @@ fault_proc_table:
 .macro DefFaultDispatcher name
 .text
 _user_\()\name\()_core:
+	# flushreg may be needed to be used if we want to do work with the stack
+	# currently, this design will trash the global registers
 	lda	-48(fp), g0	/* pass fault data as the first argument */
 	callx _user_\()\name
 	ret
@@ -585,8 +587,9 @@ def_system_call 259, _exit
 /* -- define RAM area to copy the PRCB and interrupt table
  *    to after initial bootup from EPROM/FLASH
  */
- .bss _user_stack, 0x8000, 6
- .bss _intr_stack, 0x8000, 6
- .bss _sup_stack,  0x8000, 6
  .bss intr_ram, 1028, 6
  .bss _prcb_ram, 176, 6
+ .bss _intr_stack, 0x8000, 6
+ .bss _sup_stack,  0x8000, 6
+# put the user stack at the bottom in case it overflows?
+ .bss _user_stack, 0x8000, 6
