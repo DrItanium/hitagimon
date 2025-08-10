@@ -30,8 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *    and store data to that spot. We will take advantage of
  *    the fact that this will be allocated at the first spot on the stack
  */
-		ldconst 64, r3
-		addo sp, r3, sp
+		lda 64(sp), sp
         stq     g0, -64(sp)
         stq     g4, -48(sp)
         stq     g8, -32(sp)
@@ -116,6 +115,7 @@ DeclareSegment 0, 0, \addr, 0x204000fb
 .macro DefInterruptHandler name,toCall
 .global \name
 \name:
+	# if we use the local register frame here then I get strange division problems in flops64
 	save_globals
     c_call _vect_\toCall
 	restore_globals
