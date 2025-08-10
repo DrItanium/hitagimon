@@ -112,22 +112,24 @@ DeclareSegment 0, 0, \address, 0x00fc00a3
 DeclareSegment 0, 0, \addr, 0x204000fb
 .endm
 
+# if we use the local register frame here then I get strange division problems in flops64 but it looks like some
+# sort of bus issue since expanding the fault system changed code alignment.... 0x8060 was the culprit at the time
+# That code was part of the 32-bit flops code so very odd...
 .macro DefInterruptHandler name,toCall
 .global \name
 \name:
-	# if we use the local register frame here then I get strange division problems in flops64
-	#save_globals
 	lda 64(sp), sp
 	movq g0, r4
 	movq g4, r8
 	movq g8, r12
-    stt g12, -16(sp)
+	mov g14, r3
+    stl g12, -16(sp)
     c_call _vect_\toCall
+    ldl -16(sp), g12
+    mov r3, g14
     movq r12, g8
     movq r8, g4
     movq r4, g0
-    ldt -16(sp), g12
-	#restore_globals
     ret
 .endm
 
