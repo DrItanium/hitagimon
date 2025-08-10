@@ -116,9 +116,18 @@ DeclareSegment 0, 0, \addr, 0x204000fb
 .global \name
 \name:
 	# if we use the local register frame here then I get strange division problems in flops64
-	save_globals
+	#save_globals
+	lda 64(sp), sp
+	movq g0, r4
+	movq g4, r8
+	movq g8, r12
+    stt g12, -16(sp)
     c_call _vect_\toCall
-	restore_globals
+    movq r12, g8
+    movq r8, g4
+    movq r4, g0
+    ldt -16(sp), g12
+	#restore_globals
     ret
 .endm
 
