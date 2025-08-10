@@ -33,6 +33,8 @@ basicDisplay(const std::string& kind, cortex::FaultData* record) {
     cortex::ChipsetBasicFunctions::Console::write(kind.c_str());
     cortex::ChipsetBasicFunctions::Console::writeLine(" FAULT RAISED!");
     record->display();
+    cortex::ChipsetBasicFunctions::Console::writeLine("Halting system now...");
+    while (true) { };
 }
 inline void
 basicOperation(const std::string& kind, cortex::FaultData* record, cortex::FaultHandler handler) {

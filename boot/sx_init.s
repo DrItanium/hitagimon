@@ -166,7 +166,7 @@ fix_stack:
 
     ldconst 0x1f0002, g0
     st  g0, -16(fp)     # store contrived PC
-    ldconst 0x3f001000, g0  # setup arithmetic controls (disable all of the faults for floating point)
+    ldconst 0x3b001000, g0  # setup arithmetic controls (allow divide by zero FP edition for now)
     st  g0, -12(fp)     # store contrived AC
     ret
 
