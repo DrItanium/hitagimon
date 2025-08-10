@@ -250,8 +250,9 @@ fault_proc_table:
 .text
 _user_\()\name\()_core:
 	# flushreg may be needed to be used if we want to do work with the stack
-	# currently, this design will trash the global registers
+	# currently, this design will trash the global registers as we are not going to be returning
 	lda	-48(fp), g0	/* pass fault data as the first argument */
+	mov rip, g1     /* pass the return instruction pointer as the second argument */
 	callx _user_\()\name
 	ret
 .endm

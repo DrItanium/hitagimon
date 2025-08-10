@@ -29,26 +29,27 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "../cortex/Faults.h"
 #include <string>
 void
-basicDisplay(const std::string& kind, cortex::FaultData* record) {
+basicDisplay(const std::string& kind, cortex::FaultData* record, uint32_t rip) {
     cortex::ChipsetBasicFunctions::Console::write(kind.c_str());
     cortex::ChipsetBasicFunctions::Console::writeLine(" FAULT RAISED!");
     record->display();
+    printf("Return instruction pointer: %x\n", rip);
     cortex::ChipsetBasicFunctions::Console::writeLine("Halting system now...");
     while (true) { };
 }
-inline void
-basicOperation(const std::string& kind, cortex::FaultData* record, cortex::FaultHandler handler) {
+void
+basicOperation(const std::string& kind, cortex::FaultData* record, cortex::FaultHandler handler, uint32_t rip) {
     if (handler)  {
         handler(record);
     } else {
-        basicDisplay(kind, record);
+        basicDisplay(kind, record, rip);
     }
 }
 #define X(kind, code, locase, hicase) \
 extern "C"                      \
 void                            \
-user_ ## locase (cortex::FaultData* record) { \
-    basicOperation( "USER " #hicase , record, cortex::getUser ## kind ## FaultHandler ()); \
+user_ ## locase (cortex::FaultData* record, uint32_t rip) { \
+    basicOperation( "USER " #hicase , record, cortex::getUser ## kind ## FaultHandler (), rip); \
 }
 #include "cortex/Faults.def"
 #undef X
