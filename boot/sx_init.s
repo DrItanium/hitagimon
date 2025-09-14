@@ -143,12 +143,15 @@ _init_fp:
     movre   fp1, fp2
     movre   fp2, fp3
     ret
-
+.align 4
+initial_interrupt_contents:
+	.word 0xfcfdfeff
+.align 6
 setupInterruptHandler:
     # setup the interrupt handlers to work correctly
     ldconst 0xff000004, g5
     # give maximum priority to the interrupt handlers
-    ldconst 0xFCFDFEFF, g6 # load the interrupt handler defualt value
+    ldconst initial_interrupt_contents, g6 
     synmov g5, g6
     ret
 # setup the bss section so do giant blocks of writes
