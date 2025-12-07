@@ -58,11 +58,14 @@ add_library(hitagicortex
 		cortex/IAC.cc
 		cortex/IACImplementation.s
 		cortex/ModernCpp.h
-		cortex/Types.h cortex/SystemCounter.h cortex/SystemCounter.cc cortex/ModernGCC.h cortex/ModernGCC.cc cortex/builtins.h cortex/builtins.c cortex/IndirectInterrupts.cc
+		cortex/Types.h
+        cortex/SystemCounter.h cortex/SystemCounter.cc cortex/ModernGCC.h cortex/ModernGCC.cc cortex/builtins.h cortex/builtins.c cortex/IndirectInterrupts.cc
         cortex/SoftwareDMA.h
 		cortex/SoftwareDMA.cc
 		cortex/SysExamine.cc
         cortex/builtins.s
+        cortex/Router.cc
+        cortex/Router.h
 )
 add_executable(hitagimon
 		boot/sx_init.s # this must ALWAYS be first!
