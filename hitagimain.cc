@@ -9,6 +9,7 @@
 #include <iostream>
 #include <cortex/ModernGCC.h>
 #include <cortex/ChipsetInteract.h>
+#include <cortex/FilesystemInterface.h>
 #include <stdio.h>
 #include <math.h>
 #include <string>
@@ -32,7 +33,7 @@ extern "C" {
 namespace microshell {
 
     int read(ush_object*, char*ch) {
-        uint16_t result = cortex::ChipsetBasicFunctions::Console::read();
+        uint16_t result = cortex::getConsole().read();
         bool validResult = result != 0xFFFF;
         if (validResult) {
             *ch = result;
@@ -41,7 +42,7 @@ namespace microshell {
     }
 
     int write(ush_object*, char ch) {
-        cortex::ChipsetBasicFunctions::Console::write(ch);
+        cortex::getConsole().write(ch);
         return 1;
     }
 

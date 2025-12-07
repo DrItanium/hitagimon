@@ -56,7 +56,7 @@ namespace cortex {
              * @param nbyte the maximum number of bytes to write
              * @return the number of bytes written
              */
-            ssize_t write(char *buffer, size_t nbyte);
+            ssize_t write(const char *buffer, size_t nbyte);
         } // end namespace Console
         namespace Timer {
             /**

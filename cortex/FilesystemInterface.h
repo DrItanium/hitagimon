@@ -39,22 +39,26 @@ public:
     virtual uint16_t read() = 0;
     virtual void write(uint16_t value) = 0;
     virtual void flush() = 0;
-
-    virtual void write(char c);
-    virtual void write(const char* str, size_t len);
-    virtual void write(const char* str);
     virtual void write(const std::string& str);
-    virtual void writeLine();
     virtual void writeLine(const std::string& str);
-    virtual void writeLine(const char* str, size_t len);
-    virtual void writeLine(const char* str);
     virtual void close();
     virtual ssize_t read(char* buffer, size_t nbyte) = 0;
-    virtual ssize_t write(char* buffer, size_t nbyte) = 0;
+    virtual ssize_t write(const char* buffer, size_t nbyte) = 0;
+    operator bool() const noexcept;
+
 private:
     int _uid;
 };
-
+class NullFile : public File {
+    public:
+        NullFile() : File() { }
+        uint16_t read() { return 0; }
+        void write(uint16_t) { }
+        bool valid() const noexcept { return false; }
+        void flush() noexcept { }
+        ssize_t read(char*, size_t) { return 0; }
+        ssize_t write(const char*, size_t) { return 0; }
+};
 /**
  * @brief A very thin wrapper around the IO space, useful for eliminating direct dependencies
  */
@@ -68,9 +72,13 @@ public:
     bool matches(int id) const noexcept;
     bool valid() const noexcept;
     ssize_t read(char* buffer, size_t nbyte);
-    ssize_t write(char* buffer, size_t nbyte);
+    ssize_t write(const char* buffer, size_t nbyte);
 };
 
 File& getConsole();
+File& getNullFile();
+namespace Filesystem {
+    File& getFile(int fd) noexcept;
+}
 } // end namespace cortex
 #endif //HITAGIMON_FILESYSTEMINTERFACE_H

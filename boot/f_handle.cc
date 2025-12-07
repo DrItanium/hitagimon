@@ -25,16 +25,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*
  * Fault handler routines
  */
-#include "../cortex/IODevice.h"
-#include "../cortex/Faults.h"
+#include <cortex/Faults.h>
+#include <cortex/FilesystemInterface.h>
 #include <string>
 void
 basicDisplay(const std::string& kind, cortex::FaultData* record, uint32_t rip) {
-    cortex::ChipsetBasicFunctions::Console::write(kind.c_str());
-    cortex::ChipsetBasicFunctions::Console::writeLine(" FAULT RAISED!");
+    cortex::File& console = cortex::getConsole();
+    console.write(kind);
+    console.writeLine(" FAULT RAISED!");
     record->display();
     printf("Return instruction pointer: %x\n", rip);
-    cortex::ChipsetBasicFunctions::Console::writeLine("Halting system now...");
+    console.writeLine("Halting system now...");
     while (true) { };
 }
 void

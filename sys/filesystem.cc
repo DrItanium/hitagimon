@@ -27,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <errno.h>
 #include <sys/stat.h>
 #include <cortex/IODevice.h>
+#include <cortex/FilesystemInterface.h>
 
 extern "C"
 int hitagi_access(const char* pathName, int mode) {
@@ -116,36 +117,23 @@ extern "C"
 int
 hitagi_read(int fd, void *buf, size_t sz, int *nread) {
     *nread = 0;
-    if (fd > 2) {
-        return EBADF;
+    cortex::File& targetFile = cortex::Filesystem::getFile(fd);
+    if (!targetFile) {
+       return EBADF;
     } else {
-        // builtin files
-        switch (fd) {
-            case STDIN_FILENO:
-                *nread = cortex::ChipsetBasicFunctions::Console::read(reinterpret_cast<char *>(buf), sz);
-                return 0;
-            default:
-                return EBADF;
-        }
+        *nread = targetFile.read(reinterpret_cast<char*>(buf), sz);
+        return 0;
     }
 }
 extern "C"
 int
 hitagi_write(int fd, const void *buf, size_t sz, int *nwrite) {
     *nwrite = 0;
-    if (fd > 2) {
-        // we don't currently support opening files
-        return EBADF;
+    cortex::File& targetFile = cortex::Filesystem::getFile(fd);
+    if (!targetFile) {
+       return EBADF;
     } else {
-        // builtin files
-        switch (fd) {
-            case STDOUT_FILENO:
-            case STDERR_FILENO:
-                *nwrite = cortex::ChipsetBasicFunctions::Console::write(reinterpret_cast<char *>(const_cast<void *>(buf)), sz);
-                break;
-            default:
-                return EBADF;
-        }
+        *nwrite = targetFile.write(reinterpret_cast<const char*>(buf), sz);
         return 0;
     }
 }

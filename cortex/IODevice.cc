@@ -188,30 +188,12 @@ namespace cortex
             }
 
             void
-            write(char c) {
-                getIOSpace().write(static_cast<uint16_t>(c));
-            }
-            void
             flush() {
                 getIOSpace().flush();
             }
-            void
-            write(const char *ptr) {
-                write(const_cast<char *>(ptr), strlen(ptr));
-            }
-
-            void
-            writeLine() {
-                write('\n');
-            }
-            void
-            writeLine(const char *ptr) {
-                write(ptr);
-                writeLine();
-            }
 
             ssize_t
-            write(char *buffer, size_t nbyte) {
+            write(const char *buffer, size_t nbyte) {
                 // unlike reading, we must be sequential in writing
                 ssize_t numWritten = 0;
                 for (size_t i = 0; i < nbyte; ++i) {
