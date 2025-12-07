@@ -35,7 +35,11 @@ namespace cortex {
         // do nothing for the generic implementation
     }
 
-
+    void File::write(const std::string& str) { (void)write(str.c_str(), str.length()); }
+    void File::writeLine(const std::string& str) {
+        write(str);
+        write('\n');
+    }
     bool File::matches(int id) const { return id == _uid; }
     bool File::valid() const { return !matches(-1); }
 
@@ -74,7 +78,19 @@ getNullFile() {
     static NullFile file;
     return file;
 }
-
+namespace Filesystem {
+File&
+getFile(int fd) {
+    switch (fd) {
+        case STDIN_FILENO:
+        case STDOUT_FILENO:
+        case STDERR_FILENO:
+            return getConsole();
+        default:
+            return getNullFile();
+    }
+}
+}
 
 
 
