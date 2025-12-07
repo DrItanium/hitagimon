@@ -55,10 +55,13 @@ private:
     int _uid;
 };
 
+/**
+ * @brief A very thin wrapper around the IO space, useful for eliminating direct dependencies
+ */
 class ConsoleFile : public File {
 public:
     ~ConsoleFile();
-    ConsoleFile(int id) : File(id) { }
+    ConsoleFile() : File(0) { }
     uint16_t read();
     void write(uint16_t value);
     void flush();
@@ -67,5 +70,7 @@ public:
     ssize_t read(char* buffer, size_t nbyte);
     ssize_t write(char* buffer, size_t nbyte);
 };
+
+File& getConsole();
 } // end namespace cortex
 #endif //HITAGIMON_FILESYSTEMINTERFACE_H

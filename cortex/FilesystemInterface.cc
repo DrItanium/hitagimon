@@ -96,6 +96,11 @@ namespace cortex {
 
 
 
+File&
+getConsole() {
+    static ConsoleFile console;
+    return console;
+}
 
 
 
