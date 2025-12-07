@@ -1,5 +1,5 @@
 /*
-i960SxChipset
+hitagimon
 Copyright (c) 2020-2025, Joshua Scoggins
 All rights reserved.
 
@@ -23,8 +23,39 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <cortex/Router.h>
-
+#ifndef HITAGIMON_FILESYSTEMINTERFACE_H
+#define HITAGIMON_FILESYSTEMINTERFACE_H
+#include <cortex/Types.h>
+#include <cortex/ModernCpp.h>
 namespace cortex {
+class File {
+public:
+    virtual ~File();
+    File(int value = -1) : _uid(value) { }
+    inline bool matches(int id) const noexcept { return _uid == id; }
+    inline bool valid() const noexcept { return !matches(-1); }
+    inline int uid() const noexcept { return _uid; }
+    virtual uint16_t read() = 0;
+    virtual void write(uint16_t value) = 0;
+    virtual void flush() = 0;
 
-}
+    virtual void write(char c);
+    virtual void write(const char* str, size_t len);
+    virtual void write(const char* str);
+    virtual void write(const std::string& str);
+    virtual void writeLine();
+    virtual void writeLine(const std::string& str);
+    virtual void writeLine(const char* str, size_t len);
+    virtual void writeLine(const char* str);
+    virtual void close() = 0;
+    virtual ssize_t read(char* buffer, size_t nbyte);
+    virtual ssize_t write(char* buffer, size_t nbyte);
+private:
+    int _uid;
+};
+
+class ConsoleFile : public File {
+
+};
+} // end namespace cortex
+#endif //HITAGIMON_FILESYSTEMINTERFACE_H

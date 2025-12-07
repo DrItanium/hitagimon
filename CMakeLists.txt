@@ -64,8 +64,8 @@ add_library(hitagicortex
 		cortex/SoftwareDMA.cc
 		cortex/SysExamine.cc
         cortex/builtins.s
-        cortex/Router.cc
-        cortex/Router.h
+        cortex/FilesystemInterface.h
+        cortex/FilesystemInterface.cc
 )
 add_executable(hitagimon
 		boot/sx_init.s # this must ALWAYS be first!
