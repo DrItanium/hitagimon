@@ -33,8 +33,8 @@ class File {
 public:
     virtual ~File();
     File(int value = -1) : _uid(value) { }
-    inline bool matches(int id) const noexcept { return _uid == id; }
-    inline bool valid() const noexcept { return !matches(-1); }
+    virtual bool matches(int id) const noexcept;
+    virtual bool valid() const noexcept;
     inline int uid() const noexcept { return _uid; }
     virtual uint16_t read() = 0;
     virtual void write(uint16_t value) = 0;
@@ -48,15 +48,24 @@ public:
     virtual void writeLine(const std::string& str);
     virtual void writeLine(const char* str, size_t len);
     virtual void writeLine(const char* str);
-    virtual void close() = 0;
-    virtual ssize_t read(char* buffer, size_t nbyte);
-    virtual ssize_t write(char* buffer, size_t nbyte);
+    virtual void close();
+    virtual ssize_t read(char* buffer, size_t nbyte) = 0;
+    virtual ssize_t write(char* buffer, size_t nbyte) = 0;
 private:
     int _uid;
 };
 
 class ConsoleFile : public File {
-
+public:
+    ~ConsoleFile();
+    ConsoleFile(int id) : File(id) { }
+    uint16_t read();
+    void write(uint16_t value);
+    void flush();
+    bool matches(int id) const noexcept;
+    bool valid() const noexcept;
+    ssize_t read(char* buffer, size_t nbyte);
+    ssize_t write(char* buffer, size_t nbyte);
 };
 } // end namespace cortex
 #endif //HITAGIMON_FILESYSTEMINTERFACE_H
