@@ -25,29 +25,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <cortex/FilesystemInterface.h>
 #include <cortex/IODevice.h>
+
 namespace cortex {
     File::~File() {
         // @todo call close here?
         close();
     }
+
     void
     File::close() {
         // do nothing for the generic implementation
     }
 
-    void File::write(const std::string& str) { (void)write(str.c_str(), str.length()); }
+    void File::write(const std::string& str) { (void) write(str.c_str(), str.length()); }
+
     void File::writeLine(const std::string& str) {
         write(str);
         write('\n');
     }
+
     bool File::matches(int id) const { return id == _uid; }
     bool File::valid() const { return !matches(-1); }
 
-    ConsoleFile::~ConsoleFile() { }
+    ConsoleFile::~ConsoleFile() {
+    }
 
     bool
     ConsoleFile::matches(int id) const {
-
         switch (id) {
             case 0:
             case 1:
@@ -57,41 +61,57 @@ namespace cortex {
                 return false;
         }
     }
+
     uint16_t ConsoleFile::read() { return ChipsetBasicFunctions::Console::read(); }
     void ConsoleFile::write(uint16_t value) { ChipsetBasicFunctions::Console::write(value); }
     bool ConsoleFile::valid() const { return true; }
     void ConsoleFile::flush() { ChipsetBasicFunctions::Console::flush(); }
-    ssize_t ConsoleFile::read(char* buffer, size_t nbyte) { return ChipsetBasicFunctions::Console::read(buffer, nbyte); }
-    ssize_t ConsoleFile::write(const char* buffer, size_t nbyte) { return ChipsetBasicFunctions::Console::write(buffer, nbyte); }
+    ssize_t ConsoleFile::read(char*buffer, size_t nbyte) { return ChipsetBasicFunctions::Console::read(buffer, nbyte); }
 
-
-File::operator bool() const { return valid(); }
-
-
-File&
-getConsole() {
-    static ConsoleFile console;
-    return console;
-}
-File&
-getNullFile() {
-    static NullFile file;
-    return file;
-}
-namespace Filesystem {
-File&
-getFile(int fd) {
-    switch (fd) {
-        case STDIN_FILENO:
-        case STDOUT_FILENO:
-        case STDERR_FILENO:
-            return getConsole();
-        default:
-            return getNullFile();
+    ssize_t ConsoleFile::write(const char*buffer, size_t nbyte) {
+        return ChipsetBasicFunctions::Console::write(buffer, nbyte);
     }
-}
-}
 
 
+    File::operator bool() const { return valid(); }
 
+
+    File&
+    getConsole() {
+        static ConsoleFile console;
+        return console;
+    }
+
+    File&
+    getNullFile() {
+        static NullFile file;
+        return file;
+    }
+
+    namespace Filesystem {
+        File&
+        getFile(int fd) {
+            switch (fd) {
+                case STDIN_FILENO:
+                case STDOUT_FILENO:
+                case STDERR_FILENO:
+                    return getConsole();
+                default:
+                    return getNullFile();
+            }
+        }
+
+        File&
+        openFile(const char* path, int flags, int mode) {
+            return getNullFile();
+        }
+        bool linkFile(const char*path1, const char*path2) {
+            return false;
+        }
+
+    }
+
+    bool File::canSeek() const noexcept { return false; }
+    off_t File::seek(off_t offset, int whence) { return -1; }
+    off_t ConsoleFile::seek(off_t offset, int whence) { return 0; }
 }

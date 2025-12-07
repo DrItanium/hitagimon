@@ -45,7 +45,9 @@ public:
     virtual ssize_t read(char* buffer, size_t nbyte) = 0;
     virtual ssize_t write(const char* buffer, size_t nbyte) = 0;
     operator bool() const noexcept;
-
+    virtual bool canSeek() const noexcept;
+    virtual off_t seek(off_t offset, int whence) noexcept;
+    virtual bool isatty() const noexcept { return false; }
 private:
     int _uid;
 };
@@ -58,6 +60,7 @@ class NullFile : public File {
         void flush() noexcept { }
         ssize_t read(char*, size_t) { return 0; }
         ssize_t write(const char*, size_t) { return 0; }
+        bool canSeek() const noexcept { return false; }
 };
 /**
  * @brief A very thin wrapper around the IO space, useful for eliminating direct dependencies
@@ -73,12 +76,17 @@ public:
     bool valid() const noexcept;
     ssize_t read(char* buffer, size_t nbyte);
     ssize_t write(const char* buffer, size_t nbyte);
+    bool canSeek() const noexcept { return true; }
+    off_t seek(off_t offset, int whence) noexcept;
+    bool isatty() const noexcept { return true; }
 };
 
 File& getConsole();
 File& getNullFile();
 namespace Filesystem {
     File& getFile(int fd) noexcept;
+    File& openFile(const char* path, int flags, int mode);
+    bool linkFile(const char* path1, const char* path2);
 }
 } // end namespace cortex
 #endif //HITAGIMON_FILESYSTEMINTERFACE_H

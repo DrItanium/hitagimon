@@ -45,17 +45,10 @@ int hitagi_access(const char* pathName, int mode) {
 extern "C"
 int
 hitagi_close(int fd) {
-    if (fd > 2) {
-#if 0
-        if (cortex::getBasicChipsetInterface().closeFile(fd - 3)) {
-            return 0;
-        } else {
-#endif
-        errno = EBADF;
-        return -1;
-#if 0
-        }
-#endif
+    cortex::File& targetFile = cortex::Filesystem::getFile(fd);
+    if (targetFile) {
+        targetFile.close();
+        return 0;
     } else {
         errno = EBADF;
         return -1;
@@ -71,7 +64,7 @@ hitagi_fstat (int file, struct stat* st) {
 extern "C"
 int
 hitagi_isatty(int file) {
-    return file < 3;
+    return cortex::Filesystem::getFile(file).isatty();
 }
 extern "C"
 int
@@ -83,34 +76,35 @@ hitagi_unlink(const char* path) {
 extern "C"
 int
 hitagi_open (char* file, int flags, int mode) {
-    // support the /dev/zero file
-    // support the /dev/null file
-    return -1;
+    // if we can't open for whatever reason a null file type will come back
+    // the uid will always be -1 in that case
+    return cortex::Filesystem::openFile(file, flags, mode).uid();
 }
 
 extern "C"
 int
 hitagi_link (const char* path1, const char* path2) {
-    errno = ENOSYS;
-    return -1;
+    if (cortex::Filesystem::linkFile(path1, path2)) {
+        return 0;
+    } else {
+        errno = ENOSYS;
+        return -1;
+    }
 }
 
 extern "C"
 off_t
 hitagi_lseek(int fd, off_t offset, int whence) {
-    if (fd >= 3) {
-        errno = EBADF;
-        return -1;
-    } else {
-        // builtin files
-        switch (fd) {
-            case STDIN_FILENO:
-                return 0;
-            default:
-                errno = EBADF;
-                return -1;
+    cortex::File& targetFile = cortex::Filesystem::getFile(fd);
+    if (targetFile) {
+        if (!targetFile.canSeek()) {
+            errno = EBADF;
         }
+    } else {
+        errno = EBADF;
     }
+    // just always call it since it always has an implementation
+    return targetFile.seek(offset, whence);
 }
 
 extern "C"
