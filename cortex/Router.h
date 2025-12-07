@@ -28,29 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 namespace cortex {
 
-/**
- * @brief An abstract representation of a thing which data can be sent to and
- * retrieved from; concept taken from CLIPS
- */
-struct Router {
-    virtual ~Router() { }
-    virtual uint8_t read() = 0;
-    virtual void unread(uint8_t value) = 0;
-    virtual void write(uint8_t value) = 0;
-    virtual void exit() = 0;
-    virtual bool respondsTo(const std::string& name) const noexcept = 0;
-};
-
-struct NullRouter : public Router {
-    NullRouter();
-    virtual ~NullRouter();
-    uint8_t read() override;
-    void unread(uint8_t) override; 
-    void write(uint8_t) override; 
-    void exit() override;
-    bool respondsTo(const std::string&) const noexcept override;
-};
-
 } // end namespace cortex
 
 #endif // end !defined LIBCORTEX_ROUTER_H__
