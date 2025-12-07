@@ -25,8 +25,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef HITAGIMON_FILESYSTEMINTERFACE_H
 #define HITAGIMON_FILESYSTEMINTERFACE_H
-#include <cortex/Types.h>
+#include <stdint.h>
 #include <cortex/ModernCpp.h>
+#include <string>
 namespace cortex {
 class File {
 public:
