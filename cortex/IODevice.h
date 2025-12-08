@@ -113,18 +113,21 @@ namespace cortex {
                                makeOrdinal(c, d));
     }
     struct IOMemoryBlock {
-        IOMemoryBlock(uint8_t* address, uint16_t capacity) : _address(address), _capacity(capacity), _mask(capacity - 1) { }
+        IOMemoryBlock(uint8_t* address, uint32_t capacity) : _address(address), _capacity(capacity), _mask(capacity - 1) { }
         uint16_t capacity() const noexcept { return _capacity; }
-        uint8_t read(uint16_t address) const noexcept { return _address[address & _mask]; }
-        void write(uint16_t address, uint8_t value) noexcept { _address[address & _mask] = value; }
+        uint8_t read(uint32_t address) const noexcept { return _address[address & _mask]; }
+        void write(uint32_t address, uint8_t value) noexcept { _address[address & _mask] = value; }
         uint8_t* data() const noexcept { return _address; }
+        template<typename T> T& as() noexcept { return *(reinterpret_cast<T*>(_address)); }
+        template<typename T> const T& as() const noexcept { return *(reinterpret_cast<const T*>(_address)); }
     private:
         uint8_t* _address;
-        uint16_t _capacity;
-        uint16_t _mask;
+        uint32_t _capacity;
+        uint32_t _mask;
     };
     IOMemoryBlock& EEPROM() noexcept;
     IOMemoryBlock& SRAM() noexcept;
+    IOMemoryBlock& SRAM2() noexcept;
 
     namespace SDCard {
         // the teensy has an onboard SDCard socket that needs to be managed by the teensy and the i960
