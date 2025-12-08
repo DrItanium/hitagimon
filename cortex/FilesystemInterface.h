@@ -87,6 +87,7 @@ namespace Filesystem {
     File& getFile(int fd) noexcept;
     File& openFile(const char* path, int flags, int mode);
     bool linkFile(const char* path1, const char* path2);
+    bool unlinkFile(const char* path);
 }
 } // end namespace cortex
 #endif //HITAGIMON_FILESYSTEMINTERFACE_H

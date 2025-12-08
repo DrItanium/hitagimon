@@ -108,6 +108,9 @@ namespace cortex {
         bool linkFile(const char*path1, const char*path2) {
             return false;
         }
+        bool unlinkFile(const char* path) {
+            return false;
+        }
 
     }
 

@@ -69,8 +69,12 @@ hitagi_isatty(int file) {
 extern "C"
 int
 hitagi_unlink(const char* path) {
-    errno = ENOSYS;
-    return -1;
+    if (cortex::Filesystem::unlinkFile(path)) {
+        return 0;
+    } else {
+        errno = ENOSYS;
+        return -1;
+    }
 }
 
 extern "C"
