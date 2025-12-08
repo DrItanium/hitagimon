@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdint.h>
 #include <unistd.h>
 #include <string>
+#include <map>
 #include "ChipsetInteract.h"
 #include "IAC.h"
 namespace cortex {
@@ -124,6 +125,26 @@ namespace cortex {
     };
     IOMemoryBlock& EEPROM() noexcept;
     IOMemoryBlock& SRAM() noexcept;
+
+    namespace SDCard {
+        // the teensy has an onboard SDCard socket that needs to be managed by the teensy and the i960
+        // the teensy handles the majority of this since I don't want data leakage
+        /// @todo implement
+        typedef int FileHandle;
+        typedef ssize_t BytesProcessed;
+        typedef std::pair<bool, FileHandle> OpenFileHandle;
+        typedef std::pair<bool, BytesProcessed> IOResult;
+        typedef std::pair<bool, off_t> OffsetResult;
+        OpenFileHandle openFile(const char* path, int flags, int mode);
+        bool valid(FileHandle fd);
+        bool close(FileHandle fd);
+        IOResult read(FileHandle fd, uint8_t* buffer, size_t nbyte);
+        IOResult write(FileHandle fd, const uint8_t* buffer, size_t nbyte);
+        bool fileExists(const char* path);
+        uint64_t cardCapacity() noexcept;
+        uint64_t fileSize(FileHandle fd) noexcept;
+        OffsetResult seek(FileHandle fd, off_t offset, int whence) noexcept;
+    }
 
 }
 #endif //I960SXCHIPSET_IODEVICE_H
