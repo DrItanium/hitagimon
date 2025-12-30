@@ -56,8 +56,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro def_system_call index,name
 .text
 .align 4
-.global _\()\name
-_\()\name:
+.global \name
+\name:
 .if \index >= 32
     ldconst \index, r3
     calls r3
@@ -124,7 +124,7 @@ DeclareSegment 0, 0, \addr, 0x204000fb
 	movq g8, r12
 	mov g14, r3
     stl g12, -16(sp)
-    c_call _vect_\toCall
+    c_call vect_\toCall
     ldl -16(sp), g12
     mov r3, g14
     movq r12, g8

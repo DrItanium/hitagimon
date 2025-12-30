@@ -131,7 +131,7 @@ reinitialize_iac:
  */
     callx _init_fp
     callx setupInterruptHandler
-    c_callx _main # assume a main for startup
+    c_callx main # assume a main for startup
 exec_fallthrough:
     b exec_fallthrough
 
@@ -256,7 +256,7 @@ _user_\()\name\()_core:
 	# currently, this design will trash the global registers as we are not going to be returning
 	lda	-48(fp), g0	/* pass fault data as the first argument */
 	mov rip, g1     /* pass the return instruction pointer as the second argument */
-	callx _user_\()\name
+	callx user_\()\name
 	ret
 .endm
 # We pass the fault data by grabbing it and passing it via g0 to the function itself
@@ -544,23 +544,23 @@ sys_proc_table:
     #ReservedTableEntry # _hitagi_chmod
     #ReservedTableEntry # _hitagi_utime
     #ReservedTableEntry # _hitagi_time
-	DefTableEntry _hitagi_access # 243
-	DefTableEntry _hitagi_link # 244
-	DefTableEntry _hitagi_isatty # 245
-	DefTableEntry _hitagi_setitimer # 246
-	DefTableEntry _hitagi_gettimeofday # 247
-    DefTableEntry _hitagi_getrusage # 248
-	DefTableEntry _hitagi_sbrk # 249
-	DefTableEntry _hitagi_fstat # 250
-	DefTableEntry _hitagi_getpid # 251
-	DefTableEntry _hitagi_unlink # 252
-    DefTableEntry _hitagi_kill # 253
-	DefTableEntry _hitagi_open # 254
-	DefTableEntry _hitagi_read # 255
-	DefTableEntry _hitagi_write # 256
-	DefTableEntry _hitagi_lseek # 257
-	DefTableEntry _hitagi_close # 258
-	DefTableEntry _hitagi_exit # 259
+	DefTableEntry hitagi_access # 243
+	DefTableEntry hitagi_link # 244
+	DefTableEntry hitagi_isatty # 245
+	DefTableEntry hitagi_setitimer # 246
+	DefTableEntry hitagi_gettimeofday # 247
+    DefTableEntry hitagi_getrusage # 248
+	DefTableEntry hitagi_sbrk # 249
+	DefTableEntry hitagi_fstat # 250
+	DefTableEntry hitagi_getpid # 251
+	DefTableEntry hitagi_unlink # 252
+    DefTableEntry hitagi_kill # 253
+	DefTableEntry hitagi_open # 254
+	DefTableEntry hitagi_read # 255
+	DefTableEntry hitagi_write # 256
+	DefTableEntry hitagi_lseek # 257
+	DefTableEntry hitagi_close # 258
+	DefTableEntry hitagi_exit # 259
 # up to a total of 260 entries
 # reserved entries
 #def_system_call 12, _sys_argvlen
