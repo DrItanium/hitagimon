@@ -8,13 +8,13 @@ set(CMAKE_C_COMPILER ${tools}/bin/i960-elf-gcc)
 set(CMAKE_CXX_COMPILER ${tools}/bin/i960-elf-g++)
 set(CMAKE_ASM-ATT_COMPILER ${tools}/bin/i960-elf-as)
 set(CMAKE_LINKER ${tools}/bin/i960-elf-ld)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -DUSH_CONFIG_PLATFORM_POSIX -fno-exceptions")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -DUSH_CONFIG_PLATFORM_POSIX -fno-exceptions -fno-use-cxa-atexit")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -DCONFIG_PLATFORM_POSIX --std=gnu99")
 set(CMAKE_OBJCOPY_COMPILER ${tools}/bin/i960-elf-objcopy)
 set(CMAKE_OBJDUMP_COMPILER ${tools}/bin/i960-elf-objdump)
 # gcc 3.4.6 doesn't support colorizing output
 unset(CMAKE_COLOR_DIAGNOSTICS CACHE)
-add_compile_options(-Wall)
+#add_compile_options(-Wall)
 # for some reason, the compiler generated multiple copies of the same entries
 #add_link_options(-Wl,--as-needed -nostdlib -static -T ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT} -ffreestanding -Wl,--allow-multiple-definition)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmc -mnumerics -O2")
@@ -130,6 +130,8 @@ target_link_options(hitagimon
 		PRIVATE -T ${CMAKE_SOURCE_DIR}/start.ld
 		PRIVATE -ffreestanding
 		PRIVATE -Wl,--allow-multiple-definition
+        PRIVATE -fno-use-cxa-atexit
+        PRIVATE -fno-exceptions
         #PRIVATE -msoft-float
 		#PRIVATE -mmc
 		#PRIVATE -mnumerics

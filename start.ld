@@ -20,7 +20,10 @@ SECTIONS
 		CREATE_OBJECT_SYMBOLS /* C++ needs this */ 
 
 		*(.text .text.*) 	/* place the actual contents of the text section here */
+		__rodata_start__ = .;
         *(.rodata .rodata.*)
+		__rodata_end__ = .;
+		KEEP(*(.gcc_except_table .gcc_except_table.*))
 		_etext = .; /* define a symbol named _etext and assign it to the
 					   address following the end of the text section data */ 
 
@@ -42,11 +45,14 @@ SECTIONS
 	{
 		__data_start__ = .; 
 		KEEP(*(.data .data.*))
-		KEEP(*(.ctors))
-		KEEP(*(.dtors))
-		KEEP(*(.gcc_except_table .gcc_except_table.*))
 		CONSTRUCTORS  /* we want to place the constructors data here */
-		__data_end__ = .; 
+		__ctors_start__ = .;
+		KEEP(*(.ctors))
+		__ctors_end__ = .;
+		__dtors_start__ = .;
+		KEEP(*(.dtors))
+		__dtors_end__ = .;
+		__data_end__ = .;
 		_edata = .; 
 	} >sram
 	.heap : { 
