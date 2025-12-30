@@ -28,15 +28,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "SysExamine.h"
 
 namespace cortex {
+#if 0
     void
     storeQuadWord(QuadWord word, void* address) {
-        asm volatile ("stq %0, (%1)" : : "r" (word) , "r" (address) : "memory");
+        asm volatile ("stq %0, (%1)" : : "r" (word.ordinals[0]) , "rm" (address) : "memory");
     }
     QuadWord
     loadQuadWord(void* address) {
         QuadWord result;
-        asm volatile ("ldq (%1), %0" : "=r" (result) : "r" (address) : "memory");
+        asm volatile ("ldq (%1), %0" : "=r" (result.ordinals[0]) : "r" (address) : "memory");
         return result;
     }
     /// @todo fix triple word operations, it crashes the compiler
+#endif
 }

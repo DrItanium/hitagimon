@@ -16,12 +16,14 @@ namespace cortex {
         uint32_t ordinals[3];
     };
     typedef int64_t LongWord;
+#if 0
     union [[gnu::packed]] QuadWord {
         uint8_t bytes[16];
         uint32_t ordinals[4];
     };
     void storeQuadWord(QuadWord word, void* address);
     QuadWord loadQuadWord(void* address);
+#endif
     inline uint32_t getSegmentIndex(uint32_t ss) noexcept { return (ss & (~0x3f)) >> 6; }
     /**
      * @brief i960 specific arithmetic controls
