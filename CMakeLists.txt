@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 project(hitagimon VERSION 0.2)
 enable_language(CXX C ASM-ATT)
-set(CMAKE_CXX_STANDARD 98)
+set(CMAKE_CXX_STANDARD 17)
 
-set(tools /home/jwscoggins/dev/i960/i960-elf-gcc-3.4.6_v4)
+set(tools /home/jwscoggins/dev/i960/i960-elf-gcc-11.5.0)
 set(CMAKE_C_COMPILER ${tools}/bin/i960-elf-gcc)
 set(CMAKE_CXX_COMPILER ${tools}/bin/i960-elf-g++)
 set(CMAKE_ASM-ATT_COMPILER ${tools}/bin/i960-elf-as)

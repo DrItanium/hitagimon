@@ -34,7 +34,7 @@ namespace cortex {
     }
     QuadWord
     loadQuadWord(void* address) {
-        register QuadWord result;
+        QuadWord result;
         asm volatile ("ldq (%1), %0" : "=r" (result) : "r" (address) : "memory");
         return result;
     }

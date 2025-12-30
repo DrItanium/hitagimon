@@ -14,6 +14,7 @@
 #include <math.h>
 #include <string>
 #include <sstream>
+#include <cstring>
 extern "C" {
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -202,6 +203,53 @@ void loop() {
 */
 namespace FlopsCode {
 
+/*****************************************************/
+/* Various timer routines.                           */
+/* Al Aburto, aburto@nosc.mil, 18 Feb 1997           */
+/*                                                   */
+/* dtime(p) outputs the elapsed time seconds in p[1] */
+/* from a call of dtime(p) to the next call of       */
+/* dtime(p).  Use CAUTION as some of these routines  */
+/* will mess up when timing across the hour mark!!!  */
+/*                                                   */
+/* For timing I use the 'user' time whenever         */
+/* possible. Using 'user+sys' time is a separate     */
+/* issue.                                            */
+/*                                                   */
+/* Example Usage:                                    */
+/* [Timer options added here]                        */
+/* FloatType RunTime, TimeArray[3];                     */
+/* main()                                            */
+/* {                                                 */
+/* dtime(TimeArray);                                 */
+/* [routine to time]                                 */
+/* dtime(TimeArray);                                 */
+/* RunTime = TimeArray[1];                           */
+/* }                                                 */
+/* [Timer code added here]                           */
+/*****************************************************/
+
+/******************************/
+/* Timer code.                */
+/******************************/
+
+/*****************************************************/
+/*  UNIX dtime(). This is the preferred UNIX timer.  */
+/*  Provided by: Markku Kolkka, mk59200@cc.tut.fi    */
+/*  HP-UX Addition by: Bo Thide', bt@irfu.se         */
+/*****************************************************/
+template<typename FloatType>
+void
+dtime(FloatType ta[]) {
+    struct rusage rusage;
+    FloatType q = ta[2];
+
+    getrusage(RUSAGE_SELF, &rusage);
+
+    ta[2] = (FloatType) (rusage.ru_utime.tv_sec);
+    ta[2] = ta[2] + (FloatType) (rusage.ru_utime.tv_usec) * 1.0e-06;
+    ta[1] = ta[2] - q;
+}
 
 /* Loops to run. Fixed at 15.0 seconds.*/
 
@@ -679,53 +727,6 @@ doFlops(const std::string& msg) {
     printf("   MFLOPS(4)       = %10.4lf\n\n", t34);
 }
 
-/*****************************************************/
-/* Various timer routines.                           */
-/* Al Aburto, aburto@nosc.mil, 18 Feb 1997           */
-/*                                                   */
-/* dtime(p) outputs the elapsed time seconds in p[1] */
-/* from a call of dtime(p) to the next call of       */
-/* dtime(p).  Use CAUTION as some of these routines  */
-/* will mess up when timing across the hour mark!!!  */
-/*                                                   */
-/* For timing I use the 'user' time whenever         */
-/* possible. Using 'user+sys' time is a separate     */
-/* issue.                                            */
-/*                                                   */
-/* Example Usage:                                    */
-/* [Timer options added here]                        */
-/* FloatType RunTime, TimeArray[3];                     */
-/* main()                                            */
-/* {                                                 */
-/* dtime(TimeArray);                                 */
-/* [routine to time]                                 */
-/* dtime(TimeArray);                                 */
-/* RunTime = TimeArray[1];                           */
-/* }                                                 */
-/* [Timer code added here]                           */
-/*****************************************************/
-
-/******************************/
-/* Timer code.                */
-/******************************/
-
-/*****************************************************/
-/*  UNIX dtime(). This is the preferred UNIX timer.  */
-/*  Provided by: Markku Kolkka, mk59200@cc.tut.fi    */
-/*  HP-UX Addition by: Bo Thide', bt@irfu.se         */
-/*****************************************************/
-template<typename FloatType> 
-void
-dtime(FloatType ta[]) {
-    struct rusage rusage;
-    FloatType q = ta[2];
-
-    getrusage(RUSAGE_SELF, &rusage);
-
-    ta[2] = (FloatType) (rusage.ru_utime.tv_sec);
-    ta[2] = ta[2] + (FloatType) (rusage.ru_utime.tv_usec) * 1.0e-06;
-    ta[1] = ta[2] - q;
-}
 
 
 }
