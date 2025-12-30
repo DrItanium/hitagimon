@@ -1,10 +1,9 @@
-GROUP(-lgcc -lm -lc -liberty -lc ) /* libraries to link in */
+GROUP(-lgcc -lm -lc ) /* libraries to link in */
 
 MEMORY /* describe the partitioning of the memory space for the application */ 
 {
-    rom (!r) : ORIGIN = 0, l = 512K,
-    sram (!rx) : ORIGIN = 512K, l = 512K,
-    sram2 (!rx) : ORIGIN = 1M, l = 2047M
+    rom (!r) : ORIGIN = 0, l = 2M,
+    sram (!rx) : ORIGIN = 2M, l = 2M
 }
 
 /* Define a symbol that your code can reference. The linker adds the symbol. */ 
@@ -20,8 +19,8 @@ SECTIONS
 	{ 
 		CREATE_OBJECT_SYMBOLS /* C++ needs this */ 
 
-		*(.text) 	/* place the actual contents of the text section here */ 
-
+		*(.text*) 	/* place the actual contents of the text section here */
+        *(.rodata*)
 		_etext = .; /* define a symbol named _etext and assign it to the
 					   address following the end of the text section data */ 
 
