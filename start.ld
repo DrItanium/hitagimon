@@ -19,8 +19,8 @@ SECTIONS
 	{ 
 		CREATE_OBJECT_SYMBOLS /* C++ needs this */ 
 
-		*(.text*) 	/* place the actual contents of the text section here */
-        *(.rodata*)
+		*(.text .text.*) 	/* place the actual contents of the text section here */
+        *(.rodata .rodata.*)
 		_etext = .; /* define a symbol named _etext and assign it to the
 					   address following the end of the text section data */ 
 
@@ -34,14 +34,17 @@ SECTIONS
 	{ 
 		__bss_start__ = .;
 		_bss_start = .;
-		*(.bss) 
+		KEEP(*(.bss .bss.*))
 		*(COMMON) /* can't find much documentation on this but it is a good idea to have this here */ 
 		__bss_end__ = .; 
 	} >sram
 	.data :
 	{
 		__data_start__ = .; 
-		KEEP(*(.data)) 
+		KEEP(*(.data .data.*))
+		KEEP(*(.ctors))
+		KEEP(*(.dtors))
+		KEEP(*(.gcc_except_table .gcc_except_table.*))
 		CONSTRUCTORS  /* we want to place the constructors data here */
 		__data_end__ = .; 
 		_edata = .; 
