@@ -2047,6 +2047,19 @@ namespace microshell {
             nullptr,
             nullptr,
         },
+        {
+            "printf_test",
+            "Run various printf tests",
+            nullptr,
+            [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+                printf("Floating Point tests\n");
+                printf("PI(float): %f\n", 3.14f);
+                printf("PI(double): %f\n", 3.14);
+            },
+            nullptr,
+            nullptr,
+            nullptr,
+        },
     };
     void
     setup() {
