@@ -188,7 +188,7 @@ modify32:
     ret
 
 
-
+.ifdef __i960_numerics__
 .global cos
 cos:
     cosrl g0, g0
@@ -241,3 +241,4 @@ atan2f:
     # g1 -> x
     atanr g2, g0, g0
     ret
+.endif

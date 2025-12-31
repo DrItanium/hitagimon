@@ -137,11 +137,13 @@ exec_fallthrough:
 
 
 _init_fp:
+.ifdef __i960_numerics__
     # initialize the floating point registers if it makes sense
     cvtir   0, fp0
     movre   fp0, fp1
     movre   fp1, fp2
     movre   fp2, fp3
+ .endif
     ret
 .align 4
 initial_interrupt_contents:
