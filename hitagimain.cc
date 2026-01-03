@@ -26,8 +26,8 @@ extern "C" {
 }
 template<typename I, typename O>
 union Converter {
-    I output;
-    O input;
+    O output;
+    I input;
 };
 /* 'Uncomment' the line below to run   */
 /* with 'register double' variables    */
@@ -2061,12 +2061,12 @@ namespace microshell {
                 printf("PI(float): %f\n", 3.14f);
                 printf("PI(double): %f\n", 3.14);
                 printf("PI(hex): %x\n", static_cast<uint32_t>(3.14));
-                Converter<uint32_t, float> foo;
+                Converter<float, uint32_t> foo;
                 foo.input = 3.14f;
                 printf("PI(forced_conversion): %x\n", (foo.output));
-                Converter<uint64_t, double> foo2;
+                Converter<double, uint64_t> foo2;
                 foo2.input = 3.14;
-                printf("PI(forced_conversion): %lld\n", (foo2.output));
+                printf("PI(forced_conversion): %x,%x\n", static_cast<uint32_t>(foo2.output >> 32), static_cast<uint32_t>(foo2.output));
             },
             nullptr,
             nullptr,
