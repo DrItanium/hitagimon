@@ -24,6 +24,11 @@ extern "C" {
 #include <coremark/coremark.h>
 #include <stdarg.h>
 }
+template<typename I, typename O>
+union Converter {
+    I output;
+    O input;
+};
 /* 'Uncomment' the line below to run   */
 /* with 'register double' variables    */
 /* defined, or compile with the        */
@@ -2055,6 +2060,13 @@ namespace microshell {
                 printf("Floating Point tests\n");
                 printf("PI(float): %f\n", 3.14f);
                 printf("PI(double): %f\n", 3.14);
+                printf("PI(hex): %x\n", static_cast<uint32_t>(3.14));
+                Converter<uint32_t, float> foo;
+                foo.input = 3.14f;
+                printf("PI(forced_conversion): %x\n", (foo.output));
+                Converter<uint64_t, double> foo2;
+                foo2.input = 3.14;
+                printf("PI(forced_conversion): %lld\n", (foo2.output));
             },
             nullptr,
             nullptr,

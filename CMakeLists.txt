@@ -17,8 +17,8 @@ unset(CMAKE_COLOR_DIAGNOSTICS CACHE)
 #add_compile_options(-Wall)
 # for some reason, the compiler generated multiple copies of the same entries
 #add_link_options(-Wl,--as-needed -nostdlib -static -T ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT} -ffreestanding -Wl,--allow-multiple-definition)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmc")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mmc")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmc -msoft-float")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mmc -msoft-float")
 set(CMAKE_ASM-ATT_FLAGS "${CMAKE_ASM_FLAGS} -AMC -I${CMAKE_SOURCE_DIR}/boot")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmc -msoft-float -O2")
 #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mmc -msoft-float -O2")
@@ -132,7 +132,7 @@ target_link_options(hitagimon
 		PRIVATE -Wl,--allow-multiple-definition
         PRIVATE -fno-use-cxa-atexit
         PRIVATE -fno-exceptions
-        #PRIVATE -msoft-float
+        PRIVATE -msoft-float
 		#PRIVATE -mmc
 		#PRIVATE -mnumerics
 )
