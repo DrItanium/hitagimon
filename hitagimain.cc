@@ -29,6 +29,25 @@ union Converter {
     O output;
     I input;
 };
+
+struct Donuts {
+public:
+    explicit Donuts(int value = rand()) : _value(value) {
+       _coolArray = new char[static_cast<uint32_t>(value) > 1000 ? 1000 : value] ();
+    }
+    ~Donuts() noexcept {
+        delete[] _coolArray;
+    }
+
+    auto getValue() const noexcept {
+        return _value;
+    }
+private:
+    int _value = 0;
+    char* _coolArray = nullptr;
+};
+Donuts d;
+Donuts d2;
 /* 'Uncomment' the line below to run   */
 /* with 'register double' variables    */
 /* defined, or compile with the        */
@@ -2074,7 +2093,24 @@ namespace microshell {
             nullptr,
             nullptr,
         },
-    };
+{
+    "cout_test",
+    "Run various std::cout tests",
+    nullptr,
+    [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        std::cout << "COUT TEST START" << std::endl;
+        std::cout << "PI: " << 3.14 << std::endl;
+        std::cout << "E: " << 2.71 << std::endl;
+        std::cout << "This is cool: " << true << std::endl;
+        std::cout << "This is donuts: " << d.getValue() << std::endl;
+        std::cout << "COUT TEST END" << std::endl;
+
+    },
+    nullptr,
+    nullptr,
+    nullptr,
+},
+};
     void
     setup() {
         ush_init(&microshellObject, &microshellDescriptor);
