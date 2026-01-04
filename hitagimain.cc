@@ -2064,9 +2064,11 @@ namespace microshell {
                 Converter<float, uint32_t> foo;
                 foo.input = 3.14f;
                 printf("PI(forced_conversion): %x\n", (foo.output));
+                // this is meant to test out data updates
                 Converter<double, uint64_t> foo2;
                 foo2.input = 3.14;
                 printf("PI(forced_conversion): %x,%x\n", static_cast<uint32_t>(foo2.output >> 32), static_cast<uint32_t>(foo2.output));
+                printf("PI(FORCED ALIGNMENT %d): %f\n", 0, 3.14);
             },
             nullptr,
             nullptr,
