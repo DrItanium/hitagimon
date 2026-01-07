@@ -1,0 +1,27 @@
+// gcc 11.5.0 @ 24MHz w/ conversion routines handled (floatdidf and floatsidf)
+
+[hitagimon960 /]$ /bin/flops32
+
+   FLOPS C Program (single precision), V2.0 18 Dec 1992
+
+   Module     Error        RunTime      MFLOPS
+                            (usec)
+     1      1.4288e-01     20.4769      0.6837
+     2     -5.4836e-06      9.7594      0.7173
+     3     -2.7984e-05     22.8719      0.7433
+     4     -3.3468e-04     23.5055      0.6381
+     5      5.3585e-05     43.6827      0.6639
+     6      1.0446e-04     42.3167      0.6853
+     7     -1.3150e+01     23.7435      0.5054
+     8      3.4305e-04     44.9944      0.6668
+
+   Iterations      =    1026000
+   NullTime (usec) =     0.0006
+   MFLOPS(1)       =     0.7256
+   MFLOPS(2)       =     0.6133
+   MFLOPS(3)       =     0.6589
+   MFLOPS(4)       =     0.6807
+
+[hitagimon960 /]$
+[hitagimon960 /]$
+
