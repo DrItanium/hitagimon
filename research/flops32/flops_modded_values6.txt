@@ -1,0 +1,25 @@
+[hitagimon960 /]$ /bin/flops32
+
+   FLOPS C Program (single precision), V2.0 18 Dec 1992
+
+   Module     Error        RunTime      MFLOPS
+                            (usec)
+     1     -3.3569e-05     40.1744      0.3485
+     2     -5.9605e-06     19.2462      0.3637
+     3     -3.6508e-05     45.5370      0.3733
+     4     -4.9651e-05     47.1239      0.3183
+     5     -2.7597e-05     91.0951      0.3183
+     6      2.3922e-04     86.9191      0.3336
+     7      4.7955e+00     47.8139      0.2510
+     8     -8.9586e-05     87.6863      0.3421
+
+   Iterations      =     495000
+   NullTime (usec) =     1.1771
+   MFLOPS(1)       =     0.3668
+   MFLOPS(2)       =     0.3027
+   MFLOPS(3)       =     0.3271
+   MFLOPS(4)       =     0.3405
+
+[hitagimon960 /]$ 
+[hitagimon960 /]$ 
+

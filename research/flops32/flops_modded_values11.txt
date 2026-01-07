@@ -1,0 +1,28 @@
+# run at 24MHz clk2
+
+CLK2: 24000000
+CLK1: 12000000
+Booted i960
+uShell 0.1.0
+[hitagimon960 /]$ /bin/flops32
+
+   FLOPS C Program (single precision), V2.0 18 Dec 1992
+
+   Module     Error        RunTime      MFLOPS
+                            (usec)
+     1      1.4288e-01     19.8729      0.7045
+     2     -5.4836e-06      9.5780      0.7308
+     3     -2.7955e-05     22.4313      0.7579
+     4     -3.3468e-04     23.1410      0.6482
+     5      5.3585e-05     45.0651      0.6435
+     6      1.0446e-04     43.0936      0.6730
+     7     -1.3150e+01     23.8824      0.5025
+     8      3.4305e-04     44.9732      0.6671
+
+   Iterations      =    1026000
+   NullTime (usec) =     0.5838
+   MFLOPS(1)       =     0.7395
+   MFLOPS(2)       =     0.6101
+   MFLOPS(3)       =     0.6563
+   MFLOPS(4)       =     0.6809
+
