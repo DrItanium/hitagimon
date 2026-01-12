@@ -1,0 +1,29 @@
+// gcc 11.5.0 w/ conversion routines and floating point branch operations implemented
+// updated load and store operations as well
+// disabled memset optimization
+// @ 24MHz
+
+[hitagimon960 /]$ /bin/flops32
+
+   FLOPS C Program (single precision), V2.0 18 Dec 1992
+
+   Module     Error        RunTime      MFLOPS
+                            (usec)
+     1      1.4288e-01     20.4727      0.6838
+     2     -1.0000e-05      9.7583      0.7173
+     3     -3.0000e-05     22.8729      0.7432
+     4     -3.3000e-04     23.5097      0.6380
+     5      5.0000e-05     43.6866      0.6638
+     6      1.0000e-04     42.3143      0.6853
+     7   -1.314979e+01     23.7434      0.5054
+     8      3.4000e-04     44.9880      0.6668
+
+   Iterations      =    1026000
+   NullTime (usec) =     0.0005
+   MFLOPS(1)       =     0.7256
+   MFLOPS(2)       =     0.6133
+   MFLOPS(3)       =     0.6589
+   MFLOPS(4)       =     0.6807
+
+[hitagimon960 /]$
+
