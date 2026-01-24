@@ -258,21 +258,23 @@ namespace FlopsCode {
 /******************************/
 /* Timer code.                */
 /******************************/
+template<typename T>
+using TimeArray = std::array<T, 3>;
 /*****************************************************/
 /*  UNIX dtime(). This is the preferred UNIX timer.  */
 /*  Provided by: Markku Kolkka, mk59200@cc.tut.fi    */
 /*  HP-UX Addition by: Bo Thide', bt@irfu.se         */
 /*****************************************************/
-template<typename FloatType>
+template<typename T>
 void
-dtime(std::array<FloatType, 3>& ta) {
-    static_assert(std::is_floating_point_v<std::remove_cv_t<FloatType>>);
+dtime(TimeArray<T>& ta) {
+    static_assert(std::is_floating_point_v<std::remove_cv_t<T>>);
     rusage ru;
     auto q = ta[2];
 
     (void)getrusage(RUSAGE_SELF, &ru);
-    ta[2] = static_cast<FloatType> (ru.ru_utime.tv_sec);
-    ta[2] = ta[2] + (static_cast<FloatType>(ru.ru_utime.tv_usec) * static_cast<FloatType>(1.0e-06));
+    ta[2] = static_cast<T> (ru.ru_utime.tv_sec);
+    ta[2] = ta[2] + (static_cast<T>(ru.ru_utime.tv_usec) * static_cast<T>(1.0e-06));
     ta[1] = ta[2] - q;
 }
 /* Loops to run. Fixed at 15.0 seconds.*/
@@ -301,7 +303,7 @@ doFlops(const std::string& msg) {
     static constexpr FloatType A6 = 0.164105986683E-9;
     FloatType s, u, v, w, x;
     long m, n;
-    std::array<FloatType, 3> TimeArray; // variables needed for 'dtime()'
+    TimeArray<FloatType> TimeArray; // variables needed for 'dtime()'
     FloatType T[36];                    /* Global Array used to hold timing    */
     /* results and other information.      */
     printf("\n");
@@ -640,7 +642,7 @@ doFlops(const std::string& msg) {
     /*********************/
     s = 0.0;                                        /* Loop 8.           */
     w = one;                                        /*********************/
-    sa = 102.3321513995275;
+    sa = static_cast<FloatType>(102.3321513995275);
     v = sa / (FloatType) m;
 
     dtime(TimeArray);
@@ -654,16 +656,16 @@ doFlops(const std::string& msg) {
     /*********************/
     /* Module 7 Results  */
     /*********************/
-    T[22] = T[21] / 12.0;
+    T[22] = T[21] / static_cast<FloatType>(12.0);
     x = sa;
     u = x * x;
     sa = -w - w / (x + w) - x / (u + w) - u / (x * u + w);
-    sa = 18.0 * v * (sa + two * s);
+    sa = static_cast<FloatType>(18.0) * v * (sa + two * s);
 
     m = -2000 * (long) sa;
     m = (long) ((FloatType) m / scale);
 
-    sc = sa + 500.2;
+    sc = sa + static_cast<FloatType>(500.2);
     T[23] = one / T[22];
     /********************/
     /*  DO NOT REMOVE   */
@@ -727,7 +729,7 @@ doFlops(const std::string& msg) {
     /**************************************************/
     T[29] = T[2] + T[9] + T[12] + T[15] + T[18];
     T[29] = (T[29] + four * T[21]) / (FloatType)152.0;
-    T[30] = one / T[29];
+    auto t30 = one / T[29];
 
     /**************************************************/
     /* MFLOPS(3) output. This output does not include */
@@ -749,7 +751,7 @@ doFlops(const std::string& msg) {
     printf("   Iterations      = %10ld\n", m);
     printf("   NullTime (usec) = %10.4lf\n", nulltime);
     printf("   MFLOPS(1)       = %10.4lf\n", T[28]);
-    printf("   MFLOPS(2)       = %10.4lf\n", T[30]);
+    printf("   MFLOPS(2)       = %10.4lf\n", t30);
     printf("   MFLOPS(3)       = %10.4lf\n", t32);
     printf("   MFLOPS(4)       = %10.4lf\n\n", t34);
 }
