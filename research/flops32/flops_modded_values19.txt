@@ -1,0 +1,27 @@
+// reactivated cmpob/cmpib operations
+
+[hitagimon960 /]$ /bin/flops32
+
+   FLOPS C Program (single precision), V2.0 18 Dec 1992
+
+   Module     Error        RunTime      MFLOPS
+                            (usec)
+     1      1.4288e-01     20.4655      0.6841
+     2     -5.4836e-06      9.7536      0.7177
+     3     -2.7984e-05     22.8626      0.7436
+     4     -3.3468e-04     23.4999      0.6383
+     5      5.3585e-05     43.6676      0.6641
+     6      1.0446e-04     42.3018      0.6855
+     7     -1.3150e+01     23.7374      0.5055
+     8      3.4305e-04     44.9844      0.6669
+
+   Iterations      =    1026000
+   NullTime (usec) =     0.0005
+   MFLOPS(1)       =     0.7259
+   MFLOPS(2)       =     0.6135
+   MFLOPS(3)       =     0.6591
+   MFLOPS(4)       =     0.6809
+
+[hitagimon960 /]$
+[hitagimon960 /]$
+
