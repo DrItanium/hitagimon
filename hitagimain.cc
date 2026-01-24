@@ -267,7 +267,6 @@ struct TimeArray {
 /*  HP-UX Addition by: Bo Thide', bt@irfu.se         */
 /*****************************************************/
 template<typename FloatType>
-[[gnu::noinline]] 
 void
 dtime(TimeArray<FloatType>& ta) {
     rusage ru;
