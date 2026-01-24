@@ -272,7 +272,7 @@ dtime(std::array<FloatType, 3>& ta) {
 
     (void)getrusage(RUSAGE_SELF, &ru);
     ta[2] = static_cast<FloatType> (ru.ru_utime.tv_sec);
-    ta[2] = ta[2] + (static_cast<FloatType>(ru.ru_utime.tv_usec) * 1.0e-06);
+    ta[2] = ta[2] + (static_cast<FloatType>(ru.ru_utime.tv_usec) * static_cast<FloatType>(1.0e-06));
     ta[1] = ta[2] - q;
 }
 /* Loops to run. Fixed at 15.0 seconds.*/
@@ -326,7 +326,7 @@ doFlops(const std::string& msg) {
     /* No more than NLimit = 512000000 loops are allowed*/
     /****************************************************/
 
-    T[1] = 1.0E+06 / (FloatType) loops;
+    T[1] = static_cast<FloatType>(1.0E+06) / (FloatType) loops;
 
     static constexpr FloatType TLimit = 15.0; // threshold to determine number
                                           // of loops to run. Fixed at 15.0
@@ -334,7 +334,10 @@ doFlops(const std::string& msg) {
     static constexpr long NLimit = 512000000;
 
     static constexpr FloatType piref = 3.14159265358979324;
+    static constexpr FloatType zero = 0.0;
     static constexpr FloatType one = 1.0;
+    static constexpr FloatType two = 2.0;
+    static constexpr FloatType three = 3.0;
     static constexpr FloatType four = 4.0;
     static constexpr FloatType five = 5.0;
     FloatType scale = one;
@@ -377,7 +380,7 @@ doFlops(const std::string& msg) {
         //printf(" %10ld  %12.5lf\n",n,sa); 
     }
 
-    scale = 1.0E+06 / (FloatType) n;
+    scale = static_cast<FloatType>(1.0E+06) / static_cast<FloatType>(n);
     T[1] = scale;
 
     /****************************************/
@@ -390,18 +393,18 @@ doFlops(const std::string& msg) {
         dtime(TimeArray);
     }
     FloatType nulltime = T[1] * TimeArray[1];
-    if (nulltime < 0.0) nulltime = 0.0;
+    if (nulltime < zero) nulltime = 0.0;
 
     T[2] = T[1] * sa - nulltime;
 
     sa = (D1 + D2 + D3) / (one + D1 + E2 + E3);
     FloatType sb = D1;
 
-    T[3] = T[2] / 14.0;                             /*********************/
-    sa = x * (sa + sb + 2.0 * s) / 2.0;           /* Module 1 Results. */
+    T[3] = T[2] / static_cast<FloatType>(14.0);                                                   /*********************/
+    sa = x * (sa + sb + two * s) / two;           /* Module 1 Results. */
     sb = one / sa;                                  /*********************/
     n = (long) ((FloatType) (40000 * (long) sb) / scale);
-    FloatType sc = sb - 25.2;
+    FloatType sc = sb - static_cast<FloatType>(25.2);
     T[4] = one / T[3];
     /********************/
     /*  DO NOT REMOVE   */
@@ -430,7 +433,7 @@ doFlops(const std::string& msg) {
     }
     dtime(TimeArray);
     T[5] = T[1] * TimeArray[1];
-    if (T[5] < 0.0) T[5] = 0.0;
+    if (T[5] < zero) T[5] = 0.0;
 
     sc = (FloatType) m;
 
@@ -443,7 +446,7 @@ doFlops(const std::string& msg) {
     for (long i = 1; i <= m; i++) {
         s = -s;
         sa = sa + s;
-        u = u + 2.0;
+        u = u + two;
         x = x + (s - u);
         v = v - s * u;
         w = w + s / u;
@@ -451,11 +454,11 @@ doFlops(const std::string& msg) {
     dtime(TimeArray);
     T[6] = T[1] * TimeArray[1];
 
-    T[7] = (T[6] - T[5]) / 7.0;                   /*********************/
+    T[7] = (T[6] - T[5]) / static_cast<FloatType>(7.0);                   /*********************/
     m = (long) (sa * x / sc);                    /*  PI Results       */
     sa = four * w / five;                           /*********************/
     sb = sa + five / v;
-    sc = 31.25;
+    sc = static_cast<FloatType>(31.25);
     FloatType piprg = sb - sc / (v * v * v);
     FloatType pierr = piprg - piref;
     T[8] = one / T[7];
@@ -474,7 +477,7 @@ doFlops(const std::string& msg) {
     /*            35.3% +, 11.8% -, 52.9% *, and 00.0% /   */
     /*******************************************************/
 
-    x = piref / (3.0 * (FloatType) m);              /*********************/
+    x = piref / (three * static_cast<FloatType>(m));              /*********************/
     s = 0.0;                                        /*  Loop 4.          */
     v = 0.0;                                        /*********************/
 
@@ -488,13 +491,13 @@ doFlops(const std::string& msg) {
     dtime(TimeArray);
     T[9] = T[1] * TimeArray[1] - nulltime;
 
-    u = piref / 3.0;
+    u = piref / three;
     w = u * u;
     sa = u * ((((((A6 * w - A5) * w + A4) * w - A3) * w + A2) * w + A1) * w + one);
 
-    T[10] = T[9] / 17.0;                            /*********************/
-    sa = x * (sa + 2.0 * s) / 2.0;                /* sin(x) Results.   */
-    sb = 0.5;                                       /*********************/
+    T[10] = T[9] / static_cast<FloatType>(17.0);                            /*********************/
+    sa = x * (sa + two * s) / two;                /* sin(x) Results.   */
+    sb = (FloatType) 0.5;                                       /*********************/
     sc = sa - sb;
     FloatType t11 = one / T[10];
     /*********************/
@@ -513,7 +516,7 @@ doFlops(const std::string& msg) {
     /************************************************************/
     A3 = -A3;
     A5 = -A5;
-    x = piref / (3.0 * (FloatType) m);              /*********************/
+    x = piref / (three * (FloatType) m);              /*********************/
     s = 0.0;                                        /*  Loop 5.          */
     v = 0.0;                                        /*********************/
 
@@ -526,13 +529,13 @@ doFlops(const std::string& msg) {
     dtime(TimeArray);
     T[12] = T[1] * TimeArray[1] - nulltime;
 
-    u = piref / 3.0;
+    u = piref / three;
     w = u * u;
     sa = w * (w * (w * (w * (w * (B6 * w + B5) + B4) + B3) + B2) + B1) + one;
 
-    T[13] = T[12] / 15.0;                             /*******************/
-    sa = x * (sa + one + 2.0 * s) / 2.0;            /* Module 4 Result */
-    u = piref / 3.0;                               /*******************/
+    T[13] = T[12] / static_cast<FloatType>(15.0);                             /*******************/
+    sa = x * (sa + one + two * s) / two;            /* Module 4 Result */
+    u = piref / three;                               /*******************/
     w = u * u;
     sb = u * ((((((A6 * w + A5) * w + A4) * w + A3) * w + A2) * w + A1) * w + A0);
     sc = sa - sb;
@@ -552,7 +555,7 @@ doFlops(const std::string& msg) {
     /*            46.7% +, 00.0% -, 50.0% *, and 03.3% /        */
     /************************************************************/
 
-    x = piref / (3.0 * (FloatType) m);              /*********************/
+    x = piref / (three * (FloatType) m);              /*********************/
     s = 0.0;                                        /*  Loop 6.          */
     v = 0.0;                                        /*********************/
 
@@ -566,15 +569,15 @@ doFlops(const std::string& msg) {
     dtime(TimeArray);
     T[15] = T[1] * TimeArray[1] - nulltime;
 
-    u = piref / 3.0;
+    u = piref / three;
     w = u * u;
     sa = u * ((((((A6 * w + A5) * w + A4) * w + A3) * w + A2) * w + A1) * w + one);
     sb = w * (w * (w * (w * (w * (B6 * w + B5) + B4) + B3) + B2) + B1) + one;
     sa = sa / sb;
 
-    T[16] = T[15] / 29.0;                             /*******************/
-    sa = x * (sa + 2.0 * s) / 2.0;                  /* Module 5 Result */
-    sb = 0.6931471805599453;                          /*******************/
+    T[16] = T[15] / (FloatType) 29.0;                             /*******************/
+    sa = x * (sa + two * s) / two;                  /* Module 5 Result */
+    sb = (FloatType) 0.6931471805599453;                          /*******************/
     sc = sa - sb;
     T[17] = one / T[16];
     /*********************/
@@ -612,8 +615,8 @@ doFlops(const std::string& msg) {
     sb = w * (w * (w * (w * (w * (B6 * w + B5) + B4) + B3) + B2) + B1) + one;
     sa = sa * sb;
 
-    T[19] = T[18] / 29.0;                             /*******************/
-    sa = x * (sa + 2.0 * s) / 2.0;                  /* Module 6 Result */
+    T[19] = T[18] / (FloatType)29.0;                             /*******************/
+    sa = x * (sa + two * s) / two;                  /* Module 6 Result */
     sb = 0.25;                                        /*******************/
     sc = sa - sb;
     T[20] = one / T[19];
@@ -655,7 +658,7 @@ doFlops(const std::string& msg) {
     x = sa;
     u = x * x;
     sa = -w - w / (x + w) - x / (u + w) - u / (x * u + w);
-    sa = 18.0 * v * (sa + 2.0 * s);
+    sa = 18.0 * v * (sa + two * s);
 
     m = -2000 * (long) sa;
     m = (long) ((FloatType) m / scale);
@@ -678,7 +681,7 @@ doFlops(const std::string& msg) {
     /*            46.7% +, 00.0% -, 53.3% *, and 00.0% /        */
     /************************************************************/
 
-    x = piref / (3.0* (FloatType) m);              /*********************/
+    x = piref / (three * (FloatType) m);              /*********************/
     s = 0.0;                                        /*  Loop 9.          */
     v = 0.0;                                        /*********************/
 
@@ -692,15 +695,15 @@ doFlops(const std::string& msg) {
     dtime(TimeArray);
     FloatType t24 = T[1] * TimeArray[1] - nulltime;
 
-    u = piref / 3.0;
+    u = piref / three;
     w = u * u;
     sa = u * ((((((A6 * w + A5) * w + A4) * w + A3) * w + A2) * w + A1) * w + one);
     sb = w * (w * (w * (w * (w * (B6 * w + B5) + B4) + B3) + B2) + B1) + one;
     sa = sa * sb * sb;
 
-    T[25] = t24 / 30.0;                             /*******************/
-    sa = x * (sa + 2.0 * s) / 2.0;                  /* Module 8 Result */
-    sb = 0.29166666666666667;                         /*******************/
+    T[25] = t24 / (FloatType)30.0;                             /*******************/
+    sa = x * (sa + two * s) / two;                  /* Module 8 Result */
+    sb = (FloatType) 0.29166666666666667;                         /*******************/
     sc = sa - sb;
 
     FloatType t26 = one / T[25];
@@ -715,7 +718,7 @@ doFlops(const std::string& msg) {
     /* used for all previous versions of the flops.c  */
     /* program. Includes Modules 2 and 3 only.        */
     /**************************************************/
-    T[27] = (five * (T[6] - T[5]) + T[9]) / 52.0;
+    T[27] = (five * (T[6] - T[5]) + T[9]) / (FloatType)52.0;
     T[28] = one / T[27];
 
     /**************************************************/
@@ -723,7 +726,7 @@ doFlops(const std::string& msg) {
     /* Module 2, but it still does 9.2% FDIV's.       */
     /**************************************************/
     T[29] = T[2] + T[9] + T[12] + T[15] + T[18];
-    T[29] = (T[29] + four * T[21]) / 152.0;
+    T[29] = (T[29] + four * T[21]) / (FloatType)152.0;
     T[30] = one / T[29];
 
     /**************************************************/
@@ -731,14 +734,14 @@ doFlops(const std::string& msg) {
     /* Module 2, but it still does 3.4% FDIV's.       */
     /**************************************************/
     FloatType t31 = T[2] + T[9] + T[12] + T[15] + T[18];
-    t31 = (t31+ T[21] + t24) / 146.0;
+    t31 = (t31+ T[21] + t24) / (FloatType)146.0;
     FloatType t32 = one / t31;
 
     /**************************************************/
     /* MFLOPS(4) output. This output does not include */
     /* Module 2, and it does NO FDIV's.               */
     /**************************************************/
-    FloatType t33 = (T[9] + T[12] + T[18] + t24) / 91.0;
+    FloatType t33 = (T[9] + T[12] + T[18] + t24) / (FloatType)91.0;
     FloatType t34 = one / t33;
 
 
