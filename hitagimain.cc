@@ -281,24 +281,24 @@ dtime(FloatType ta[]) {
 template<typename FloatType>
 void
 doFlops(const std::string& msg) {
-    static const FloatType E2 = 0.48E-3;
-    static const FloatType E3 = 0.411051E-6;
-    static const FloatType D1 = 0.3999999946405E-1;
-    static const FloatType D2 = 0.96E-3;
-    static const FloatType D3 = 0.1233153E-5;
-    static const FloatType B1 = -0.4999999999982;
-    static const FloatType B2 = 0.4166666664651E-1;
-    static const FloatType B3 = -0.1388888805755E-2;
-    static const FloatType B4 = 0.24801428034E-4;
-    static const FloatType B5 = -0.2754213324E-6;
-    static const FloatType B6 = 0.20189405E-8;
-    static const FloatType A0 = 1.0;
-    static const FloatType A1 = -0.1666666666671334;
-    static const FloatType A2 = 0.833333333809067E-2;
+    static constexpr FloatType E2 = 0.48E-3;
+    static constexpr FloatType E3 = 0.411051E-6;
+    static constexpr FloatType D1 = 0.3999999946405E-1;
+    static constexpr FloatType D2 = 0.96E-3;
+    static constexpr FloatType D3 = 0.1233153E-5;
+    static constexpr FloatType B1 = -0.4999999999982;
+    static constexpr FloatType B2 = 0.4166666664651E-1;
+    static constexpr FloatType B3 = -0.1388888805755E-2;
+    static constexpr FloatType B4 = 0.24801428034E-4;
+    static constexpr FloatType B5 = -0.2754213324E-6;
+    static constexpr FloatType B6 = 0.20189405E-8;
+    static constexpr FloatType A0 = 1.0;
+    static constexpr FloatType A1 = -0.1666666666671334;
+    static constexpr FloatType A2 = 0.833333333809067E-2;
     FloatType A3 = 0.198412715551283E-3;
     FloatType A5 = 0.2507059876207E-7;
-    static const FloatType A4 = 0.27557589750762E-5;
-    static const FloatType A6 = 0.164105986683E-9;
+    static constexpr FloatType A4 = 0.27557589750762E-5;
+    static constexpr FloatType A6 = 0.164105986683E-9;
     FloatType s, u, v, w, x;
     long m, n;
     FloatType TimeArray[3]; // variables needed for 'dtime()'
@@ -309,7 +309,7 @@ doFlops(const std::string& msg) {
     printf("   FLOPS C Program (%s), V2.0 18 Dec 1992\n\n", msg.c_str());
 
     /****************************/
-    static const long loops = 15625;        /* Initial number of loops. */
+    static constexpr long loops = 15625;        /* Initial number of loops. */
     /*     DO NOT CHANGE!       */
     /****************************/
 
@@ -329,15 +329,15 @@ doFlops(const std::string& msg) {
 
     T[1] = 1.0E+06 / (FloatType) loops;
 
-    static const FloatType TLimit = 15.0; // threshold to determine number
+    static constexpr FloatType TLimit = 15.0; // threshold to determine number
                                           // of loops to run. Fixed at 15.0
                                           // seconds
-    static const long NLimit = 512000000;
+    static constexpr long NLimit = 512000000;
 
-    static const FloatType piref = 3.14159265358979324;
-    static const FloatType one = 1.0;
-    static const FloatType four = 4.0;
-    static const FloatType five = 5.0;
+    static constexpr FloatType piref = 3.14159265358979324;
+    static constexpr FloatType one = 1.0;
+    static constexpr FloatType four = 4.0;
+    static constexpr FloatType five = 5.0;
     FloatType scale = one;
     printf("   Module     Error        RunTime      MFLOPS\n");
     printf("                            (usec)\n");
