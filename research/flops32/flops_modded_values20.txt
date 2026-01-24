@@ -1,0 +1,26 @@
+// make sure that dtime is accurately reported
+[hitagimon960 /]$ /bin/flops32
+
+   FLOPS C Program (single precision), V2.0 18 Dec 1992
+
+   Module     Error        RunTime      MFLOPS
+                            (usec)
+     1      1.4288e-01     20.3896      0.6866
+     2     -5.4836e-06      9.6732      0.7236
+     3     -2.7984e-05     22.7836      0.7461
+     4     -3.3468e-04     23.4208      0.6405
+     5      5.3585e-05     52.1137      0.5565
+     6      1.0446e-04     50.7873      0.5710
+     7     -1.3150e+01     23.6614      0.5072
+     8      3.4305e-04     58.8461      0.5098
+
+   Iterations      =    1026000
+   NullTime (usec) =     0.0007
+   MFLOPS(1)       =     0.7309
+   MFLOPS(2)       =     0.5755
+   MFLOPS(3)       =     0.5794
+   MFLOPS(4)       =     0.5839
+
+[hitagimon960 /]$
+[hitagimon960 /]$
+
