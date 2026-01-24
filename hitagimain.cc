@@ -256,25 +256,28 @@ namespace FlopsCode {
 /******************************/
 /* Timer code.                */
 /******************************/
-
+template<typename T>
+struct TimeArray {
+    T& operator[](size_t index) noexcept { return contents[index]; }
+    T contents[3];
+};
 /*****************************************************/
 /*  UNIX dtime(). This is the preferred UNIX timer.  */
 /*  Provided by: Markku Kolkka, mk59200@cc.tut.fi    */
 /*  HP-UX Addition by: Bo Thide', bt@irfu.se         */
 /*****************************************************/
 template<typename FloatType>
+[[gnu::noinline]] 
 void
-dtime(FloatType ta[]) {
-    struct rusage rusage;
+dtime(TimeArray<FloatType>& ta) {
+    rusage ru;
     FloatType q = ta[2];
 
-    getrusage(RUSAGE_SELF, &rusage);
-
-    ta[2] = (FloatType) (rusage.ru_utime.tv_sec);
-    ta[2] = ta[2] + (FloatType) (rusage.ru_utime.tv_usec) * 1.0e-06;
+    getrusage(RUSAGE_SELF, &ru);
+    ta[2] = (FloatType) (ru.ru_utime.tv_sec);
+    ta[2] = ta[2] + (FloatType) (ru.ru_utime.tv_usec) * 1.0e-06;
     ta[1] = ta[2] - q;
 }
-
 /* Loops to run. Fixed at 15.0 seconds.*/
 
     
@@ -301,10 +304,9 @@ doFlops(const std::string& msg) {
     static constexpr FloatType A6 = 0.164105986683E-9;
     FloatType s, u, v, w, x;
     long m, n;
-    FloatType TimeArray[3]; // variables needed for 'dtime()'
+    TimeArray<FloatType> TimeArray; // variables needed for 'dtime()'
     FloatType T[36];                    /* Global Array used to hold timing    */
     /* results and other information.      */
-
     printf("\n");
     printf("   FLOPS C Program (%s), V2.0 18 Dec 1992\n\n", msg.c_str());
 
@@ -344,9 +346,10 @@ doFlops(const std::string& msg) {
     /*************************/
     /* Initialize the timer. */
     /*************************/
-
-    dtime(TimeArray);
-    dtime(TimeArray);
+    {
+        dtime(TimeArray);
+        dtime(TimeArray);
+    }
 
     /*******************************************************/
     /* Module 1.  Calculate integral of df(x)/f(x) defined */
