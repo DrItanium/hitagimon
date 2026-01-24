@@ -268,14 +268,12 @@ void
 dtime(std::array<FloatType, 3>& ta) {
     static_assert(std::is_floating_point_v<std::remove_cv_t<FloatType>>);
     rusage ru;
-    FloatType q;
+    auto q = ta[2];
 
-    if (getrusage(RUSAGE_SELF, &ru) == 0) {
-        q = ta[2];
-        ta[2] = static_cast<FloatType> (ru.ru_utime.tv_sec);
-        ta[2] = ta[2] + (static_cast<FloatType>(ru.ru_utime.tv_usec) * 1.0e-06);
-        ta[1] = ta[2] - q;
-    }
+    (void)getrusage(RUSAGE_SELF, &ru);
+    ta[2] = static_cast<FloatType> (ru.ru_utime.tv_sec);
+    ta[2] = ta[2] + (static_cast<FloatType>(ru.ru_utime.tv_usec) * 1.0e-06);
+    ta[1] = ta[2] - q;
 }
 /* Loops to run. Fixed at 15.0 seconds.*/
 
@@ -345,10 +343,8 @@ doFlops(const std::string& msg) {
     /*************************/
     /* Initialize the timer. */
     /*************************/
-    {
-        dtime(TimeArray);
-        dtime(TimeArray);
-    }
+    dtime(TimeArray);
+    dtime(TimeArray);
 
     /*******************************************************/
     /* Module 1.  Calculate integral of df(x)/f(x) defined */
@@ -369,7 +365,7 @@ doFlops(const std::string& msg) {
         w = one;
 
         dtime(TimeArray);
-        for (long i = 1; i <= n - 1; i++) {
+        for (auto i = 1; i <= n - 1; i++) {
             v = v + w;
             u = v * x;
             s = s + (D1 + u * (D2 + u * D3)) / (w + u * (D1 + u * (E2 + u * E3)));
@@ -387,10 +383,12 @@ doFlops(const std::string& msg) {
     /****************************************/
     /* Estimate nulltime ('for' loop time). */
     /****************************************/
-    dtime(TimeArray);
-    for (long i = 1; i <= n - 1; i++) {
+    {
+        dtime(TimeArray);
+        for (auto i = 1; i <= n - 1; i++) {
+        }
+        dtime(TimeArray);
     }
-    dtime(TimeArray);
     FloatType nulltime = T[1] * TimeArray[1];
     if (nulltime < 0.0) nulltime = 0.0;
 
