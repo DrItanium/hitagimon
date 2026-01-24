@@ -15,6 +15,8 @@
 #include <string>
 #include <sstream>
 #include <cstring>
+#include <type_traits>
+#include <array>
 extern "C" {
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -256,11 +258,6 @@ namespace FlopsCode {
 /******************************/
 /* Timer code.                */
 /******************************/
-template<typename T>
-struct TimeArray {
-    T& operator[](size_t index) noexcept { return contents[index]; }
-    T contents[3];
-};
 /*****************************************************/
 /*  UNIX dtime(). This is the preferred UNIX timer.  */
 /*  Provided by: Markku Kolkka, mk59200@cc.tut.fi    */
@@ -268,14 +265,17 @@ struct TimeArray {
 /*****************************************************/
 template<typename FloatType>
 void
-dtime(TimeArray<FloatType>& ta) {
+dtime(std::array<FloatType, 3>& ta) {
+    static_assert(std::is_floating_point_v<std::remove_cv_t<FloatType>>);
     rusage ru;
-    FloatType q = ta[2];
+    FloatType q;
 
-    getrusage(RUSAGE_SELF, &ru);
-    ta[2] = (FloatType) (ru.ru_utime.tv_sec);
-    ta[2] = ta[2] + (FloatType) (ru.ru_utime.tv_usec) * 1.0e-06;
-    ta[1] = ta[2] - q;
+    if (getrusage(RUSAGE_SELF, &ru) == 0) {
+        q = ta[2];
+        ta[2] = static_cast<FloatType> (ru.ru_utime.tv_sec);
+        ta[2] = ta[2] + (static_cast<FloatType>(ru.ru_utime.tv_usec) * 1.0e-06);
+        ta[1] = ta[2] - q;
+    }
 }
 /* Loops to run. Fixed at 15.0 seconds.*/
 
@@ -303,7 +303,7 @@ doFlops(const std::string& msg) {
     static constexpr FloatType A6 = 0.164105986683E-9;
     FloatType s, u, v, w, x;
     long m, n;
-    TimeArray<FloatType> TimeArray; // variables needed for 'dtime()'
+    std::array<FloatType, 3> TimeArray; // variables needed for 'dtime()'
     FloatType T[36];                    /* Global Array used to hold timing    */
     /* results and other information.      */
     printf("\n");
