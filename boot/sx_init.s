@@ -131,11 +131,13 @@ reinitialize_iac:
  */
     callx _init_fp
     callx setupInterruptHandler
+    c_callx __libc_init_array
     c_callx main # assume a main for startup
 exec_fallthrough:
     b exec_fallthrough
-
-
+.global _init
+_init:
+    ret
 _init_fp:
 .ifdef __i960_numerics__
     # initialize the floating point registers if it makes sense
@@ -599,3 +601,14 @@ def_system_call 259, _exit
  .bss _sup_stack,  0x8000, 6
 # put the user stack at the bottom in case it overflows?
  .bss _user_stack, 0x8000, 6
+
+ # for gcc11
+.global __dso_handle
+.type __dso_handle,@object
+.size __dso_handle,4
+.section .sbss
+.align 4
+__dso_handle:
+    .skip 4
+    .hidden __dso_handle
+

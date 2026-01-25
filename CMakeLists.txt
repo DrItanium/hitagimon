@@ -107,25 +107,22 @@ target_include_directories(hitagimon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(coremark PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(hitagimon
-		gcc
-		c
-		m
+		hitagisys
 		hitagicortex
 		hitagisys
 		hitagiemul
         microshell
 		coremark
-		stdc++
-		c
-		m
-		gcc # necessary for soft float support, will need to provide my own custom routines ahead of this point to access the fpu
-		hitagicortex
+        gcc
+        m
+        c
+        stdc++
 		)
 
 #add_link_options(-Wl,--as-needed -nostdlib -static -T ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT} -ffreestanding -Wl,--allow-multiple-definition)
 target_link_options(hitagimon
 		PRIVATE -Wl,--as-needed
-		#PRIVATE -nostdlib
+		PRIVATE -nostdlib
 		PRIVATE -static
 		PRIVATE -T ${CMAKE_SOURCE_DIR}/start.ld
 		PRIVATE -ffreestanding
