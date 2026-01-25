@@ -93,6 +93,20 @@ namespace microshell {
         return ush_service(&microshellObject);
     }
 }
+ extern void (*__init_array_start []) (void) __attribute__((weak));
+ extern void (*__init_array_end []) (void) __attribute__((weak));
+extern "C" void 
+_initCppGlobals() {
+    auto count = __init_array_end - __init_array_start;
+    printf("[%x, %x]: %d\n", __init_array_start, __init_array_end, count);
+    for (int i = 0; i < count; ++i) {
+        auto fn = __init_array_start[i];
+        printf("\t%d: %x\n", i, fn);
+        fn();
+        printf("\t%d: done\n", i);
+    }
+    printf("%s: finished\n", __PRETTY_FUNCTION__);
+}
 void
 init()
 {
@@ -104,7 +118,7 @@ init()
     __builtin_i960_set_interrupt_control_reg(0xFCFDFEFF);
     cortex::clearSystemCounter();
     cortex::enableSystemCounter();
-    
+    _initCppGlobals();
 }
 /**
  * @brief Compute the duration of execution and stash the result in a provided rusage type
@@ -2128,13 +2142,6 @@ namespace microshell {
         ush_node_mount(&microshellObject, "/dev/oled", &oledNode, oledDesc, sizeof(oledDesc) / sizeof(oledDesc[0]));
 
     }
-}
- extern void (*__init_array_start []) (void) __attribute__((weak));
- extern void (*__init_array_end []) (void) __attribute__((weak));
-extern "C" 
-void 
-_init() {
-    printf("[%x, %x]: %d\n", __init_array_start, __init_array_end, __init_array_end - __init_array_start);
 }
 int main(void) {
     init();
