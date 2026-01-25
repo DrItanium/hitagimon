@@ -61,12 +61,17 @@ SECTIONS
 	    KEEP (*(SORT(.dtors.*)))
 	    KEEP (*(.dtors))
     } > sram
+	.fini : {
+		KEEP (*(SORT_NONE(.fini)))
+	} > sram
+
 	/* setup the bss section, tag it's start and end positions to allow the
 	 * i960 to manually zero out the memory on the sdcard's ram.bin file */ 
 	.bss : 
 	{ 
 		__bss_start__ = .;
 		_bss_start = .;
+		bss_start = .;
 		KEEP(*(.bss .bss.* .sbss .sbss.*))
 		*(COMMON) /* can't find much documentation on this but it is a good idea to have this here */ 
 		__bss_end__ = .; 
