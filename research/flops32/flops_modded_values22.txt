@@ -1,0 +1,26 @@
+// cleanup of flops32 to eliminate accidental 64-bit operations
+[hitagimon960 /]$ /bin/flops32
+
+   FLOPS C Program (single precision), V2.0 18 Dec 1992
+
+   Module     Error        RunTime      MFLOPS
+                            (usec)
+     1      1.4288e-01     20.3838      0.6868
+     2     -5.4836e-06      9.7549      0.7176
+     3     -2.7984e-05     22.7795      0.7463
+     4     -3.3468e-04     23.4168      0.6406
+     5      5.3585e-05     43.5866      0.6653
+     6      1.0446e-04     42.2252      0.6868
+     7     -1.3150e+01     23.6612      0.5072
+     8      3.4305e-04     44.9078      0.6680
+
+   Iterations      =    1026000
+   NullTime (usec) =     0.0005
+   MFLOPS(1)       =     0.7267
+   MFLOPS(2)       =     0.6153
+   MFLOPS(3)       =     0.6607
+   MFLOPS(4)       =     0.6825
+
+[hitagimon960 /]$
+[hitagimon960 /]$
+
