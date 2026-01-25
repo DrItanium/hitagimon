@@ -31,13 +31,43 @@ SECTIONS
 	 * memory location named "rom", it is sequential as we will see in the next
 	 * few sections*/ 
 	} >rom
+	.init_array : {
+		/* .init_array */
+		PROVIDE_HIDDEN(__init_array_start = .);
+		KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*)))
+		KEEP (*(.init array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o) .ctors))
+		PROVIDE_HIDDEN(__init_array_end = .);
+	} > sram
+	.fini_array  : {
+		/* .fini_array */
+		PROVIDE_HIDDEN(__fini_array_start = .);
+		KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.dtors.*)))
+		KEEP (*(.init array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o) .dtors))
+		PROVIDE_HIDDEN(__fini_array_end = .);
+	} > sram
+	.ctors : {
+		/* According to the core linker script, gcc uses crtbegin.o to find the start of the constructors. So this
+		   sequence ensures that it is first. */
+	    KEEP (*crtbegin.o(.ctors))
+	    KEEP (*crtbegin?.o(.ctors))
+	    KEEP (*(EXCLUDE_FILE (*crtend.o *crtend?.o) .ctors))
+	    KEEP (*(SORT(.ctors.*)))
+	    KEEP (*(.ctors))
+	} > sram
+	.dtors : {
+	    KEEP (*crtbegin.o(.dtors))
+	    KEEP (*crtbegin?.o(.dtors))
+	    KEEP (*(EXCLUDE_FILE (*crtend.o *crtend?.o) .dtors))
+	    KEEP (*(SORT(.dtors.*)))
+	    KEEP (*(.dtors))
+    } > sram
 	/* setup the bss section, tag it's start and end positions to allow the
 	 * i960 to manually zero out the memory on the sdcard's ram.bin file */ 
 	.bss : 
 	{ 
 		__bss_start__ = .;
 		_bss_start = .;
-		KEEP(*(.bss .bss.*))
+		KEEP(*(.bss .bss.* .sbss .sbss.*))
 		*(COMMON) /* can't find much documentation on this but it is a good idea to have this here */ 
 		__bss_end__ = .; 
 	} >sram

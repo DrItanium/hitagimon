@@ -599,12 +599,3 @@ def_system_call 259, _exit
  .bss _sup_stack,  0x8000, 6
 # put the user stack at the bottom in case it overflows?
  .bss _user_stack, 0x8000, 6
- # for gcc11
-.global __dso_handle
-.type __dso_handle,@object
-.size __dso_handle,4
-.section .sbss
-.align 4
-__dso_handle:
-    .skip 4
-    .hidden __dso_handle
