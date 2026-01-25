@@ -2129,7 +2129,13 @@ namespace microshell {
 
     }
 }
-
+ extern void (*__init_array_start []) (void) __attribute__((weak));
+ extern void (*__init_array_end []) (void) __attribute__((weak));
+extern "C" 
+void 
+_init() {
+    printf("[%x, %x]: %d\n", __init_array_start, __init_array_end, __init_array_end - __init_array_start);
+}
 int main(void) {
     init();
     setup();

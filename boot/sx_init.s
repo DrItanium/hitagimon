@@ -135,9 +135,6 @@ reinitialize_iac:
     c_callx main # assume a main for startup
 exec_fallthrough:
     b exec_fallthrough
-.global _init
-_init:
-    ret
 _init_fp:
 .ifdef __i960_numerics__
     # initialize the floating point registers if it makes sense

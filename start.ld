@@ -77,13 +77,6 @@ SECTIONS
 	{
 		__data_start__ = .; 
 		KEEP(*(.data .data.*))
-		CONSTRUCTORS  /* we want to place the constructors data here */
-		__ctors_start__ = .;
-		KEEP(*(.ctors))
-		__ctors_end__ = .;
-		__dtors_start__ = .;
-		KEEP(*(.dtors))
-		__dtors_end__ = .;
 		__data_end__ = .;
 		_edata = .; 
 	} >sram

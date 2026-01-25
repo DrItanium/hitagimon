@@ -135,7 +135,13 @@ target_link_options(hitagimon
 )
 add_custom_command(
 		OUTPUT prog.bin
-		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0x00100000 --only-section=.text --only-section=.bss --only-section=.data --gap-fill=0x00 --set-section-flags .bss=alloc,load,contents -O binary hitagimon prog.bin
+		COMMAND ${CMAKE_OBJCOPY_COMPILER} --pad-to=0x00100000 
+        --only-section=.text 
+        --only-section=.bss 
+        --only-section=.data 
+        --only-section=.init_array 
+        --only-section=.fini_array 
+        --gap-fill=0x00 --set-section-flags .bss=alloc,load,contents -O binary hitagimon prog.bin
 		DEPENDS hitagimon
 		#MAIN_DEPENDENCY hitagimon
 )
