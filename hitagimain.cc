@@ -17,6 +17,8 @@
 #include <cstring>
 #include <type_traits>
 #include <array>
+#include <functional>
+
 extern "C" {
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -32,24 +34,6 @@ union Converter {
     I input;
 };
 
-struct Donuts {
-public:
-    explicit Donuts(int value = rand()) : _value(value) {
-       _coolArray = new char[static_cast<uint32_t>(value) > 1000 ? 1000 : value] ();
-    }
-    ~Donuts() noexcept {
-        delete[] _coolArray;
-    }
-
-    auto getValue() const noexcept {
-        return _value;
-    }
-private:
-    int _value = 0;
-    char* _coolArray = nullptr;
-};
-Donuts d;
-Donuts d2;
 /* 'Uncomment' the line below to run   */
 /* with 'register double' variables    */
 /* defined, or compile with the        */
@@ -93,8 +77,8 @@ namespace microshell {
         return ush_service(&microshellObject);
     }
 }
- extern void (*__init_array_start []) (void) __attribute__((weak));
- extern void (*__init_array_end []) (void) __attribute__((weak));
+extern void (*__init_array_start []) (void) __attribute__((weak));
+extern void (*__init_array_end []) (void) __attribute__((weak));
 void
 init()
 {
@@ -785,7 +769,7 @@ namespace GraphicsOpcodes {
         FillRoundRect,
     };
 }
-inline uint16_t color565(uint8_t r, uint8_t g, uint8_t b) noexcept {
+constexpr uint16_t color565(uint8_t r, uint8_t g, uint8_t b) noexcept {
     // taken from the Adafruit_GFX SPITFT implementation
     return (static_cast<uint16_t>(r & 0xF8) << 8) |
         (static_cast<uint16_t>(g & 0xFC) << 3) |
@@ -892,12 +876,12 @@ void setRotation(uint8_t value) noexcept {
 }
 
 // graphicstest.ino functions
-const uint16_t ColorBlack = color565(0, 0, 0);
-const uint16_t ColorWhite = color565(255, 255, 255);
-const uint16_t ColorRed = color565(255, 0, 0);
-const uint16_t ColorGreen = color565(0, 255, 0);
-const uint16_t ColorBlue = color565(0, 0, 255);
-const uint16_t ColorMagenta = color565(255, 0, 255);
+constexpr uint16_t ColorBlack = color565(0, 0, 0);
+constexpr uint16_t ColorWhite = color565(255, 255, 255);
+constexpr uint16_t ColorRed = color565(255, 0, 0);
+constexpr uint16_t ColorGreen = color565(0, 255, 0);
+constexpr uint16_t ColorBlue = color565(0, 0, 255);
+constexpr uint16_t ColorMagenta = color565(255, 0, 255);
 uint32_t testFillScreen() noexcept {
     uint32_t start = micros();
     fillScreen(ColorBlack);
@@ -1380,10 +1364,10 @@ namespace microshell {
         uint32_t result = spanbit32(src);
         printf("spanbit(0x%lx) = 0x%lx\n", src, result);
     }
-    inline bool isQuodigious(uint32_t value, uint32_t sum, uint32_t product)  {
+    inline constexpr bool isQuodigious(uint32_t value, uint32_t sum, uint32_t product) noexcept {
         return ((value % product) == 0) && ((value % sum) == 0);
     }
-    const uint32_t factors10[10] = {
+    constexpr uint32_t factors10[10] = {
         1, // 0
         10, // 1
         10 * 10, // 2
@@ -1395,7 +1379,7 @@ namespace microshell {
         10 * 10 * 10 * 10 * 10 * 10 * 10 * 10, // 8
         10 * 10 * 10 * 10 * 10 * 10 * 10 * 10 * 10, // 9
     };
-    void doQuodigious(uint8_t depth, uint32_t number = 0, uint32_t sum = 0, uint32_t product = 1) {
+    void doQuodigious(uint8_t depth, uint32_t number = 0, uint32_t sum = 0, uint32_t product = 1) noexcept {
         switch (depth) {
             case 0:
                 if (isQuodigious(number, sum, product)) {
@@ -1425,7 +1409,7 @@ namespace microshell {
             }
         }
     }
-    void quodigious_benchmark(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+    void quodigious_benchmark(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
         if (argc == 1) {
             ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
         } else {
@@ -1528,19 +1512,6 @@ namespace microshell {
                       << components[i]._duration.ru_utime.tv_usec << " usec" << std::endl;
         }
     }
-    size_t info_txt_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
-        static bool initialized = false;
-        static std::string message;
-        if (!initialized) {
-            std::stringstream stream;
-            stream << "HITAGIMON" << std::endl
-                   << "Built on " << __DATE__ << " at " << __TIME__ << std::endl
-                   << "New Lib Version: " << _NEWLIB_VERSION << std::endl;
-            message = stream.str();
-        }
-        *data = (uint8_t*)message.c_str();
-        return message.length();
-    }
     void benchmark_operation(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         if (argc == 1) {
             ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
@@ -1563,6 +1534,19 @@ namespace microshell {
             uint32_t millisEnd = cortex::ChipsetBasicFunctions::Timer::millis();
             std::cout << std::endl << "Execution took: " << std::dec << (millisEnd - millisStart) << std::endl;
         }
+    }
+    size_t info_txt_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
+        static bool initialized = false;
+        static std::string message;
+        if (!initialized) {
+            std::stringstream stream;
+            stream << "HITAGIMON" << std::endl
+                   << "Built on " << __DATE__ << " at " << __TIME__ << std::endl
+                   << "New Lib Version: " << _NEWLIB_VERSION << std::endl;
+            message = stream.str();
+        }
+        *data = (uint8_t*)message.c_str();
+        return message.length();
     }
     ush_node_object cmd;
     const ush_file_descriptor cmdFiles[] = {
@@ -1588,6 +1572,7 @@ namespace microshell {
                     nullptr,
             }
     };
+
     size_t millis_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
         static char timeBuffer[16];
         unsigned long currentTime = cortex::ChipsetBasicFunctions::Timer::millis();
@@ -2113,7 +2098,6 @@ namespace microshell {
         std::cout << "PI: " << 3.14 << std::endl;
         std::cout << "E: " << 2.71 << std::endl;
         std::cout << "This is cool: " << true << std::endl;
-        std::cout << "This is donuts: " << d.getValue() << std::endl;
         std::cout << "COUT TEST END" << std::endl;
 
     },
