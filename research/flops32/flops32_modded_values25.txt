@@ -1,0 +1,27 @@
+// libc is now floating point compiled
+
+[hitagimon960 /]$ /bin/flops32
+
+   FLOPS C Program (single precision), V2.0 18 Dec 1992
+
+   Module     Error        RunTime      MFLOPS
+                            (usec)
+     1      1.4288e-01     20.3951      0.6864
+     2     -5.4836e-06      9.7600      0.7172
+     3     -2.7984e-05     22.7914      0.7459
+     4     -3.3468e-04     23.4307      0.6402
+     5      5.3585e-05     43.6081      0.6650
+     6      1.0446e-04     42.2428      0.6865
+     7     -1.3150e+01     23.6676      0.5070
+     8      3.4305e-04     44.9140      0.6679
+
+   Iterations      =    1026000
+   NullTime (usec) =     0.0005
+   MFLOPS(1)       =     0.7263
+   MFLOPS(2)       =     0.6150
+   MFLOPS(3)       =     0.6605
+   MFLOPS(4)       =     0.6823
+
+[hitagimon960 /]$
+[hitagimon960 /]$
+

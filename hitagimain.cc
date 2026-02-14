@@ -1107,7 +1107,9 @@ FizzleFade(int w, int h, uint16_t color) noexcept {
 extern "C" int coremark_main(int argc, char* argv[]);
 namespace microshell {
     void doCoremark(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        std::cout << "Starting Coremark..." << std::endl;
         (void)coremark_main(argc, argv);
+        std::cout << "Coremark Finished" << std::endl;
     }
     void doGraphicsTest(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         printf("Running graphicstest\n");
