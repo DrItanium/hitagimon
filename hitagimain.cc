@@ -84,6 +84,7 @@ init()
 {
     // setup the chipset basic functions as one of the first things we actually do
     cortex::ChipsetBasicFunctions::begin();
+    printf("Bringing up ChipsetBasicFunctions\n");
     // make sure that we configured the c runtime to not buffer the inputs and outputs
     // this should allow each character to be printed out
     srandom(cortex::ChipsetBasicFunctions::Random::getHardwareRandomNumber());
@@ -2119,7 +2120,9 @@ namespace microshell {
 
     }
 }
+extern "C" void printStartBanner();
 int main(void) {
+    printStartBanner();
     init();
     setup();
     for (;; ) {
@@ -2137,4 +2140,8 @@ extern "C" int ee_printf(const char* format, ...) {
 }
 extern "C" uint32_t Arduino_millis(void) {
     return millis();
+}
+
+extern "C" void printStartBanner() {
+    printf("i960\n");
 }

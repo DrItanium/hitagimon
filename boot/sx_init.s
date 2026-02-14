@@ -112,7 +112,7 @@ reinitialize_iac:
    *    We will now setup the stacks and continue.
    */
 
-  start_again_ip:
+start_again_ip:
   /* -- this would be a good place to diable board interrupts if you are using an interrupt controller.
    *
    * -- Before call to main, we need to take the processor out of the "interrupted" state.
@@ -137,7 +137,7 @@ exec_fallthrough:
 _init_fp:
 .ifdef __i960_numerics__
     # initialize the floating point registers if it makes sense
-    cvtir   0, fp0
+    cvtir   0.0, fp0
     movre   fp0, fp1
     movre   fp1, fp2
     movre   fp2, fp3
