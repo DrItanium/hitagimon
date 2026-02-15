@@ -1180,6 +1180,9 @@ namespace microshell {
     void doFlops32Execution(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         FlopsCode::doFlops<float>("single precision");
     }
+    void doFlops80Execution(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        FlopsCode::doFlops<long double>("extended precision");
+    }
     void doFizzleFade(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         uint16_t w = std::min(screenWidth(), static_cast<uint16_t>(128));
         uint16_t h = std::min(screenHeight(), static_cast<uint16_t>(128));
@@ -1940,6 +1943,15 @@ namespace microshell {
             "run flops single precision benchmark" ,
             nullptr, // help
             doFlops32Execution, // exec
+            nullptr, // get_data
+            nullptr, // set_data
+            nullptr, // process
+        },
+        {
+            "flops80",
+            "run flops extended precision benchmark" ,
+            nullptr, // help
+            doFlops80Execution, // exec
             nullptr, // get_data
             nullptr, // set_data
             nullptr, // process
