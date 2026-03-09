@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <map>
 #include "ChipsetInteract.h"
 #include "IAC.h"
+#include <fileuids.h>
 namespace cortex {
     namespace ChipsetBasicFunctions {
         namespace Console {
@@ -130,7 +131,7 @@ namespace cortex {
     IOMemoryBlock& SRAM2() noexcept;
 
     namespace SDCard {
-        using RequestStructure = void*; /// @todo fix this to not be so generic
+        using RequestStructure = FilesystemOperation*; /// @todo fix this to not be so generic
         uint32_t postRequest(RequestStructure request);
     } // end namespace SDCard
 

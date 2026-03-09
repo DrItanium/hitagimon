@@ -5,6 +5,7 @@
 #include <cortex/Types.h>
 #include <cortex/IODevice.h>
 #include <cortex/ChipsetInteract.h>
+#include <fileuids.h>
 
 namespace cortex
 {
