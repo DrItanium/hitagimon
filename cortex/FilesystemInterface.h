@@ -86,6 +86,16 @@ class SDCardFile : public File {
     public:
         SDCardFile(int systemUid = -1, uint64_t chipsetUid = 0) : File(systemUid), _chipsetUid(chipsetUid) { }
         ~SDCardFile() override;
+        uint16_t read() override;
+        void write(uint16_t value) override;
+        void flush() override;
+        bool matches(int id) const noexcept override;
+        bool valid() const noexcept override;
+        ssize_t read(char* buffer, size_t nbyte) override;
+        ssize_t write(const char* buffer, size_t nbyte) override;
+        bool canSeek() const noexcept override;
+        off_t seek(off_t offset, int whence) noexcept override;
+        bool isatty() const noexcept override { return false; }
     private:
         uint64_t _chipsetUid = 0;
 };
