@@ -54,6 +54,7 @@ private:
 class NullFile : public File {
     public:
         NullFile() : File() { }
+        ~NullFile() override = default;
         uint16_t read() { return 0; }
         void write(uint16_t) { }
         bool valid() const noexcept { return false; }
@@ -67,7 +68,7 @@ class NullFile : public File {
  */
 class ConsoleFile : public File {
 public:
-    ~ConsoleFile();
+    ~ConsoleFile() override;
     ConsoleFile() : File(0) { }
     uint16_t read();
     void write(uint16_t value);
@@ -79,6 +80,14 @@ public:
     bool canSeek() const noexcept { return true; }
     off_t seek(off_t offset, int whence) noexcept;
     bool isatty() const noexcept { return true; }
+};
+
+class SDCardFile : public File {
+    public:
+        SDCardFile(int systemUid = -1, uint64_t chipsetUid = 0) : File(systemUid), _chipsetUid(chipsetUid) { }
+        ~SDCardFile() override;
+    private:
+        uint64_t _chipsetUid = 0;
 };
 
 File& getConsole();
