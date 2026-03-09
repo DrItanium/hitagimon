@@ -38,6 +38,10 @@ namespace cortex
                 uint32_t _sramCapacity;
                 uint32_t _sram2Capacity;
                 uint32_t _unused5;
+                // sdcard interface
+                void* _fsRequestPtr;
+                uint32_t _fsRequestEnable;
+                uint32_t _fsErrorCode;
             };
         } builtin;
         union {
@@ -319,6 +323,13 @@ namespace cortex
     SRAM2() noexcept {
         static IOMemoryBlock thing(const_cast<uint8_t*>(getSRAM2().bytes), getIOSpace().sram2CacheCapacity());
         return thing;
+    }
+    namespace SDCard {
+        uint32_t postRequest(RequestStructure request) {
+            getIOSpace().builtin._fsRequestPtr = request;
+            getIOSpace().builtin._fsRequestEnable = 0xFFFF'FFFF;
+            return getIOSpace().builtin._fsErrorCode;
+        }
     }
 
 } // end namespace cortex
