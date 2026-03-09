@@ -132,7 +132,7 @@ namespace cortex {
 
     namespace SDCard {
         using RequestStructure = FilesystemOperation*; /// @todo fix this to not be so generic
-        uint32_t postRequest(RequestStructure request);
+        FilesystemInterfaceErrorCodes postRequest(RequestStructure request);
     } // end namespace SDCard
 
 }

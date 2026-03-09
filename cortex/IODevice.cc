@@ -40,9 +40,9 @@ namespace cortex
                 uint32_t _sram2Capacity;
                 uint32_t _unused5;
                 // sdcard interface
-                void* _fsRequestPtr;
+                FilesystemOperation* _fsRequestPtr;
                 uint32_t _fsRequestEnable;
-                uint32_t _fsErrorCode;
+                FilesystemInterfaceErrorCodes _fsErrorCode;
             };
         } builtin;
         union {
@@ -326,7 +326,7 @@ namespace cortex
         return thing;
     }
     namespace SDCard {
-        uint32_t postRequest(RequestStructure request) {
+        FilesystemInterfaceErrorCodes postRequest(RequestStructure request) {
             getIOSpace().builtin._fsRequestPtr = request;
             getIOSpace().builtin._fsRequestEnable = 0xFFFF'FFFF;
             return getIOSpace().builtin._fsErrorCode;
