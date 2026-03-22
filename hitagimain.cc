@@ -2203,6 +2203,30 @@ namespace microshell {
         X(testLongSine3, "sinrl fp0, fp0");
         X(testLongSine4, "sinrl r4, fp0");
         X(testLongSine5, "sinrl fp0, r4");
+        X(testTangent0, "tanr 0.0, r4");
+        X(testTangent1, "tanr 0.0, fp0");
+        X(testTangent2, "tanr r4, r4");
+        X(testTangent3, "tanr fp0, fp0");
+        X(testTangent4, "tanr r4, fp0");
+        X(testTangent5, "tanr fp0, r4");
+        X(testLongTangent0, "tanrl 0.0, r4");
+        X(testLongTangent1, "tanrl 0.0, fp0");
+        X(testLongTangent2, "tanrl r4, r4");
+        X(testLongTangent3, "tanrl fp0, fp0");
+        X(testLongTangent4, "tanrl r4, fp0");
+        X(testLongTangent5, "tanrl fp0, r4");
+        X(testSquareRoot0, "sqrtr 0.0, r4");
+        X(testSquareRoot1, "sqrtr 0.0, fp0");
+        X(testSquareRoot2, "sqrtr r4, r4");
+        X(testSquareRoot3, "sqrtr fp0, fp0");
+        X(testSquareRoot4, "sqrtr r4, fp0");
+        X(testSquareRoot5, "sqrtr fp0, r4");
+        X(testLongSquareRoot0, "sqrtrl 0.0, r4");
+        X(testLongSquareRoot1, "sqrtrl 0.0, fp0");
+        X(testLongSquareRoot2, "sqrtrl r4, r4");
+        X(testLongSquareRoot3, "sqrtrl fp0, fp0");
+        X(testLongSquareRoot4, "sqrtrl r4, fp0");
+        X(testLongSquareRoot5, "sqrtrl fp0, r4");
 #undef X
         }
     },
