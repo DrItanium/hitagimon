@@ -30,13 +30,9 @@
 # we want this code to be as tight as possible
 ordinalRegisterToRegisterMoveTest:
 	# g0 - number of times to perform the move
-	mov 0, r4
-0:
 	mov r5, r6 # just keep doing this over and over
-	addo r4, 1, r4
-	cmpo r4, g0
-# there is intentional dead space here
-	bne 0b 
+	cmpdeco 0, g0, g0 # decrement g0
+	bne ordinalRegisterToRegisterMoveTest
 	ret
 
 longOrdinalRegisterToRegisterMoveTest:
