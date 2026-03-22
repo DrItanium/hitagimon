@@ -2123,7 +2123,7 @@ namespace microshell {
                 100'000, 
                 1'000'000, }) {
 
-            std::cout << "ordinalRegisterToRegisterMoveTest(" << a << ") = ";
+            std::cout << "\tordinalRegisterToRegisterMoveTest(" << a << ") = ";
             auto startMillis = micros();
             ordinalRegisterToRegisterMoveTest(a);
             auto endMillis = micros();
@@ -2148,7 +2148,7 @@ namespace microshell {
                 100'000, 
                 1'000'000, }) {
 
-            std::cout << "longOrdinalRegisterToRegisterMoveTest(" << a << ") = ";
+            std::cout << "\tlongOrdinalRegisterToRegisterMoveTest(" << a << ") = ";
             auto startMillis = micros();
             longOrdinalRegisterToRegisterMoveTest(a);
             auto endMillis = micros();
@@ -2173,7 +2173,7 @@ namespace microshell {
                 100'000, 
                 1'000'000, }) {
 
-            std::cout << "tripleOrdinalRegisterToRegisterMoveTest(" << a << ") = ";
+            std::cout << "\ttripleOrdinalRegisterToRegisterMoveTest(" << a << ") = ";
             auto startMillis = micros();
             tripleOrdinalRegisterToRegisterMoveTest(a);
             auto endMillis = micros();
@@ -2199,7 +2199,7 @@ namespace microshell {
                 1'000'000, 
                 }) {
 
-            std::cout << "quadOrdinalRegisterToRegisterMoveTest(" << a << ") = ";
+            std::cout << "\tquadOrdinalRegisterToRegisterMoveTest(" << a << ") = ";
             auto startMillis = micros();
             quadOrdinalRegisterToRegisterMoveTest(a);
             auto endMillis = micros();
@@ -2225,7 +2225,7 @@ namespace microshell {
                 1'000'000, 
                 }) {
 
-            std::cout << "moveRealTest0(" << a << ") = ";
+            std::cout << "\tmoveRealTest0(" << a << ") = ";
             auto startMillis = micros();
             moveRealTest0(a);
             auto endMillis = micros();
@@ -2251,9 +2251,61 @@ namespace microshell {
                 1'000'000, 
                 }) {
 
-            std::cout << "moveRealTest1(" << a << ") = ";
+            std::cout << "\tmoveRealTest1(" << a << ") = ";
             auto startMillis = micros();
             moveRealTest1(a);
+            auto endMillis = micros();
+            std::cout << (endMillis - startMillis) << "us" << std::endl;
+        }
+    },
+    nullptr,
+    nullptr,
+    nullptr,
+},
+{
+    "movr2",
+    nullptr,
+    nullptr,
+    [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        std::cout << "running moveRealTest2 (move r4, fp0)" << std::endl;
+        for (auto a : {
+                10, 
+                100, 
+                1000, 
+                10'000, 
+                100'000, 
+                1'000'000, 
+                }) {
+
+            std::cout << "\tmoveRealTest2(" << a << ") = ";
+            auto startMillis = micros();
+            moveRealTest2(a);
+            auto endMillis = micros();
+            std::cout << (endMillis - startMillis) << "us" << std::endl;
+        }
+    },
+    nullptr,
+    nullptr,
+    nullptr,
+},
+{
+    "movr3",
+    nullptr,
+    nullptr,
+    [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        std::cout << "running moveRealTest3 (move fp0, r4)" << std::endl;
+        for (auto a : {
+                10, 
+                100, 
+                1000, 
+                10'000, 
+                100'000, 
+                1'000'000, 
+                }) {
+
+            std::cout << "\tmoveRealTest3(" << a << ") = ";
+            auto startMillis = micros();
+            moveRealTest3(a);
             auto endMillis = micros();
             std::cout << (endMillis - startMillis) << "us" << std::endl;
         }

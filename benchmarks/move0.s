@@ -104,3 +104,25 @@ moveRealTest1:
 	cmpo r3, g0
 	bne 0b
 	ret
+
+# determine how fast movr r4, fp0 is
+moveRealTest2:
+	# g0 - count
+	mov 0, r3
+0:
+	movr r4, fp0
+	addo r3, 1, r3
+	cmpo r3, g0
+	bne 0b
+	ret
+
+# determine how fast movr fp0, r4 is
+moveRealTest3:
+	# g0 - count
+	mov 0, r3
+0:
+	movr fp0, r4
+	addo r3, 1, r3
+	cmpo r3, g0
+	bne 0b
+	ret
