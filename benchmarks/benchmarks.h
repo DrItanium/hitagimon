@@ -56,6 +56,7 @@ void moveExtendedRealTest2(uint32_t count);
 void moveExtendedRealTest3(uint32_t count);
 void moveExtendedRealTest4(uint32_t count);
 void moveExtendedRealTest5(uint32_t count);
+void testCosine0(uint32_t count);
 #ifdef __cplusplus
 }
 #endif
