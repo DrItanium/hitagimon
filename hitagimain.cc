@@ -1441,14 +1441,15 @@ namespace microshell {
             ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
         } else {
             for (int i = 1; i < argc; ++i) {
-                float depth = 0;
-                if (sscanf(argv[i], "%f", &depth) == EOF) {
+                char* end = nullptr;
+                auto depth = strtof(argv[i], &end);
+                if (depth <= 0.0) {
                     continue;
                 }
                 auto startTime = micros();
                 circleWalkCosineReal0(depth);
                 auto endTime = micros();
-                ush_printf(self, "Duration: %dus\n", endTime - startTime);
+                printf("Iteration: %f, Duration: %dus\n", depth, (endTime - startTime));
             }
         }
     }
@@ -1457,14 +1458,15 @@ namespace microshell {
             ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
         } else {
             for (int i = 1; i < argc; ++i) {
-                float depth = 0;
-                if (sscanf(argv[i], "%f", &depth) == EOF) {
+                char* end = nullptr;
+                auto depth = strtof(argv[i], &end);
+                if (depth <= 0.0) {
                     continue;
                 }
                 auto startTime = micros();
                 circleWalkCosineReal1(depth);
                 auto endTime = micros();
-                ush_printf(self, "Duration: %dus\n", endTime - startTime);
+                printf("Iteration: %f, Duration: %dus\n", depth, (endTime - startTime));
             }
         }
     }
@@ -1473,14 +1475,15 @@ namespace microshell {
             ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
         } else {
             for (int i = 1; i < argc; ++i) {
-                double depth = 0;
-                if (sscanf(argv[i], "%lf", &depth) == EOF) {
+                char* end = nullptr;
+                auto depth = strtod(argv[i], &end);
+                if (depth <= 0.0) {
                     continue;
                 }
                 auto startTime = micros();
                 circleWalkCosineLongReal0(depth);
                 auto endTime = micros();
-                ush_printf(self, "Duration: %dus\n", endTime - startTime);
+                printf("Iteration: %lf, Duration: %dus\n", depth, (endTime - startTime));
             }
         }
     }
@@ -1489,14 +1492,15 @@ namespace microshell {
             ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
         } else {
             for (int i = 1; i < argc; ++i) {
-                double depth = 0;
-                if (sscanf(argv[i], "%lf", &depth) == EOF) {
+                char* end = nullptr;
+                auto depth = strtod(argv[i], &end);
+                if (depth <= 0.0) {
                     continue;
                 }
                 auto startTime = micros();
                 circleWalkCosineLongReal1(depth);
                 auto endTime = micros();
-                ush_printf(self, "Duration: %dus\n", endTime - startTime);
+                printf("Iteration: %lf, Duration: %dus\n", depth, (endTime - startTime));
             }
         }
     }
@@ -1505,14 +1509,15 @@ namespace microshell {
             ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
         } else {
             for (int i = 1; i < argc; ++i) {
-                float depth = 0;
-                if (sscanf(argv[i], "%f", &depth) == EOF) {
+                char* end = nullptr;
+                auto depth = strtof(argv[i], &end);
+                if (depth <= 0.0) {
                     continue;
                 }
                 auto startTime = micros();
                 circleWalkSineReal0(depth);
                 auto endTime = micros();
-                ush_printf(self, "Duration: %dus\n", endTime - startTime);
+                printf("Iteration: %f, Duration: %dus\n", depth, (endTime - startTime));
             }
         }
     }
@@ -1521,14 +1526,15 @@ namespace microshell {
             ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
         } else {
             for (int i = 1; i < argc; ++i) {
-                float depth = 0;
-                if (sscanf(argv[i], "%f", &depth) == EOF) {
+                char* end = nullptr;
+                auto depth = strtof(argv[i], &end);
+                if (depth <= 0.0) {
                     continue;
                 }
                 auto startTime = micros();
                 circleWalkSineReal1(depth);
                 auto endTime = micros();
-                ush_printf(self, "Duration: %dus\n", endTime - startTime);
+                printf("Iteration: %f, Duration: %dus\n", depth, (endTime - startTime));
             }
         }
     }
@@ -1537,14 +1543,15 @@ namespace microshell {
             ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
         } else {
             for (int i = 1; i < argc; ++i) {
-                double depth = 0;
-                if (sscanf(argv[i], "%lf", &depth) == EOF) {
+                char* end = nullptr;
+                auto depth = strtod(argv[i], &end);
+                if (depth <= 0.0) {
                     continue;
                 }
                 auto startTime = micros();
                 circleWalkSineLongReal0(depth);
                 auto endTime = micros();
-                ush_printf(self, "Duration: %dus\n", endTime - startTime);
+                printf("Iteration: %lf, Duration: %dus\n", depth, (endTime - startTime));
             }
         }
     }
@@ -1553,14 +1560,15 @@ namespace microshell {
             ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
         } else {
             for (int i = 1; i < argc; ++i) {
-                double depth = 0;
-                if (sscanf(argv[i], "%lf", &depth) == EOF) {
+                char* end = nullptr;
+                auto depth = strtod(argv[i], &end);
+                if (depth <= 0.0) {
                     continue;
                 }
                 auto startTime = micros();
                 circleWalkSineLongReal1(depth);
                 auto endTime = micros();
-                ush_printf(self, "Duration: %dus\n", endTime - startTime);
+                printf("Iteration: %lf, Duration: %dus\n", depth, (endTime - startTime));
             }
         }
     }
