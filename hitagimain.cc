@@ -1520,6 +1520,19 @@ namespace microshell {
     void do_circle_sqrtrl1(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
         doCircleOperation(self, file, argc, argv, circleWalkSquareRootLongReal1);
     }
+
+    void do_circle_roundr0(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+        doCircleOperation(self, file, argc, argv, circleWalkRoundReal0);
+    }
+    void do_circle_roundr1(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+        doCircleOperation(self, file, argc, argv, circleWalkRoundReal1);
+    }
+    void do_circle_roundrl0(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+        doCircleOperation(self, file, argc, argv, circleWalkRoundLongReal0);
+    }
+    void do_circle_roundrl1(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+        doCircleOperation(self, file, argc, argv, circleWalkRoundLongReal1);
+    }
     struct ExecutionContainer {
         ExecutionContainer(const std::string& title) : _title(title) { }
         std::string _title;
@@ -2263,6 +2276,7 @@ namespace microshell {
             Y(Sine, "sin");
             Y(Tangent, "tan");
             Y(SquareRoot, "sqrt");
+            Y(Round, "round");
 #undef Y
         }
 #undef X
@@ -2287,6 +2301,10 @@ namespace microshell {
 { "circle_sqrtr1", nullptr, nullptr, do_circle_sqrtr1, nullptr, nullptr, nullptr, },
 { "circle_sqrtrl0", nullptr, nullptr, do_circle_sqrtrl0, nullptr, nullptr, nullptr, },
 { "circle_sqrtrl1", nullptr, nullptr, do_circle_sqrtrl1, nullptr, nullptr, nullptr, },
+{ "circle_roundr0", nullptr, nullptr, do_circle_roundr0, nullptr, nullptr, nullptr, },
+{ "circle_roundr1", nullptr, nullptr, do_circle_roundr1, nullptr, nullptr, nullptr, },
+{ "circle_roundrl0", nullptr, nullptr, do_circle_roundrl0, nullptr, nullptr, nullptr, },
+{ "circle_roundrl1", nullptr, nullptr, do_circle_roundrl1, nullptr, nullptr, nullptr, },
 };
     void
     setup() {

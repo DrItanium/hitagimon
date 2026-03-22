@@ -130,6 +130,10 @@ void circleWalkSquareRootReal0(float increment);
 void circleWalkSquareRootReal1(float increment);
 void circleWalkSquareRootLongReal0(double increment);
 void circleWalkSquareRootLongReal1(double increment);
+void circleWalkRoundReal0(float increment);
+void circleWalkRoundReal1(float increment);
+void circleWalkRoundLongReal0(double increment);
+void circleWalkRoundLongReal1(double increment);
 #ifdef __cplusplus
 }
 #endif
