@@ -2111,7 +2111,7 @@ namespace microshell {
 },
 {
     "move_test0",
-    "run ordinalRegisterToRegisterMoveTest with various counts",
+    nullptr,
     nullptr,
     [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         std::cout << "running ordinalRegisterToRegisterMoveTest tests" << std::endl;
@@ -2130,6 +2130,93 @@ namespace microshell {
             std::cout << "ordinalRegisterToRegisterMoveTest(" << a << ") = ";
             auto startMillis = micros();
             ordinalRegisterToRegisterMoveTest(a);
+            auto endMillis = micros();
+            std::cout << (endMillis - startMillis) << "us" << std::endl;
+        }
+    },
+    nullptr,
+    nullptr,
+    nullptr,
+},
+{
+    "move_test1",
+    nullptr,
+    nullptr,
+    [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        std::cout << "running longOrdinalRegisterToRegisterMoveTest tests" << std::endl;
+        for (auto a : {
+                10, 
+                100, 
+                1000, 
+                10'000, 
+                100'000, 
+                1'000'000, 
+                10'000'000,
+                100'000'000,
+                1'000'000'000,
+                2'000'000'000, }) {
+
+            std::cout << "longOrdinalRegisterToRegisterMoveTest(" << a << ") = ";
+            auto startMillis = micros();
+            longOrdinalRegisterToRegisterMoveTest(a);
+            auto endMillis = micros();
+            std::cout << (endMillis - startMillis) << "us" << std::endl;
+        }
+    },
+    nullptr,
+    nullptr,
+    nullptr,
+},
+{
+    "move_test2",
+    nullptr,
+    nullptr,
+    [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        std::cout << "running tripleOrdinalRegisterToRegisterMoveTest tests" << std::endl;
+        for (auto a : {
+                10, 
+                100, 
+                1000, 
+                10'000, 
+                100'000, 
+                1'000'000, 
+                10'000'000,
+                100'000'000,
+                1'000'000'000,
+                2'000'000'000, }) {
+
+            std::cout << "tripleOrdinalRegisterToRegisterMoveTest(" << a << ") = ";
+            auto startMillis = micros();
+            tripleOrdinalRegisterToRegisterMoveTest(a);
+            auto endMillis = micros();
+            std::cout << (endMillis - startMillis) << "us" << std::endl;
+        }
+    },
+    nullptr,
+    nullptr,
+    nullptr,
+},
+{
+    "move_test3",
+    nullptr,
+    nullptr,
+    [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        std::cout << "running quadOrdinalRegisterToRegisterMoveTest tests" << std::endl;
+        for (auto a : {
+                10, 
+                100, 
+                1000, 
+                10'000, 
+                100'000, 
+                1'000'000, 
+                10'000'000,
+                100'000'000,
+                1'000'000'000,
+                2'000'000'000, }) {
+
+            std::cout << "quadOrdinalRegisterToRegisterMoveTest(" << a << ") = ";
+            auto startMillis = micros();
+            quadOrdinalRegisterToRegisterMoveTest(a);
             auto endMillis = micros();
             std::cout << (endMillis - startMillis) << "us" << std::endl;
         }
