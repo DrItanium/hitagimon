@@ -78,3 +78,46 @@ DefSingleInstructionOperation testLongSquareRoot3, sqrtrl, fp0, fp0
 DefSingleInstructionOperation testLongSquareRoot4, sqrtrl, r4, fp0
 DefSingleInstructionOperation testLongSquareRoot5, sqrtrl, fp0, r4
 
+DefSingleInstructionOperation testExponent0, expr, 0.0, r4
+DefSingleInstructionOperation testExponent1, expr, 0.0, fp0
+DefSingleInstructionOperation testExponent2, expr, r4, r4
+DefSingleInstructionOperation testExponent3, expr, fp0, fp0
+DefSingleInstructionOperation testExponent4, expr, r4, fp0
+DefSingleInstructionOperation testExponent5, expr, fp0, r4
+DefSingleInstructionOperation testLongExponent0, exprl, 0.0, r4
+DefSingleInstructionOperation testLongExponent1, exprl, 0.0, fp0
+DefSingleInstructionOperation testLongExponent2, exprl, r4, r4
+DefSingleInstructionOperation testLongExponent3, exprl, fp0, fp0
+DefSingleInstructionOperation testLongExponent4, exprl, r4, fp0
+DefSingleInstructionOperation testLongExponent5, exprl, fp0, r4
+
+.global circleWalkCosineReal0
+.global circleWalkCosineLongReal0
+
+# how long does it take to walk through 0-360 degrees in custom increment amount using just gprs
+circleWalkCosineReal0:
+	# g0 - increment amount (real)
+	ldconst 360, r3 # end circle
+	cvtir r3, r3 # convert it to a real
+	movr 0.0, r4 # load r4
+0:
+	cosr r4, r5 # gpr to gpr operation
+	cmpr r4, r3 
+	addr r4, g0, r4 # increment and use compare overlays to prevent stalling
+	bl 0b # since floating point isn't exact we can just use less than 360
+	ret
+
+# how long does it take to walk through 0-360 degrees in custom increment amount using just gprs
+circleWalkCosineLongReal0:
+	# g0,g1 - increment amount (real)
+	ldconst 360, r3 # end circle
+	cvtir r3, fp0 # convert it to a long real via fp0
+	movrl fp0, r4 # then stash the result into r4 so now we have 360.0000 in long real form
+	movrl 0.0, r6 # load r4
+0:
+	cosrl r6, r8 # gpr to gpr operation
+	cmprl r6, r4 # compare 
+	addrl r6, g0, r6 # increment and use compare overlays to prevent stalling
+	bl 0b # since floating point isn't exact we can just use less than 360
+	ret
+

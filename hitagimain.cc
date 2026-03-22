@@ -2220,6 +2220,18 @@ namespace microshell {
         X(testLongSquareRoot3, "sqrtrl fp0, fp0");
         X(testLongSquareRoot4, "sqrtrl r4, fp0");
         X(testLongSquareRoot5, "sqrtrl fp0, r4");
+        X(testExponent0, "expr 0.0, r4");
+        X(testExponent1, "expr 0.0, fp0");
+        X(testExponent2, "expr r4, r4");
+        X(testExponent3, "expr fp0, fp0");
+        X(testExponent4, "expr r4, fp0");
+        X(testExponent5, "expr fp0, r4");
+        X(testLongExponent0, "exprl 0.0, r4");
+        X(testLongExponent1, "exprl 0.0, fp0");
+        X(testLongExponent2, "exprl r4, r4");
+        X(testLongExponent3, "exprl fp0, fp0");
+        X(testLongExponent4, "exprl r4, fp0");
+        X(testLongExponent5, "exprl fp0, r4");
 #undef X
     },
     nullptr,

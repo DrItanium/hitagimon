@@ -101,7 +101,25 @@ void testLongSquareRoot2(uint32_t count);
 void testLongSquareRoot3(uint32_t count);
 void testLongSquareRoot4(uint32_t count);
 void testLongSquareRoot5(uint32_t count);
+void testExponent0(uint32_t count);
+void testExponent1(uint32_t count);
+void testExponent2(uint32_t count);
+void testExponent3(uint32_t count);
+void testExponent4(uint32_t count);
+void testExponent5(uint32_t count);
+void testLongExponent0(uint32_t count);
+void testLongExponent1(uint32_t count);
+void testLongExponent2(uint32_t count);
+void testLongExponent3(uint32_t count);
+void testLongExponent4(uint32_t count);
+void testLongExponent5(uint32_t count);
 uint32_t computeRawNullTime();
+/**
+ * @brief Walk through a circle (0-360) with a given increment using GPRs only
+ * @param increment the amount to increment by
+ */
+void circleWalkCosineReal0(float increment);
+void circleWalkCosineLongReal0(double increment);
 #ifdef __cplusplus
 }
 #endif
