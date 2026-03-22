@@ -2123,7 +2123,7 @@ namespace microshell {
                 100'000, 
                 1'000'000, }) {
 #define X(func, desc) { \
-    std::cout << "\t[" << desc << "](" << a << ") ="; \
+    std::cout << "\t[" << desc << "](" << a << ") = "; \
             auto startMillis = micros(); \
     func ( a ) ; \
             ordinalRegisterToRegisterMoveTest(a); \
