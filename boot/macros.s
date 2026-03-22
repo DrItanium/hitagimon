@@ -137,28 +137,12 @@ DeclareSegment 0, 0, \addr, 0x204000fb
 .macro nop reg=pfp
     mov \reg, \reg
 .endm
-# Fixed addresses that aren't the safest but for now...
-.equ MicrosecondsAddress, 0xFE000014
+
 .macro DefSingleInstructionOperation name, operation, arg0, arg1
 .global \name
 \name:
-# measure each instruction in isolation
-    mov 0, r3
-    movq 0, r12
-    mov g0, r12 # count
-    callx computeRawNullTime # we want the raw null time
-    mov g0, r13 # null time
-    mov 0, g0 # result
-0:
-    ld MicrosecondsAddress, r14 # load base time
-    mov r14, r14 # make it dependent to prevent moving forward
 	\operation \arg0 , \arg1
-    ld MicrosecondsAddress, r15 # load end time
-    subo r14, r15, r15 # then subtract base from it (causes a block)
-    subo r13, r15, r15 # subtract null time
-    addo r3, 1, r3
-    cmpo r3, r12 # compare with count
-    addo g0, r15, g0 # add to the overall count
-    bne 0b 
+	cmpdeco 1, g0, g0
+	bne \name
 	ret
 .endm

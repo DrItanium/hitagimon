@@ -19,6 +19,8 @@
 #include <array>
 #include <functional>
 #include <benchmarks/benchmarks.h>
+#include <map>
+#include <tuple>
 
 extern "C" {
 #include <sys/time.h>
@@ -2110,20 +2112,20 @@ namespace microshell {
     nullptr,
 },
 { 
-    "move_register_tests",
+    "move_tests",
     "Run various assembly register move tests",
     nullptr,
     [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         std::cout << "running register move tests" << std::endl;
-        for (auto a : {
-                10, 
-                100, 
-                1000, 
-                10'000, 
-                100'000, 
-                1'000'000, }) {
 #define X(func, desc) { \
-    std::cout << "\t[" << desc << "](" << a << ") = " << func ( a ) << "us" << std::endl; \
+    std::cout << "\t" << desc << ": "; \
+    for (auto a : { 10, 100, 1000, 10'000, 100'000, 1'000'000 } ) { \
+        auto startMillis = micros(); \
+        func ( a ) ; \
+        auto endMillis = micros(); \
+        std::cout << "[count: " << a << ", us: " << (endMillis - startMillis) << "], "; \
+    } \
+    std::cout << std::endl; \
 }
     X(ordinalRegisterToRegisterMoveTest, "mov r4, r5");
     X(longOrdinalRegisterToRegisterMoveTest, "movl r4, r6");
@@ -2148,7 +2150,6 @@ namespace microshell {
     X(moveExtendedRealTest4, "movre fp0, fp1");
     X(moveExtendedRealTest5, "movre r4, r8");
 #undef X
-        }
     },
     nullptr,
     nullptr,
@@ -2160,7 +2161,7 @@ namespace microshell {
     "Run various floating point transcendental function tests",
     nullptr,
     [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-        std::cout << "running floating point tests" << std::endl;
+        std::cout << "running fp operation tests" << std::endl;
         for (auto a : {
                 1,
                 10, 
@@ -2169,7 +2170,11 @@ namespace microshell {
                 10'000, 
                 100'000, }) {
 #define X(func, desc) { \
-    std::cout << "\t[" << desc << "](" << a << ") = " << func ( a ) << "us" << std::endl; \
+    std::cout << "\t[" << desc << "](" << a << ") = "; \
+            auto startMillis = micros(); \
+            func ( a ) ; \
+            auto endMillis = micros(); \
+            std::cout << (endMillis - startMillis) << "us" << std::endl; \
 }
         X(testCosine0, "cosr 0.0, r4");
         X(testCosine1, "cosr 0.0, fp0");
