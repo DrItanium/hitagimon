@@ -77,3 +77,30 @@ quadOrdinalRegisterToRegisterMoveTest:
 	cmpo r3, g0
 	bne 0b
 	ret
+
+.global moveRealTest0
+.global moveRealTest1
+.global moveRealTest2
+.global moveRealTest3
+
+# determine how fast movr 0.0f, r4 is
+moveRealTest0:
+	# g0 - count
+	mov 0, r3
+0:
+	movr 0.0, r4
+	addo r3, 1, r3
+	cmpo r3, g0
+	bne 0b
+	ret
+
+# determine how fast movr 0.0f, fp0 is
+moveRealTest1:
+	# g0 - count
+	mov 0, r3
+0:
+	movr 0.0, fp0
+	addo r3, 1, r3
+	cmpo r3, g0
+	bne 0b
+	ret

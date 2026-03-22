@@ -2210,6 +2210,58 @@ namespace microshell {
     nullptr,
     nullptr,
 },
+{
+    "movr0",
+    nullptr,
+    nullptr,
+    [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        std::cout << "running moveRealTest0 (move 0.0, r4)" << std::endl;
+        for (auto a : {
+                10, 
+                100, 
+                1000, 
+                10'000, 
+                100'000, 
+                1'000'000, 
+                }) {
+
+            std::cout << "moveRealTest0(" << a << ") = ";
+            auto startMillis = micros();
+            moveRealTest0(a);
+            auto endMillis = micros();
+            std::cout << (endMillis - startMillis) << "us" << std::endl;
+        }
+    },
+    nullptr,
+    nullptr,
+    nullptr,
+},
+{
+    "movr1",
+    nullptr,
+    nullptr,
+    [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        std::cout << "running moveRealTest1 (move 0.0, fp0)" << std::endl;
+        for (auto a : {
+                10, 
+                100, 
+                1000, 
+                10'000, 
+                100'000, 
+                1'000'000, 
+                }) {
+
+            std::cout << "moveRealTest1(" << a << ") = ";
+            auto startMillis = micros();
+            moveRealTest1(a);
+            auto endMillis = micros();
+            std::cout << (endMillis - startMillis) << "us" << std::endl;
+        }
+    },
+    nullptr,
+    nullptr,
+    nullptr,
+},
 };
     void
     setup() {

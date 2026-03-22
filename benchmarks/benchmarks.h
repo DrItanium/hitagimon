@@ -38,6 +38,8 @@ void ordinalRegisterToRegisterMoveTest(uint32_t count);
 void longOrdinalRegisterToRegisterMoveTest(uint32_t count);
 void tripleOrdinalRegisterToRegisterMoveTest(uint32_t count);
 void quadOrdinalRegisterToRegisterMoveTest(uint32_t count);
+void moveRealTest0(uint32_t count);
+void moveRealTest1(uint32_t count);
 #ifdef __cplusplus
 }
 #endif
