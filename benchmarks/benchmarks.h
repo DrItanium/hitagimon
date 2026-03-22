@@ -101,6 +101,7 @@ void testLongSquareRoot2(uint32_t count);
 void testLongSquareRoot3(uint32_t count);
 void testLongSquareRoot4(uint32_t count);
 void testLongSquareRoot5(uint32_t count);
+uint32_t computeRawNullTime();
 #ifdef __cplusplus
 }
 #endif

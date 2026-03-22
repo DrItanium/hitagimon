@@ -2160,11 +2160,16 @@ namespace microshell {
 },
 
 { 
-    "transcendental_tests",
+    "fp_tests",
     "Run various floating point transcendental function tests",
     nullptr,
     [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         std::cout << "running register move tests" << std::endl;
+        auto nullStart = micros();
+        auto nullTime = micros() - nullStart;
+        auto rawNullTime = computeRawNullTime();
+        std::cout << "scaffolding nullTime: " << nullTime << "us" << std::endl;
+        std::cout << "rawNullTime: " << rawNullTime << "us" << std::endl;
         for (auto a : {
                 1,
                 10, 
