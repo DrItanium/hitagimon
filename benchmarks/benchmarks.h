@@ -48,6 +48,11 @@ void moveLongRealTest1(uint32_t count);
 void moveLongRealTest2(uint32_t count);
 void moveLongRealTest3(uint32_t count);
 void moveLongRealTest4(uint32_t count);
+void moveExtendedRealTest0(uint32_t count);
+void moveExtendedRealTest1(uint32_t count);
+void moveExtendedRealTest2(uint32_t count);
+void moveExtendedRealTest3(uint32_t count);
+void moveExtendedRealTest4(uint32_t count);
 #ifdef __cplusplus
 }
 #endif
