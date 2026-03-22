@@ -106,6 +106,11 @@ DefSingleInstructionOperation testLongExponent5, exprl, fp0, r4
 .global circleWalkTangentLongReal0
 .global circleWalkTangentLongReal1
 
+.global circleWalkSquareRootReal0
+.global circleWalkSquareRootReal1
+.global circleWalkSquareRootLongReal0
+.global circleWalkSquareRootLongReal1
+
 # how long does it take to walk through 0-360 degrees in custom increment amount using just gprs
 circleWalkCosineReal0:
 	# g0 - increment amount (real)
@@ -223,7 +228,7 @@ circleWalkTangentReal0:
 	cvtir r3, r3 # convert it to a real
 	movr 0.0, r4 # load r4
 0:
-	sinr r4, r5 # gpr to gpr operation
+	tanr r4, r5 # gpr to gpr operation
 	cmpr r4, r3 
 	addr r4, g0, r4 # increment and use compare overlays to prevent stalling
 	bl 0b # since floating point isn't exact we can just use less than 360
@@ -237,7 +242,7 @@ circleWalkTangentReal1:
 	cvtir r3, fp1 # convert it to a real
 	movr 0.0, fp2 
 0:
-	sinr fp2, fp3 
+	tanr fp2, fp3 
 	cmpr fp2, fp1
 	addr fp2, fp0, fp2 # increment and use compare overlays to prevent stalling
 	bl 0b # since floating point isn't exact we can just use less than 360
@@ -251,7 +256,7 @@ circleWalkTangentLongReal0:
 	movrl fp0, r4 # then stash the result into r4 so now we have 360.0000 in long real form
 	movrl 0.0, r6 # load r4
 0:
-	sinrl r6, r8 # gpr to gpr operation
+	tanrl r6, r8 # gpr to gpr operation
 	cmprl r6, r4 # compare 
 	addrl r6, g0, r6 # increment and use compare overlays to prevent stalling
 	bl 0b # since floating point isn't exact we can just use less than 360
@@ -265,7 +270,62 @@ circleWalkTangentLongReal1:
 	cvtir r3, fp1 # convert it to a real
 	movrl 0.0, fp2 
 0:
-	sinrl fp2, fp3 
+	tanrl fp2, fp3 
+	cmprl fp2, fp1
+	addrl fp2, fp0, fp2 # increment and use compare overlays to prevent stalling
+	bl 0b # since floating point isn't exact we can just use less than 360
+	ret
+
+# how long does it take to walk through 0-360 degrees in custom increment amount using just gprs
+circleWalkSquareRootReal0:
+	# g0 - increment amount (real)
+	ldconst 360, r3 # end circle
+	cvtir r3, r3 # convert it to a real
+	movr 0.0, r4 # load r4
+0:
+	sqrtr r4, r5 # gpr to gpr operation
+	cmpr r4, r3 
+	addr r4, g0, r4 # increment and use compare overlays to prevent stalling
+	bl 0b # since floating point isn't exact we can just use less than 360
+	ret
+
+# how long does it take to walk through 0-360 degrees in custom increment amount using fprs
+circleWalkSquareRootReal1:
+	# g0 - increment amount (real)
+	movr g0, fp0
+	ldconst 360, r3 # end circle
+	cvtir r3, fp1 # convert it to a real
+	movr 0.0, fp2 
+0:
+	sqrtr fp2, fp3 
+	cmpr fp2, fp1
+	addr fp2, fp0, fp2 # increment and use compare overlays to prevent stalling
+	bl 0b # since floating point isn't exact we can just use less than 360
+	ret
+
+# how long does it take to walk through 0-360 degrees in custom increment amount using just gprs
+circleWalkSquareRootLongReal0:
+	# g0,g1 - increment amount (real)
+	ldconst 360, r3 # end circle
+	cvtir r3, fp0 # convert it to a long real via fp0
+	movrl fp0, r4 # then stash the result into r4 so now we have 360.0000 in long real form
+	movrl 0.0, r6 # load r4
+0:
+	sqrtrl r6, r8 # gpr to gpr operation
+	cmprl r6, r4 # compare 
+	addrl r6, g0, r6 # increment and use compare overlays to prevent stalling
+	bl 0b # since floating point isn't exact we can just use less than 360
+	ret
+
+# how long does it take to walk through 0-360 degrees in custom increment amount using fprs
+circleWalkSquareRootLongReal1:
+	# g0,g1 - increment amount (real)
+	movrl g0, fp0
+	ldconst 360, r3 # end circle
+	cvtir r3, fp1 # convert it to a real
+	movrl 0.0, fp2 
+0:
+	sqrtrl fp2, fp3 
 	cmprl fp2, fp1
 	addrl fp2, fp0, fp2 # increment and use compare overlays to prevent stalling
 	bl 0b # since floating point isn't exact we can just use less than 360

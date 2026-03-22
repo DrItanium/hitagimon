@@ -1508,6 +1508,18 @@ namespace microshell {
     void do_circle_tanrl1(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
         doCircleOperation(self, file, argc, argv, circleWalkTangentLongReal1);
     }
+    void do_circle_sqrtr0(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+        doCircleOperation(self, file, argc, argv, circleWalkSquareRootReal0);
+    }
+    void do_circle_sqrtr1(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+        doCircleOperation(self, file, argc, argv, circleWalkSquareRootReal1);
+    }
+    void do_circle_sqrtrl0(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+        doCircleOperation(self, file, argc, argv, circleWalkSquareRootLongReal0);
+    }
+    void do_circle_sqrtrl1(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+        doCircleOperation(self, file, argc, argv, circleWalkSquareRootLongReal1);
+    }
     struct ExecutionContainer {
         ExecutionContainer(const std::string& title) : _title(title) { }
         std::string _title;
@@ -2243,13 +2255,14 @@ namespace microshell {
 }
         for (auto a : { 1.0, 0.5, 0.1, 0.01 }) {
 #define Y(frag, str) \
-            X(circleWalk ## frag ## Real0, str " (gprs only)", a); \
-            X(circleWalk ## frag ## Real1, str " (fprs only)", a); \
-            X(circleWalk ## frag ## LongReal0, str "l (gprs only)", a); \
-            X(circleWalk ## frag ## LongReal1, str "l (fprs only)", a)
-            Y(Cosine, "cosr");
-            Y(Sine, "sinr");
-            Y(Tangent, "tanr");
+            X(circleWalk ## frag ## Real0, str "r (gprs only)", a); \
+            X(circleWalk ## frag ## Real1, str "r (fprs only)", a); \
+            X(circleWalk ## frag ## LongReal0, str "rl (gprs only)", a); \
+            X(circleWalk ## frag ## LongReal1, str "rl (fprs only)", a)
+            Y(Cosine, "cos");
+            Y(Sine, "sin");
+            Y(Tangent, "tan");
+            Y(SquareRoot, "sqrt");
 #undef Y
         }
 #undef X
@@ -2270,6 +2283,10 @@ namespace microshell {
 { "circle_tanr1", nullptr, nullptr, do_circle_tanr1, nullptr, nullptr, nullptr, },
 { "circle_tanrl0", nullptr, nullptr, do_circle_tanrl0, nullptr, nullptr, nullptr, },
 { "circle_tanrl1", nullptr, nullptr, do_circle_tanrl1, nullptr, nullptr, nullptr, },
+{ "circle_sqrtr0", nullptr, nullptr, do_circle_sqrtr0, nullptr, nullptr, nullptr, },
+{ "circle_sqrtr1", nullptr, nullptr, do_circle_sqrtr1, nullptr, nullptr, nullptr, },
+{ "circle_sqrtrl0", nullptr, nullptr, do_circle_sqrtrl0, nullptr, nullptr, nullptr, },
+{ "circle_sqrtrl1", nullptr, nullptr, do_circle_sqrtrl1, nullptr, nullptr, nullptr, },
 };
     void
     setup() {
