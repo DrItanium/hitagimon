@@ -36,20 +36,14 @@ ordinalRegisterToRegisterMoveTest:
 	ret
 
 longOrdinalRegisterToRegisterMoveTest:
-	mov 0, r3
-0:
 	movl r4, r6
-	addo r3, 1, r3
-	cmpo r3, g0
-	bne 0b
+	cmpdeco 0, g0, g0
+	bne longOrdinalRegisterToRegisterMoveTest
 	ret
 tripleOrdinalRegisterToRegisterMoveTest:
-	mov 0, r3
-0:
 	movt r4, r8
-	addo r3, 1, r3
-	cmpo r3, g0
-	bne 0b
+	cmpdeco 0, g0, g0
+	bne tripleOrdinalRegisterToRegisterMoveTest
 	ret
 
 quadOrdinalRegisterToRegisterMoveTest:
