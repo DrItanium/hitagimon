@@ -1436,6 +1436,134 @@ namespace microshell {
         std::cout << "execution duration: " << std::dec << duration.ru_utime.tv_sec << " sec" << std::endl;
         std::cout << "\t\t" << std::dec << duration.ru_utime.tv_usec << " usec" << std::endl;
     }
+    void do_circle_cosr0(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+        if (argc == 1) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
+        } else {
+            for (int i = 1; i < argc; ++i) {
+                float depth = 0;
+                if (sscanf(argv[i], "%f", &depth) == EOF) {
+                    continue;
+                }
+                auto startTime = micros();
+                circleWalkCosineReal0(depth);
+                auto endTime = micros();
+                ush_printf(self, "Duration: %dus\n", endTime - startTime);
+            }
+        }
+    }
+    void do_circle_cosr1(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+        if (argc == 1) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
+        } else {
+            for (int i = 1; i < argc; ++i) {
+                float depth = 0;
+                if (sscanf(argv[i], "%f", &depth) == EOF) {
+                    continue;
+                }
+                auto startTime = micros();
+                circleWalkCosineReal1(depth);
+                auto endTime = micros();
+                ush_printf(self, "Duration: %dus\n", endTime - startTime);
+            }
+        }
+    }
+    void do_circle_cosrl0(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+        if (argc == 1) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
+        } else {
+            for (int i = 1; i < argc; ++i) {
+                double depth = 0;
+                if (sscanf(argv[i], "%lf", &depth) == EOF) {
+                    continue;
+                }
+                auto startTime = micros();
+                circleWalkCosineLongReal0(depth);
+                auto endTime = micros();
+                ush_printf(self, "Duration: %dus\n", endTime - startTime);
+            }
+        }
+    }
+    void do_circle_cosrl1(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+        if (argc == 1) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
+        } else {
+            for (int i = 1; i < argc; ++i) {
+                double depth = 0;
+                if (sscanf(argv[i], "%lf", &depth) == EOF) {
+                    continue;
+                }
+                auto startTime = micros();
+                circleWalkCosineLongReal1(depth);
+                auto endTime = micros();
+                ush_printf(self, "Duration: %dus\n", endTime - startTime);
+            }
+        }
+    }
+    void do_circle_sinr0(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+        if (argc == 1) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
+        } else {
+            for (int i = 1; i < argc; ++i) {
+                float depth = 0;
+                if (sscanf(argv[i], "%f", &depth) == EOF) {
+                    continue;
+                }
+                auto startTime = micros();
+                circleWalkSineReal0(depth);
+                auto endTime = micros();
+                ush_printf(self, "Duration: %dus\n", endTime - startTime);
+            }
+        }
+    }
+    void do_circle_sinr1(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+        if (argc == 1) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
+        } else {
+            for (int i = 1; i < argc; ++i) {
+                float depth = 0;
+                if (sscanf(argv[i], "%f", &depth) == EOF) {
+                    continue;
+                }
+                auto startTime = micros();
+                circleWalkSineReal1(depth);
+                auto endTime = micros();
+                ush_printf(self, "Duration: %dus\n", endTime - startTime);
+            }
+        }
+    }
+    void do_circle_sinrl0(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+        if (argc == 1) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
+        } else {
+            for (int i = 1; i < argc; ++i) {
+                double depth = 0;
+                if (sscanf(argv[i], "%lf", &depth) == EOF) {
+                    continue;
+                }
+                auto startTime = micros();
+                circleWalkSineLongReal0(depth);
+                auto endTime = micros();
+                ush_printf(self, "Duration: %dus\n", endTime - startTime);
+            }
+        }
+    }
+    void do_circle_sinrl1(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+        if (argc == 1) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
+        } else {
+            for (int i = 1; i < argc; ++i) {
+                double depth = 0;
+                if (sscanf(argv[i], "%lf", &depth) == EOF) {
+                    continue;
+                }
+                auto startTime = micros();
+                circleWalkSineLongReal1(depth);
+                auto endTime = micros();
+                ush_printf(self, "Duration: %dus\n", endTime - startTime);
+            }
+        }
+    }
     struct ExecutionContainer {
         ExecutionContainer(const std::string& title) : _title(title) { }
         std::string _title;
@@ -2181,12 +2309,24 @@ namespace microshell {
         X(circleWalkCosineLongReal0, "cosrl (gprs only)", 0.5);
         X(circleWalkCosineLongReal0, "cosrl (gprs only)", 0.1);
         X(circleWalkCosineLongReal0, "cosrl (gprs only)", 0.01);
+        X(circleWalkCosineLongReal1, "cosrl (fprs only)", 1.0);
+        X(circleWalkCosineLongReal1, "cosrl (fprs only)", 0.5);
+        X(circleWalkCosineLongReal1, "cosrl (fprs only)", 0.1);
+        X(circleWalkCosineLongReal1, "cosrl (fprs only)", 0.01);
 #undef X
     },
     nullptr,
     nullptr,
     nullptr,
 },
+{ "circle_cosr0", nullptr, nullptr, do_circle_cosr0, nullptr, nullptr, nullptr, },
+{ "circle_cosr1", nullptr, nullptr, do_circle_cosr1, nullptr, nullptr, nullptr, },
+{ "circle_cosrl0", nullptr, nullptr, do_circle_cosrl0, nullptr, nullptr, nullptr, },
+{ "circle_cosrl1", nullptr, nullptr, do_circle_cosrl1, nullptr, nullptr, nullptr, },
+{ "circle_sinr0", nullptr, nullptr, do_circle_sinr0, nullptr, nullptr, nullptr, },
+{ "circle_sinr1", nullptr, nullptr, do_circle_sinr1, nullptr, nullptr, nullptr, },
+{ "circle_sinrl0", nullptr, nullptr, do_circle_sinrl0, nullptr, nullptr, nullptr, },
+{ "circle_sinrl1", nullptr, nullptr, do_circle_sinrl1, nullptr, nullptr, nullptr, },
 };
     void
     setup() {

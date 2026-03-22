@@ -114,17 +114,14 @@ void testLongExponent3(uint32_t count);
 void testLongExponent4(uint32_t count);
 void testLongExponent5(uint32_t count);
 uint32_t computeRawNullTime();
-/**
- * @brief Walk through a circle (0-360) with a given increment using GPRs only
- * @param increment the amount to increment by
- */
 void circleWalkCosineReal0(float increment);
-/**
- * @brief Walk through a circle (0-360) with a given increment using FPRs only
- * @param increment the amount to increment by
- */
 void circleWalkCosineReal1(float increment);
 void circleWalkCosineLongReal0(double increment);
+void circleWalkCosineLongReal1(double increment);
+void circleWalkSineReal0(float increment);
+void circleWalkSineReal1(float increment);
+void circleWalkSineLongReal0(double increment);
+void circleWalkSineLongReal1(double increment);
 #ifdef __cplusplus
 }
 #endif
