@@ -67,6 +67,10 @@ add_library(hitagicortex
         cortex/FilesystemInterface.h
         cortex/FilesystemInterface.cc
 )
+add_library(hitagibench
+	benchmarks/benchmarks.h
+	benchmarks/move0.s
+)
 add_executable(hitagimon
 		boot/sx_init.s # this must ALWAYS be first!
 		boot/f_table.s
@@ -113,6 +117,7 @@ target_include_directories(hitagimon PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/libcommoncommunication/include
 )
+target_include_directories(hitagibench PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(coremark PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(hitagimon
@@ -120,6 +125,7 @@ target_link_libraries(hitagimon
 		hitagicortex
 		hitagisys
 		hitagiemul
+		hitagibench
         microshell
 		coremark
         gcc

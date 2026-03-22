@@ -18,6 +18,7 @@
 #include <type_traits>
 #include <array>
 #include <functional>
+#include <benchmarks/benchmarks.h>
 
 extern "C" {
 #include <sys/time.h>
@@ -2103,6 +2104,24 @@ namespace microshell {
         std::cout << "This is cool: " << true << std::endl;
         std::cout << "COUT TEST END" << std::endl;
 
+    },
+    nullptr,
+    nullptr,
+    nullptr,
+},
+{
+    "move_test0",
+    "run ordinalRegisterToRegisterMoveTest with various counts",
+    nullptr,
+    [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        std::cout << "running ordinalRegisterToRegisterMoveTest tests" << std::endl;
+        for (auto a : {10, 100, 1000, 10000, 1'000'000 }) {
+            std::cout << "ordinalRegisterToRegisterMoveTest(" << a << ") = ";
+            auto startMillis = millis();
+            ordinalRegisterToRegisterMoveTest(a);
+            auto endMillis = millis();
+            std::cout << (endMillis - startMillis) << "ms" << std::endl;
+        }
     },
     nullptr,
     nullptr,
