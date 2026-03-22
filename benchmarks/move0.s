@@ -244,3 +244,38 @@ moveExtendedRealTest4:
 	cmpo r3, g0
 	bne 0b
 	ret
+
+.global moveRealTest5
+.global moveLongRealTest5
+.global moveExtendedRealTest5
+
+
+moveExtendedRealTest5:
+	# g0 - count
+	mov 0, r3
+0:
+	movre r4, r8
+	addo r3, 1, r3
+	cmpo r3, g0
+	bne 0b
+	ret
+# determine how fast movre r4, r8 is
+moveLongRealTest5:
+	# g0 - count
+	mov 0, r3
+0:
+	movrl r4, r8
+	addo r3, 1, r3
+	cmpo r3, g0
+	bne 0b
+	ret
+
+moveRealTest5:
+	# g0 - count
+	mov 0, r3
+0:
+	movr r4, r8
+	addo r3, 1, r3
+	cmpo r3, g0
+	bne 0b
+	ret

@@ -2138,17 +2138,20 @@ namespace microshell {
     X(moveRealTest1, "movr 0.0, fp0");
     X(moveRealTest2, "movr r4, fp0");
     X(moveRealTest3, "movr fp0, r4");
-    X(moveRealTest3, "movr fp0, fp1");
+    X(moveRealTest4, "movr fp0, fp1");
+    X(moveRealTest5, "movr r4, r8");
     X(moveLongRealTest0, "movrl 0.0, r4");
     X(moveLongRealTest1, "movrl 0.0, fp0");
     X(moveLongRealTest2, "movrl r4, fp0");
     X(moveLongRealTest3, "movrl fp0, r4");
-    X(moveLongRealTest3, "movrl fp0, fp1");
+    X(moveLongRealTest4, "movrl fp0, fp1");
+    X(moveLongRealTest5, "movrl r4, r8");
     X(moveExtendedRealTest0, "movre 0.0, r4");
     X(moveExtendedRealTest1, "movre 0.0, fp0");
     X(moveExtendedRealTest2, "movre r4, fp0");
     X(moveExtendedRealTest3, "movre fp0, r4");
-    X(moveExtendedRealTest3, "movre fp0, fp1");
+    X(moveExtendedRealTest4, "movre fp0, fp1");
+    X(moveExtendedRealTest5, "movre r4, r8");
 #undef X
         }
     },
