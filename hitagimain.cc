@@ -2313,6 +2313,22 @@ namespace microshell {
         X(circleWalkCosineLongReal1, "cosrl (fprs only)", 0.5);
         X(circleWalkCosineLongReal1, "cosrl (fprs only)", 0.1);
         X(circleWalkCosineLongReal1, "cosrl (fprs only)", 0.01);
+        X(circleWalkSineReal0, "cosr (gprs only)", 1.0f);
+        X(circleWalkSineReal0, "cosr (gprs only)", 0.5f);
+        X(circleWalkSineReal0, "cosr (gprs only)", 0.1f);
+        X(circleWalkSineReal0, "cosr (gprs only)", 0.01f);
+        X(circleWalkSineReal1, "cosr (fprs only)", 1.0f);
+        X(circleWalkSineReal1, "cosr (fprs only)", 0.5f);
+        X(circleWalkSineReal1, "cosr (fprs only)", 0.1f);
+        X(circleWalkSineReal1, "cosr (fprs only)", 0.01f);
+        X(circleWalkSineLongReal0, "cosrl (gprs only)", 1.0);
+        X(circleWalkSineLongReal0, "cosrl (gprs only)", 0.5);
+        X(circleWalkSineLongReal0, "cosrl (gprs only)", 0.1);
+        X(circleWalkSineLongReal0, "cosrl (gprs only)", 0.01);
+        X(circleWalkSineLongReal1, "cosrl (fprs only)", 1.0);
+        X(circleWalkSineLongReal1, "cosrl (fprs only)", 0.5);
+        X(circleWalkSineLongReal1, "cosrl (fprs only)", 0.1);
+        X(circleWalkSineLongReal1, "cosrl (fprs only)", 0.01);
 #undef X
     },
     nullptr,
