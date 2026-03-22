@@ -2171,8 +2171,7 @@ namespace microshell {
                 100, 
                 1000, 
                 10'000, 
-                100'000, 
-                1'000'000, }) {
+                100'000, }) {
 #define X(func, desc) { \
     std::cout << "\t[" << desc << "](" << a << ") = "; \
             auto startMillis = micros(); \
@@ -2192,6 +2191,18 @@ namespace microshell {
         X(testLongCosine3, "cosrl fp0, fp0");
         X(testLongCosine4, "cosrl r4, fp0");
         X(testLongCosine5, "cosrl fp0, r4");
+        X(testSine0, "sinr 0.0, r4");
+        X(testSine1, "sinr 0.0, fp0");
+        X(testSine2, "sinr r4, r4");
+        X(testSine3, "sinr fp0, fp0");
+        X(testSine4, "sinr r4, fp0");
+        X(testSine5, "sinr fp0, r4");
+        X(testLongSine0, "sinrl 0.0, r4");
+        X(testLongSine1, "sinrl 0.0, fp0");
+        X(testLongSine2, "sinrl r4, r4");
+        X(testLongSine3, "sinrl fp0, fp0");
+        X(testLongSine4, "sinrl r4, fp0");
+        X(testLongSine5, "sinrl fp0, r4");
 #undef X
         }
     },

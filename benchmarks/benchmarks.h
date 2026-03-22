@@ -25,15 +25,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef HITAGIMON_BENCHMARKS_H__
 #define HITAGIMON_BENCHMARKS_H__
+// Interface to assembly routines to test aspects of different i960 concepts
 #include <cstdint>
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/**
- * @brief Perform count number of move operations; tests how long it takes to perform the moves
- * @param count The number of times to do it
- */
 void ordinalRegisterToRegisterMoveTest(uint32_t count);
 void longOrdinalRegisterToRegisterMoveTest(uint32_t count);
 void tripleOrdinalRegisterToRegisterMoveTest(uint32_t count);
@@ -62,13 +59,48 @@ void testCosine2(uint32_t count);
 void testCosine3(uint32_t count);
 void testCosine4(uint32_t count);
 void testCosine5(uint32_t count);
-
 void testLongCosine0(uint32_t count);
 void testLongCosine1(uint32_t count);
 void testLongCosine2(uint32_t count);
 void testLongCosine3(uint32_t count);
 void testLongCosine4(uint32_t count);
 void testLongCosine5(uint32_t count);
+void testSine0(uint32_t count);
+void testSine1(uint32_t count);
+void testSine2(uint32_t count);
+void testSine3(uint32_t count);
+void testSine4(uint32_t count);
+void testSine5(uint32_t count);
+void testLongSine0(uint32_t count);
+void testLongSine1(uint32_t count);
+void testLongSine2(uint32_t count);
+void testLongSine3(uint32_t count);
+void testLongSine4(uint32_t count);
+void testLongSine5(uint32_t count);
+void testTangent0(uint32_t count);
+void testTangent1(uint32_t count);
+void testTangent2(uint32_t count);
+void testTangent3(uint32_t count);
+void testTangent4(uint32_t count);
+void testTangent5(uint32_t count);
+void testLongTangent0(uint32_t count);
+void testLongTangent1(uint32_t count);
+void testLongTangent2(uint32_t count);
+void testLongTangent3(uint32_t count);
+void testLongTangent4(uint32_t count);
+void testLongTangent5(uint32_t count);
+void testSquareRoot0(uint32_t count);
+void testSquareRoot1(uint32_t count);
+void testSquareRoot2(uint32_t count);
+void testSquareRoot3(uint32_t count);
+void testSquareRoot4(uint32_t count);
+void testSquareRoot5(uint32_t count);
+void testLongSquareRoot0(uint32_t count);
+void testLongSquareRoot1(uint32_t count);
+void testLongSquareRoot2(uint32_t count);
+void testLongSquareRoot3(uint32_t count);
+void testLongSquareRoot4(uint32_t count);
+void testLongSquareRoot5(uint32_t count);
 #ifdef __cplusplus
 }
 #endif
