@@ -2123,11 +2123,7 @@ namespace microshell {
                 100'000, 
                 1'000'000, }) {
 #define X(func, desc) { \
-    std::cout << "\t[" << desc << "](" << a << ") = "; \
-            auto startMillis = micros(); \
-            func ( a ) ; \
-            auto endMillis = micros(); \
-            std::cout << (endMillis - startMillis) << "us" << std::endl; \
+    std::cout << "\t[" << desc << "](" << a << ") = " << func ( a ) << "us" << std::endl; \
 }
     X(ordinalRegisterToRegisterMoveTest, "mov r4, r5");
     X(longOrdinalRegisterToRegisterMoveTest, "movl r4, r6");
@@ -2164,12 +2160,7 @@ namespace microshell {
     "Run various floating point transcendental function tests",
     nullptr,
     [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-        std::cout << "running register move tests" << std::endl;
-        auto nullStart = micros();
-        auto nullTime = micros() - nullStart;
-        auto rawNullTime = computeRawNullTime();
-        std::cout << "scaffolding nullTime: " << nullTime << "us" << std::endl;
-        std::cout << "rawNullTime: " << rawNullTime << "us" << std::endl;
+        std::cout << "running floating point tests" << std::endl;
         for (auto a : {
                 1,
                 10, 
@@ -2178,11 +2169,7 @@ namespace microshell {
                 10'000, 
                 100'000, }) {
 #define X(func, desc) { \
-    std::cout << "\t[" << desc << "](" << a << ") = "; \
-            auto startMillis = micros(); \
-            func ( a ) ; \
-            auto endMillis = micros(); \
-            std::cout << (endMillis - startMillis) << "us" << std::endl; \
+    std::cout << "\t[" << desc << "](" << a << ") = " << func ( a ) << "us" << std::endl; \
 }
         X(testCosine0, "cosr 0.0, r4");
         X(testCosine1, "cosr 0.0, fp0");

@@ -27,7 +27,6 @@
 .text
 
 .global computeRawNullTime
-.equ MicrosecondsAddress, 0xFE000014
 computeRawNullTime:
 	# g0 is return so we need to directly access the address of micros
 	ld MicrosecondsAddress, r4
