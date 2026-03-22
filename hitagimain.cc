@@ -2123,7 +2123,7 @@ namespace microshell {
         auto startMillis = micros(); \
         func ( a ) ; \
         auto endMillis = micros(); \
-        std::cout << "[count: " << a << ", us: " << (endMillis - startMillis) << "], "; \
+        std::cout << (endMillis - startMillis) << "us, "; \
     } \
     std::cout << std::endl; \
 }
@@ -2168,7 +2168,7 @@ namespace microshell {
         auto startMillis = micros(); \
         func ( a ) ; \
         auto endMillis = micros(); \
-        std::cout << "[count: " << a << ", us: " << (endMillis - startMillis) << "], "; \
+        std::cout << (endMillis - startMillis) << "us, "; \
     } \
     std::cout << std::endl; \
 }
