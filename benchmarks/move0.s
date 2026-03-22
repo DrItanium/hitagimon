@@ -22,17 +22,58 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .global ordinalRegisterToRegisterMoveTest
+.global longOrdinalRegisterToRegisterMoveTest
+.global tripleOrdinalRegisterToRegisterMoveTest
+.global quadOrdinalRegisterToRegisterMoveTest
 .text
+.align 4
 # we want this code to be as tight as possible
 ordinalRegisterToRegisterMoveTest:
 	# g0 - number of times to perform the move
-	mov g0, r4
+	mov 0, r4
 	ldconst 0xFDEC, r5 # we are going to move from r5 to r6
 	ldconst 0, r6 # clear r6
-body:
+0:
 	mov r5, r6 # just keep doing this over and over
 	addo r4, 1, r4
 	cmpo r4, g0
 # there is intentional dead space here
-	bl body
+	bne 0b 
+	ret
+
+longOrdinalRegisterToRegisterMoveTest:
+	mov 0, r3
+	ldconst 0x01234567, r4
+	ldconst 0x89ABCDEF, r5
+	movl 0, r6
+0:
+	movl r4, r6
+	addo r3, 1, r3
+	cmpo r3, g0
+	bne 0b
+	ret
+tripleOrdinalRegisterToRegisterMoveTest:
+	mov 0, r3
+	ldconst 0x01234567, r4
+	ldconst 0x89ABCDEF, r5
+	ldconst 0x0F1E2D3C, r6
+	ldconst 0, r7
+0:
+	movt r4, r8
+	addo r3, 1, r3
+	cmpo r3, g0
+	bne 0b
+	ret
+
+quadOrdinalRegisterToRegisterMoveTest:
+	mov 0, r3
+	ldconst 0x01234567, r4
+	ldconst 0x89ABCDEF, r5
+	ldconst 0x0F1E2D3C, r6
+	ldconst 0x4B5A6978, r7
+0:
+	movq r4, r8
+	addo r3, 1, r3
+	cmpo r3, g0
+	bne 0b
 	ret
