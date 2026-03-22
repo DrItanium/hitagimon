@@ -126,3 +126,14 @@ moveRealTest3:
 	cmpo r3, g0
 	bne 0b
 	ret
+.global moveRealTest4
+# determine how fast movr fp0, fp1 is
+moveRealTest4:
+	# g0 - count
+	mov 0, r3
+0:
+	movr fp0, fp1
+	addo r3, 1, r3
+	cmpo r3, g0
+	bne 0b
+	ret

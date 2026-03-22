@@ -2314,6 +2314,32 @@ namespace microshell {
     nullptr,
     nullptr,
 },
+{
+    "movr4",
+    nullptr,
+    nullptr,
+    [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        std::cout << "running moveRealTest4 (move fp0, fp1)" << std::endl;
+        for (auto a : {
+                10, 
+                100, 
+                1000, 
+                10'000, 
+                100'000, 
+                1'000'000, 
+                }) {
+
+            std::cout << "\tmoveRealTest4(" << a << ") = ";
+            auto startMillis = micros();
+            moveRealTest4(a);
+            auto endMillis = micros();
+            std::cout << (endMillis - startMillis) << "us" << std::endl;
+        }
+    },
+    nullptr,
+    nullptr,
+    nullptr,
+},
 };
     void
     setup() {
