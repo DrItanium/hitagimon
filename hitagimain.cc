@@ -1436,7 +1436,9 @@ namespace microshell {
         std::cout << "execution duration: " << std::dec << duration.ru_utime.tv_sec << " sec" << std::endl;
         std::cout << "\t\t" << std::dec << duration.ru_utime.tv_usec << " usec" << std::endl;
     }
-    void do_circle_cosr0(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+    using CircleRealOperation = void (*)(float);
+    using CircleLongRealOperation = void (*)(double);
+    void doCircleOperation(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[], CircleRealOperation op) noexcept {
         if (argc == 1) {
             ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
         } else {
@@ -1447,130 +1449,52 @@ namespace microshell {
                     continue;
                 }
                 auto startTime = micros();
-                circleWalkCosineReal0(depth);
+                op(depth);
                 auto endTime = micros();
                 printf("Iteration: %f, Duration: %dus\n", depth, (endTime - startTime));
             }
         }
+    }
+    void doCircleOperation(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[], CircleLongRealOperation op) noexcept {
+        if (argc == 1) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
+        } else {
+            for (int i = 1; i < argc; ++i) {
+                char* end = nullptr;
+                auto depth = strtod(argv[i], &end);
+                if (depth <= 0.0) {
+                    continue;
+                }
+                auto startTime = micros();
+                op(depth);
+                auto endTime = micros();
+                printf("Iteration: %lf, Duration: %dus\n", depth, (endTime - startTime));
+            }
+        }
+    }
+    void do_circle_cosr0(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+        doCircleOperation(self, file, argc, argv, circleWalkCosineReal0);
     }
     void do_circle_cosr1(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
-        if (argc == 1) {
-            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
-        } else {
-            for (int i = 1; i < argc; ++i) {
-                char* end = nullptr;
-                auto depth = strtof(argv[i], &end);
-                if (depth <= 0.0) {
-                    continue;
-                }
-                auto startTime = micros();
-                circleWalkCosineReal1(depth);
-                auto endTime = micros();
-                printf("Iteration: %f, Duration: %dus\n", depth, (endTime - startTime));
-            }
-        }
+        doCircleOperation(self, file, argc, argv, circleWalkCosineReal1);
     }
     void do_circle_cosrl0(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
-        if (argc == 1) {
-            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
-        } else {
-            for (int i = 1; i < argc; ++i) {
-                char* end = nullptr;
-                auto depth = strtod(argv[i], &end);
-                if (depth <= 0.0) {
-                    continue;
-                }
-                auto startTime = micros();
-                circleWalkCosineLongReal0(depth);
-                auto endTime = micros();
-                printf("Iteration: %lf, Duration: %dus\n", depth, (endTime - startTime));
-            }
-        }
+        doCircleOperation(self, file, argc, argv, circleWalkCosineLongReal0);
     }
     void do_circle_cosrl1(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
-        if (argc == 1) {
-            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
-        } else {
-            for (int i = 1; i < argc; ++i) {
-                char* end = nullptr;
-                auto depth = strtod(argv[i], &end);
-                if (depth <= 0.0) {
-                    continue;
-                }
-                auto startTime = micros();
-                circleWalkCosineLongReal1(depth);
-                auto endTime = micros();
-                printf("Iteration: %lf, Duration: %dus\n", depth, (endTime - startTime));
-            }
-        }
+        doCircleOperation(self, file, argc, argv, circleWalkCosineLongReal1);
     }
     void do_circle_sinr0(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
-        if (argc == 1) {
-            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
-        } else {
-            for (int i = 1; i < argc; ++i) {
-                char* end = nullptr;
-                auto depth = strtof(argv[i], &end);
-                if (depth <= 0.0) {
-                    continue;
-                }
-                auto startTime = micros();
-                circleWalkSineReal0(depth);
-                auto endTime = micros();
-                printf("Iteration: %f, Duration: %dus\n", depth, (endTime - startTime));
-            }
-        }
+        doCircleOperation(self, file, argc, argv, circleWalkSineReal0);
     }
     void do_circle_sinr1(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
-        if (argc == 1) {
-            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
-        } else {
-            for (int i = 1; i < argc; ++i) {
-                char* end = nullptr;
-                auto depth = strtof(argv[i], &end);
-                if (depth <= 0.0) {
-                    continue;
-                }
-                auto startTime = micros();
-                circleWalkSineReal1(depth);
-                auto endTime = micros();
-                printf("Iteration: %f, Duration: %dus\n", depth, (endTime - startTime));
-            }
-        }
+        doCircleOperation(self, file, argc, argv, circleWalkSineReal1);
     }
     void do_circle_sinrl0(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
-        if (argc == 1) {
-            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
-        } else {
-            for (int i = 1; i < argc; ++i) {
-                char* end = nullptr;
-                auto depth = strtod(argv[i], &end);
-                if (depth <= 0.0) {
-                    continue;
-                }
-                auto startTime = micros();
-                circleWalkSineLongReal0(depth);
-                auto endTime = micros();
-                printf("Iteration: %lf, Duration: %dus\n", depth, (endTime - startTime));
-            }
-        }
+        doCircleOperation(self, file, argc, argv, circleWalkSineLongReal0);
     }
     void do_circle_sinrl1(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
-        if (argc == 1) {
-            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
-        } else {
-            for (int i = 1; i < argc; ++i) {
-                char* end = nullptr;
-                auto depth = strtod(argv[i], &end);
-                if (depth <= 0.0) {
-                    continue;
-                }
-                auto startTime = micros();
-                circleWalkSineLongReal1(depth);
-                auto endTime = micros();
-                printf("Iteration: %lf, Duration: %dus\n", depth, (endTime - startTime));
-            }
-        }
+        doCircleOperation(self, file, argc, argv, circleWalkSineLongReal1);
     }
     struct ExecutionContainer {
         ExecutionContainer(const std::string& title) : _title(title) { }
