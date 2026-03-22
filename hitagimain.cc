@@ -2115,12 +2115,23 @@ namespace microshell {
     nullptr,
     [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         std::cout << "running ordinalRegisterToRegisterMoveTest tests" << std::endl;
-        for (auto a : {10, 100, 1000, 10000, 1'000'000 }) {
+        for (auto a : {
+                10, 
+                100, 
+                1000, 
+                10'000, 
+                100'000, 
+                1'000'000, 
+                10'000'000,
+                100'000'000,
+                1'000'000'000,
+                2'000'000'000, }) {
+
             std::cout << "ordinalRegisterToRegisterMoveTest(" << a << ") = ";
-            auto startMillis = millis();
+            auto startMillis = micros();
             ordinalRegisterToRegisterMoveTest(a);
-            auto endMillis = millis();
-            std::cout << (endMillis - startMillis) << "ms" << std::endl;
+            auto endMillis = micros();
+            std::cout << (endMillis - startMillis) << "us" << std::endl;
         }
     },
     nullptr,
