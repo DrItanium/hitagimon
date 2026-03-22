@@ -1496,6 +1496,18 @@ namespace microshell {
     void do_circle_sinrl1(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
         doCircleOperation(self, file, argc, argv, circleWalkSineLongReal1);
     }
+    void do_circle_tanr0(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+        doCircleOperation(self, file, argc, argv, circleWalkTangentReal0);
+    }
+    void do_circle_tanr1(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+        doCircleOperation(self, file, argc, argv, circleWalkTangentReal1);
+    }
+    void do_circle_tanrl0(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+        doCircleOperation(self, file, argc, argv, circleWalkTangentLongReal0);
+    }
+    void do_circle_tanrl1(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
+        doCircleOperation(self, file, argc, argv, circleWalkTangentLongReal1);
+    }
     struct ExecutionContainer {
         ExecutionContainer(const std::string& title) : _title(title) { }
         std::string _title;
@@ -2229,38 +2241,17 @@ namespace microshell {
     auto endMillis = micros(); \
     std::cout << (endMillis - startMillis) << "us" << std::endl; \
 }
-        X(circleWalkCosineReal0, "cosr (gprs only)", 1.0f);
-        X(circleWalkCosineReal0, "cosr (gprs only)", 0.5f);
-        X(circleWalkCosineReal0, "cosr (gprs only)", 0.1f);
-        X(circleWalkCosineReal0, "cosr (gprs only)", 0.01f);
-        X(circleWalkCosineReal1, "cosr (fprs only)", 1.0f);
-        X(circleWalkCosineReal1, "cosr (fprs only)", 0.5f);
-        X(circleWalkCosineReal1, "cosr (fprs only)", 0.1f);
-        X(circleWalkCosineReal1, "cosr (fprs only)", 0.01f);
-        X(circleWalkCosineLongReal0, "cosrl (gprs only)", 1.0);
-        X(circleWalkCosineLongReal0, "cosrl (gprs only)", 0.5);
-        X(circleWalkCosineLongReal0, "cosrl (gprs only)", 0.1);
-        X(circleWalkCosineLongReal0, "cosrl (gprs only)", 0.01);
-        X(circleWalkCosineLongReal1, "cosrl (fprs only)", 1.0);
-        X(circleWalkCosineLongReal1, "cosrl (fprs only)", 0.5);
-        X(circleWalkCosineLongReal1, "cosrl (fprs only)", 0.1);
-        X(circleWalkCosineLongReal1, "cosrl (fprs only)", 0.01);
-        X(circleWalkSineReal0, "sinr (gprs only)", 1.0f);
-        X(circleWalkSineReal0, "sinr (gprs only)", 0.5f);
-        X(circleWalkSineReal0, "sinr (gprs only)", 0.1f);
-        X(circleWalkSineReal0, "sinr (gprs only)", 0.01f);
-        X(circleWalkSineReal1, "sinr (fprs only)", 1.0f);
-        X(circleWalkSineReal1, "sinr (fprs only)", 0.5f);
-        X(circleWalkSineReal1, "sinr (fprs only)", 0.1f);
-        X(circleWalkSineReal1, "sinr (fprs only)", 0.01f);
-        X(circleWalkSineLongReal0, "sinrl (gprs only)", 1.0);
-        X(circleWalkSineLongReal0, "sinrl (gprs only)", 0.5);
-        X(circleWalkSineLongReal0, "sinrl (gprs only)", 0.1);
-        X(circleWalkSineLongReal0, "sinrl (gprs only)", 0.01);
-        X(circleWalkSineLongReal1, "sinrl (fprs only)", 1.0);
-        X(circleWalkSineLongReal1, "sinrl (fprs only)", 0.5);
-        X(circleWalkSineLongReal1, "sinrl (fprs only)", 0.1);
-        X(circleWalkSineLongReal1, "sinrl (fprs only)", 0.01);
+        for (auto a : { 1.0, 0.5, 0.1, 0.01 }) {
+#define Y(frag, str) \
+            X(circleWalk ## frag ## Real0, str " (gprs only)", a); \
+            X(circleWalk ## frag ## Real1, str " (fprs only)", a); \
+            X(circleWalk ## frag ## LongReal0, str "l (gprs only)", a); \
+            X(circleWalk ## frag ## LongReal1, str "l (fprs only)", a)
+            Y(Cosine, "cosr");
+            Y(Sine, "sinr");
+            Y(Tangent, "tanr");
+#undef Y
+        }
 #undef X
     },
     nullptr,
@@ -2275,6 +2266,10 @@ namespace microshell {
 { "circle_sinr1", nullptr, nullptr, do_circle_sinr1, nullptr, nullptr, nullptr, },
 { "circle_sinrl0", nullptr, nullptr, do_circle_sinrl0, nullptr, nullptr, nullptr, },
 { "circle_sinrl1", nullptr, nullptr, do_circle_sinrl1, nullptr, nullptr, nullptr, },
+{ "circle_tanr0", nullptr, nullptr, do_circle_tanr0, nullptr, nullptr, nullptr, },
+{ "circle_tanr1", nullptr, nullptr, do_circle_tanr1, nullptr, nullptr, nullptr, },
+{ "circle_tanrl0", nullptr, nullptr, do_circle_tanrl0, nullptr, nullptr, nullptr, },
+{ "circle_tanrl1", nullptr, nullptr, do_circle_tanrl1, nullptr, nullptr, nullptr, },
 };
     void
     setup() {

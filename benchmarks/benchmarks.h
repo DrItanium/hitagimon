@@ -122,6 +122,10 @@ void circleWalkSineReal0(float increment);
 void circleWalkSineReal1(float increment);
 void circleWalkSineLongReal0(double increment);
 void circleWalkSineLongReal1(double increment);
+void circleWalkTangentReal0(float increment);
+void circleWalkTangentReal1(float increment);
+void circleWalkTangentLongReal0(double increment);
+void circleWalkTangentLongReal1(double increment);
 #ifdef __cplusplus
 }
 #endif
