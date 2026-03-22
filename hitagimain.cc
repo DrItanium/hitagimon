@@ -2164,7 +2164,7 @@ namespace microshell {
         std::cout << "running fp operation tests" << std::endl;
 #define X(func, desc) { \
     std::cout << "\t" << desc << ": "; \
-    for (auto a : { 1, 10, 100, 1000, 10'000, 100'000, 1'000'000 } ) { \
+    for (auto a : { 1, 10, 100, 1000, 10'000 } ) { \
         auto startMillis = micros(); \
         func ( a ) ; \
         auto endMillis = micros(); \
