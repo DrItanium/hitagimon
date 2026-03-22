@@ -21,251 +21,42 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.global ordinalRegisterToRegisterMoveTest
-.global longOrdinalRegisterToRegisterMoveTest
-.global tripleOrdinalRegisterToRegisterMoveTest
-.global quadOrdinalRegisterToRegisterMoveTest
 .text
 .align 4
-# we want this code to be as tight as possible
-ordinalRegisterToRegisterMoveTest:
-	# g0 - number of times to perform the move
-	mov r5, r6 # just keep doing this over and over
-	cmpdeco 0, g0, g0 # decrement g0
-	bne ordinalRegisterToRegisterMoveTest
-	ret
-
-longOrdinalRegisterToRegisterMoveTest:
-	movl r4, r6
+# this code needs to be as tight as possible
+.macro DefSingleInstructionOperation name, operation, arg0, arg1
+.global \name
+\name:
+	\operation \arg0 , \arg1
 	cmpdeco 0, g0, g0
-	bne longOrdinalRegisterToRegisterMoveTest
+	bne \name
 	ret
-tripleOrdinalRegisterToRegisterMoveTest:
-	movt r4, r8
-	cmpdeco 0, g0, g0
-	bne tripleOrdinalRegisterToRegisterMoveTest
-	ret
+.endm
 
-quadOrdinalRegisterToRegisterMoveTest:
-	mov 0, r3
-0:
-	movq r4, r8
-	addo r3, 1, r3
-	cmpo r3, g0
-	bne 0b
-	ret
+DefSingleInstructionOperation ordinalRegisterToRegisterMoveTest, mov, r4, r8
+DefSingleInstructionOperation longOrdinalRegisterToRegisterMoveTest, movl, r4, r8
+DefSingleInstructionOperation tripleOrdinalRegisterToRegisterMoveTest, movt, r4, r8
+DefSingleInstructionOperation quadOrdinalRegisterToRegisterMoveTest, movq, r4, r8
+DefSingleInstructionOperation moveRealTest0, movr, 0.0, r4
+DefSingleInstructionOperation moveRealTest1, movr, 0.0, fp0
+DefSingleInstructionOperation moveRealTest2, movr, r4, fp0
+DefSingleInstructionOperation moveRealTest3, movr, fp0, r4
+DefSingleInstructionOperation moveRealTest4, movr, fp0, fp1
+DefSingleInstructionOperation moveRealTest5, movr, r4, r8
 
-.global moveRealTest0
-.global moveRealTest1
-.global moveRealTest2
-.global moveRealTest3
+DefSingleInstructionOperation moveLongRealTest0, movrl, 0.0, r4
+DefSingleInstructionOperation moveLongRealTest1, movrl, 0.0, fp0
+DefSingleInstructionOperation moveLongRealTest2, movrl, r4, fp0
+DefSingleInstructionOperation moveLongRealTest3, movrl, fp0, r4
+DefSingleInstructionOperation moveLongRealTest4, movrl, fp0, fp1
+DefSingleInstructionOperation moveLongRealTest5, movrl, r4, r8
 
-# determine how fast movr 0.0f, r4 is
-moveRealTest0:
-	# g0 - count
-	mov 0, r3
-0:
-	movr 0.0, r4
-	addo r3, 1, r3
-	cmpo r3, g0
-	bne 0b
-	ret
-
-# determine how fast movr 0.0f, fp0 is
-moveRealTest1:
-	# g0 - count
-	mov 0, r3
-0:
-	movr 0.0, fp0
-	addo r3, 1, r3
-	cmpo r3, g0
-	bne 0b
-	ret
-
-# determine how fast movr r4, fp0 is
-moveRealTest2:
-	# g0 - count
-	mov 0, r3
-0:
-	movr r4, fp0
-	addo r3, 1, r3
-	cmpo r3, g0
-	bne 0b
-	ret
-
-# determine how fast movr fp0, r4 is
-moveRealTest3:
-	# g0 - count
-	mov 0, r3
-0:
-	movr fp0, r4
-	addo r3, 1, r3
-	cmpo r3, g0
-	bne 0b
-	ret
-.global moveRealTest4
-# determine how fast movr fp0, fp1 is
-moveRealTest4:
-	# g0 - count
-	mov 0, r3
-0:
-	movr fp0, fp1
-	addo r3, 1, r3
-	cmpo r3, g0
-	bne 0b
-	ret
-
-.global moveLongRealTest0
-.global moveLongRealTest1
-.global moveLongRealTest2
-.global moveLongRealTest3
-
-# determine how fast movr 0.0f, r4 is
-moveLongRealTest0:
-	# g0 - count
-	mov 0, r3
-0:
-	movrl 0.0, r4
-	addo r3, 1, r3
-	cmpo r3, g0
-	bne 0b
-	ret
-
-# determine how fast movr 0.0f, fp0 is
-moveLongRealTest1:
-	# g0 - count
-	mov 0, r3
-0:
-	movrl 0.0, fp0
-	addo r3, 1, r3
-	cmpo r3, g0
-	bne 0b
-	ret
-
-# determine how fast movr r4, fp0 is
-moveLongRealTest2:
-	# g0 - count
-	mov 0, r3
-0:
-	movrl r4, fp0
-	addo r3, 1, r3
-	cmpo r3, g0
-	bne 0b
-	ret
-
-# determine how fast movr fp0, r4 is
-moveLongRealTest3:
-	# g0 - count
-	mov 0, r3
-0:
-	movrl fp0, r4
-	addo r3, 1, r3
-	cmpo r3, g0
-	bne 0b
-	ret
-.global moveLongRealTest4
-# determine how fast movr fp0, fp1 is
-moveLongRealTest4:
-	# g0 - count
-	mov 0, r3
-0:
-	movrl fp0, fp1
-	addo r3, 1, r3
-	cmpo r3, g0
-	bne 0b
-	ret
-
-.global moveExtendedRealTest0
-.global moveExtendedRealTest1
-.global moveExtendedRealTest2
-.global moveExtendedRealTest3
-
-# determine how fast movr 0.0f, r4 is
-moveExtendedRealTest0:
-	# g0 - count
-	mov 0, r3
-0:
-	movre 0.0, r4
-	addo r3, 1, r3
-	cmpo r3, g0
-	bne 0b
-	ret
-
-# determine how fast movr 0.0f, fp0 is
-moveExtendedRealTest1:
-	# g0 - count
-	mov 0, r3
-0:
-	movre 0.0, fp0
-	addo r3, 1, r3
-	cmpo r3, g0
-	bne 0b
-	ret
-
-# determine how fast movr r4, fp0 is
-moveExtendedRealTest2:
-	# g0 - count
-	mov 0, r3
-0:
-	movre r4, fp0
-	addo r3, 1, r3
-	cmpo r3, g0
-	bne 0b
-	ret
-
-# determine how fast movr fp0, r4 is
-moveExtendedRealTest3:
-	# g0 - count
-	mov 0, r3
-0:
-	movre fp0, r4
-	addo r3, 1, r3
-	cmpo r3, g0
-	bne 0b
-	ret
-.global moveExtendedRealTest4
-# determine how fast movr fp0, fp1 is
-moveExtendedRealTest4:
-	# g0 - count
-	mov 0, r3
-0:
-	movre fp0, fp1
-	addo r3, 1, r3
-	cmpo r3, g0
-	bne 0b
-	ret
-
-.global moveRealTest5
-.global moveLongRealTest5
-.global moveExtendedRealTest5
+DefSingleInstructionOperation moveExtendedRealTest0, movre, 0.0, r4
+DefSingleInstructionOperation moveExtendedRealTest1, movre, 0.0, fp0
+DefSingleInstructionOperation moveExtendedRealTest2, movre, r4, fp0
+DefSingleInstructionOperation moveExtendedRealTest3, movre, fp0, r4
+DefSingleInstructionOperation moveExtendedRealTest4, movre, fp0, fp1
+DefSingleInstructionOperation moveExtendedRealTest5, movre, r4, r8
 
 
-moveExtendedRealTest5:
-	# g0 - count
-	mov 0, r3
-0:
-	movre r4, r8
-	addo r3, 1, r3
-	cmpo r3, g0
-	bne 0b
-	ret
-# determine how fast movre r4, r8 is
-moveLongRealTest5:
-	# g0 - count
-	mov 0, r3
-0:
-	movrl r4, r8
-	addo r3, 1, r3
-	cmpo r3, g0
-	bne 0b
-	ret
 
-moveRealTest5:
-	# g0 - count
-	mov 0, r3
-0:
-	movr r4, r8
-	addo r3, 1, r3
-	cmpo r3, g0
-	bne 0b
-	ret
