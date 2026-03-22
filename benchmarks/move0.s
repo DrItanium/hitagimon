@@ -20,18 +20,10 @@
 # ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+.include "boot/macros.s"
 .text
 .align 4
 # this code needs to be as tight as possible
-.macro DefSingleInstructionOperation name, operation, arg0, arg1
-.global \name
-\name:
-	\operation \arg0 , \arg1
-	cmpdeco 0, g0, g0
-	bne \name
-	ret
-.endm
 
 DefSingleInstructionOperation ordinalRegisterToRegisterMoveTest, mov, r4, r8
 DefSingleInstructionOperation longOrdinalRegisterToRegisterMoveTest, movl, r4, r8

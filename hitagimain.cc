@@ -2125,8 +2125,7 @@ namespace microshell {
 #define X(func, desc) { \
     std::cout << "\t[" << desc << "](" << a << ") = "; \
             auto startMillis = micros(); \
-    func ( a ) ; \
-            ordinalRegisterToRegisterMoveTest(a); \
+            func ( a ) ; \
             auto endMillis = micros(); \
             std::cout << (endMillis - startMillis) << "us" << std::endl; \
 }
@@ -2152,6 +2151,47 @@ namespace microshell {
     X(moveExtendedRealTest3, "movre fp0, r4");
     X(moveExtendedRealTest4, "movre fp0, fp1");
     X(moveExtendedRealTest5, "movre r4, r8");
+#undef X
+        }
+    },
+    nullptr,
+    nullptr,
+    nullptr,
+},
+
+{ 
+    "transcendental_tests",
+    "Run various floating point transcendental function tests",
+    nullptr,
+    [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        std::cout << "running register move tests" << std::endl;
+        for (auto a : {
+                1,
+                10, 
+                100, 
+                1000, 
+                10'000, 
+                100'000, 
+                1'000'000, }) {
+#define X(func, desc) { \
+    std::cout << "\t[" << desc << "](" << a << ") = "; \
+            auto startMillis = micros(); \
+            func ( a ) ; \
+            auto endMillis = micros(); \
+            std::cout << (endMillis - startMillis) << "us" << std::endl; \
+}
+        X(testCosine0, "cosr 0.0, r4");
+        X(testCosine1, "cosr 0.0, fp0");
+        X(testCosine2, "cosr r4, r4");
+        X(testCosine3, "cosr fp0, fp0");
+        X(testCosine4, "cosr r4, fp0");
+        X(testCosine5, "cosr fp0, r4");
+        X(testLongCosine0, "cosrl 0.0, r4");
+        X(testLongCosine1, "cosrl 0.0, fp0");
+        X(testLongCosine2, "cosrl r4, r4");
+        X(testLongCosine3, "cosrl fp0, fp0");
+        X(testLongCosine4, "cosrl r4, fp0");
+        X(testLongCosine5, "cosrl fp0, r4");
 #undef X
         }
     },

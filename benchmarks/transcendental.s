@@ -24,11 +24,20 @@
 # simple tests around floating point transcendental functions
 
 .global testCosine0
+.include "boot/macros.s"
 
 
-testCosine0:
-	cosr 0.0, r4
-	cmpdeco 0, g0, g0
-	bne testCosine0
-	ret
+DefSingleInstructionOperation testCosine0, cosr, 0.0, r4
+DefSingleInstructionOperation testCosine1, cosr, 0.0, fp0
+DefSingleInstructionOperation testCosine2, cosr, r4, r4
+DefSingleInstructionOperation testCosine3, cosr, fp0, fp0
+DefSingleInstructionOperation testCosine4, cosr, r4, fp0
+DefSingleInstructionOperation testCosine5, cosr, fp0, r4
+
+DefSingleInstructionOperation testLongCosine0, cosrl, 0.0, r4
+DefSingleInstructionOperation testLongCosine1, cosrl, 0.0, fp0
+DefSingleInstructionOperation testLongCosine2, cosrl, r4, r4
+DefSingleInstructionOperation testLongCosine3, cosrl, fp0, fp0
+DefSingleInstructionOperation testLongCosine4, cosrl, r4, fp0
+DefSingleInstructionOperation testLongCosine5, cosrl, fp0, r4
 

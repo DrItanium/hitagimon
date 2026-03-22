@@ -57,6 +57,18 @@ void moveExtendedRealTest3(uint32_t count);
 void moveExtendedRealTest4(uint32_t count);
 void moveExtendedRealTest5(uint32_t count);
 void testCosine0(uint32_t count);
+void testCosine1(uint32_t count);
+void testCosine2(uint32_t count);
+void testCosine3(uint32_t count);
+void testCosine4(uint32_t count);
+void testCosine5(uint32_t count);
+
+void testLongCosine0(uint32_t count);
+void testLongCosine1(uint32_t count);
+void testLongCosine2(uint32_t count);
+void testLongCosine3(uint32_t count);
+void testLongCosine4(uint32_t count);
+void testLongCosine5(uint32_t count);
 #ifdef __cplusplus
 }
 #endif

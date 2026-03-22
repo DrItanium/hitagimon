@@ -137,3 +137,12 @@ DeclareSegment 0, 0, \addr, 0x204000fb
 .macro nop reg=pfp
     mov \reg, \reg
 .endm
+
+.macro DefSingleInstructionOperation name, operation, arg0, arg1
+.global \name
+\name:
+	\operation \arg0 , \arg1
+	cmpdeco 1, g0, g0
+	bne \name
+	ret
+.endm
