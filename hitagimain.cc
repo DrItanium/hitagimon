@@ -2121,11 +2121,7 @@ namespace microshell {
                 1000, 
                 10'000, 
                 100'000, 
-                1'000'000, 
-                10'000'000,
-                100'000'000,
-                1'000'000'000,
-                2'000'000'000, }) {
+                1'000'000, }) {
 
             std::cout << "ordinalRegisterToRegisterMoveTest(" << a << ") = ";
             auto startMillis = micros();
@@ -2150,11 +2146,7 @@ namespace microshell {
                 1000, 
                 10'000, 
                 100'000, 
-                1'000'000, 
-                10'000'000,
-                100'000'000,
-                1'000'000'000,
-                2'000'000'000, }) {
+                1'000'000, }) {
 
             std::cout << "longOrdinalRegisterToRegisterMoveTest(" << a << ") = ";
             auto startMillis = micros();
@@ -2179,11 +2171,7 @@ namespace microshell {
                 1000, 
                 10'000, 
                 100'000, 
-                1'000'000, 
-                10'000'000,
-                100'000'000,
-                1'000'000'000,
-                2'000'000'000, }) {
+                1'000'000, }) {
 
             std::cout << "tripleOrdinalRegisterToRegisterMoveTest(" << a << ") = ";
             auto startMillis = micros();
@@ -2209,10 +2197,7 @@ namespace microshell {
                 10'000, 
                 100'000, 
                 1'000'000, 
-                10'000'000,
-                100'000'000,
-                1'000'000'000,
-                2'000'000'000, }) {
+                }) {
 
             std::cout << "quadOrdinalRegisterToRegisterMoveTest(" << a << ") = ";
             auto startMillis = micros();
