@@ -2162,19 +2162,15 @@ namespace microshell {
     nullptr,
     [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         std::cout << "running fp operation tests" << std::endl;
-        for (auto a : {
-                1,
-                10, 
-                100, 
-                1000, 
-                10'000, 
-                100'000, }) {
 #define X(func, desc) { \
-    std::cout << "\t[" << desc << "](" << a << ") = "; \
-            auto startMillis = micros(); \
-            func ( a ) ; \
-            auto endMillis = micros(); \
-            std::cout << (endMillis - startMillis) << "us" << std::endl; \
+    std::cout << "\t" << desc << ": "; \
+    for (auto a : { 1, 10, 100, 1000, 10'000, 100'000, 1'000'000 } ) { \
+        auto startMillis = micros(); \
+        func ( a ) ; \
+        auto endMillis = micros(); \
+        std::cout << "[count: " << a << ", us: " << (endMillis - startMillis) << "], "; \
+    } \
+    std::cout << std::endl; \
 }
         X(testCosine0, "cosr 0.0, r4");
         X(testCosine1, "cosr 0.0, fp0");
@@ -2225,7 +2221,6 @@ namespace microshell {
         X(testLongSquareRoot4, "sqrtrl r4, fp0");
         X(testLongSquareRoot5, "sqrtrl fp0, r4");
 #undef X
-        }
     },
     nullptr,
     nullptr,
