@@ -137,3 +137,63 @@ moveRealTest4:
 	cmpo r3, g0
 	bne 0b
 	ret
+
+.global moveLongRealTest0
+.global moveLongRealTest1
+.global moveLongRealTest2
+.global moveLongRealTest3
+
+# determine how fast movr 0.0f, r4 is
+moveLongRealTest0:
+	# g0 - count
+	mov 0, r3
+0:
+	movrl 0.0, r4
+	addo r3, 1, r3
+	cmpo r3, g0
+	bne 0b
+	ret
+
+# determine how fast movr 0.0f, fp0 is
+moveLongRealTest1:
+	# g0 - count
+	mov 0, r3
+0:
+	movrl 0.0, fp0
+	addo r3, 1, r3
+	cmpo r3, g0
+	bne 0b
+	ret
+
+# determine how fast movr r4, fp0 is
+moveLongRealTest2:
+	# g0 - count
+	mov 0, r3
+0:
+	movrl r4, fp0
+	addo r3, 1, r3
+	cmpo r3, g0
+	bne 0b
+	ret
+
+# determine how fast movr fp0, r4 is
+moveLongRealTest3:
+	# g0 - count
+	mov 0, r3
+0:
+	movrl fp0, r4
+	addo r3, 1, r3
+	cmpo r3, g0
+	bne 0b
+	ret
+.global moveLongRealTest4
+# determine how fast movr fp0, fp1 is
+moveLongRealTest4:
+	# g0 - count
+	mov 0, r3
+0:
+	movrl fp0, fp1
+	addo r3, 1, r3
+	cmpo r3, g0
+	bne 0b
+	ret

@@ -2340,6 +2340,136 @@ namespace microshell {
     nullptr,
     nullptr,
 },
+{
+    "movrl0",
+    nullptr,
+    nullptr,
+    [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        std::cout << "running moveLongRealTest0 (move 0.0, r4)" << std::endl;
+        for (auto a : {
+                10, 
+                100, 
+                1000, 
+                10'000, 
+                100'000, 
+                1'000'000, 
+                }) {
+
+            std::cout << "\tmoveLongRealTest0(" << a << ") = ";
+            auto startMillis = micros();
+            moveLongRealTest0(a);
+            auto endMillis = micros();
+            std::cout << (endMillis - startMillis) << "us" << std::endl;
+        }
+    },
+    nullptr,
+    nullptr,
+    nullptr,
+},
+{
+    "movrl1",
+    nullptr,
+    nullptr,
+    [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        std::cout << "running moveLongRealTest1 (move 0.0, fp0)" << std::endl;
+        for (auto a : {
+                10, 
+                100, 
+                1000, 
+                10'000, 
+                100'000, 
+                1'000'000, 
+                }) {
+
+            std::cout << "\tmoveLongRealTest1(" << a << ") = ";
+            auto startMillis = micros();
+            moveLongRealTest1(a);
+            auto endMillis = micros();
+            std::cout << (endMillis - startMillis) << "us" << std::endl;
+        }
+    },
+    nullptr,
+    nullptr,
+    nullptr,
+},
+{
+    "movrl2",
+    nullptr,
+    nullptr,
+    [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        std::cout << "running moveLongRealTest2 (move r4, fp0)" << std::endl;
+        for (auto a : {
+                10, 
+                100, 
+                1000, 
+                10'000, 
+                100'000, 
+                1'000'000, 
+                }) {
+
+            std::cout << "\tmoveLongRealTest2(" << a << ") = ";
+            auto startMillis = micros();
+            moveLongRealTest2(a);
+            auto endMillis = micros();
+            std::cout << (endMillis - startMillis) << "us" << std::endl;
+        }
+    },
+    nullptr,
+    nullptr,
+    nullptr,
+},
+{
+    "movrl3",
+    nullptr,
+    nullptr,
+    [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        std::cout << "running moveLongRealTest3 (move fp0, r4)" << std::endl;
+        for (auto a : {
+                10, 
+                100, 
+                1000, 
+                10'000, 
+                100'000, 
+                1'000'000, 
+                }) {
+
+            std::cout << "\tmoveLongRealTest3(" << a << ") = ";
+            auto startMillis = micros();
+            moveLongRealTest3(a);
+            auto endMillis = micros();
+            std::cout << (endMillis - startMillis) << "us" << std::endl;
+        }
+    },
+    nullptr,
+    nullptr,
+    nullptr,
+},
+{
+    "movrl4",
+    nullptr,
+    nullptr,
+    [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        std::cout << "running moveLongRealTest4 (move fp0, fp1)" << std::endl;
+        for (auto a : {
+                10, 
+                100, 
+                1000, 
+                10'000, 
+                100'000, 
+                1'000'000, 
+                }) {
+
+            std::cout << "\tmoveLongRealTest4(" << a << ") = ";
+            auto startMillis = micros();
+            moveLongRealTest4(a);
+            auto endMillis = micros();
+            std::cout << (endMillis - startMillis) << "us" << std::endl;
+        }
+    },
+    nullptr,
+    nullptr,
+    nullptr,
+},
 };
     void
     setup() {
