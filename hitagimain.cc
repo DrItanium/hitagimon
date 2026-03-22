@@ -2162,76 +2162,25 @@ namespace microshell {
     nullptr,
     [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         std::cout << "running fp operation tests" << std::endl;
-#define X(func, desc) { \
-    std::cout << "\t" << desc << ": "; \
-    for (auto a : { 1, 10, 100, 1000, 10'000 } ) { \
-        auto startMillis = micros(); \
-        func ( a ) ; \
-        auto endMillis = micros(); \
-        std::cout << (endMillis - startMillis) << "us, "; \
-    } \
-    std::cout << std::endl; \
+#define X(func, desc, increment) { \
+    std::cout << "\t" << desc << " [" << increment << "]: "; \
+    auto startMillis = micros(); \
+    func ( increment ) ; \
+    auto endMillis = micros(); \
+    std::cout << (endMillis - startMillis) << "us" << std::endl; \
 }
-        X(testCosine0, "cosr 0.0, r4");
-        X(testCosine1, "cosr 0.0, fp0");
-        X(testCosine2, "cosr r4, r4");
-        X(testCosine3, "cosr fp0, fp0");
-        X(testCosine4, "cosr r4, fp0");
-        X(testCosine5, "cosr fp0, r4");
-        X(testLongCosine0, "cosrl 0.0, r4");
-        X(testLongCosine1, "cosrl 0.0, fp0");
-        X(testLongCosine2, "cosrl r4, r4");
-        X(testLongCosine3, "cosrl fp0, fp0");
-        X(testLongCosine4, "cosrl r4, fp0");
-        X(testLongCosine5, "cosrl fp0, r4");
-        X(testSine0, "sinr 0.0, r4");
-        X(testSine1, "sinr 0.0, fp0");
-        X(testSine2, "sinr r4, r4");
-        X(testSine3, "sinr fp0, fp0");
-        X(testSine4, "sinr r4, fp0");
-        X(testSine5, "sinr fp0, r4");
-        X(testLongSine0, "sinrl 0.0, r4");
-        X(testLongSine1, "sinrl 0.0, fp0");
-        X(testLongSine2, "sinrl r4, r4");
-        X(testLongSine3, "sinrl fp0, fp0");
-        X(testLongSine4, "sinrl r4, fp0");
-        X(testLongSine5, "sinrl fp0, r4");
-        X(testTangent0, "tanr 0.0, r4");
-        X(testTangent1, "tanr 0.0, fp0");
-        X(testTangent2, "tanr r4, r4");
-        X(testTangent3, "tanr fp0, fp0");
-        X(testTangent4, "tanr r4, fp0");
-        X(testTangent5, "tanr fp0, r4");
-        X(testLongTangent0, "tanrl 0.0, r4");
-        X(testLongTangent1, "tanrl 0.0, fp0");
-        X(testLongTangent2, "tanrl r4, r4");
-        X(testLongTangent3, "tanrl fp0, fp0");
-        X(testLongTangent4, "tanrl r4, fp0");
-        X(testLongTangent5, "tanrl fp0, r4");
-        X(testSquareRoot0, "sqrtr 0.0, r4");
-        X(testSquareRoot1, "sqrtr 0.0, fp0");
-        X(testSquareRoot2, "sqrtr r4, r4");
-        X(testSquareRoot3, "sqrtr fp0, fp0");
-        X(testSquareRoot4, "sqrtr r4, fp0");
-        X(testSquareRoot5, "sqrtr fp0, r4");
-        X(testLongSquareRoot0, "sqrtrl 0.0, r4");
-        X(testLongSquareRoot1, "sqrtrl 0.0, fp0");
-        X(testLongSquareRoot2, "sqrtrl r4, r4");
-        X(testLongSquareRoot3, "sqrtrl fp0, fp0");
-        X(testLongSquareRoot4, "sqrtrl r4, fp0");
-        X(testLongSquareRoot5, "sqrtrl fp0, r4");
-        X(testExponent0, "expr 0.0, r4");
-        X(testExponent1, "expr 0.0, fp0");
-        X(testExponent2, "expr r4, r4");
-        X(testExponent3, "expr fp0, fp0");
-        X(testExponent4, "expr r4, fp0");
-        X(testExponent5, "expr fp0, r4");
-        X(testLongExponent0, "exprl 0.0, r4");
-        X(testLongExponent1, "exprl 0.0, fp0");
-        X(testLongExponent2, "exprl r4, r4");
-        X(testLongExponent3, "exprl fp0, fp0");
-        X(testLongExponent4, "exprl r4, fp0");
-        X(testLongExponent5, "exprl fp0, r4");
+        X(circleWalkCosineReal0, "cosr (gprs only)", 1.0f);
+        X(circleWalkCosineReal0, "cosr (gprs only)", 0.5f);
+        X(circleWalkCosineReal0, "cosr (gprs only)", 0.1f);
+        X(circleWalkCosineReal0, "cosr (gprs only)", 0.01f);
+        X(circleWalkCosineReal1, "cosr (fprs only)", 1.0f);
+        X(circleWalkCosineReal1, "cosr (fprs only)", 0.5f);
+        X(circleWalkCosineReal1, "cosr (fprs only)", 0.1f);
+        X(circleWalkCosineReal1, "cosr (fprs only)", 0.01f);
+        X(circleWalkCosineLongReal0, "cosrl (gprs only)", 1.0);
+        X(circleWalkCosineLongReal0, "cosrl (gprs only)", 0.5);
+        X(circleWalkCosineLongReal0, "cosrl (gprs only)", 0.1);
+        X(circleWalkCosineLongReal0, "cosrl (gprs only)", 0.01);
 #undef X
     },
     nullptr,

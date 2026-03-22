@@ -119,6 +119,11 @@ uint32_t computeRawNullTime();
  * @param increment the amount to increment by
  */
 void circleWalkCosineReal0(float increment);
+/**
+ * @brief Walk through a circle (0-360) with a given increment using FPRs only
+ * @param increment the amount to increment by
+ */
+void circleWalkCosineReal1(float increment);
 void circleWalkCosineLongReal0(double increment);
 #ifdef __cplusplus
 }

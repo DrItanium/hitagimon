@@ -92,6 +92,7 @@ DefSingleInstructionOperation testLongExponent4, exprl, r4, fp0
 DefSingleInstructionOperation testLongExponent5, exprl, fp0, r4
 
 .global circleWalkCosineReal0
+.global circleWalkCosineReal1
 .global circleWalkCosineLongReal0
 
 # how long does it take to walk through 0-360 degrees in custom increment amount using just gprs
@@ -104,6 +105,20 @@ circleWalkCosineReal0:
 	cosr r4, r5 # gpr to gpr operation
 	cmpr r4, r3 
 	addr r4, g0, r4 # increment and use compare overlays to prevent stalling
+	bl 0b # since floating point isn't exact we can just use less than 360
+	ret
+
+# how long does it take to walk through 0-360 degrees in custom increment amount using fprs
+circleWalkCosineReal1:
+	# g0 - increment amount (real)
+	movr g0, fp0
+	ldconst 360, r3 # end circle
+	cvtir r3, fp1 # convert it to a real
+	movr 0.0, fp2 
+0:
+	cosr fp2, fp3 
+	cmpr fp2, fp1
+	addr fp2, fp0, fp2 # increment and use compare overlays to prevent stalling
 	bl 0b # since floating point isn't exact we can just use less than 360
 	ret
 
