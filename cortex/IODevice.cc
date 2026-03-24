@@ -21,7 +21,7 @@ namespace cortex
                 //
                 uint32_t ms;
                 uint32_t us;
-                uint32_t _unused3;
+                uint32_t cycleCount;
                 uint32_t _unused4;
                 // rtc functions
                 uint32_t _unixtime;
@@ -85,6 +85,7 @@ namespace cortex
         inline void flush() volatile noexcept { builtin.SerialFlush = 0; }
         inline uint32_t millis() volatile noexcept { return builtin.ms; }
         inline uint32_t micros() volatile noexcept { return builtin.us; }
+        inline uint32_t cycleCount() volatile noexcept { return builtin.cycleCount; }
         inline uint32_t eepromCapacity() const volatile noexcept { return builtin._eepromCapacity; }
         inline uint32_t sramCacheCapacity() volatile noexcept { return builtin._sramCapacity; }
         inline uint32_t sram2CacheCapacity() volatile noexcept { return builtin._sram2Capacity; }
@@ -241,6 +242,7 @@ namespace cortex
             uint32_t millis() noexcept { return getIOSpace().millis(); }
             uint32_t micros() noexcept { return getIOSpace().micros(); }
             float getRTCTemperature() noexcept { return getIOSpace().rtc_getTemperature(); }
+            uint32_t chipsetCycleCount() noexcept { return getIOSpace().cycleCount(); }
         } // end namespace RTC
         namespace Info {
             uint32_t

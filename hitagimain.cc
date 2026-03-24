@@ -1692,6 +1692,14 @@ namespace microshell {
         *data = (uint8_t*)timeBuffer;
         return strlen((char*)(*data));
     }
+    size_t chipset_cycle_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
+        static char timeBuffer[16];
+        auto currentTime = cortex::ChipsetBasicFunctions::Timer::chipsetCycleCount();
+        snprintf(timeBuffer, sizeof(timeBuffer), "%lu\n", currentTime);
+        timeBuffer[sizeof(timeBuffer) - 1] = 0;
+        *data = (uint8_t*)timeBuffer;
+        return strlen((char*)(*data));
+    }
     size_t unixtime_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
         static char timeBuffer[16];
         unsigned long current = cortex::ChipsetBasicFunctions::Timer::unixtime();
@@ -1817,6 +1825,15 @@ namespace microshell {
             nullptr,
             nullptr,
             clk1_get_data_callback,
+            nullptr,
+            nullptr
+        },
+        {
+            "chipset_cycle",
+            nullptr,
+            nullptr,
+            nullptr,
+            chipset_cycle_get_data_callback,
             nullptr,
             nullptr
         },
