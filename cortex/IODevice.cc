@@ -77,22 +77,9 @@ namespace cortex
                 uint16_t textSize;
             } __attribute__((packed));
         } gfx;
-        /**
-         * @brief System statistics
-         */
-        union {
-            IOPage bytes;
-            struct {
-                uint64_t requests;
-                uint64_t reads;
-                uint64_t writes;
-                uint64_t unused0;
-            };
-        } stats;
-        static_assert(sizeof(stats) == 256);
         static_assert(sizeof(gfx) == 256);
         static_assert(sizeof(builtin) == 256);
-        IOPage unmappedPages[5];
+        IOPage unmappedPages[6];
         uint8_t sramCache[2048];
         uint8_t eeprom[4096];
         inline uint16_t read() volatile noexcept { return builtin.SerialRW; }
