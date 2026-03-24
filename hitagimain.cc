@@ -2284,10 +2284,12 @@ namespace microshell {
         std::cout << "running fp operation tests" << std::endl;
 #define X(func, desc, increment) { \
     std::cout << "\t" << desc << " [" << increment << "]: "; \
+    auto startCycles = cortex::ChipsetBasicFunctions::Timer::chipsetCycleCount(); \
     auto startMillis = micros(); \
     func ( increment ) ; \
     auto endMillis = micros(); \
-    std::cout << (endMillis - startMillis) << "us" << std::endl; \
+    auto endCycles = cortex::ChipsetBasicFunctions::Timer::chipsetCycleCount(); \
+    std::cout << (endMillis - startMillis) << "us, " << (endCycles - startCycles) << "cycles" << std::endl; \
 }
         for (auto a : { 1.0, 0.5, 0.1, 0.01 }) {
 #define Y(frag, str) \
