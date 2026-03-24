@@ -1448,10 +1448,12 @@ namespace microshell {
                 if (depth <= 0.0) {
                     continue;
                 }
+                auto startCycles = cortex::ChipsetBasicFunctions::Timer::chipsetCycleCount();
                 auto startTime = micros();
                 op(depth);
                 auto endTime = micros();
-                printf("Iteration: %f, Duration: %dus\n", depth, (endTime - startTime));
+                auto endCycles = cortex::ChipsetBasicFunctions::Timer::chipsetCycleCount();
+                printf("Iteration: %f, Duration: %dus, Cycles: %d\n", depth, (endTime - startTime), (endCycles - startCycles));
             }
         }
     }
@@ -1465,10 +1467,12 @@ namespace microshell {
                 if (depth <= 0.0) {
                     continue;
                 }
+                auto startCycles = cortex::ChipsetBasicFunctions::Timer::chipsetCycleCount();
                 auto startTime = micros();
                 op(depth);
                 auto endTime = micros();
-                printf("Iteration: %lf, Duration: %dus\n", depth, (endTime - startTime));
+                auto endCycles = cortex::ChipsetBasicFunctions::Timer::chipsetCycleCount();
+                printf("Iteration: %lf, Duration: %dus, Cycles: %d\n", depth, (endTime - startTime), (endCycles - startCycles));
             }
         }
     }
