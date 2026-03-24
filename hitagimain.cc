@@ -2234,10 +2234,12 @@ namespace microshell {
 #define X(func, desc) { \
     std::cout << "\t" << desc << ": "; \
     for (auto a : { 10, 100, 1000, 10'000, 100'000, 1'000'000 } ) { \
+        auto startCycles = cortex::ChipsetBasicFunctions::Timer::chipsetCycleCount(); \
         auto startMillis = micros(); \
         func ( a ) ; \
         auto endMillis = micros(); \
-        std::cout << (endMillis - startMillis) << "us, "; \
+        auto endCycles = cortex::ChipsetBasicFunctions::Timer::chipsetCycleCount(); \
+        std::cout << "[" << (endMillis - startMillis) << "us, " << (endCycles - startCycles) << " cycles], "; \
     } \
     std::cout << std::endl; \
 }
