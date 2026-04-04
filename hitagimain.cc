@@ -1554,7 +1554,7 @@ namespace microshell {
         }
     }
 #define X(func) \
-    void do_ ## func ## MemoryTest (ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept { \
+    void do_ ## func ## _MemoryTest (ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept { \
         doMemoryLatencyTest(self, file, argc, argv, func ); \
     }
     X(loadQuadTest0);
@@ -2359,6 +2359,17 @@ namespace microshell {
 { "circle_roundr1", nullptr, nullptr, do_circle_roundr1, nullptr, nullptr, nullptr, },
 { "circle_roundrl0", nullptr, nullptr, do_circle_roundrl0, nullptr, nullptr, nullptr, },
 { "circle_roundrl1", nullptr, nullptr, do_circle_roundrl1, nullptr, nullptr, nullptr, },
+#define X(name, func) \
+{ #name , nullptr, nullptr, do_ ## func ## _MemoryTest , nullptr, nullptr, nullptr, }
+    X(ldq_test0, loadQuadTest0),
+    X(ldt_test0, loadTripleTest0),
+    X(ldl_test0, loadLongTest0),
+    X(ld_test0, loadTest0),
+    X(ldos_test0, loadShortTest0),
+    X(ldis_test1, loadShortTest1),
+    X(ldob_test0, loadByteTest0),
+    X(ldib_test1, loadByteTest1),
+#undef X
 };
     void
     setup() {
