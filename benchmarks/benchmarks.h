@@ -134,6 +134,7 @@ void circleWalkRoundReal0(float increment);
 void circleWalkRoundReal1(float increment);
 void circleWalkRoundLongReal0(double increment);
 void circleWalkRoundLongReal1(double increment);
+// load/store from PSRAM
 void loadQuadTest0(uint32_t count); // ldl
 void loadTripleTest0(uint32_t count); // ldt
 void loadLongTest0(uint32_t count); // ldl
@@ -146,6 +147,34 @@ void storeLongTest0(uint32_t count); // stl
 void storeTest0(uint32_t count); // st
 void storeShortTest0(uint32_t count); // stos
 void storeByteTest0(uint32_t count); // stob
+
+// load/store from SRAM1 (fastmem)
+void loadQuadTest1(uint32_t count); // ldl
+void loadTripleTest1(uint32_t count); // ldt
+void loadLongTest1(uint32_t count); // ldl
+void loadTest1(uint32_t count); // ld
+void loadShortTest1(uint32_t count); // ldos
+void loadByteTest1(uint32_t count); // ldob
+void storeQuadTest1(uint32_t count); // stl
+void storeTripleTest1(uint32_t count); // stt
+void storeLongTest1(uint32_t count); // stl
+void storeTest1(uint32_t count); // st
+void storeShortTest1(uint32_t count); // stos
+void storeByteTest1(uint32_t count); // stob
+
+// load/store from SRAM2 (DMAEXT)
+void loadQuadTest2(uint32_t count); // ldl
+void loadTripleTest2(uint32_t count); // ldt
+void loadLongTest2(uint32_t count); // ldl
+void loadTest2(uint32_t count); // ld
+void loadShortTest2(uint32_t count); // ldos
+void loadByteTest2(uint32_t count); // ldob
+void storeQuadTest2(uint32_t count); // stl
+void storeTripleTest2(uint32_t count); // stt
+void storeLongTest2(uint32_t count); // stl
+void storeTest2(uint32_t count); // st
+void storeShortTest2(uint32_t count); // stos
+void storeByteTest2(uint32_t count); // stob
 // skip the integer versions...
 #ifdef __cplusplus
 }

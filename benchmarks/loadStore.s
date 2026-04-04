@@ -23,6 +23,8 @@
 
 # load/store tests
 .include "boot/macros.s"
+.equ SRAM2BaseAddress, 0xFE010000
+.equ SRAM1BaseAddress, 0xFE000800
 .data
 .align 4
 TestStorage:
@@ -46,3 +48,31 @@ DefSingleInstructionOperation storeLongTest0, stl, r4, TestStorage
 DefSingleInstructionOperation storeTest0, st, r4, TestStorage
 DefSingleInstructionOperation storeShortTest0, stos, r4, TestStorage
 DefSingleInstructionOperation storeByteTest0, stob, r4, TestStorage
+
+DefSingleInstructionOperation loadQuadTest1, ldq, SRAM1BaseAddress, r4
+DefSingleInstructionOperation loadTripleTest1, ldt, SRAM1BaseAddress, r4
+DefSingleInstructionOperation loadLongTest1, ldl, SRAM1BaseAddress, r4
+DefSingleInstructionOperation loadTest1, ld, SRAM1BaseAddress, r4
+DefSingleInstructionOperation loadShortTest1, ldos, SRAM1BaseAddress, r4
+DefSingleInstructionOperation loadByteTest1, ldob, SRAM1BaseAddress, r4
+
+DefSingleInstructionOperation storeQuadTest1, stq, r4, SRAM1BaseAddress
+DefSingleInstructionOperation storeTripleTest1, stt, r4, SRAM1BaseAddress
+DefSingleInstructionOperation storeLongTest1, stl, r4, SRAM1BaseAddress
+DefSingleInstructionOperation storeTest1, st, r4, SRAM1BaseAddress
+DefSingleInstructionOperation storeShortTest1, stos, r4, SRAM1BaseAddress
+DefSingleInstructionOperation storeByteTest1, stob, r4, SRAM1BaseAddress
+
+DefSingleInstructionOperation loadQuadTest2, ldq, SRAM2BaseAddress, r4
+DefSingleInstructionOperation loadTripleTest2, ldt, SRAM2BaseAddress, r4
+DefSingleInstructionOperation loadLongTest2, ldl, SRAM2BaseAddress, r4
+DefSingleInstructionOperation loadTest2, ld, SRAM2BaseAddress, r4
+DefSingleInstructionOperation loadShortTest2, ldos, SRAM2BaseAddress, r4
+DefSingleInstructionOperation loadByteTest2, ldob, SRAM2BaseAddress, r4
+
+DefSingleInstructionOperation storeQuadTest2, stq, r4, SRAM2BaseAddress
+DefSingleInstructionOperation storeTripleTest2, stt, r4, SRAM2BaseAddress
+DefSingleInstructionOperation storeLongTest2, stl, r4, SRAM2BaseAddress
+DefSingleInstructionOperation storeTest2, st, r4, SRAM2BaseAddress
+DefSingleInstructionOperation storeShortTest2, stos, r4, SRAM2BaseAddress
+DefSingleInstructionOperation storeByteTest2, stob, r4, SRAM2BaseAddress
