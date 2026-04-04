@@ -134,6 +134,15 @@ void circleWalkRoundReal0(float increment);
 void circleWalkRoundReal1(float increment);
 void circleWalkRoundLongReal0(double increment);
 void circleWalkRoundLongReal1(double increment);
+void loadQuadTest0(uint32_t count); // ldl
+void loadTripleTest0(uint32_t count); // ldt
+void loadLongTest0(uint32_t count); // ldl
+void loadTest0(uint32_t count); // ld
+void loadShortTest0(uint32_t count); // ldos
+void loadShortTest1(uint32_t count); // ldis
+void loadByteTest0(uint32_t count); // ldob
+void loadByteTest1(uint32_t count); // ldib
+
 #ifdef __cplusplus
 }
 #endif

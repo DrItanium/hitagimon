@@ -72,6 +72,7 @@ add_library(hitagibench
 	benchmarks/move0.s
 	benchmarks/transcendental.s
 	benchmarks/nullTime.s
+	benchmarks/loadStore.s
 )
 add_executable(hitagimon
 		boot/sx_init.s # this must ALWAYS be first!
