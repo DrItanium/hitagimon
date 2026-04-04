@@ -139,10 +139,14 @@ void loadTripleTest0(uint32_t count); // ldt
 void loadLongTest0(uint32_t count); // ldl
 void loadTest0(uint32_t count); // ld
 void loadShortTest0(uint32_t count); // ldos
-void loadShortTest1(uint32_t count); // ldis
 void loadByteTest0(uint32_t count); // ldob
-void loadByteTest1(uint32_t count); // ldib
-
+void storeQuadTest0(uint32_t count); // stl
+void storeTripleTest0(uint32_t count); // stt
+void storeLongTest0(uint32_t count); // stl
+void storeTest0(uint32_t count); // st
+void storeShortTest0(uint32_t count); // stos
+void storeByteTest0(uint32_t count); // stob
+// skip the integer versions...
 #ifdef __cplusplus
 }
 #endif

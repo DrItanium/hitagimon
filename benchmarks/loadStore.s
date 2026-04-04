@@ -38,6 +38,11 @@ DefSingleInstructionOperation loadTripleTest0, ldt, TestStorage, r4
 DefSingleInstructionOperation loadLongTest0, ldl, TestStorage, r4
 DefSingleInstructionOperation loadTest0, ld, TestStorage, r4
 DefSingleInstructionOperation loadShortTest0, ldos, TestStorage, r4
-DefSingleInstructionOperation loadShortTest1, ldis, TestStorage, r4
 DefSingleInstructionOperation loadByteTest0, ldob, TestStorage, r4
-DefSingleInstructionOperation loadByteTest1, ldib, TestStorage, r4
+
+DefSingleInstructionOperation storeQuadTest0, stq, r4, TestStorage
+DefSingleInstructionOperation storeTripleTest0, stt, r4, TestStorage
+DefSingleInstructionOperation storeLongTest0, stl, r4, TestStorage
+DefSingleInstructionOperation storeTest0, st, r4, TestStorage
+DefSingleInstructionOperation storeShortTest0, stos, r4, TestStorage
+DefSingleInstructionOperation storeByteTest0, stob, r4, TestStorage
