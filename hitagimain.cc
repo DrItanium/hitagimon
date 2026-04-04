@@ -1537,6 +1537,35 @@ namespace microshell {
     void do_circle_roundrl1(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept {
         doCircleOperation(self, file, argc, argv, circleWalkRoundLongReal1);
     }
+    using MemoryLatencyTestOperation = void (*)(uint32_t);
+    void doMemoryLatencyTest(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[], MemoryLatencyTestOperation operation) noexcept {
+        if (argc == 1) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
+        } else {
+            for (int i = 1; i < argc; ++i) {
+                uint32_t depth = 0;
+                if (sscanf(argv[i], "%lu", &depth) == EOF) {
+                    continue;
+                } else if (depth == 0) {
+                    continue;
+                }
+                operation(depth);
+            }
+        }
+    }
+#define X(func) \
+    void do_ ## func ## MemoryTest (ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) noexcept { \
+        doMemoryLatencyTest(self, file, argc, argv, func ); \
+    }
+    X(loadQuadTest0);
+    X(loadTripleTest0);
+    X(loadLongTest0);
+    X(loadTest0);
+    X(loadShortTest0);
+    X(loadShortTest1);
+    X(loadByteTest0);
+    X(loadByteTest1);
+#undef X
     struct ExecutionContainer {
         ExecutionContainer(const std::string& title) : _title(title) { }
         std::string _title;
