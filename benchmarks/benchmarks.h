@@ -175,6 +175,20 @@ void storeLongTest2(uint32_t count); // stl
 void storeTest2(uint32_t count); // st
 void storeShortTest2(uint32_t count); // stos
 void storeByteTest2(uint32_t count); // stob
+                                     
+// load/store from unmapped 
+void loadQuadTest3(uint32_t count); // ldl
+void loadTripleTest3(uint32_t count); // ldt
+void loadLongTest3(uint32_t count); // ldl
+void loadTest3(uint32_t count); // ld
+void loadShortTest3(uint32_t count); // ldos
+void loadByteTest3(uint32_t count); // ldob
+void storeQuadTest3(uint32_t count); // stl
+void storeTripleTest3(uint32_t count); // stt
+void storeLongTest3(uint32_t count); // stl
+void storeTest3(uint32_t count); // st
+void storeShortTest3(uint32_t count); // stos
+void storeByteTest3(uint32_t count); // stob
 // skip the integer versions...
 #ifdef __cplusplus
 }

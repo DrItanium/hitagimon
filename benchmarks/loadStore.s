@@ -25,6 +25,7 @@
 .include "boot/macros.s"
 .equ SRAM2BaseAddress, 0xFE010000
 .equ SRAM1BaseAddress, 0xFE000800
+.equ UnmappedBaseAddress, 0xFD000000
 .data
 .align 4
 TestStorage:
@@ -76,3 +77,17 @@ DefSingleInstructionOperation storeLongTest2, stl, r4, SRAM2BaseAddress
 DefSingleInstructionOperation storeTest2, st, r4, SRAM2BaseAddress
 DefSingleInstructionOperation storeShortTest2, stos, r4, SRAM2BaseAddress
 DefSingleInstructionOperation storeByteTest2, stob, r4, SRAM2BaseAddress
+
+DefSingleInstructionOperation loadQuadTest3, ldq, UnmappedBaseAddress, r4
+DefSingleInstructionOperation loadTripleTest3, ldt, UnmappedBaseAddress, r4
+DefSingleInstructionOperation loadLongTest3, ldl, UnmappedBaseAddress, r4
+DefSingleInstructionOperation loadTest3, ld, UnmappedBaseAddress, r4
+DefSingleInstructionOperation loadShortTest3, ldos, UnmappedBaseAddress, r4
+DefSingleInstructionOperation loadByteTest3, ldob, UnmappedBaseAddress, r4
+
+DefSingleInstructionOperation storeQuadTest3, stq, r4, UnmappedBaseAddress
+DefSingleInstructionOperation storeTripleTest3, stt, r4, UnmappedBaseAddress
+DefSingleInstructionOperation storeLongTest3, stl, r4, UnmappedBaseAddress
+DefSingleInstructionOperation storeTest3, st, r4, UnmappedBaseAddress
+DefSingleInstructionOperation storeShortTest3, stos, r4, UnmappedBaseAddress
+DefSingleInstructionOperation storeByteTest3, stob, r4, UnmappedBaseAddress

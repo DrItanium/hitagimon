@@ -1595,6 +1595,18 @@ namespace microshell {
     X(storeTest2);
     X(storeShortTest2);
     X(storeByteTest2);
+    X(loadQuadTest3);
+    X(loadTripleTest3);
+    X(loadLongTest3);
+    X(loadTest3);
+    X(loadShortTest3);
+    X(loadByteTest3);
+    X(storeQuadTest3);
+    X(storeTripleTest3);
+    X(storeLongTest3);
+    X(storeTest3);
+    X(storeShortTest3);
+    X(storeByteTest3);
 #undef X
     struct ExecutionContainer {
         ExecutionContainer(const std::string& title) : _title(title) { }
@@ -2429,6 +2441,19 @@ namespace microshell {
     X(st_test2, storeTest2),
     X(stos_test2, storeShortTest2),
     X(stob_test2, storeByteTest2),
+
+    X(ldq_test3, loadQuadTest3),
+    X(ldt_test3, loadTripleTest3),
+    X(ldl_test3, loadLongTest3),
+    X(ld_test3, loadTest3),
+    X(ldos_test3, loadShortTest3),
+    X(ldob_test3, loadByteTest3),
+    X(stq_test3, storeQuadTest3),
+    X(stt_test3, storeTripleTest3),
+    X(stl_test3, storeLongTest3),
+    X(st_test3, storeTest3),
+    X(stos_test3, storeShortTest3),
+    X(stob_test3, storeByteTest3),
 #undef X
 };
     void
