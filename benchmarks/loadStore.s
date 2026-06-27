@@ -23,16 +23,12 @@
 
 # load/store tests
 .include "boot/macros.s"
-.equ SRAM2BaseAddress, 0xFE010000
 .equ SRAM1BaseAddress, 0xFE000800
 .equ UnmappedBaseAddress, 0xFD000000
 .data
 .align 4
 TestStorage:
-.word 0
-.word 0
-.word 0
-.word 0
+.word 0, 0, 0, 0
 
 .text
 # these routines are useful for analyzing system bus memory latency
@@ -63,20 +59,6 @@ DefSingleInstructionOperation storeLongTest1, stl, r4, SRAM1BaseAddress
 DefSingleInstructionOperation storeTest1, st, r4, SRAM1BaseAddress
 DefSingleInstructionOperation storeShortTest1, stos, r4, SRAM1BaseAddress
 DefSingleInstructionOperation storeByteTest1, stob, r4, SRAM1BaseAddress
-
-DefSingleInstructionOperation loadQuadTest2, ldq, SRAM2BaseAddress, r4
-DefSingleInstructionOperation loadTripleTest2, ldt, SRAM2BaseAddress, r4
-DefSingleInstructionOperation loadLongTest2, ldl, SRAM2BaseAddress, r4
-DefSingleInstructionOperation loadTest2, ld, SRAM2BaseAddress, r4
-DefSingleInstructionOperation loadShortTest2, ldos, SRAM2BaseAddress, r4
-DefSingleInstructionOperation loadByteTest2, ldob, SRAM2BaseAddress, r4
-
-DefSingleInstructionOperation storeQuadTest2, stq, r4, SRAM2BaseAddress
-DefSingleInstructionOperation storeTripleTest2, stt, r4, SRAM2BaseAddress
-DefSingleInstructionOperation storeLongTest2, stl, r4, SRAM2BaseAddress
-DefSingleInstructionOperation storeTest2, st, r4, SRAM2BaseAddress
-DefSingleInstructionOperation storeShortTest2, stos, r4, SRAM2BaseAddress
-DefSingleInstructionOperation storeByteTest2, stob, r4, SRAM2BaseAddress
 
 DefSingleInstructionOperation loadQuadTest3, ldq, UnmappedBaseAddress, r4
 DefSingleInstructionOperation loadTripleTest3, ldt, UnmappedBaseAddress, r4

@@ -162,20 +162,6 @@ void storeTest1(uint32_t count); // st
 void storeShortTest1(uint32_t count); // stos
 void storeByteTest1(uint32_t count); // stob
 
-// load/store from SRAM2 (DMAEXT)
-void loadQuadTest2(uint32_t count); // ldl
-void loadTripleTest2(uint32_t count); // ldt
-void loadLongTest2(uint32_t count); // ldl
-void loadTest2(uint32_t count); // ld
-void loadShortTest2(uint32_t count); // ldos
-void loadByteTest2(uint32_t count); // ldob
-void storeQuadTest2(uint32_t count); // stl
-void storeTripleTest2(uint32_t count); // stt
-void storeLongTest2(uint32_t count); // stl
-void storeTest2(uint32_t count); // st
-void storeShortTest2(uint32_t count); // stos
-void storeByteTest2(uint32_t count); // stob
-                                     
 // load/store from unmapped 
 void loadQuadTest3(uint32_t count); // ldl
 void loadTripleTest3(uint32_t count); // ldt
