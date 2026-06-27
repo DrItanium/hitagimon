@@ -24,7 +24,7 @@
 # load/store tests
 .include "boot/macros.s"
 .equ SRAM2BaseAddress, 0xFE010000
-.equ SRAM1BaseAddress, 0xFE000800
+.equ SRAM1BaseAddress, 0xFE001000
 .equ UnmappedBaseAddress, 0xFD000000
 .data
 .align 4
