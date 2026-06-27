@@ -81,14 +81,12 @@ namespace cortex
         static_assert(sizeof(builtin) == 256);
         IOPage unmappedPages[6];
         uint8_t sramCache[2048];
-        //uint8_t eeprom[4096];
         inline uint16_t read() volatile noexcept { return builtin.SerialRW; }
         inline void write(uint16_t c) volatile noexcept { builtin.SerialRW = c; }
         inline void flush() volatile noexcept { builtin.SerialFlush = 0; }
         inline uint32_t millis() volatile noexcept { return builtin.ms; }
         inline uint32_t micros() volatile noexcept { return builtin.us; }
         inline uint32_t cycleCount() volatile noexcept { return builtin.cycleCount; }
-        //inline uint32_t eepromCapacity() const volatile noexcept { return builtin._eepromCapacity; }
         inline uint32_t sramCacheCapacity() volatile noexcept { return builtin._sramCapacity; }
         inline uint32_t sram2CacheCapacity() volatile noexcept { return builtin._sram2Capacity; }
         inline uint32_t unixtime() volatile noexcept { return builtin._unixtime; }

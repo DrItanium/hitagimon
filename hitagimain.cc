@@ -1583,6 +1583,18 @@ namespace microshell {
     X(storeShortTest1);
     X(storeByteTest1);
 
+    X(loadQuadTest2);
+    X(loadTripleTest2);
+    X(loadLongTest2);
+    X(loadTest2);
+    X(loadShortTest2);
+    X(loadByteTest2);
+    X(storeQuadTest2);
+    X(storeTripleTest2);
+    X(storeLongTest2);
+    X(storeTest2);
+    X(storeShortTest2);
+    X(storeByteTest2);
     X(loadQuadTest3);
     X(loadTripleTest3);
     X(loadLongTest3);
@@ -2263,44 +2275,57 @@ namespace microshell {
 { "circle_roundrl1", nullptr, nullptr, do_circle_roundrl1, nullptr, nullptr, nullptr, },
 #define X(name, func) \
 { #name , nullptr, nullptr, do_ ## func ## _MemoryTest , nullptr, nullptr, nullptr, }
-    X(ldq_test_psram, loadQuadTest0),
-    X(ldt_test_psram, loadTripleTest0),
-    X(ldl_test_psram, loadLongTest0),
-    X(ld_test_psram, loadTest0),
-    X(ldos_test_psram, loadShortTest0),
-    X(ldob_test_psram, loadByteTest0),
-    X(stq_test_psram, storeQuadTest0),
-    X(stt_test_psram, storeTripleTest0),
-    X(stl_test_psram, storeLongTest0),
-    X(st_test_psram, storeTest0),
-    X(stos_test_psram, storeShortTest0),
-    X(stob_test_psram, storeByteTest0),
+    X(ldq_test0, loadQuadTest0),
+    X(ldt_test0, loadTripleTest0),
+    X(ldl_test0, loadLongTest0),
+    X(ld_test0, loadTest0),
+    X(ldos_test0, loadShortTest0),
+    X(ldob_test0, loadByteTest0),
+    X(stq_test0, storeQuadTest0),
+    X(stt_test0, storeTripleTest0),
+    X(stl_test0, storeLongTest0),
+    X(st_test0, storeTest0),
+    X(stos_test0, storeShortTest0),
+    X(stob_test0, storeByteTest0),
 
-    X(ldq_test_sram, loadQuadTest1),
-    X(ldt_test_sram, loadTripleTest1),
-    X(ldl_test_sram, loadLongTest1),
-    X(ld_test_sram, loadTest1),
-    X(ldos_test_sram, loadShortTest1),
-    X(ldob_test_sram, loadByteTest1),
-    X(stq_test_sram, storeQuadTest1),
-    X(stt_test_sram, storeTripleTest1),
-    X(stl_test_sram, storeLongTest1),
-    X(st_test_sram, storeTest1),
-    X(stos_test_sram, storeShortTest1),
-    X(stob_test_sram, storeByteTest1),
+    X(ldq_test1, loadQuadTest1),
+    X(ldt_test1, loadTripleTest1),
+    X(ldl_test1, loadLongTest1),
+    X(ld_test1, loadTest1),
+    X(ldos_test1, loadShortTest1),
+    X(ldob_test1, loadByteTest1),
+    X(stq_test1, storeQuadTest1),
+    X(stt_test1, storeTripleTest1),
+    X(stl_test1, storeLongTest1),
+    X(st_test1, storeTest1),
+    X(stos_test1, storeShortTest1),
+    X(stob_test1, storeByteTest1),
 
-    X(ldq_test_unmapped, loadQuadTest3),
-    X(ldt_test_unmapped, loadTripleTest3),
-    X(ldl_test_unmapped, loadLongTest3),
-    X(ld_test_unmapped, loadTest3),
-    X(ldos_test_unmapped, loadShortTest3),
-    X(ldob_test_unmapped, loadByteTest3),
-    X(stq_test_unmapped, storeQuadTest3),
-    X(stt_test_unmapped, storeTripleTest3),
-    X(stl_test_unmapped, storeLongTest3),
-    X(st_test_unmapped, storeTest3),
-    X(stos_test_unmapped, storeShortTest3),
-    X(stob_test_unmapped, storeByteTest3),
+    X(ldq_test2, loadQuadTest2),
+    X(ldt_test2, loadTripleTest2),
+    X(ldl_test2, loadLongTest2),
+    X(ld_test2, loadTest2),
+    X(ldos_test2, loadShortTest2),
+    X(ldob_test2, loadByteTest2),
+    X(stq_test2, storeQuadTest2),
+    X(stt_test2, storeTripleTest2),
+    X(stl_test2, storeLongTest2),
+    X(st_test2, storeTest2),
+    X(stos_test2, storeShortTest2),
+    X(stob_test2, storeByteTest2),
+
+    X(ldq_test3, loadQuadTest3),
+    X(ldt_test3, loadTripleTest3),
+    X(ldl_test3, loadLongTest3),
+    X(ld_test3, loadTest3),
+    X(ldos_test3, loadShortTest3),
+    X(ldob_test3, loadByteTest3),
+    X(stq_test3, storeQuadTest3),
+    X(stt_test3, storeTripleTest3),
+    X(stl_test3, storeLongTest3),
+    X(st_test3, storeTest3),
+    X(stos_test3, storeShortTest3),
+    X(stob_test3, storeByteTest3),
 #undef X
 };
     void
