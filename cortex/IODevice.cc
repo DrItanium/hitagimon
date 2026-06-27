@@ -32,7 +32,7 @@ namespace cortex
                 uint32_t _hardwareRandomSource;
                 uint16_t _systemCounterStatus;
                 uint16_t _unused0;
-                uint32_t _unused1;
+                uint32_t _hardwareEntropySource;
                 uint32_t _unused2;
                 // capacity information
                 uint32_t _unused3;
