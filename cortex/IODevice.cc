@@ -45,42 +45,10 @@ namespace cortex
                 FilesystemInterfaceErrorCodes _fsErrorCode;
             };
         } builtin;
-        union {
-            IOPage bytes;
-            struct {
-                uint16_t execute;
-                uint16_t operation;
-#define X(index) uint16_t arg ## index 
-                X(0);
-                X(1);
-                X(2);
-                X(3);
-                X(4);
-                X(5);
-                X(6);
-                X(7);
-                X(8);
-                X(9);
-                X(10);
-                X(11);
-                X(12);
-                X(13);
-#undef X
-                uint16_t rotation;
-                uint16_t brightness;
-
-                uint16_t width;
-                uint16_t height;
-
-                uint16_t cursorX;
-                uint16_t cursorY;
-                uint16_t textSize;
-            } __attribute__((packed));
-        } gfx;
-        static_assert(sizeof(gfx) == 256);
         static_assert(sizeof(builtin) == 256);
-        IOPage unmappedPages[6];
-        uint8_t sramCache[2048];
+        IOPage unmappedPages[15];
+        // remaining 48 pages are part of the sram cache
+        uint8_t sramCache[256 * (256-16)];
         inline uint16_t read() volatile noexcept { return builtin.SerialRW; }
         inline void write(uint16_t c) volatile noexcept { builtin.SerialRW = c; }
         inline void flush() volatile noexcept { builtin.SerialFlush = 0; }
@@ -95,84 +63,6 @@ namespace cortex
         inline bool rtc_32kEnabled() volatile noexcept { return builtin._configure32k; }
         inline void rtc_enable32k() volatile noexcept { builtin._configure32k = 1; }
         inline void rtc_disable32k() volatile noexcept { builtin._configure32k = 0; }
-        inline void gfx_set_text_size(uint8_t sx, uint8_t sy) noexcept {
-            gfx.textSize = static_cast<uint16_t>(sx) | (static_cast<uint16_t>(sy) << 8);
-        }
-        inline void gfx_set_text_size(uint8_t sx) noexcept {
-            gfx_set_text_size(sx, sx);
-        }
-        inline void gfx_command(uint16_t cmd, uint16_t arg0) volatile noexcept {
-            gfx.operation = cmd;
-            gfx.arg0 = arg0;
-            gfx.execute = 0xFFFF;
-        }
-        inline void gfx_command(uint16_t cmd, uint16_t arg0, uint16_t arg1) volatile noexcept {
-            gfx.operation = cmd;
-            gfx.arg0 = arg0;
-            gfx.arg1 = arg1;
-            gfx.execute = 0xFFFF;
-        }
-        inline void gfx_command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2) volatile noexcept  {
-            gfx.operation = cmd;
-            gfx.arg0 = arg0;
-            gfx.arg1 = arg1;
-            gfx.arg2 = arg2;
-            gfx.execute = 0xFFFF;
-        }
-        inline void gfx_command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3) volatile noexcept  {
-            gfx.operation = cmd;
-            gfx.arg0 = arg0;
-            gfx.arg1 = arg1;
-            gfx.arg2 = arg2;
-            gfx.arg3 = arg3;
-            gfx.execute = 0xFFFF;
-        }
-        inline void gfx_command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4) volatile noexcept  {
-            gfx.operation = cmd;
-            gfx.arg0 = arg0;
-            gfx.arg1 = arg1;
-            gfx.arg2 = arg2;
-            gfx.arg3 = arg3;
-            gfx.arg4 = arg4;
-            gfx.execute = 0xFFFF;
-        }
-        inline void gfx_command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5) volatile noexcept {
-            gfx.operation = cmd;
-            gfx.arg0 = arg0;
-            gfx.arg1 = arg1;
-            gfx.arg2 = arg2;
-            gfx.arg3 = arg3;
-            gfx.arg4 = arg4;
-            gfx.arg5 = arg5;
-            gfx.execute = 0xFFFF;
-        }
-        inline void gfx_command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5, uint16_t arg6) volatile noexcept {
-            gfx.operation = cmd;
-            gfx.arg0 = arg0;
-            gfx.arg1 = arg1;
-            gfx.arg2 = arg2;
-            gfx.arg3 = arg3;
-            gfx.arg4 = arg4;
-            gfx.arg5 = arg5;
-            gfx.arg6 = arg6;
-            gfx.execute = 0xFFFF;
-        }
-        inline void gfx_command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5, uint16_t arg6, uint16_t arg7) volatile noexcept {
-            gfx.operation = cmd;
-            gfx.arg0 = arg0;
-            gfx.arg1 = arg1;
-            gfx.arg2 = arg2;
-            gfx.arg3 = arg3;
-            gfx.arg4 = arg4;
-            gfx.arg5 = arg5;
-            gfx.arg6 = arg6;
-            gfx.arg7 = arg7;
-            gfx.execute = 0xFFFF;
-        }
-        inline uint16_t gfx_width() volatile noexcept { return gfx.width; }
-        inline uint16_t gfx_height() volatile noexcept { return gfx.height; }
-        inline uint16_t gfx_rotation() volatile noexcept { return gfx.rotation; }
-        inline void gfx_set_rotation(uint16_t value) volatile noexcept { gfx.rotation = value; }
         bool systemCounterActive() volatile noexcept {
             return builtin._systemCounterStatus != 0;
         }
@@ -253,33 +143,6 @@ namespace cortex
             getChipsetClockSpeed() noexcept {
                 return getIOSpace().builtin.chipsetClockSpeed;
             }
-        }
-        namespace OLED {
-            void command(uint16_t cmd, uint16_t arg0) {
-                getIOSpace().gfx_command(cmd, arg0);
-            }
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1) {
-                getIOSpace().gfx_command(cmd, arg0, arg1);
-            }
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2) {
-                getIOSpace().gfx_command(cmd, arg0, arg1, arg2);
-            }
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3) {
-                getIOSpace().gfx_command(cmd, arg0, arg1, arg2, arg3);
-            }
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4) {
-                getIOSpace().gfx_command(cmd, arg0, arg1, arg2, arg3, arg4);
-            }
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5) {
-                getIOSpace().gfx_command(cmd, arg0, arg1, arg2, arg3, arg4, arg5);
-            }
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5, uint16_t arg6) {
-                getIOSpace().gfx_command(cmd, arg0, arg1, arg2, arg3, arg4, arg5, arg6);
-            }
-            uint16_t width() { return getIOSpace().gfx_width(); }
-            uint16_t height() { return getIOSpace().gfx_height(); }
-            uint8_t getRotation() { return getIOSpace().gfx_rotation(); }
-            void setRotation(uint8_t value) { getIOSpace().gfx_set_rotation(value); }
         }
         namespace Random {
             uint32_t getHardwareRandomNumber() noexcept {
