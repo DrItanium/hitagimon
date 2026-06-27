@@ -1913,136 +1913,6 @@ namespace microshell {
             nullptr
         },
     };
-    size_t oled_width_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
-        static char buf[32];
-        snprintf(buf, sizeof(buf), "%u\n", cortex::ChipsetBasicFunctions::OLED::width());
-        buf[sizeof(buf) - 1] = 0;
-        *data = (uint8_t*)buf;
-        return strlen((char*)(*data));
-    }
-    size_t oled_height_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
-        static char buf[32];
-        snprintf(buf, sizeof(buf), "%u\n", cortex::ChipsetBasicFunctions::OLED::height());
-        buf[sizeof(buf) - 1] = 0;
-        *data = (uint8_t*)buf;
-        return strlen((char*)(*data));
-    }
-    size_t oled_rotation_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
-        static char buf[32];
-        snprintf(buf, sizeof(buf), "%u\n", cortex::ChipsetBasicFunctions::OLED::getRotation());
-        buf[sizeof(buf) - 1] = 0;
-        *data = (uint8_t*)buf;
-        return strlen((char*)(*data));
-    }
-    void oled_rotation_set_data_callback(struct ush_object*, struct ush_file_descriptor const*, uint8_t* data, size_t size) {
-        if (size > 0) {
-            cortex::ChipsetBasicFunctions::OLED::setRotation(data[0]);
-        }
-    }
-    ush_node_object oledNode;
-    const ush_file_descriptor oledDesc[] = {
-        {
-            "width",
-            nullptr,
-            nullptr,
-            nullptr,
-            oled_width_get_data_callback,
-            nullptr,
-            nullptr,
-        },
-        {
-            "height",
-            nullptr,
-            nullptr,
-            nullptr,
-            oled_height_get_data_callback,
-            nullptr,
-            nullptr,
-        },
-        {
-            "rotation",
-            nullptr,
-            nullptr,
-            nullptr,
-            oled_rotation_get_data_callback,
-            oled_rotation_set_data_callback,
-            nullptr,
-        },
-    };
-    size_t eeprom_capacity_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
-        static char timeBuffer[16];
-        /// @todo reimplement through memory mapped io
-        unsigned long capacity = cortex::EEPROM().capacity();
-        snprintf(timeBuffer, sizeof(timeBuffer), "%lu\n", capacity);
-        timeBuffer[sizeof(timeBuffer) - 1] = 0;
-        *data = (uint8_t*)timeBuffer;
-        return strlen((char*)(*data));
-    }
-    size_t eeprom_data_get_data_callback(struct ush_object*, struct ush_file_descriptor const*, uint8_t** data) {
-        *data = cortex::EEPROM().data();
-        return cortex::EEPROM().capacity();
-    }
-    void eeprom_data_set_data_callback(struct ush_object*, struct ush_file_descriptor const*, uint8_t* data, size_t size) {
-        memcpy(cortex::EEPROM().data(), data, size);
-    }
-    ush_node_object eepromRoot;
-    const ush_file_descriptor eepromDesc[] = {
-            {
-                    "capacity",
-                    nullptr,
-                    nullptr,
-                    nullptr,
-                    eeprom_capacity_get_data_callback,
-                    nullptr,
-                    nullptr
-            },
-            {
-                "block",
-                nullptr,
-                nullptr,
-                nullptr,
-                eeprom_data_get_data_callback,
-                eeprom_data_set_data_callback,
-                nullptr,
-            },
-            /// @todo finish implementing
-    };
-    size_t sram_capacity_get_data_callback(struct ush_object* self, struct ush_file_descriptor const* file, uint8_t** data) {
-        static char timeBuffer[16];
-        unsigned long capacity = cortex::SRAM().capacity();
-        snprintf(timeBuffer, sizeof(timeBuffer), "%lu\n", capacity);
-        timeBuffer[sizeof(timeBuffer) - 1] = 0;
-        *data = (uint8_t*)timeBuffer;
-        return strlen((char*)(*data));
-    }
-    size_t sram_data_get_data_callback(struct ush_object*, struct ush_file_descriptor const*, uint8_t** data) {
-        *data = cortex::SRAM().data();
-        return cortex::SRAM().capacity();
-    }
-    void sram_data_set_data_callback(struct ush_object*, struct ush_file_descriptor const*, uint8_t* data, size_t size) {
-        memcpy(cortex::SRAM().data(), data, size);
-    }
-    ush_node_object sramRoot;
-    const ush_file_descriptor sramDesc[] = {
-            {
-                    "capacity",
-                    nullptr,
-                    nullptr,
-                    nullptr,
-                    sram_capacity_get_data_callback,
-                    nullptr,
-                    nullptr
-            },
-            {
-                    "block",
-                    nullptr,
-                    nullptr,
-                    nullptr,
-                    sram_data_get_data_callback,
-                    sram_data_set_data_callback,
-                    nullptr,
-            },
-    };
     ush_node_object binNode;
     const ush_file_descriptor binDesc[] = {
         {
@@ -2145,6 +2015,7 @@ namespace microshell {
             nullptr,
             nullptr,
         },
+#if 0
         {
             "fizzle_fade",
             "do the Wolf3d FizzleFade sequence on the oled",
@@ -2253,6 +2124,7 @@ namespace microshell {
             nullptr,
             nullptr,
         },
+#endif
         {
             "coremark",
             "Run coremark from https://github.com/PaulStoffregen/CoreMark.git",
@@ -2463,9 +2335,6 @@ namespace microshell {
         ush_node_mount(&microshellObject, "/", &fsroot, rootDesc, sizeof(rootDesc) / sizeof(rootDesc[0]));
         ush_node_mount(&microshellObject, "/bin", &binNode, binDesc, sizeof(binDesc)/sizeof(binDesc[0]));
         ush_node_mount(&microshellObject, "/dev", &devNode, devDesc, sizeof(devDesc)/sizeof(devDesc[0]));
-        ush_node_mount(&microshellObject, "/dev/eeprom", &eepromRoot, eepromDesc, sizeof(eepromDesc) / sizeof(eepromDesc[0]));
-        ush_node_mount(&microshellObject, "/dev/sram", &sramRoot, sramDesc, sizeof(sramDesc) / sizeof(sramDesc[0]));
-        ush_node_mount(&microshellObject, "/dev/oled", &oledNode, oledDesc, sizeof(oledDesc) / sizeof(oledDesc[0]));
 
     }
 }
