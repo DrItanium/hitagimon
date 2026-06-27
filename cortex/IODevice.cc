@@ -22,7 +22,7 @@ namespace cortex
                 uint32_t ms;
                 uint32_t us;
                 uint32_t cycleCount;
-                uint32_t _unused4;
+                uint32_t timeSinceBoot;
                 // rtc functions
                 uint32_t _unixtime;
                 uint32_t _secondstime;
