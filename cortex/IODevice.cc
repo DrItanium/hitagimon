@@ -39,10 +39,10 @@ namespace cortex
                 uint32_t _sramCapacity;
                 uint32_t _sram2Capacity;
                 uint32_t _unused5;
-                // sdcard interface
-                FilesystemOperation* _fsRequestPtr;
-                uint32_t _fsRequestEnable;
-                FilesystemInterfaceErrorCodes _fsErrorCode;
+                // system execution stats
+                uint64_t _idleCycles;
+                uint64_t _totalCycles;
+                uint64_t _systemCounter;
             };
         } builtin;
         static_assert(sizeof(builtin) == 256);
@@ -72,6 +72,12 @@ namespace cortex
         void disableSystemCounter() volatile noexcept {
             builtin._systemCounterStatus = 0;
         }
+        void setSystemCounter(uint64_t value) volatile noexcept {
+            builtin._systemCounter = value;
+        }
+        uint64_t getSystemCounter() const volatile noexcept { return builtin._systemCounter; }
+        uint64_t getIdleCycles() const volatile noexcept { return builtin._idleCycles; }
+        uint64_t getTotalCycles() const volatile noexcept { return builtin._totalCycles; }
     } __attribute__((packed));
     volatile IOSpace& getIOSpace() noexcept {
         return memory<IOSpace>(0xFE000000);
@@ -159,6 +165,13 @@ namespace cortex
             void disable() noexcept {
                 getIOSpace().disableSystemCounter();
             }
+            void set(uint64_t value) noexcept {
+                getIOSpace().setSystemCounter(value);
+            }
+            uint64_t get() noexcept {
+                return getIOSpace().getSystemCounter();
+            }
+
         }
         void
         begin() noexcept {
@@ -184,13 +197,6 @@ namespace cortex
     SRAM2() noexcept {
         static IOMemoryBlock thing(const_cast<uint8_t*>(getSRAM2().bytes), getIOSpace().sram2CacheCapacity());
         return thing;
-    }
-    namespace SDCard {
-        FilesystemInterfaceErrorCodes postRequest(RequestStructure request) {
-            getIOSpace().builtin._fsRequestPtr = request;
-            getIOSpace().builtin._fsRequestEnable = 0xFFFF'FFFF;
-            return getIOSpace().builtin._fsErrorCode;
-        }
     }
 
 } // end namespace cortex

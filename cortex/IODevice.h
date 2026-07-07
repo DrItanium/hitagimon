@@ -78,10 +78,14 @@ namespace cortex {
             bool active() noexcept;
             void enable() noexcept;
             void disable() noexcept;
+            uint64_t get() noexcept;
+            void set(uint64_t value) noexcept;
         } // end namespace SystemCounter
         namespace Info {
             uint32_t getCPUClockSpeed() noexcept;
             uint32_t getChipsetClockSpeed() noexcept;
+            uint64_t getIdleCycles() noexcept;
+            uint64_t getTotalCycles() noexcept;
         } // end namespace Info
         namespace OLED {
             void command(uint16_t cmd, uint16_t arg0);
