@@ -104,18 +104,65 @@ namespace cortex
         void setCursorX(uint16_t value) volatile noexcept { display._cursorX = value; }
         void setCursorY(uint16_t value) volatile noexcept { display._cursorY = value; }
         uint32_t getGraphicsReturn() const volatile noexcept { return display._graphicsReturn; }
-        void doGraphicsInstruction(uint16_t opcode) volatile noexcept { display._graphicsOpcode = opcode; }
-        void doGraphicsInstruction(uint16_t opcode, uint16_t arg0) volatile noexcept { 
+        void 
+        doGraphicsInstruction(uint16_t opcode, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5, uint16_t arg6) volatile noexcept { 
             display._args[0] = arg0;
-            doGraphicsInstruction(opcode);
-        }
-        void doGraphicsInstruction(uint16_t opcode, uint16_t arg0, uint16_t arg1) volatile noexcept { 
             display._args[1] = arg1;
-            doGraphicsInstruction(opcode, arg0);
-        }
-        void doGraphicsInstruction(uint16_t opcode, uint16_t arg0, uint16_t arg1, uint16_t arg2) volatile noexcept { 
             display._args[2] = arg2;
-            doGraphicsInstruction(opcode, arg0, arg1);
+            display._args[3] = arg3;
+            display._args[4] = arg4;
+            display._args[5] = arg5;
+            display._args[6] = arg6;
+            display._graphicsOpcode = opcode;
+        }
+        void 
+        doGraphicsInstruction(uint16_t opcode, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5) volatile noexcept { 
+            display._args[0] = arg0;
+            display._args[1] = arg1;
+            display._args[2] = arg2;
+            display._args[3] = arg3;
+            display._args[4] = arg4;
+            display._args[5] = arg5;
+            display._graphicsOpcode = opcode;
+        }
+        void 
+        doGraphicsInstruction(uint16_t opcode, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4) volatile noexcept { 
+            display._args[0] = arg0;
+            display._args[1] = arg1;
+            display._args[2] = arg2;
+            display._args[3] = arg3;
+            display._args[4] = arg4;
+            display._graphicsOpcode = opcode;
+        }
+        void 
+        doGraphicsInstruction(uint16_t opcode, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3) volatile noexcept { 
+            display._args[0] = arg0;
+            display._args[1] = arg1;
+            display._args[2] = arg2;
+            display._args[3] = arg3;
+            display._graphicsOpcode = opcode;
+        }
+        void 
+        doGraphicsInstruction(uint16_t opcode, uint16_t arg0, uint16_t arg1, uint16_t arg2) volatile noexcept { 
+            display._args[0] = arg0;
+            display._args[1] = arg1;
+            display._args[2] = arg2;
+            display._graphicsOpcode = opcode;
+        }
+        void 
+        doGraphicsInstruction(uint16_t opcode, uint16_t arg0, uint16_t arg1) volatile noexcept { 
+            display._args[0] = arg0;
+            display._args[1] = arg1;
+            display._graphicsOpcode = opcode;
+        }
+        void 
+        doGraphicsInstruction(uint16_t opcode, uint16_t arg0) volatile noexcept { 
+            display._args[0] = arg0;
+            display._graphicsOpcode = opcode;
+        }
+        void 
+        doGraphicsInstruction(uint16_t opcode) volatile noexcept { 
+            display._graphicsOpcode = opcode;
         }
     } __attribute__((packed));
     volatile IOSpace& getIOSpace() noexcept {
