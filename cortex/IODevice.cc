@@ -277,6 +277,11 @@ namespace cortex
             uint8_t getRotation() noexcept { return getIOSpace().getRotation(); }
             void setRotation(uint8_t value) noexcept { getIOSpace().setRotation(value); }
             void invertDisplay(bool value) noexcept { getIOSpace().invertDisplay(value); }
+            void setCursor(uint16_t x, uint16_t y) noexcept {
+                auto& space = getIOSpace();
+                space.setCursorX(x);
+                space.setCursorY(y);
+            }
         }
         void
         begin() noexcept {

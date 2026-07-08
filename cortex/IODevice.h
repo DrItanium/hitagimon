@@ -100,6 +100,7 @@ namespace cortex {
             uint8_t getRotation() noexcept;
             void setRotation(uint8_t value) noexcept;
             void invertDisplay(bool value = true) noexcept;
+            void setCursor(uint16_t x, uint16_t y) noexcept;
         }
         namespace Random {
             uint32_t getHardwareRandomNumber() noexcept;
