@@ -87,18 +87,19 @@ namespace cortex {
             uint64_t getIdleCycles() noexcept;
             uint64_t getTotalCycles() noexcept;
         } // end namespace Info
-        namespace OLED {
-            void command(uint16_t cmd, uint16_t arg0);
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1);
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2);
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3);
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4);
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5);
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5, uint16_t arg6);
-            uint16_t width();
-            uint16_t height();
-            uint8_t getRotation();
-            void setRotation(uint8_t value);
+        namespace Display {
+            void command(uint16_t cmd, uint16_t arg0) noexcept;
+            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1) noexcept;
+            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2) noexcept;
+            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3) noexcept;
+            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4) noexcept;
+            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5) noexcept;
+            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5, uint16_t arg6) noexcept;
+            uint16_t width() noexcept;
+            uint16_t height() noexcept;
+            uint8_t getRotation() noexcept;
+            void setRotation(uint8_t value) noexcept;
+            void invertDisplay(bool value = true) noexcept;
         }
         namespace Random {
             uint32_t getHardwareRandomNumber() noexcept;
