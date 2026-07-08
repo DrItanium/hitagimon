@@ -282,6 +282,8 @@ namespace cortex
                 space.setCursorX(x);
                 space.setCursorY(y);
             }
+            uint16_t getCursorX() noexcept { return getIOSpace().getCursorX(); }
+            uint16_t getCursorY() noexcept { return getIOSpace().getCursorY(); }
         }
         void
         begin() noexcept {

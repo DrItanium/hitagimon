@@ -101,6 +101,8 @@ namespace cortex {
             void setRotation(uint8_t value) noexcept;
             void invertDisplay(bool value = true) noexcept;
             void setCursor(uint16_t x, uint16_t y) noexcept;
+            uint16_t getCursorX() noexcept;
+            uint16_t getCursorY() noexcept;
         }
         namespace Random {
             uint32_t getHardwareRandomNumber() noexcept;
