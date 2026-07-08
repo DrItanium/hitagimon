@@ -101,8 +101,22 @@ namespace cortex {
             void setRotation(uint8_t value) noexcept;
             void invertDisplay(bool value = true) noexcept;
             void setCursor(uint16_t x, uint16_t y) noexcept;
+            inline void resetCursor() noexcept { setCursor(0, 0); }
             uint16_t getCursorX() noexcept;
             uint16_t getCursorY() noexcept;
+            void fillScreen(uint16_t color) noexcept;
+            inline void clearScreen() noexcept { fillScreen(0); }
+            void print(uint16_t value) noexcept;
+            inline void print(char* value, size_t nbyte) noexcept {
+                for (size_t i = 0; i < nbyte; ++i) {
+                    print(value[i]);
+                }
+            }
+            inline void println() noexcept { print('\n'); }
+            inline void println(char* value, size_t nbyte) noexcept {
+                print(value, nbyte);
+                println();
+            }
         }
         namespace Random {
             uint32_t getHardwareRandomNumber() noexcept;

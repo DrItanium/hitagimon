@@ -175,6 +175,10 @@ namespace cortex
         doGraphicsInstruction(uint16_t opcode) volatile noexcept { 
             display._graphicsOpcode = opcode;
         }
+        void printGraphicsChar(uint16_t rune) volatile noexcept { display._print = rune; }
+        void graphicsStartWrite() volatile noexcept { display._startWrite = 1; }
+        void graphicsEndWrite() volatile noexcept { display._stopWrite = 1; }
+        void clearScreen(uint16_t color = 0) volatile noexcept { display._screenFill = color; }
     } __attribute__((packed));
     volatile IOSpace& getIOSpace() noexcept {
         return memory<IOSpace>(0xFE000000);
@@ -293,6 +297,8 @@ namespace cortex
             }
             uint16_t getCursorX() noexcept { return getIOSpace().getCursorX(); }
             uint16_t getCursorY() noexcept { return getIOSpace().getCursorY(); }
+            void fillScreen(uint16_t color) noexcept { getIOSpace().clearScreen(color); }
+            void print(uint16_t value) noexcept { getIOSpace().printGraphicsChar(value); }
         }
         void
         begin() noexcept {
