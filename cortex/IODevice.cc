@@ -149,6 +149,8 @@ namespace cortex
             getChipsetClockSpeed() noexcept {
                 return getIOSpace().builtin.chipsetClockSpeed;
             }
+            uint64_t getIdleCycles() noexcept { return getIOSpace().getIdleCycles(); }
+            uint64_t getTotalCycles() noexcept { return getIOSpace().getTotalCycles(); }
         }
         namespace Random {
             uint32_t getHardwareRandomNumber() noexcept {

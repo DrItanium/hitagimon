@@ -42,3 +42,7 @@ ISR(INT2) {
 ISR(INT3) {
 
 }
+
+ISR(INT0) {
+    // originally, was used for system counter but no longer!
+}

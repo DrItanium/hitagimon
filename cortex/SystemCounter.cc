@@ -29,16 +29,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cortex/IODevice.h>
 #include <cortex/builtins.h>
 namespace cortex {
-    namespace {
-        volatile uint64_t _coreSystemCounter = 0;
-    } // end namespace
     void
     clearSystemCounter() noexcept {
-        _coreSystemCounter = 0;
+        ChipsetBasicFunctions::SystemCounter::set(0);
     }
     uint64_t
     getSystemCounter() noexcept {
-        return _coreSystemCounter;
+        return ChipsetBasicFunctions::SystemCounter::get();
     }
     void
     enableSystemCounter() noexcept {
@@ -50,6 +47,3 @@ namespace cortex {
     }
 } // end namespace cortex
 
-ISR(INT0) {
-    ++cortex::_coreSystemCounter;
-}
