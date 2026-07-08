@@ -46,6 +46,7 @@ namespace cortex
             };
         } builtin;
         static_assert(sizeof(builtin) == 256);
+        using DrawCommand = ChipsetBasicFunctions::Display::DrawCommand;
         union {
             IOPage bytes;
             struct {
@@ -59,7 +60,7 @@ namespace cortex
                 uint16_t _colorfg;
                 uint16_t _colorbg;
                 // opcode instruction
-                uint16_t _graphicsOpcode;
+                DrawCommand _graphicsOpcode;
                 uint16_t _args[7];
                 // quick access routines
                 uint16_t _print;
@@ -116,7 +117,7 @@ namespace cortex
         uint16_t getColorFG() const volatile noexcept { return display._colorfg; }
         uint16_t getColorBG() const volatile noexcept { return display._colorbg; }
         void 
-        doGraphicsInstruction(uint16_t opcode, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5, uint16_t arg6) volatile noexcept { 
+        doGraphicsInstruction(DrawCommand opcode, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5, uint16_t arg6) volatile noexcept { 
             display._args[0] = arg0;
             display._args[1] = arg1;
             display._args[2] = arg2;
@@ -127,7 +128,7 @@ namespace cortex
             display._graphicsOpcode = opcode;
         }
         void 
-        doGraphicsInstruction(uint16_t opcode, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5) volatile noexcept { 
+        doGraphicsInstruction(DrawCommand opcode, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5) volatile noexcept { 
             display._args[0] = arg0;
             display._args[1] = arg1;
             display._args[2] = arg2;
@@ -137,7 +138,7 @@ namespace cortex
             display._graphicsOpcode = opcode;
         }
         void 
-        doGraphicsInstruction(uint16_t opcode, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4) volatile noexcept { 
+        doGraphicsInstruction(DrawCommand opcode, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4) volatile noexcept { 
             display._args[0] = arg0;
             display._args[1] = arg1;
             display._args[2] = arg2;
@@ -146,7 +147,7 @@ namespace cortex
             display._graphicsOpcode = opcode;
         }
         void 
-        doGraphicsInstruction(uint16_t opcode, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3) volatile noexcept { 
+        doGraphicsInstruction(DrawCommand opcode, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3) volatile noexcept { 
             display._args[0] = arg0;
             display._args[1] = arg1;
             display._args[2] = arg2;
@@ -154,25 +155,25 @@ namespace cortex
             display._graphicsOpcode = opcode;
         }
         void 
-        doGraphicsInstruction(uint16_t opcode, uint16_t arg0, uint16_t arg1, uint16_t arg2) volatile noexcept { 
+        doGraphicsInstruction(DrawCommand opcode, uint16_t arg0, uint16_t arg1, uint16_t arg2) volatile noexcept { 
             display._args[0] = arg0;
             display._args[1] = arg1;
             display._args[2] = arg2;
             display._graphicsOpcode = opcode;
         }
         void 
-        doGraphicsInstruction(uint16_t opcode, uint16_t arg0, uint16_t arg1) volatile noexcept { 
+        doGraphicsInstruction(DrawCommand opcode, uint16_t arg0, uint16_t arg1) volatile noexcept { 
             display._args[0] = arg0;
             display._args[1] = arg1;
             display._graphicsOpcode = opcode;
         }
         void 
-        doGraphicsInstruction(uint16_t opcode, uint16_t arg0) volatile noexcept { 
+        doGraphicsInstruction(DrawCommand opcode, uint16_t arg0) volatile noexcept { 
             display._args[0] = arg0;
             display._graphicsOpcode = opcode;
         }
         void 
-        doGraphicsInstruction(uint16_t opcode) volatile noexcept { 
+        doGraphicsInstruction(DrawCommand opcode) volatile noexcept { 
             display._graphicsOpcode = opcode;
         }
         void printGraphicsChar(uint16_t rune) volatile noexcept { display._print = rune; }
@@ -277,14 +278,14 @@ namespace cortex
 
         }
         namespace Display {
-            void command(uint16_t cmd) noexcept { getIOSpace().doGraphicsInstruction(cmd); }
-            void command(uint16_t cmd, uint16_t arg0) noexcept { getIOSpace().doGraphicsInstruction(cmd, arg0); }
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1) noexcept { getIOSpace().doGraphicsInstruction(cmd, arg0, arg1); }
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2) noexcept { getIOSpace().doGraphicsInstruction(cmd, arg0, arg1, arg2); }
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3) noexcept { getIOSpace().doGraphicsInstruction(cmd, arg0, arg1, arg2, arg3); } 
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4) noexcept { getIOSpace().doGraphicsInstruction(cmd, arg0, arg1, arg2, arg3, arg4); }
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5) noexcept { getIOSpace().doGraphicsInstruction(cmd, arg0, arg1, arg2, arg3, arg4, arg5); }
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5, uint16_t arg6) noexcept { getIOSpace().doGraphicsInstruction(cmd, arg0, arg1, arg2, arg3, arg4, arg5, arg6); }
+            void command(DrawCommand cmd) noexcept { getIOSpace().doGraphicsInstruction(cmd); }
+            void command(DrawCommand cmd, uint16_t arg0) noexcept { getIOSpace().doGraphicsInstruction(cmd, arg0); }
+            void command(DrawCommand cmd, uint16_t arg0, uint16_t arg1) noexcept { getIOSpace().doGraphicsInstruction(cmd, arg0, arg1); }
+            void command(DrawCommand cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2) noexcept { getIOSpace().doGraphicsInstruction(cmd, arg0, arg1, arg2); }
+            void command(DrawCommand cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3) noexcept { getIOSpace().doGraphicsInstruction(cmd, arg0, arg1, arg2, arg3); } 
+            void command(DrawCommand cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4) noexcept { getIOSpace().doGraphicsInstruction(cmd, arg0, arg1, arg2, arg3, arg4); }
+            void command(DrawCommand cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5) noexcept { getIOSpace().doGraphicsInstruction(cmd, arg0, arg1, arg2, arg3, arg4, arg5); }
+            void command(DrawCommand cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5, uint16_t arg6) noexcept { getIOSpace().doGraphicsInstruction(cmd, arg0, arg1, arg2, arg3, arg4, arg5, arg6); }
             uint16_t width() noexcept { return getIOSpace().getWidth(); }
             uint16_t height() noexcept { return getIOSpace().getHeight(); }
             uint8_t getRotation() noexcept { return getIOSpace().getRotation(); }

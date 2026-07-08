@@ -35,6 +35,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ChipsetInteract.h"
 #include "IAC.h"
 #include <fileuids.h>
+// disable multicharacter constants warnings since we need them for the ascii
+// code dispatch
+#pragma GCC diagnostic ignored "-Wmultichar"
 namespace cortex {
     namespace ChipsetBasicFunctions {
         namespace Console {
@@ -88,13 +91,37 @@ namespace cortex {
             uint64_t getTotalCycles() noexcept;
         } // end namespace Info
         namespace Display {
-            void command(uint16_t cmd, uint16_t arg0) noexcept;
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1) noexcept;
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2) noexcept;
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3) noexcept;
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4) noexcept;
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5) noexcept;
-            void command(uint16_t cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5, uint16_t arg6) noexcept;
+            enum class DrawCommand : uint16_t {
+                FillCircle = 'FC', // Fill Circle
+                DrawCircle = 'DC', // Draw Circle
+                SetTextSize = 'TS', // set Text Size
+                DrawPixel = 'DP', // Draw Pixel
+                DrawCharacter = 'DH', // Draw cHar
+                ScreenFill = 'SF', // Screen Fill
+                FillRect = 'FR', // Fill Rect
+                DrawRect = 'DR', // Draw Rect
+                FillSquare = 'FS', // Fill Square
+                DrawSquare = 'DS', // Draw Square
+                FillRoundedRect = 'FU', // Fill roUnd rect
+                DrawRoundedRect = 'DU', // Draw roUnd rect
+                FillRotatedRect = 'FO', // Fill rOtated rect
+                DrawRotatedRect = 'DO', // Draw rOtated rect
+                FillEllipse = 'FE', // Fill Ellipse
+                DrawEllipse = 'DE', // Draw Ellipse
+                FillTriangle = 'FT', // Fill Triangle
+                DrawTriangle = 'DT', // Draw Triangle
+                DrawVerticalLine = 'VL', // draw fast Vertical Line
+                DrawHorizontalLine = 'HL', // draw fast Horizontal Line
+                DrawLine = 'DL', // Draw Line
+            };
+            void command(DrawCommand cmd) noexcept;
+            void command(DrawCommand cmd, uint16_t arg0) noexcept;
+            void command(DrawCommand cmd, uint16_t arg0, uint16_t arg1) noexcept;
+            void command(DrawCommand cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2) noexcept;
+            void command(DrawCommand cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3) noexcept;
+            void command(DrawCommand cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4) noexcept;
+            void command(DrawCommand cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5) noexcept;
+            void command(DrawCommand cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5, uint16_t arg6) noexcept;
             uint16_t width() noexcept;
             uint16_t height() noexcept;
             uint8_t getRotation() noexcept;

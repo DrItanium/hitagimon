@@ -31,6 +31,11 @@ extern "C" {
 #include <coremark/coremark.h>
 #include <stdarg.h>
 }
+
+enum class GraphicsCommands {
+    None,
+    DrawPixel,
+};
 template<typename I, typename O>
 union Converter {
     O output;
