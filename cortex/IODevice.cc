@@ -53,13 +53,19 @@ namespace cortex
                 uint16_t _height;
                 uint8_t _rotation;
                 uint8_t _invert;
-                uint16_t _unused;
+                uint16_t _textWrap; 
                 uint16_t _cursorX;
                 uint16_t _cursorY;
-                uint32_t _graphicsReturn;
+                uint16_t _colorfg;
+                uint16_t _colorbg;
                 // opcode instruction
                 uint16_t _graphicsOpcode;
                 uint16_t _args[7];
+                // quick access routines
+                uint16_t _print;
+                uint16_t _screenFill;
+                uint16_t _startWrite;
+                uint16_t _stopWrite;
             };
         } display;
         static_assert(sizeof(display) == 256);
@@ -105,7 +111,10 @@ namespace cortex
         uint16_t getCursorY() const volatile noexcept { return display._cursorY; }
         void setCursorX(uint16_t value) volatile noexcept { display._cursorX = value; }
         void setCursorY(uint16_t value) volatile noexcept { display._cursorY = value; }
-        uint32_t getGraphicsReturn() const volatile noexcept { return display._graphicsReturn; }
+        void setColorFG(uint16_t value) volatile noexcept { display._colorfg = value; }
+        void setColorBG(uint16_t value) volatile noexcept { display._colorbg = value; }
+        uint16_t getColorFG() const volatile noexcept { return display._colorfg; }
+        uint16_t getColorBG() const volatile noexcept { return display._colorbg; }
         void 
         doGraphicsInstruction(uint16_t opcode, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5, uint16_t arg6) volatile noexcept { 
             display._args[0] = arg0;
