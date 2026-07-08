@@ -46,7 +46,24 @@ namespace cortex
             };
         } builtin;
         static_assert(sizeof(builtin) == 256);
-        IOPage unmappedPages[15];
+        union {
+            IOPage bytes;
+            struct {
+                uint16_t _width;
+                uint16_t _height;
+                uint8_t _rotation;
+                uint8_t _invert;
+                uint16_t _unused;
+                uint16_t _cursorX;
+                uint16_t _cursorY;
+                uint32_t _graphicsReturn;
+                // opcode instruction
+                uint16_t _graphicsOpcode;
+                uint16_t _args[7];
+            };
+        } display;
+        static_assert(sizeof(display) == 256);
+        IOPage unmappedPages[14];
         // remaining 48 pages are part of the sram cache
         uint8_t sramCache[256 * (256-16)];
         inline uint16_t read() volatile noexcept { return builtin.SerialRW; }
@@ -78,6 +95,12 @@ namespace cortex
         uint64_t getSystemCounter() const volatile noexcept { return builtin._systemCounter; }
         uint64_t getIdleCycles() const volatile noexcept { return builtin._idleCycles; }
         uint64_t getTotalCycles() const volatile noexcept { return builtin._totalCycles; }
+        uint16_t getWidth() const volatile noexcept { return display._width; }
+        uint16_t getHeight() const volatile noexcept { return display._height; }
+        uint8_t getRotation() const volatile noexcept { return display._rotation; }
+        bool inverted() const volatile noexcept { return display._invert != 0; }
+        uint16_t getCursorX() const volatile noexcept { return display._cursorX; }
+        uint16_t getCursorY() const volatile noexcept { return display._cursorY; }
     } __attribute__((packed));
     volatile IOSpace& getIOSpace() noexcept {
         return memory<IOSpace>(0xFE000000);
