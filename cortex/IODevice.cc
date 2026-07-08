@@ -98,7 +98,9 @@ namespace cortex
         uint16_t getWidth() const volatile noexcept { return display._width; }
         uint16_t getHeight() const volatile noexcept { return display._height; }
         uint8_t getRotation() const volatile noexcept { return display._rotation; }
+        void setRotation(uint8_t value) volatile noexcept { display._rotation = value; }
         bool inverted() const volatile noexcept { return display._invert != 0; }
+        void invertDisplay(bool value) volatile noexcept { display._invert = value; }
         uint16_t getCursorX() const volatile noexcept { return display._cursorX; }
         uint16_t getCursorY() const volatile noexcept { return display._cursorY; }
         void setCursorX(uint16_t value) volatile noexcept { display._cursorX = value; }
