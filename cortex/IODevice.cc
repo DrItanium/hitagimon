@@ -101,6 +101,22 @@ namespace cortex
         bool inverted() const volatile noexcept { return display._invert != 0; }
         uint16_t getCursorX() const volatile noexcept { return display._cursorX; }
         uint16_t getCursorY() const volatile noexcept { return display._cursorY; }
+        void setCursorX(uint16_t value) volatile noexcept { display._cursorX = value; }
+        void setCursorY(uint16_t value) volatile noexcept { display._cursorY = value; }
+        uint32_t getGraphicsReturn() const volatile noexcept { return display._graphicsReturn; }
+        void doGraphicsInstruction(uint16_t opcode) volatile noexcept { display._graphicsOpcode = opcode; }
+        void doGraphicsInstruction(uint16_t opcode, uint16_t arg0) volatile noexcept { 
+            display._args[0] = arg0;
+            doGraphicsInstruction(opcode);
+        }
+        void doGraphicsInstruction(uint16_t opcode, uint16_t arg0, uint16_t arg1) volatile noexcept { 
+            display._args[1] = arg1;
+            doGraphicsInstruction(opcode, arg0);
+        }
+        void doGraphicsInstruction(uint16_t opcode, uint16_t arg0, uint16_t arg1, uint16_t arg2) volatile noexcept { 
+            display._args[2] = arg2;
+            doGraphicsInstruction(opcode, arg0, arg1);
+        }
     } __attribute__((packed));
     volatile IOSpace& getIOSpace() noexcept {
         return memory<IOSpace>(0xFE000000);
