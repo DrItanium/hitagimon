@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ChipsetInteract.h"
 #include "IAC.h"
 #include <fileuids.h>
+#include <GraphicsCommands.h>
 // disable multicharacter constants warnings since we need them for the ascii
 // code dispatch
 #pragma GCC diagnostic ignored "-Wmultichar"
@@ -91,29 +92,7 @@ namespace cortex {
             uint64_t getTotalCycles() noexcept;
         } // end namespace Info
         namespace Display {
-            enum class DrawCommand : uint16_t {
-                FillCircle = 'FC', // Fill Circle
-                DrawCircle = 'DC', // Draw Circle
-                SetTextSize = 'TS', // set Text Size
-                DrawPixel = 'DP', // Draw Pixel
-                DrawCharacter = 'DH', // Draw cHar
-                ScreenFill = 'SF', // Screen Fill
-                FillRect = 'FR', // Fill Rect
-                DrawRect = 'DR', // Draw Rect
-                FillSquare = 'FS', // Fill Square
-                DrawSquare = 'DS', // Draw Square
-                FillRoundedRect = 'FU', // Fill roUnd rect
-                DrawRoundedRect = 'DU', // Draw roUnd rect
-                FillRotatedRect = 'FO', // Fill rOtated rect
-                DrawRotatedRect = 'DO', // Draw rOtated rect
-                FillEllipse = 'FE', // Fill Ellipse
-                DrawEllipse = 'DE', // Draw Ellipse
-                FillTriangle = 'FT', // Fill Triangle
-                DrawTriangle = 'DT', // Draw Triangle
-                DrawVerticalLine = 'VL', // draw fast Vertical Line
-                DrawHorizontalLine = 'HL', // draw fast Horizontal Line
-                DrawLine = 'DL', // Draw Line
-            };
+            using DrawCommand = GraphicsOpcode;
             void command(DrawCommand cmd) noexcept;
             void command(DrawCommand cmd, uint16_t arg0) noexcept;
             void command(DrawCommand cmd, uint16_t arg0, uint16_t arg1) noexcept;
