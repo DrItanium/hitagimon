@@ -101,6 +101,18 @@ namespace cortex {
             void command(DrawCommand cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4) noexcept;
             void command(DrawCommand cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5) noexcept;
             void command(DrawCommand cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5, uint16_t arg6) noexcept;
+            template<DrawCommand cmd, typename ... T>
+            inline void command(T ... args) noexcept {
+                command(cmd, args...);
+            }
+            // Adafruit GFX Commands 
+            inline void drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) noexcept { command<DrawCommand::DrawTriangle>(x0, y0, x1, y1, x2, y2, color); }
+            inline void fillTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) noexcept { command<DrawCommand::FillTriangle>(x0, y0, x1, y1, x2, y2, color); }
+            inline void drawFastVerticalLine(int16_t x, int16_t y, int16_t h, uint16_t color) noexcept { command(DrawCommand::DrawFastVerticalLine, x, y, h, color); }
+            inline void drawFastHorizontalLine(int16_t x, int16_t y, int16_t w, uint16_t color) noexcept { command(DrawCommand::DrawFastHorizontalLine, x, y, w, color); }
+            inline void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) noexcept { command(DrawCommand::FillRectangle, x, y, w, h, color); }
+            void fillScreen(uint16_t color) noexcept;
+            inline void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) noexcept { command<DrawCommand::DrawLine>(x0, y0, x1, y1, color); }
             uint16_t width() noexcept;
             uint16_t height() noexcept;
             uint8_t getRotation() noexcept;
@@ -110,7 +122,6 @@ namespace cortex {
             inline void resetCursor() noexcept { setCursor(0, 0); }
             uint16_t getCursorX() noexcept;
             uint16_t getCursorY() noexcept;
-            void fillScreen(uint16_t color) noexcept;
             inline void clearScreen() noexcept { fillScreen(0); }
             void print(uint16_t value) noexcept;
             inline void print(char* value, size_t nbyte) noexcept {
