@@ -124,6 +124,10 @@ namespace cortex {
             inline void setTextSize(uint8_t s) noexcept { setTextSize(s, s); }
             inline void drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t sizeX, uint8_t sizeY) noexcept { command(DrawCommand::DrawCharacter, x, y, c, color, bg, sizeX, sizeY); }
             inline void drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t s) noexcept { command(DrawCommand::DrawCharacter, x, y, c, color, bg, s, s); }
+            // transaction API components
+            inline void startWrite() noexcept { command(DrawCommand::StartWrite); }
+            inline void endWrite() noexcept { command(DrawCommand::EndWrite); }
+
 #undef ColorArgument
             uint16_t width() noexcept;
             uint16_t height() noexcept;
