@@ -101,18 +101,30 @@ namespace cortex {
             void command(DrawCommand cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4) noexcept;
             void command(DrawCommand cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5) noexcept;
             void command(DrawCommand cmd, uint16_t arg0, uint16_t arg1, uint16_t arg2, uint16_t arg3, uint16_t arg4, uint16_t arg5, uint16_t arg6) noexcept;
-            template<DrawCommand cmd, typename ... T>
-            inline void command(T ... args) noexcept {
-                command(cmd, args...);
-            }
             // Adafruit GFX Commands 
-            inline void drawTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) noexcept { command<DrawCommand::DrawTriangle>(x0, y0, x1, y1, x2, y2, color); }
-            inline void fillTriangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color) noexcept { command<DrawCommand::FillTriangle>(x0, y0, x1, y1, x2, y2, color); }
-            inline void drawFastVerticalLine(int16_t x, int16_t y, int16_t h, uint16_t color) noexcept { command(DrawCommand::DrawFastVerticalLine, x, y, h, color); }
-            inline void drawFastHorizontalLine(int16_t x, int16_t y, int16_t w, uint16_t color) noexcept { command(DrawCommand::DrawFastHorizontalLine, x, y, w, color); }
-            inline void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) noexcept { command(DrawCommand::FillRectangle, x, y, w, h, color); }
-            void fillScreen(uint16_t color) noexcept;
-            inline void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color) noexcept { command<DrawCommand::DrawLine>(x0, y0, x1, y1, color); }
+#define ColorArgument uint16_t color
+            inline void drawPixel(int16_t x, int16_t y, ColorArgument) noexcept { command(DrawCommand::DrawPixel, x, y, color); }
+            inline void drawFastVerticalLine(int16_t x, int16_t y, int16_t h, ColorArgument) noexcept { command(DrawCommand::DrawFastVerticalLine, x, y, h, color); }
+            inline void drawFastHorizontalLine(int16_t x, int16_t y, int16_t w, ColorArgument) noexcept { command(DrawCommand::DrawFastHorizontalLine, x, y, w, color); }
+            inline void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, ColorArgument) noexcept { command(DrawCommand::FillRectangle, x, y, w, h, color); }
+            void fillScreen(ColorArgument) noexcept;
+            inline void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, ColorArgument) noexcept { command(DrawCommand::DrawLine, x0, y0, x1, y1, color); }
+            inline void drawRect(int16_t x, int16_t y, int16_t w, int16_t h, ColorArgument) noexcept { command(DrawCommand::DrawRectangle, x, y, w, h, color); }
+            inline void drawCircle(int16_t x0, int16_t y0, int16_t r, ColorArgument) noexcept { command(DrawCommand::DrawCircle, x0, y0, r, color); }
+            inline void fillCircle(int16_t x0, int16_t y0, int16_t r, ColorArgument) noexcept { command(DrawCommand::FillCircle, x0, y0, r, color); }
+            inline void drawEllipse(int16_t x0, int16_t y0, int16_t rw, int16_t rh, ColorArgument) noexcept { command(DrawCommand::DrawEllipse, x0, y0, rw, rh, color); }
+            inline void fillEllipse(int16_t x0, int16_t y0, int16_t rw, int16_t rh, ColorArgument) noexcept { command(DrawCommand::FillEllipse, x0, y0, rw, rh, color); }
+            inline void drawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, ColorArgument) noexcept { command(DrawCommand::DrawTriangle, x0, y0, x1, y1, x2, y2, color); }
+            inline void fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, ColorArgument) noexcept { command(DrawCommand::FillTriangle, x0, y0, x1, y1, x2, y2, color); }
+            inline void drawRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h, int16_t radius, ColorArgument) noexcept { command(DrawCommand::DrawRoundedRectangle, x0, y0, w, h, radius, color); }
+            inline void fillRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h, int16_t radius, ColorArgument) noexcept { command(DrawCommand::FillRoundedRectangle, x0, y0, w, h, radius, color); }
+            inline void drawRotatedRect(int16_t centerX, int16_t centerY, int16_t w, int16_t h, int16_t angleDec, ColorArgument) noexcept { command(DrawCommand::DrawRotatedRectangle, centerX, centerY, w, h, angleDec, color); }
+            inline void fillRotatedRect(int16_t centerX, int16_t centerY, int16_t w, int16_t h, int16_t angleDec, ColorArgument) noexcept { command(DrawCommand::FillRotatedRectangle, centerX, centerY, w, h, angleDec, color); }
+            inline void setTextSize(uint8_t sx, uint8_t sy) noexcept { command(DrawCommand::SetTextSize, sx, sy); }
+            inline void setTextSize(uint8_t s) noexcept { setTextSize(s, s); }
+            inline void drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t sizeX, uint8_t sizeY) noexcept { command(DrawCommand::DrawCharacter, x, y, c, color, bg, sizeX, sizeY); }
+            inline void drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t s) noexcept { command(DrawCommand::DrawCharacter, x, y, c, color, bg, s, s); }
+#undef ColorArgument
             uint16_t width() noexcept;
             uint16_t height() noexcept;
             uint8_t getRotation() noexcept;

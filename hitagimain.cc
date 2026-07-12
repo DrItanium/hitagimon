@@ -32,10 +32,6 @@ extern "C" {
 #include <stdarg.h>
 }
 
-enum class GraphicsCommands {
-    None,
-    DrawPixel,
-};
 template<typename I, typename O>
 union Converter {
     O output;
@@ -126,6 +122,7 @@ private:
 void
 setup() {
     microshell::setup();
+    cortex::ChipsetBasicFunctions::Display::clearScreen();
 }
 void loop() {
     microshell::doMicroshell();
