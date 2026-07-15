@@ -32,6 +32,7 @@ extern "C" {
 #include <stdarg.h>
 }
 namespace GraphicsInterface = cortex::ChipsetBasicFunctions::Display;
+namespace RandomInterface = cortex::ChipsetBasicFunctions::Random;
 template<typename I, typename O>
 union Converter {
     O output;
@@ -1817,7 +1818,8 @@ namespace microshell {
     [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         // taken from https://fabiensanglard.net/fizzlefade/index.php
         uint32_t randomValue = 1;
-        auto color = GraphicsInterface::computeColor(255, 0, 255);
+        srand(RandomInterface::getHardwareRandomNumber());
+        auto color = GraphicsInterface::computeColor(rand(), rand(), rand());
         do {
             uint16_t y = randomValue & 0x000FF; // Y = low 8 bits
             uint16_t x = (randomValue & 0x1FF00) >> 8; // x = high 9 bits
