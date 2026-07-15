@@ -1817,9 +1817,13 @@ namespace microshell {
 { "fizzle_fade", nullptr, nullptr, 
     [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         // taken from https://fabiensanglard.net/fizzlefade/index.php
+        std::cout << "Running fizzle_fade" << std::endl;
         uint32_t randomValue = 1;
+        auto randomSeed = RandomInterface::getHardwareRandomNumber();
+        std::cout << "Setting seed to " << std::hex << randomSeed << std::endl;
         srand(RandomInterface::getHardwareRandomNumber());
         auto color = GraphicsInterface::computeColor(rand(), rand(), rand());
+        std::cout << "color: " << std::hex << color << std::endl;
         do {
             uint16_t y = randomValue & 0x000FF; // Y = low 8 bits
             uint16_t x = (randomValue & 0x1FF00) >> 8; // x = high 9 bits
