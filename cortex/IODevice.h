@@ -129,6 +129,7 @@ namespace cortex {
             inline void endWrite() noexcept { command(DrawCommand::EndWrite); }
 
 #undef ColorArgument
+            inline constexpr uint16_t computeColor(uint8_t r, uint8_t g, uint8_t b) noexcept { return color565_Adafruit(r, g, b); }
             uint16_t width() noexcept;
             uint16_t height() noexcept;
             uint8_t getRotation() noexcept;

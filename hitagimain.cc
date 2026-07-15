@@ -31,13 +31,12 @@ extern "C" {
 #include <coremark/coremark.h>
 #include <stdarg.h>
 }
-
+namespace GraphicsInterface = cortex::ChipsetBasicFunctions::Display;
 template<typename I, typename O>
 union Converter {
     O output;
     I input;
 };
-
 /* 'Uncomment' the line below to run   */
 /* with 'register double' variables    */
 /* defined, or compile with the        */
@@ -122,7 +121,7 @@ private:
 void
 setup() {
     microshell::setup();
-    cortex::ChipsetBasicFunctions::Display::clearScreen();
+    GraphicsInterface::clearScreen();
 }
 void loop() {
     microshell::doMicroshell();
@@ -1814,6 +1813,25 @@ namespace microshell {
     X(stos_test3, storeShortTest3),
     X(stob_test3, storeByteTest3),
 #undef X
+{ "fizzle_fade", nullptr, nullptr, 
+    [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        // taken from https://fabiensanglard.net/fizzlefade/index.php
+        uint32_t randomValue = 1;
+        auto color = GraphicsInterface::computeColor(255, 0, 255);
+        do {
+            uint16_t y = randomValue & 0x000FF; // Y = low 8 bits
+            uint16_t x = (randomValue & 0x1FF00) >> 8; // x = high 9 bits
+            auto lsb = randomValue & 1; // get the output bit
+            randomValue >>= 1; // shift register
+            if (lsb) { // if the output is zero, the xor can be skipped
+                randomValue ^= 0x00012000; 
+            }
+            if (x < 320 && y < 200) {
+                GraphicsInterface::drawPixel(x, y, color);
+            }
+        } while (randomValue != 1);
+    }, nullptr, nullptr, nullptr 
+}
 };
     void
     setup() {
