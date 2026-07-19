@@ -1903,12 +1903,11 @@ namespace {
         GraphicsInterface::fillScreen(ILI9341_BLACK);
         unsigned long start = micros();
         GraphicsInterface::setCursor(0, 0);
-        GraphicsInterface::setTextColor(ILI9341_WHITE);  
-        GraphicsInterface::setTextSize(1);
+        GraphicsInterface::setTextColor(ILI9341_WHITE);  GraphicsInterface::setTextSize(1);
+        GraphicsInterface::println("Hello World!");
+        GraphicsInterface::setTextColor(ILI9341_YELLOW); GraphicsInterface::setTextSize(2);
 #if 0
-        tft.println("Hello World!");
-        tft.setTextColor(ILI9341_YELLOW); tft.setTextSize(2);
-        tft.println(1234.56);
+        GraphicsInterface::println(1234.56);
         tft.setTextColor(ILI9341_RED);    tft.setTextSize(3);
         tft.println(0xDEADBEEF, HEX);
         tft.println();
