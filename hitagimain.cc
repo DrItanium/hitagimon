@@ -1861,10 +1861,10 @@ doGraphicsTestIno() noexcept {
 
     std::cout << F("Text                     ") << std::dec << testText() << std::endl;
     delay(3000);
-#if 0
     std::cout << F("Lines                    ") << testLines(ILI9341_CYAN) << std::endl;
     delay(500);
 
+#if 0
     std::cout << F("Horiz/Vert Lines         ") << testFastLines(ILI9341_RED, ILI9341_BLUE) << std::endl;
     delay(500);
     Serial.print(F("Rectangles (outline)     "));
@@ -1927,23 +1927,72 @@ uint32_t testText() {
     GraphicsInterface::setTextColor(ILI9341_RED);    GraphicsInterface::setTextSize(3);
     GraphicsInterface::println(0xDEADBEEF, GraphicsInterface::PrintStyle::HEX);
     GraphicsInterface::println();
-#if 0
-    tft.setTextColor(ILI9341_GREEN);
-    tft.setTextSize(5);
-    tft.println("Groop");
-    tft.setTextSize(2);
-    tft.println("I implore thee,");
-    tft.setTextSize(1);
-    tft.println("my foonting turlingdromes.");
-    tft.println("And hooptiously drangle me");
-    tft.println("with crinkly bindlewurdles,");
-    tft.println("Or I will rend thee");
-    tft.println("in the gobberwarts");
-    tft.println("with my blurglecruncheon,");
-    tft.println("see if I don't!");
-#endif
+    GraphicsInterface::setTextColor(ILI9341_GREEN);
+    GraphicsInterface::setTextSize(5);
+    GraphicsInterface::println("Groop");
+    GraphicsInterface::setTextSize(2);
+    GraphicsInterface::println("I implore thee,");
+    GraphicsInterface::setTextSize(1);
+    GraphicsInterface::println("my foonting turlingdromes.");
+    GraphicsInterface::println("And hooptiously drangle me");
+    GraphicsInterface::println("with crinkly bindlewurdles,");
+    GraphicsInterface::println("Or I will rend thee");
+    GraphicsInterface::println("in the gobberwarts");
+    GraphicsInterface::println("with my blurglecruncheon,");
+    GraphicsInterface::println("see if I don't!");
     return micros() - start;
 
+}
+uint32_t testLines(uint16_t color) {
+    uint32_t t;
+    int w = GraphicsInterface::width();
+    int h = GraphicsInterface::height();
+    GraphicsInterface::fillScreen(ILI9341_BLACK);
+
+    int x1 = 0;
+    int y1 = 0;
+    int y2 = h - 1;
+    int x2 = 0;
+    auto start = micros();
+    for (x2 = 0; x2 < w; x2 += 6) {
+        GraphicsInterface::drawLine(x1, y1, x2, y2, color);
+    }
+    x2 = 0;
+    for(y2=0; y2<h; y2+=6) {
+        GraphicsInterface::drawLine(x1, y1, x2, y2, color);
+    }
+    t += micros() - start;
+
+    GraphicsInterface::fillScreen(ILI9341_BLACK);
+
+    x1    = 0;
+    y1    = h - 1;
+    y2    = 0;
+    start = micros();
+    for(x2=0; x2<w; x2+=6) {
+        GraphicsInterface::drawLine(x1, y1, x2, y2, color);
+    }
+    x2    = w - 1;
+    for(y2=0; y2<h; y2+=6) {
+        GraphicsInterface::drawLine(x1, y1, x2, y2, color);
+    }
+    t    += micros() - start;
+
+    GraphicsInterface::fillScreen(ILI9341_BLACK);
+
+    x1    = w - 1;
+    y1    = h - 1;
+    y2    = 0;
+    start = micros();
+    for(x2=0; x2<w; x2+=6) {
+        GraphicsInterface::drawLine(x1, y1, x2, y2, color);
+    }
+    x2    = 0;
+    for(y2=0; y2<h; y2+=6) {
+        GraphicsInterface::drawLine(x1, y1, x2, y2, color);
+    }
+
+    return micros() - start;
 }
 
 
