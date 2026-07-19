@@ -1186,83 +1186,6 @@ namespace microshell {
         std::string _title;
         rusage _duration;
     };
-    void runFullBenchmark(ush_object*, ush_file_descriptor const*, int, char* []) {
-        ExecutionContainer components[13] = {
-                ExecutionContainer("Entire Benchmark"),
-                ExecutionContainer("FLOPS32"),
-                ExecutionContainer("FLOPS64"),
-                ExecutionContainer("Entire Quodigious"),
-                ExecutionContainer("Quodigious 1 digit"),
-                ExecutionContainer("Quodigious 2 digit"),
-                ExecutionContainer("Quodigious 3 digit"),
-                ExecutionContainer("Quodigious 4 digit"),
-                ExecutionContainer("Quodigious 5 digit"),
-                ExecutionContainer("Quodigious 6 digit"),
-                ExecutionContainer("Quodigious 7 digit"),
-                ExecutionContainer("Quodigious 8 digit"),
-                ExecutionContainer("Quodigious 9 digit"),
-        };
-        {
-            DurationTimer entire(components[0]._duration);
-            printf("Running benchmarking suite\n");
-            printf("Running flops32\n\n");
-            {
-                DurationTimer dt(components[1]._duration);
-                FlopsCode::doFlops<float>("single precision");
-            }
-            printf("\nRunning flops64\n\n");
-            {
-                DurationTimer dt(components[2]._duration);
-                FlopsCode::doFlops<double>("double precision");
-
-                printf("\nRunning quodigious 1-9\n\n");
-                {
-                    DurationTimer dt(components[3]._duration);
-                    {
-                        DurationTimer q(components[4]._duration);
-                        doQuodigious(1);
-                    }
-                    {
-                        DurationTimer q(components[5]._duration);
-                        doQuodigious(2);
-                    }
-                    {
-                        DurationTimer q(components[6]._duration);
-                        doQuodigious(3);
-                    }
-                    {
-                        DurationTimer q(components[7]._duration);
-                        doQuodigious(4);
-                    }
-                    {
-                        DurationTimer q(components[8]._duration);
-                        doQuodigious(5);
-                    }
-                    {
-                        DurationTimer q(components[9]._duration);
-                        doQuodigious(6);
-                    }
-                    {
-                        DurationTimer q(components[10]._duration);
-                        doQuodigious(7);
-                    }
-                    {
-                        DurationTimer q(components[11]._duration);
-                        doQuodigious(8);
-                    }
-                    {
-                        DurationTimer q(components[12]._duration);
-                        doQuodigious(9);
-                    }
-                }
-            }
-        }
-        for (int i = 0; i < 13; ++i) {
-            std::cout << components[i]._title << " execution duration: " << std::dec
-                      << components[i]._duration.ru_utime.tv_sec << " seconds, " << std::dec
-                      << components[i]._duration.ru_utime.tv_usec << " usec" << std::endl;
-        }
-    }
     void benchmark_operation(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         if (argc == 1) {
             ush_print_status(self, USH_STATUS_ERROR_COMMAND_WRONG_ARGUMENTS);
@@ -1602,15 +1525,6 @@ namespace microshell {
             nullptr, // get_data
             nullptr, // set_data
             nullptr, // process
-        },
-        {
-            "run_benchmark",
-            "run a series of benchmarks",
-            nullptr,
-            runFullBenchmark,
-            nullptr,
-            nullptr,
-            nullptr,
         },
         {
             "coremark",
