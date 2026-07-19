@@ -801,7 +801,7 @@ namespace microshell {
         }
         uint64_t stockResult = a + b;
         uint64_t optionalResult = u64_add_via_addc(a, b);
-        printf("Unsigned 64-bit numbers");
+        printf("Unsigned 64-bit numbers\n");
         printf("Operation: 0x%llx + 0x%llx\n", a, b);
         printf("Standard Result: 0x%llx\n", stockResult);
         printf("Addc Method: 0x%llx\n", optionalResult);
@@ -823,7 +823,7 @@ namespace microshell {
         }
         int64_t stockResult = a + b;
         int64_t optionalResult = s64_add_via_addc(a, b);
-        printf("Signed 64-bit numbers");
+        printf("Signed 64-bit numbers\n");
         printf("Operation: %lld + %lld\n", a, b);
         printf("Standard Result: %lld\n", stockResult);
         printf("Addc Method: %lld\n", optionalResult);
@@ -848,7 +848,7 @@ namespace microshell {
         uint64_t optionalResult2 = u64_subtract_via_subc_v2(a, b);
         uint64_t optionalResult3 = u64_subtract_via_subc_v3(a, b);
         uint64_t optionalResult4 = u64_subtract_via_subc_v4(a, b);
-        printf("Unsigned 64-bit numbers");
+        printf("Unsigned 64-bit numbers\n");
         printf("Operation: 0x%llx - 0x%llx\n", a, b);
         printf("Standard Result: 0x%llx\n", stockResult);
         printf("Subc Method (v1): 0x%llx\n", optionalResult);
@@ -882,7 +882,7 @@ namespace microshell {
         int64_t optionalResult2 = s64_subtract_via_subc_v2(a, b);
         int64_t optionalResult3 = s64_subtract_via_subc_v3(a, b);
         int64_t optionalResult4 = s64_subtract_via_subc_v4(a, b);
-        printf("Signed 64-bit numbers");
+        printf("Signed 64-bit numbers\n");
         printf("Operation: %lld - %lld\n", a, b);
         printf("Standard Result: %lld\n", stockResult);
 #define X(var) ((var == stockResult) ? "yes" : "no")
