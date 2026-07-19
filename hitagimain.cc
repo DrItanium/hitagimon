@@ -1751,7 +1751,15 @@ namespace microshell {
             }
         } while (randomValue != 1);
     }, nullptr, nullptr, nullptr 
+},
+{ "graphicstest.ino", 
+    "run the adaption of graphicstest.ino for this target",
+    nullptr,
+    [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+
+    }, nullptr, nullptr, nullptr 
 }
+
 };
     void
     setup() {
