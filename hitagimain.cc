@@ -1861,43 +1861,39 @@ doGraphicsTestIno() noexcept {
 
     std::cout << F("Text                     ") << std::dec << testText() << std::endl;
     delay(3000);
-    std::cout << F("Lines                    ") << testLines(ILI9341_CYAN) << std::endl;
+    std::cout << F("Lines                    ") << std::dec << testLines(ILI9341_CYAN) << std::endl;
     delay(500);
 
-    std::cout << F("Horiz/Vert Lines         ") << testFastLines(ILI9341_RED, ILI9341_BLUE) << std::endl;
+    std::cout << F("Horiz/Vert Lines         ") << std::dec << testFastLines(ILI9341_RED, ILI9341_BLUE) << std::endl;
     delay(500);
-#if 0
-    Serial.print(F("Rectangles (outline)     "));
-    Serial.println(testRects(ILI9341_GREEN));
+    std::cout << F("Rectangles (outline)     ") << std::dec << testRects(ILI9341_GREEN) << std::endl;
     delay(500);
 
-    Serial.print(F("Rectangles (filled)      "));
-    Serial.println(testFilledRects(ILI9341_YELLOW, ILI9341_MAGENTA));
+    std::cout << F("Rectangles (filled)      ") << std::dec << testFilledRects(ILI9341_YELLOW, ILI9341_MAGENTA) << std::endl;
     delay(500);
 
-    Serial.print(F("Circles (filled)         "));
-    Serial.println(testFilledCircles(10, ILI9341_MAGENTA));
+    std::cout << (F("Circles (filled)         "));
+    std::cout << std::dec << (testFilledCircles(10, ILI9341_MAGENTA)) << std::endl;
 
-    Serial.print(F("Circles (outline)        "));
-    Serial.println(testCircles(10, ILI9341_WHITE));
+    std::cout << (F("Circles (outline)        "));
+    std::cout << std::dec << (testCircles(10, ILI9341_WHITE)) << std::endl;
     delay(500);
 
-    Serial.print(F("Triangles (outline)      "));
-    Serial.println(testTriangles());
+    std::cout << (F("Triangles (outline)      "));
+    std::cout << std::dec << (testTriangles()) << std::endl;
     delay(500);
 
-    Serial.print(F("Triangles (filled)       "));
-    Serial.println(testFilledTriangles());
+    std::cout << (F("Triangles (filled)       "));
+    std::cout << std::dec << (testFilledTriangles()) << std::endl;
     delay(500);
 
-    Serial.print(F("Rounded rects (outline)  "));
-    Serial.println(testRoundRects());
+    std::cout << (F("Rounded rects (outline)  "));
+    std::cout << std::dec << (testRoundRects()) << std::endl;
     delay(500);
 
-    Serial.print(F("Rounded rects (filled)   "));
-    Serial.println(testFilledRoundRects());
+    std::cout << (F("Rounded rects (filled)   "));
+    std::cout << std::dec << (testFilledRoundRects()) << std::endl;
     delay(500);
-#endif
 #undef F
 }
 
@@ -2006,5 +2002,145 @@ uint32_t testFastLines(uint16_t color1, uint16_t color2) {
   for(int x=0; x<w; x+=5) {
       GraphicsInterface::drawFastVLine(x, 0, h, color2);
   }
+  return micros() - start;
+}
+
+unsigned long testRects(uint16_t color) {
+  unsigned long start;
+  int           n, i, i2,
+                cx = GraphicsInterface::width()  / 2,
+                cy = GraphicsInterface::height() / 2;
+
+  GraphicsInterface::fillScreen(ILI9341_BLACK);
+  n     = std::min(GraphicsInterface::width(), GraphicsInterface::height());
+  start = micros();
+  for(i=2; i<n; i+=6) {
+    i2 = i / 2;
+    GraphicsInterface::drawRect(cx-i2, cy-i2, i, i, color);
+  }
+
+  return micros() - start;
+}
+
+unsigned long testFilledRects(uint16_t color1, uint16_t color2) {
+  unsigned long start, t = 0;
+  int           n, i, i2,
+                cx = GraphicsInterface::width()  / 2 - 1,
+                cy = GraphicsInterface::height() / 2 - 1;
+
+  GraphicsInterface::fillScreen(ILI9341_BLACK);
+  n = std::min(GraphicsInterface::width(), GraphicsInterface::height());
+  for(i=n; i>0; i-=6) {
+    i2    = i / 2;
+    start = micros();
+    GraphicsInterface::fillRect(cx-i2, cy-i2, i, i, color1);
+    t    += micros() - start;
+    // Outlines are not included in timing results
+    GraphicsInterface::drawRect(cx-i2, cy-i2, i, i, color2);
+  }
+
+  return t;
+}
+
+unsigned long testFilledCircles(uint8_t radius, uint16_t color) {
+  unsigned long start;
+  int x, y, w = GraphicsInterface::width(), h = GraphicsInterface::height(), r2 = radius * 2;
+
+  GraphicsInterface::fillScreen(ILI9341_BLACK);
+  start = micros();
+  for(x=radius; x<w; x+=r2) {
+    for(y=radius; y<h; y+=r2) {
+      GraphicsInterface::fillCircle(x, y, radius, color);
+    }
+  }
+
+  return micros() - start;
+}
+
+unsigned long testCircles(uint8_t radius, uint16_t color) {
+  unsigned long start;
+  int           x, y, r2 = radius * 2,
+                w = GraphicsInterface::width()  + radius,
+                h = GraphicsInterface::height() + radius;
+
+  // Screen is not cleared for this one -- this is
+  // intentional and does not affect the reported time.
+  start = micros();
+  for(x=0; x<w; x+=r2) {
+    for(y=0; y<h; y+=r2) {
+      GraphicsInterface::drawCircle(x, y, radius, color);
+    }
+  }
+
+  return micros() - start;
+}
+
+unsigned long testTriangles() {
+  unsigned long start;
+  int           n, i, cx = GraphicsInterface::width()  / 2 - 1,
+                      cy = GraphicsInterface::height() / 2 - 1;
+
+  GraphicsInterface::fillScreen(ILI9341_BLACK);
+  n     = std::min(cx, cy);
+  start = micros();
+  for(i=0; i<n; i+=5) {
+    GraphicsInterface::drawTriangle(
+      cx    , cy - i, // peak
+      cx - i, cy + i, // bottom left
+      cx + i, cy + i, // bottom right
+      GraphicsInterface::color565(i, i, i));
+  }
+
+  return micros() - start;
+}
+
+uint32_t testFilledTriangles() {
+  uint32_t start, t = 0;
+  int           i, cx = GraphicsInterface::width()  / 2 - 1,
+                   cy = GraphicsInterface::height() / 2 - 1;
+
+  GraphicsInterface::fillScreen(ILI9341_BLACK);
+  start = micros();
+  for(i=std::min(cx,cy); i>10; i-=5) {
+    start = micros();
+    GraphicsInterface::fillTriangle(cx, cy - i, cx - i, cy + i, cx + i, cy + i,
+      GraphicsInterface::color565(0, i*10, i*10));
+    t += micros() - start;
+    GraphicsInterface::drawTriangle(cx, cy - i, cx - i, cy + i, cx + i, cy + i,
+      GraphicsInterface::color565(i*10, i*10, 0));
+  }
+
+  return t;
+}
+
+unsigned long testRoundRects() {
+  unsigned long start;
+  int           w, i, i2,
+                cx = GraphicsInterface::width()  / 2 - 1,
+                cy = GraphicsInterface::height() / 2 - 1;
+
+  GraphicsInterface::fillScreen(ILI9341_BLACK);
+  w     = std::min(GraphicsInterface::width(), GraphicsInterface::height());
+  start = micros();
+  for(i=0; i<w; i+=6) {
+    i2 = i / 2;
+    GraphicsInterface::drawRoundRect(cx-i2, cy-i2, i, i, i/8, GraphicsInterface::color565(i, 0, 0));
+  }
+
+  return micros() - start;
+}
+
+uint32_t testFilledRoundRects() {
+  int           i, i2,
+                cx = GraphicsInterface::width()  / 2 - 1,
+                cy = GraphicsInterface::height() / 2 - 1;
+
+  GraphicsInterface::fillScreen(ILI9341_BLACK);
+  uint32_t start = micros();
+  for(i=std::min(GraphicsInterface::width(), GraphicsInterface::height()); i>20; i-=6) {
+    i2 = i / 2;
+    GraphicsInterface::fillRoundRect(cx-i2, cy-i2, i, i, i/8, GraphicsInterface::color565(0, i, 0));
+  }
+
   return micros() - start;
 }

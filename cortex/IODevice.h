@@ -132,6 +132,7 @@ namespace cortex {
 
 #undef ColorArgument
             inline constexpr uint16_t computeColor(uint8_t r, uint8_t g, uint8_t b) noexcept { return color565_Adafruit(r, g, b); }
+            inline uint16_t color565(uint8_t r, uint8_t g, uint8_t b) noexcept { return computeColor(r, g, b); }
             uint16_t width() noexcept;
             uint16_t height() noexcept;
             uint8_t getRotation() noexcept;
