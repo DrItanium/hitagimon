@@ -105,7 +105,9 @@ namespace cortex {
 #define ColorArgument uint16_t color
             inline void drawPixel(int16_t x, int16_t y, ColorArgument) noexcept { command(DrawCommand::DrawPixel, x, y, color); }
             inline void drawFastVerticalLine(int16_t x, int16_t y, int16_t h, ColorArgument) noexcept { command(DrawCommand::DrawFastVerticalLine, x, y, h, color); }
+            inline void drawFastVLine(int16_t x, int16_t y, int16_t h, ColorArgument) noexcept { drawFastVerticalLine(x, y, h, color); }
             inline void drawFastHorizontalLine(int16_t x, int16_t y, int16_t w, ColorArgument) noexcept { command(DrawCommand::DrawFastHorizontalLine, x, y, w, color); }
+            inline void drawFastHLine(int16_t x, int16_t y, int16_t h, ColorArgument) noexcept { drawFastHorizontalLine(x, y, h, color); }
             inline void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, ColorArgument) noexcept { command(DrawCommand::FillRectangle, x, y, w, h, color); }
             void fillScreen(ColorArgument) noexcept;
             inline void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, ColorArgument) noexcept { command(DrawCommand::DrawLine, x0, y0, x1, y1, color); }

@@ -1864,9 +1864,9 @@ doGraphicsTestIno() noexcept {
     std::cout << F("Lines                    ") << testLines(ILI9341_CYAN) << std::endl;
     delay(500);
 
-#if 0
     std::cout << F("Horiz/Vert Lines         ") << testFastLines(ILI9341_RED, ILI9341_BLUE) << std::endl;
     delay(500);
+#if 0
     Serial.print(F("Rectangles (outline)     "));
     Serial.println(testRects(ILI9341_GREEN));
     delay(500);
@@ -1995,4 +1995,16 @@ uint32_t testLines(uint16_t color) {
     return micros() - start;
 }
 
-
+uint32_t testFastLines(uint16_t color1, uint16_t color2) {
+  int w = GraphicsInterface::width();
+  int h = GraphicsInterface::height();
+  GraphicsInterface::fillScreen(ILI9341_BLACK);
+  uint32_t start = micros();
+  for(int y=0; y<h; y+=5) {
+      GraphicsInterface::drawFastHLine(0, y, w, color1);
+  }
+  for(int x=0; x<w; x+=5) {
+      GraphicsInterface::drawFastVLine(x, 0, h, color2);
+  }
+  return micros() - start;
+}
