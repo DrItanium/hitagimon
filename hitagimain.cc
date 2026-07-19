@@ -762,13 +762,13 @@ uint32_t millis() noexcept { return cortex::ChipsetBasicFunctions::Timer::millis
 uint32_t micros() noexcept { return cortex::ChipsetBasicFunctions::Timer::micros(); }
 void __attribute__((noinline)) delayMicroseconds(uint32_t wait) noexcept {
     volatile uint32_t end = wait + micros();
-    while (end < micros()) { 
+    while (end > micros()) { 
 
     }
 }
 void __attribute__((noinline)) delayMilliseconds(uint32_t wait) noexcept {
     volatile uint32_t end = wait + millis();
-    while (end < millis()) { 
+    while (end > millis()) { 
 
     }
 }
@@ -1817,34 +1817,36 @@ uint32_t testFilledTriangles();
 uint32_t testRoundRects();
 uint32_t testFilledRoundRects();
 // Color definitions (taken from https://github.com/adafruit/Adafruit_ILI9341/blob/master/Adafruit_ILI9341.h)
-#define ILI9341_BLACK 0x0000       ///<   0,   0,   0
-#define ILI9341_NAVY 0x000F        ///<   0,   0, 123
-#define ILI9341_DARKGREEN 0x03E0   ///<   0, 125,   0
-#define ILI9341_DARKCYAN 0x03EF    ///<   0, 125, 123
-#define ILI9341_MAROON 0x7800      ///< 123,   0,   0
-#define ILI9341_PURPLE 0x780F      ///< 123,   0, 123
-#define ILI9341_OLIVE 0x7BE0       ///< 123, 125,   0
-#define ILI9341_LIGHTGREY 0xC618   ///< 198, 195, 198
-#define ILI9341_DARKGREY 0x7BEF    ///< 123, 125, 123
-#define ILI9341_BLUE 0x001F        ///<   0,   0, 255
-#define ILI9341_GREEN 0x07E0       ///<   0, 255,   0
-#define ILI9341_CYAN 0x07FF        ///<   0, 255, 255
-#define ILI9341_RED 0xF800         ///< 255,   0,   0
-#define ILI9341_MAGENTA 0xF81F     ///< 255,   0, 255
-#define ILI9341_YELLOW 0xFFE0      ///< 255, 255,   0
-#define ILI9341_WHITE 0xFFFF       ///< 255, 255, 255
-#define ILI9341_ORANGE 0xFD20      ///< 255, 165,   0
-#define ILI9341_GREENYELLOW 0xAFE5 ///< 173, 255,  41
-#define ILI9341_PINK 0xFC18        ///< 255, 130, 198
+#define X(title, r, g, b) constexpr auto ILI9341_ ## title = GraphicsInterface::computeColor(r, g, b)
+X(BLACK, 0, 0, 0);
+X(NAVY, 0, 0, 123);
+X(DARKGREEN, 0, 125, 0);
+X(DARKCYAN, 0, 125, 123);
+X(MAROON, 123, 0, 0);
+X(PURPLE, 123, 0, 123);
+X(OLIVE, 123, 125, 0);
+X(LIGHTGREY, 198, 195, 198);
+X(DARKGREY, 123, 125, 123);
+X(BLUE, 0, 0, 255);
+X(GREEN, 0, 255, 0);
+X(CYAN, 0, 255, 255);
+X(RED, 255, 0, 0);
+X(MAGENTA, 255, 0, 255);
+X(YELLOW, 255, 255, 0);
+X(WHITE, 255, 255, 255);
+X(ORANGE, 255, 165, 0);
+X(GREENYELLOW, 173, 255, 41);
+X(PINK, 255, 130, 198);
+#undef X
 void 
 doGraphicsTestIno() noexcept {
 #define F(x) x
     std::cout << "Benchmark                Time (microseconds)" << std::endl;
     delay(10);
-    std::cout << F("Screen fill              ") << testFillScreen() << std::endl;
+    std::cout << F("Screen fill              ") << std::dec << testFillScreen() << std::endl;
     delay(500);
 
-    std::cout << F("Text                     ") << testText() << std::endl;
+    std::cout << F("Text                     ") << std::dec << testText() << std::endl;
     delay(3000);
 #if 0
     std::cout << F("Lines                    ") << testLines(ILI9341_CYAN) << std::endl;
