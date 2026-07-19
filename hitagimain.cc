@@ -1230,17 +1230,21 @@ namespace microshell {
     void system_stats_operation(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         std::cout << std::endl << "=== System Statistics ===" << std::endl << std::endl;
         auto systemCounter = cortex::ChipsetBasicFunctions::SystemCounter::get();
-        std::cout << "System Counter: " << systemCounter << std::endl;
+        std::cout << "System Counter: " << std::dec << systemCounter << std::endl;
         auto idleCycles = cortex::ChipsetBasicFunctions::Info::getIdleCycles();
         auto totalCycles = cortex::ChipsetBasicFunctions::Info::getTotalCycles();
-        std::cout << "Idle Cycles: " << idleCycles << std::endl;
-        std::cout << "Total Cycles: " << totalCycles << std::endl;
+        std::cout << "Idle Cycles: " << std::dec << idleCycles << std::endl;
+        std::cout << "Total Cycles: " << std::dec << totalCycles << std::endl;
         double idlePercentage = static_cast<double>(idleCycles) / static_cast<double>(totalCycles);
         idlePercentage *= 100.0;
         double activePercentage = 100.0 - idlePercentage;
         std::cout << "Percentage of time idle: " << idlePercentage << std::endl;
         std::cout << "Percentage of time active: " << activePercentage << std::endl;
-
+    }
+    void display_stats_operation(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        std::cout << std::endl << "=== Display Statistics ===" << std::endl << std::endl;
+        std::cout << "Width: " << std::dec << GraphicsInterface::width() << std::endl;
+        std::cout << "Height: " << std::dec << GraphicsInterface::height() << std::endl;
     }
     ush_node_object cmd;
     const ush_file_descriptor cmdFiles[] = {
@@ -1258,6 +1262,15 @@ namespace microshell {
                 "Accesses counters from the teensy and displays it to the user",
                 nullptr,
                 system_stats_operation,
+                nullptr,
+                nullptr,
+                nullptr,
+            },
+            {
+                "display_stats",
+                "Accesses simple display information",
+                nullptr,
+                display_stats_operation,
                 nullptr,
                 nullptr,
                 nullptr,
