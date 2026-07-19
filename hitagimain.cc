@@ -33,6 +33,7 @@ extern "C" {
 }
 namespace GraphicsInterface = cortex::ChipsetBasicFunctions::Display;
 namespace RandomInterface = cortex::ChipsetBasicFunctions::Random;
+void doGraphicsTestIno();
 template<typename I, typename O>
 union Converter {
     O output;
@@ -770,6 +771,10 @@ void __attribute__((noinline)) delayMilliseconds(uint32_t wait) noexcept {
     while (end < millis()) { 
 
     }
+}
+
+void delay(uint32_t wait) noexcept {
+    delayMilliseconds(wait);
 }
 
 
@@ -1756,7 +1761,9 @@ namespace microshell {
     "run the adaption of graphicstest.ino for this target",
     nullptr,
     [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-
+        std::cout << "graphicstest.ino running!" << std::endl;
+        doGraphicsTestIno();
+        std::cout << "Done!" << std::endl;
     }, nullptr, nullptr, nullptr 
 }
 
@@ -1795,4 +1802,89 @@ extern "C" uint32_t Arduino_millis(void) {
 
 extern "C" void printStartBanner() {
     printf("i960\n");
+}
+
+namespace {
+    uint32_t testFillScreen();
+    uint32_t testText();
+    uint32_t testLines(uint16_t color);
+    uint32_t testFastLines(uint16_t color1, uint16_t color2);
+    uint32_t testRects(uint16_t color);
+    uint32_t testFilledRects(uint16_t color1, uint16_t color2);
+    uint32_t testFilledCircles(uint8_t radius, uint16_t color);
+    uint32_t testCircles(uint8_t radius, uint16_t color);
+    uint32_t testTriangles();
+    uint32_t testFilledTriangles();
+    uint32_t testRoundRects();
+    uint32_t testFilledRoundRects();
+// Color definitions (taken from https://github.com/adafruit/Adafruit_ILI9341/blob/master/Adafruit_ILI9341.h)
+#define ILI9341_BLACK 0x0000       ///<   0,   0,   0
+#define ILI9341_NAVY 0x000F        ///<   0,   0, 123
+#define ILI9341_DARKGREEN 0x03E0   ///<   0, 125,   0
+#define ILI9341_DARKCYAN 0x03EF    ///<   0, 125, 123
+#define ILI9341_MAROON 0x7800      ///< 123,   0,   0
+#define ILI9341_PURPLE 0x780F      ///< 123,   0, 123
+#define ILI9341_OLIVE 0x7BE0       ///< 123, 125,   0
+#define ILI9341_LIGHTGREY 0xC618   ///< 198, 195, 198
+#define ILI9341_DARKGREY 0x7BEF    ///< 123, 125, 123
+#define ILI9341_BLUE 0x001F        ///<   0,   0, 255
+#define ILI9341_GREEN 0x07E0       ///<   0, 255,   0
+#define ILI9341_CYAN 0x07FF        ///<   0, 255, 255
+#define ILI9341_RED 0xF800         ///< 255,   0,   0
+#define ILI9341_MAGENTA 0xF81F     ///< 255,   0, 255
+#define ILI9341_YELLOW 0xFFE0      ///< 255, 255,   0
+#define ILI9341_WHITE 0xFFFF       ///< 255, 255, 255
+#define ILI9341_ORANGE 0xFD20      ///< 255, 165,   0
+#define ILI9341_GREENYELLOW 0xAFE5 ///< 173, 255,  41
+#define ILI9341_PINK 0xFC18        ///< 255, 130, 198
+}
+void 
+doGraphicsTestIno() noexcept {
+#define F(x) x
+    std::cout << "Benchmark                Time (microseconds)" << std::endl;
+    delay(10);
+    std::cout << F("Screen fill              ") << testFillScreen() << std::endl;
+    delay(500);
+
+    std::cout << F("Text                     ") << testText() << std::endl;
+    delay(3000);
+
+    std::cout << F("Lines                    ") << testLines(ILI9341_CYAN) << std::endl;
+    delay(500);
+
+    std::cout << F("Horiz/Vert Lines         ") << testFastLines(ILI9341_RED, ILI9341_BLUE) << std::endl;
+    delay(500);
+#if 0
+    Serial.print(F("Rectangles (outline)     "));
+    Serial.println(testRects(ILI9341_GREEN));
+    delay(500);
+
+    Serial.print(F("Rectangles (filled)      "));
+    Serial.println(testFilledRects(ILI9341_YELLOW, ILI9341_MAGENTA));
+    delay(500);
+
+    Serial.print(F("Circles (filled)         "));
+    Serial.println(testFilledCircles(10, ILI9341_MAGENTA));
+
+    Serial.print(F("Circles (outline)        "));
+    Serial.println(testCircles(10, ILI9341_WHITE));
+    delay(500);
+
+    Serial.print(F("Triangles (outline)      "));
+    Serial.println(testTriangles());
+    delay(500);
+
+    Serial.print(F("Triangles (filled)       "));
+    Serial.println(testFilledTriangles());
+    delay(500);
+
+    Serial.print(F("Rounded rects (outline)  "));
+    Serial.println(testRoundRects());
+    delay(500);
+
+    Serial.print(F("Rounded rects (filled)   "));
+    Serial.println(testFilledRoundRects());
+    delay(500);
+#endif
+#undef X
 }
