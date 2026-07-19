@@ -1846,6 +1846,7 @@ doGraphicsTestIno() noexcept {
     std::cout << F("Screen fill              ") << testFillScreen() << std::endl;
     delay(500);
 
+#if 0
     std::cout << F("Text                     ") << testText() << std::endl;
     delay(3000);
 
@@ -1854,7 +1855,6 @@ doGraphicsTestIno() noexcept {
 
     std::cout << F("Horiz/Vert Lines         ") << testFastLines(ILI9341_RED, ILI9341_BLUE) << std::endl;
     delay(500);
-#if 0
     Serial.print(F("Rectangles (outline)     "));
     Serial.println(testRects(ILI9341_GREEN));
     delay(500);
@@ -1886,5 +1886,20 @@ doGraphicsTestIno() noexcept {
     Serial.println(testFilledRoundRects());
     delay(500);
 #endif
-#undef X
+#undef F
 }
+
+
+namespace {
+    uint32_t testFillScreen() {
+        auto start = micros();
+        GraphicsInterface::fillScreen(ILI9341_BLACK);
+        GraphicsInterface::fillScreen(ILI9341_RED);
+        GraphicsInterface::fillScreen(ILI9341_GREEN);
+        GraphicsInterface::fillScreen(ILI9341_BLUE);
+        GraphicsInterface::fillScreen(ILI9341_BLACK);
+        return micros() - start;
+    }
+}
+
+
