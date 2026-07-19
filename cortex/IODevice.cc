@@ -309,6 +309,21 @@ namespace cortex
                 ss << value;
                 print(ss.str());
             }
+            void print(uint32_t value, PrintStyle style) {
+                std::stringstream ss;
+                switch (style) {
+                    case PrintStyle::DEC:
+                        ss << std::dec << value;
+                        break;
+                    case PrintStyle::HEX:
+                        ss << std::hex << value;
+                        break;
+                    default:
+                        ss << value;
+                        break;
+                }
+                print(ss.str());
+            }
         }
         void
         begin() noexcept {

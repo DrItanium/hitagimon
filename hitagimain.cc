@@ -1924,10 +1924,10 @@ uint32_t testText() {
     GraphicsInterface::println("Hello World!");
     GraphicsInterface::setTextColor(ILI9341_YELLOW); GraphicsInterface::setTextSize(2);
     GraphicsInterface::println(1234.56);
+    GraphicsInterface::setTextColor(ILI9341_RED);    GraphicsInterface::setTextSize(3);
+    GraphicsInterface::println(0xDEADBEEF, GraphicsInterface::PrintStyle::HEX);
+    GraphicsInterface::println();
 #if 0
-    tft.setTextColor(ILI9341_RED);    tft.setTextSize(3);
-    tft.println(0xDEADBEEF, HEX);
-    tft.println();
     tft.setTextColor(ILI9341_GREEN);
     tft.setTextSize(5);
     tft.println("Groop");

@@ -172,6 +172,15 @@ namespace cortex {
                 print(value);
                 println();
             }
+            enum class PrintStyle {
+                DEC,
+                HEX,
+            };
+            void print(uint32_t value, PrintStyle style = PrintStyle::DEC);
+            inline void println(uint32_t value, PrintStyle style = PrintStyle::DEC) {
+                print(value, style);
+                println();
+            }
         }
         namespace Random {
             uint32_t getHardwareRandomNumber() noexcept;
