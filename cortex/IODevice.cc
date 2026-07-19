@@ -300,6 +300,8 @@ namespace cortex
             uint16_t getCursorY() noexcept { return getIOSpace().getCursorY(); }
             void fillScreen(uint16_t color) noexcept { getIOSpace().clearScreen(color); }
             void print(uint16_t value) noexcept { getIOSpace().printGraphicsChar(value); }
+            void setTextForegroundColor(uint16_t value) noexcept { getIOSpace().setColorFG(value); }
+            void setTextBackgroundColor(uint16_t value) noexcept { getIOSpace().setColorBG(value); }
         }
         void
         begin() noexcept {

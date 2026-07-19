@@ -151,6 +151,15 @@ namespace cortex {
                 print(value, nbyte);
                 println();
             }
+            void setTextForegroundColor(uint16_t fg) noexcept;
+            void setTextBackgroundColor(uint16_t bg) noexcept;
+            inline void setTextColor(uint16_t fg, uint16_t bg) noexcept {
+                setTextForegroundColor(fg);
+                setTextBackgroundColor(bg);
+            }
+            inline void setTextColor(uint16_t fg) noexcept {
+                setTextForegroundColor(fg);
+            }
         }
         namespace Random {
             uint32_t getHardwareRandomNumber() noexcept;
