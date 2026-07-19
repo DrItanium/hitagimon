@@ -141,7 +141,7 @@ namespace cortex {
             uint16_t getCursorY() noexcept;
             inline void clearScreen() noexcept { fillScreen(0); }
             void print(uint16_t value) noexcept;
-            inline void print(char* value, size_t nbyte) noexcept {
+            inline void print(const char* value, size_t nbyte) noexcept {
                 for (size_t i = 0; i < nbyte; ++i) {
                     print(value[i]);
                 }
@@ -149,6 +149,10 @@ namespace cortex {
             inline void println() noexcept { print('\n'); }
             inline void println(char* value, size_t nbyte) noexcept {
                 print(value, nbyte);
+                println();
+            }
+            inline void println(const std::string& str) noexcept {
+                print(str.c_str(), str.length());
                 println();
             }
             void setTextForegroundColor(uint16_t fg) noexcept;
