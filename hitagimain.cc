@@ -1905,10 +1905,15 @@ doGraphicsTestIno() noexcept {
 uint32_t testFillScreen() {
     auto start = micros();
     GraphicsInterface::fillScreen(ILI9341_BLACK);
+    delay(10);
     GraphicsInterface::fillScreen(ILI9341_RED);
+    delay(10);
     GraphicsInterface::fillScreen(ILI9341_GREEN);
+    delay(10);
     GraphicsInterface::fillScreen(ILI9341_BLUE);
+    delay(10);
     GraphicsInterface::fillScreen(ILI9341_BLACK);
+    delay(10);
     return micros() - start;
 }
 uint32_t testText() {
@@ -1917,9 +1922,9 @@ uint32_t testText() {
     GraphicsInterface::setCursor(0, 0);
     GraphicsInterface::setTextColor(ILI9341_WHITE);  GraphicsInterface::setTextSize(1);
     GraphicsInterface::println("Hello World!");
-#if 0
     GraphicsInterface::setTextColor(ILI9341_YELLOW); GraphicsInterface::setTextSize(2);
     GraphicsInterface::println(1234.56);
+#if 0
     tft.setTextColor(ILI9341_RED);    tft.setTextSize(3);
     tft.println(0xDEADBEEF, HEX);
     tft.println();

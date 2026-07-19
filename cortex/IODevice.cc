@@ -6,6 +6,8 @@
 #include <cortex/IODevice.h>
 #include <cortex/ChipsetInteract.h>
 #include <fileuids.h>
+#include <sstream>
+#include <string>
 
 namespace cortex
 {
@@ -302,6 +304,11 @@ namespace cortex
             void print(uint16_t value) noexcept { getIOSpace().printGraphicsChar(value); }
             void setTextForegroundColor(uint16_t value) noexcept { getIOSpace().setColorFG(value); }
             void setTextBackgroundColor(uint16_t value) noexcept { getIOSpace().setColorBG(value); }
+            void print(double value) noexcept {
+                std::stringstream ss;
+                ss << value;
+                print(ss.str());
+            }
         }
         void
         begin() noexcept {

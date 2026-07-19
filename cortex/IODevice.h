@@ -151,8 +151,11 @@ namespace cortex {
                 print(value, nbyte);
                 println();
             }
-            inline void println(const std::string& str) noexcept {
+            inline void print(const std::string& str) noexcept {
                 print(str.c_str(), str.length());
+            }
+            inline void println(const std::string& str) noexcept {
+                print(str);
                 println();
             }
             void setTextForegroundColor(uint16_t fg) noexcept;
@@ -163,6 +166,11 @@ namespace cortex {
             }
             inline void setTextColor(uint16_t fg) noexcept {
                 setTextForegroundColor(fg);
+            }
+            void print(double value) noexcept;
+            inline void println(double value) noexcept {
+                print(value);
+                println();
             }
         }
         namespace Random {
