@@ -2143,13 +2143,13 @@ unsigned long testTriangles() {
 }
 
 uint32_t testFilledTriangles() {
-  uint32_t start, t = 0;
-  int           i, cx = GraphicsInterface::width()  / 2 - 1,
-                   cy = GraphicsInterface::height() / 2 - 1;
+  uint32_t t = 0;
+  int cx = GraphicsInterface::width()  / 2 - 1,
+      cy = GraphicsInterface::height() / 2 - 1;
 
   GraphicsInterface::fillScreen(ILI9341_BLACK);
-  start = micros();
-  for(i=std::min(cx,cy); i>10; i-=5) {
+  uint32_t start = micros();
+  for(int i=std::min(cx,cy); i>10; i-=5) {
     start = micros();
     GraphicsInterface::fillTriangle(cx, cy - i, cx - i, cy + i, cx + i, cy + i,
       GraphicsInterface::color565(0, i*10, i*10));
