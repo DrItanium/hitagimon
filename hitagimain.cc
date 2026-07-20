@@ -1877,6 +1877,8 @@ uint32_t testTriangles();
 uint32_t testFilledTriangles();
 uint32_t testRoundRects();
 uint32_t testFilledRoundRects();
+uint32_t testRotatedRects();
+uint32_t testFilledRotatedRects();
 // Color definitions (taken from https://github.com/adafruit/Adafruit_ILI9341/blob/master/Adafruit_ILI9341.h)
 #define X(title, r, g, b) constexpr auto ILI9341_ ## title = GraphicsInterface::computeColor(r, g, b)
 X(BLACK, 0, 0, 0);
@@ -1941,6 +1943,14 @@ doGraphicsTestIno() noexcept {
 
     std::cout << (F("Rounded rects (filled)   "));
     std::cout << std::dec << (testFilledRoundRects()) << std::endl;
+    delay(500);
+
+    std::cout << (F("Rotated rects (outline)  "));
+    std::cout << std::dec << (testRotatedRects()) << std::endl;
+    delay(500);
+
+    std::cout << (F("Rotated rects (filled)   "));
+    std::cout << std::dec << (testFilledRotatedRects()) << std::endl;
     delay(500);
 #undef F
 }
@@ -2188,6 +2198,37 @@ uint32_t testFilledRoundRects() {
   for(i=std::min(GraphicsInterface::width(), GraphicsInterface::height()); i>20; i-=6) {
     i2 = i / 2;
     GraphicsInterface::fillRoundRect(cx-i2, cy-i2, i, i, i/8, GraphicsInterface::color565(0, i, 0));
+  }
+
+  return micros() - start;
+}
+
+uint32_t testRotatedRects() {
+  int           i, i2,
+                cx = GraphicsInterface::width()  / 2 - 1,
+                cy = GraphicsInterface::height() / 2 - 1;
+
+  GraphicsInterface::fillScreen(ILI9341_BLACK);
+  int w = std::min(GraphicsInterface::width(), GraphicsInterface::height());
+  uint32_t start = micros();
+  for(i=0; i<w; i+=6) {
+    i2 = i / 2;
+    GraphicsInterface::drawRotatedRect(cx-i2, cy-i2, i, i, i/8, GraphicsInterface::color565(i, 0, 0));
+  }
+
+  return micros() - start;
+}
+
+uint32_t testFilledRotatedRects() {
+  int           i, i2,
+                cx = GraphicsInterface::width()  / 2 - 1,
+                cy = GraphicsInterface::height() / 2 - 1;
+
+  GraphicsInterface::fillScreen(ILI9341_BLACK);
+  uint32_t start = micros();
+  for(i=std::min(GraphicsInterface::width(), GraphicsInterface::height()); i>20; i-=6) {
+    i2 = i / 2;
+    GraphicsInterface::fillRotatedRect(cx-i2, cy-i2, i, i, i/8, GraphicsInterface::color565(0, i, 0));
   }
 
   return micros() - start;
