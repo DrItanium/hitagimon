@@ -217,8 +217,9 @@ namespace cortex {
         uint32_t _mask;
     };
     //IOMemoryBlock& EEPROM() noexcept;
-    //IOMemoryBlock& SRAM() noexcept;
-    //IOMemoryBlock& SRAM2() noexcept;
+    IOMemoryBlock& SRAM() noexcept;
+    IOMemoryBlock& SRAM2() noexcept;
+    IOMemoryBlock& DisplayMemory() noexcept;
 
     namespace SDCard {
         using RequestStructure = FilesystemOperation*; /// @todo fix this to not be so generic

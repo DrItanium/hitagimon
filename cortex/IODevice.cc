@@ -40,7 +40,7 @@ namespace cortex
                 uint32_t _unused3;
                 uint32_t _sramCapacity;
                 uint32_t _sram2Capacity;
-                uint32_t _unused5;
+                uint32_t _displayCapacity;
                 // system execution stats
                 uint64_t _idleCycles;
                 uint64_t _totalCycles;
@@ -83,6 +83,7 @@ namespace cortex
         inline uint32_t cycleCount() volatile noexcept { return builtin.cycleCount; }
         inline uint32_t sramCacheCapacity() volatile noexcept { return builtin._sramCapacity; }
         inline uint32_t sram2CacheCapacity() volatile noexcept { return builtin._sram2Capacity; }
+        inline uint32_t displayCacheCapacity() volatile noexcept { return builtin._displayCapacity; }
         inline uint32_t unixtime() volatile noexcept { return builtin._unixtime; }
         inline uint32_t secondstime() volatile noexcept { return builtin._secondstime; }
         inline float rtc_getTemperature() volatile noexcept { return builtin._rtcTemperature; }
@@ -334,20 +335,29 @@ namespace cortex
         static IOMemoryBlock thing(const_cast<uint8_t*>(getIOSpace().sramCache), getIOSpace().sramCacheCapacity());
         return thing;
     }
-    union SRAMCache2 {
-#define X(name, type) type name [ 0x10000 / sizeof(type)]
+    template<size_t capacity>
+    union CacheOverlay {
+#define X(name, type) type name [ capacity / sizeof(type)]
         X(bytes, uint8_t);
         X(shorts, uint16_t);
         X(words, uint32_t);
         X(longs, uint64_t);
 #undef X
     };
-    volatile SRAMCache2& getSRAM2() noexcept {
-        return memory<SRAMCache2>(0xFE000000 + 0x10000);
+    volatile CacheOverlay<0x10000>& getSRAM2() noexcept {
+        return memory<CacheOverlay<0x10000>>(0xFE000000 + 0x10000);
     }
     IOMemoryBlock&
     SRAM2() noexcept {
         static IOMemoryBlock thing(const_cast<uint8_t*>(getSRAM2().bytes), getIOSpace().sram2CacheCapacity());
+        return thing;
+    }
+    volatile CacheOverlay<0x10000*4>& getDisplayMemory() noexcept {
+        return memory<CacheOverlay<0x10000*4>>(0xFE00'0000 + 0x20000);
+    }
+    IOMemoryBlock&
+    DisplayMemory() noexcept {
+        static IOMemoryBlock thing(const_cast<uint8_t*>(getDisplayMemory().bytes), getIOSpace().displayCacheCapacity());
         return thing;
     }
 
