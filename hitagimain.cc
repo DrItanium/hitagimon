@@ -1895,7 +1895,7 @@ namespace microshell {
                         b  = posImag + ((a * b) >> (bits - 1));
                         a  = posReal + a2 - b2;
                     }
-                    buffer.write(y * pixelWidth + x, (n * 29) << 8 | (n * 67));
+                    buffer.shorts[y * pixelWidth + x] = (n * 29) << 8 | (n * 67);
                     posReal += incReal;
                 }
                 posImag -= incImag;

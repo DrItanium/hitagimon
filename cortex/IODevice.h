@@ -204,6 +204,16 @@ namespace cortex {
         return makeLongOrdinal(makeOrdinal(a, b),
                                makeOrdinal(c, d));
     }
+    template<size_t capacity>
+    union CacheOverlay {
+#define X(name, type) type name [ capacity / sizeof(type)]
+        X(bytes, uint8_t);
+        X(shorts, uint16_t);
+        X(words, uint32_t);
+        X(longs, uint64_t);
+#undef X
+    };
+    using DisplayCacheOverlay = CacheOverlay<0x10000*4>;
     struct IOMemoryBlock {
         IOMemoryBlock(uint8_t* address, uint32_t capacity) : _address(address), _capacity(capacity), _mask(capacity - 1) { }
         uint16_t capacity() const noexcept { return _capacity; }
@@ -220,7 +230,7 @@ namespace cortex {
     //IOMemoryBlock& EEPROM() noexcept;
     IOMemoryBlock& SRAM() noexcept;
     IOMemoryBlock& SRAM2() noexcept;
-    IOMemoryBlock& DisplayMemory() noexcept;
+    volatile DisplayCacheOverlay& DisplayMemory() noexcept;
 
     namespace SDCard {
         using RequestStructure = FilesystemOperation*; /// @todo fix this to not be so generic

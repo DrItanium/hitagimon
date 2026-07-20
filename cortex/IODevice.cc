@@ -335,15 +335,6 @@ namespace cortex
         static IOMemoryBlock thing(const_cast<uint8_t*>(getIOSpace().sramCache), getIOSpace().sramCacheCapacity());
         return thing;
     }
-    template<size_t capacity>
-    union CacheOverlay {
-#define X(name, type) type name [ capacity / sizeof(type)]
-        X(bytes, uint8_t);
-        X(shorts, uint16_t);
-        X(words, uint32_t);
-        X(longs, uint64_t);
-#undef X
-    };
     volatile CacheOverlay<0x10000>& getSRAM2() noexcept {
         return memory<CacheOverlay<0x10000>>(0xFE000000 + 0x10000);
     }
@@ -352,13 +343,8 @@ namespace cortex
         static IOMemoryBlock thing(const_cast<uint8_t*>(getSRAM2().bytes), getIOSpace().sram2CacheCapacity());
         return thing;
     }
-    volatile CacheOverlay<0x10000*4>& getDisplayMemory() noexcept {
-        return memory<CacheOverlay<0x10000*4>>(0xFE00'0000 + 0x20000);
-    }
-    IOMemoryBlock&
-    DisplayMemory() noexcept {
-        static IOMemoryBlock thing(const_cast<uint8_t*>(getDisplayMemory().bytes), getIOSpace().displayCacheCapacity());
-        return thing;
+    volatile DisplayCacheOverlay& DisplayMemory() noexcept {
+        return memory<DisplayCacheOverlay> (0xFE00'0000 + 0x20000);
     }
 
 } // end namespace cortex
