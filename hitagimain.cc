@@ -1791,8 +1791,8 @@ namespace microshell {
               rangeReal   =  3.0, // Image coverage in complex plane
               rangeImag   =  3.0; 
         int64_t       n, a, b, a2, b2, posReal;
-        uint32_t iterations = 0;
-        uint32_t loops = 0;
+        uint32_t iterations = 128;
+        uint32_t loops = 1;
         switch (argc) {
             case 3:
                 if (sscanf(argv[2], "%d", &loops) == EOF) {
@@ -1806,8 +1806,6 @@ namespace microshell {
                 }
                 break;
             default:
-                iterations = 128;
-                loops = 1;
                 break;
         }
         for (uint32_t q = 0; q < loops; ++q) {
@@ -1872,8 +1870,6 @@ namespace microshell {
                 }
                 break;
             default:
-                iterations = 128;
-                loops = 1;
                 break;
         }
         auto& buffer = cortex::DisplayMemory();
