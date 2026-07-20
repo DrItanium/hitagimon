@@ -184,7 +184,7 @@ namespace cortex {
                 print(value, style);
                 println();
             }
-            void updateDisplay(int16_t x, int16_t y, int16_t w, int16_t h);
+            inline void updateDisplay(int16_t x, int16_t y, int16_t w, int16_t h) noexcept { command(DrawCommand::DrawRGBBitmap, x, y, w, h); }
         }
         namespace Random {
             uint32_t getHardwareRandomNumber() noexcept;
