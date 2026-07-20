@@ -1786,10 +1786,10 @@ namespace microshell {
         static const int16_t bits        = 20;   // Fractional resolution
         static const int16_t pixelWidth  = GraphicsInterface::width();  // TFT dimensions
         static const int16_t pixelHeight  = GraphicsInterface::height();  // TFT dimensions
-        static float centerReal  = -0.6, // Image center point in complex plane
-                     centerImag  =  0.0,
-                     rangeReal   =  3.0, // Image coverage in complex plane
-                     rangeImag   =  3.0; 
+        float centerReal  = -0.6, // Image center point in complex plane
+              centerImag  =  0.0,
+              rangeReal   =  3.0, // Image coverage in complex plane
+              rangeImag   =  3.0; 
         int64_t       n, a, b, a2, b2, posReal;
         uint32_t iterations = 0;
         uint32_t loops = 0;
