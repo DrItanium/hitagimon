@@ -1791,18 +1791,16 @@ namespace microshell {
                      centerImag  =  0.0,
                      rangeReal   =  3.0, // Image coverage in complex plane
                      rangeImag   =  3.0; 
-        int64_t       n, a, b, a2, b2, posReal, posImag;
-        uint32_t      startTime,elapsedTime;
+        int64_t       n, a, b, a2, b2, posReal;
 
 
-        int32_t
-            startReal   = (int64_t)((centerReal - rangeReal * 0.5)   * (float)(1 << bits)),
+        int32_t startReal   = (int64_t)((centerReal - rangeReal * 0.5)   * (float)(1 << bits)),
                         startImag   = (int64_t)((centerImag + rangeImag * 0.5)   * (float)(1 << bits)),
                         incReal     = (int64_t)((rangeReal / (float)pixelWidth)  * (float)(1 << bits)),
                         incImag     = (int64_t)((rangeImag / (float)pixelHeight) * (float)(1 << bits));
 
-        startTime = millis();
-        posImag = startImag;
+        uint32_t startTime = millis();
+        int64_t posImag = startImag;
         for (int y = 0; y < pixelHeight; y++) {
             posReal = startReal;
             for (int x = 0; x < pixelWidth; x++) {
@@ -1811,8 +1809,9 @@ namespace microshell {
                 for (n = iterations; n > 0 ; n--) {
                     a2 = (a * a) >> bits;
                     b2 = (b * b) >> bits;
-                    if ((a2 + b2) >= (4 << bits)) 
+                    if ((a2 + b2) >= (4 << bits)) {
                         break;
+                    }
                     b  = posImag + ((a * b) >> (bits - 1));
                     a  = posReal + a2 - b2;
                 }
@@ -1821,7 +1820,7 @@ namespace microshell {
             }
             posImag -= incImag;
         }
-        elapsedTime = millis()-startTime;
+        uint32_t elapsedTime = millis()-startTime;
         std::cout << "Took " << std::dec << elapsedTime << " ms" << std::endl;
 
         rangeReal *= 0.95;
