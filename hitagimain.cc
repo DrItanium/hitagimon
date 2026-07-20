@@ -1781,17 +1781,23 @@ namespace microshell {
 },
 { "mandlebrot", 
     "run the adaption of examples/mandlebrot.ino for this target",
-    nullptr,
+    "usage: mandlebrot [?number_of_iterations]",
     [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         static const int16_t bits        = 20;   // Fractional resolution
         static const int16_t pixelWidth  = GraphicsInterface::width();  // TFT dimensions
         static const int16_t pixelHeight  = GraphicsInterface::height();  // TFT dimensions
-        static const int16_t iterations  = 128;  // Fractal iteration limit or 'dwell'
         static float centerReal  = -0.6, // Image center point in complex plane
                      centerImag  =  0.0,
                      rangeReal   =  3.0, // Image coverage in complex plane
                      rangeImag   =  3.0; 
         int64_t       n, a, b, a2, b2, posReal;
+        uint32_t iterations = 0;
+        if (argc == 1) {
+            iterations = 128;
+        } else if (sscanf(argv[1], "%d", &iterations) == EOF) {
+            ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+            return;
+        }
 
 
         int32_t startReal   = (int64_t)((centerReal - rangeReal * 0.5)   * (float)(1 << bits)),
