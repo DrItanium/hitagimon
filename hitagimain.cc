@@ -1857,8 +1857,8 @@ namespace microshell {
               rangeReal   =  3.0, // Image coverage in complex plane
               rangeImag   =  3.0; 
         int64_t       n, a, b, a2, b2, posReal;
-        uint32_t iterations = 0;
-        uint32_t loops = 0;
+        uint32_t iterations = 128;
+        uint32_t loops = 1;
         switch (argc) {
             case 3:
                 if (sscanf(argv[2], "%d", &loops) == EOF) {
@@ -1900,14 +1900,13 @@ namespace microshell {
                         a  = posReal + a2 - b2;
                     }
                     buffer.write(y * pixelWidth + x, (n * 29) << 8 | (n * 67));
-                    //GraphicsInterface::drawPixel(x, y, (n * 29)<<8 | (n * 67)); // takes 500ms with individual pixel writes
                     posReal += incReal;
                 }
                 posImag -= incImag;
             }
             uint32_t elapsedTime = millis()-startTime;
             std::cout << "Took " << std::dec << elapsedTime << " ms" << std::endl;
-
+            GraphicsInterface::updateDisplay(0, 0, pixelWidth, pixelHeight);
             rangeReal *= 0.95;
             rangeImag *= 0.95;
         }
