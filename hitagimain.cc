@@ -1781,7 +1781,7 @@ namespace microshell {
 },
 { "mandlebrot", 
     "run the adaption of examples/mandlebrot.ino for this target",
-    "usage: mandlebrot [?number_of_iterations]",
+    "usage: mandlebrot [?number_of_iterations] [?loops]",
     [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         static const int16_t bits        = 20;   // Fractional resolution
         static const int16_t pixelWidth  = GraphicsInterface::width();  // TFT dimensions
@@ -1792,45 +1792,57 @@ namespace microshell {
                      rangeImag   =  3.0; 
         int64_t       n, a, b, a2, b2, posReal;
         uint32_t iterations = 0;
-        if (argc == 1) {
-            iterations = 128;
-        } else if (sscanf(argv[1], "%d", &iterations) == EOF) {
-            ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
-            return;
-        }
-
-
-        int32_t startReal   = (int64_t)((centerReal - rangeReal * 0.5)   * (float)(1 << bits)),
-                        startImag   = (int64_t)((centerImag + rangeImag * 0.5)   * (float)(1 << bits)),
-                        incReal     = (int64_t)((rangeReal / (float)pixelWidth)  * (float)(1 << bits)),
-                        incImag     = (int64_t)((rangeImag / (float)pixelHeight) * (float)(1 << bits));
-
-        uint32_t startTime = millis();
-        int64_t posImag = startImag;
-        for (int y = 0; y < pixelHeight; y++) {
-            posReal = startReal;
-            for (int x = 0; x < pixelWidth; x++) {
-                a = posReal;
-                b = posImag;
-                for (n = iterations; n > 0 ; n--) {
-                    a2 = (a * a) >> bits;
-                    b2 = (b * b) >> bits;
-                    if ((a2 + b2) >= (4 << bits)) {
-                        break;
-                    }
-                    b  = posImag + ((a * b) >> (bits - 1));
-                    a  = posReal + a2 - b2;
+        uint32_t loops = 0;
+        switch (argc) {
+            case 3:
+                if (sscanf(argv[2], "%d", &loops) == EOF) {
+                    ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+                    return;
                 }
-                GraphicsInterface::drawPixel(x, y, (n * 29)<<8 | (n * 67)); // takes 500ms with individual pixel writes
-                posReal += incReal;
-            }
-            posImag -= incImag;
+            case 2:
+                if (sscanf(argv[1], "%d", &iterations) == EOF) {
+                    ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+                    return;
+                }
+                break;
+            default:
+                iterations = 128;
+                loops = 1;
+                break;
         }
-        uint32_t elapsedTime = millis()-startTime;
-        std::cout << "Took " << std::dec << elapsedTime << " ms" << std::endl;
+        for (uint32_t q = 0; q < loops; ++q) {
+            int32_t startReal   = (int64_t)((centerReal - rangeReal * 0.5)   * (float)(1 << bits)),
+                    startImag   = (int64_t)((centerImag + rangeImag * 0.5)   * (float)(1 << bits)),
+                    incReal     = (int64_t)((rangeReal / (float)pixelWidth)  * (float)(1 << bits)),
+                    incImag     = (int64_t)((rangeImag / (float)pixelHeight) * (float)(1 << bits));
 
-        rangeReal *= 0.95;
-        rangeImag *= 0.95;
+            uint32_t startTime = millis();
+            int64_t posImag = startImag;
+            for (int y = 0; y < pixelHeight; y++) {
+                posReal = startReal;
+                for (int x = 0; x < pixelWidth; x++) {
+                    a = posReal;
+                    b = posImag;
+                    for (n = iterations; n > 0 ; n--) {
+                        a2 = (a * a) >> bits;
+                        b2 = (b * b) >> bits;
+                        if ((a2 + b2) >= (4 << bits)) {
+                            break;
+                        }
+                        b  = posImag + ((a * b) >> (bits - 1));
+                        a  = posReal + a2 - b2;
+                    }
+                    GraphicsInterface::drawPixel(x, y, (n * 29)<<8 | (n * 67)); // takes 500ms with individual pixel writes
+                    posReal += incReal;
+                }
+                posImag -= incImag;
+            }
+            uint32_t elapsedTime = millis()-startTime;
+            std::cout << "Took " << std::dec << elapsedTime << " ms" << std::endl;
+
+            rangeReal *= 0.95;
+            rangeImag *= 0.95;
+        }
     }, nullptr, nullptr, nullptr 
 }
 
