@@ -1854,7 +1854,7 @@ namespace microshell {
               centerImag  =  0.0,
               rangeReal   =  3.0, // Image coverage in complex plane
               rangeImag   =  3.0; 
-        int32_t n, a, b, a2, b2, posReal;
+        int64_t       n, a, b, a2, b2, posReal;
         uint32_t iterations = 128;
         uint32_t loops = 1;
         switch (argc) {
@@ -1879,7 +1879,7 @@ namespace microshell {
                     incImag     = (int64_t)((rangeImag / (float)pixelHeight) * (float)(1 << bits));
 
             uint32_t startTime = millis();
-            auto posImag = startImag;
+            int64_t posImag = startImag;
             for (int y = 0; y < pixelHeight; y++) {
                 posReal = startReal;
                 for (int x = 0; x < pixelWidth; x++) {
