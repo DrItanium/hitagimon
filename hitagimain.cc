@@ -1845,9 +1845,8 @@ namespace microshell {
 },
 { "mandlebrot_optimized", 
     "run the adaption of examples/mandlebrot.ino for this target (optimized)",
-    "usage: mandlebrot [?number_of_iterations] [?loops]",
+    "usage: mandlebrot [?number_of_iterations] [?loops] [?bits]",
     [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-        static const int16_t bits        = 20;   // Fractional resolution
         static const int16_t pixelWidth  = GraphicsInterface::width();  // TFT dimensions
         static const int16_t pixelHeight  = GraphicsInterface::height();  // TFT dimensions
         float centerReal  = -0.6, // Image center point in complex plane
@@ -1857,7 +1856,13 @@ namespace microshell {
         int64_t       n, a, b, a2, b2, posReal;
         uint32_t iterations = 128;
         uint32_t loops = 1;
+        uint32_t bits = 20; // fractional resolution
         switch (argc) {
+            case 4:
+                if (sscanf(argv[3], "%d", &bits) == EOF) {
+                    ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+                    return;
+                }
             case 3:
                 if (sscanf(argv[2], "%d", &loops) == EOF) {
                     ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
@@ -1873,19 +1878,18 @@ namespace microshell {
                 break;
         }
         for (uint32_t q = 0; q < loops; ++q) {
-            int32_t startReal   = (int64_t)((centerReal - rangeReal * 0.5)   * (float)(1 << bits)),
-                    startImag   = (int64_t)((centerImag + rangeImag * 0.5)   * (float)(1 << bits)),
-                    incReal     = (int64_t)((rangeReal / (float)pixelWidth)  * (float)(1 << bits)),
-                    incImag     = (int64_t)((rangeImag / (float)pixelHeight) * (float)(1 << bits));
+            auto startReal   = (int64_t)((centerReal - rangeReal * 0.5)   * (float)(1 << bits)),
+                 startImag   = (int64_t)((centerImag + rangeImag * 0.5)   * (float)(1 << bits)),
+                 incReal     = (int64_t)((rangeReal / (float)pixelWidth)  * (float)(1 << bits)),
+                 incImag     = (int64_t)((rangeImag / (float)pixelHeight) * (float)(1 << bits));
 
-            uint32_t startTime = millis();
-            int64_t posImag = startImag;
-            for (int y = 0; y < pixelHeight; y++) {
+            auto posImag = startImag;
+            for (int y = 0; y < pixelHeight; ++y) {
                 posReal = startReal;
-                for (int x = 0; x < pixelWidth; x++) {
+                for (int x = 0; x < pixelWidth; ++x) {
                     a = posReal;
                     b = posImag;
-                    for (n = iterations; n > 0 ; n--) {
+                    for (n = iterations; n > 0 ; --n) {
                         a2 = (a * a) >> bits;
                         b2 = (b * b) >> bits;
                         if ((a2 + b2) >= (4 << bits)) {
@@ -1899,8 +1903,6 @@ namespace microshell {
                 }
                 posImag -= incImag;
             }
-            uint32_t elapsedTime = millis()-startTime;
-            std::cout << "Took " << std::dec << elapsedTime << " ms" << std::endl;
 
             rangeReal *= 0.95;
             rangeImag *= 0.95;
