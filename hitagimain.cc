@@ -1843,9 +1843,9 @@ namespace microshell {
         }
     }, nullptr, nullptr, nullptr 
 },
-{ "mandlebrot_optimized", 
-    "run the adaption of examples/mandlebrot.ino for this target (optimized)",
-    "usage: mandlebrot [?number_of_iterations] [?loops] [?bits]",
+{ "mandlebrot2", 
+    "more configurable version of examples/mandlebrot.ino",
+    "usage: mandlebrot2 [?number_of_iterations] [?loops] [?bits]",
     [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
         static const int16_t pixelWidth  = GraphicsInterface::width();  // TFT dimensions
         static const int16_t pixelHeight  = GraphicsInterface::height();  // TFT dimensions
