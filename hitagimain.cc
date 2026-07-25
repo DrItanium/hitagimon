@@ -1740,7 +1740,7 @@ namespace microshell {
         auto randomSeedPart4 = unixtime();
         auto randomSeed = randomSeedPart1 + randomSeedPart2 + randomSeedPart3 + randomSeedPart4;
         std::cout << "Setting seed to " << std::hex << randomSeed << std::endl;
-        srand(RandomInterface::getHardwareRandomNumber());
+        srand(randomSeed);
         auto color = GraphicsInterface::computeColor(rand(), rand(), rand());
         std::cout << "color: " << std::hex << color << std::endl;
         do {
