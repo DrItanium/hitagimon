@@ -198,6 +198,6 @@ void storeByteTest3(uint32_t count); // stob
 void mandlebrot(uint32_t iterations, uint32_t loops, uint32_t bits) noexcept;
 void mandlebrotBuffer(uint32_t iterations, uint32_t loops, uint32_t bits) noexcept;
 void foreachPixel(std::function<uint16_t(uint16_t x, uint16_t y)> fn) noexcept;
-void asciiTable() noexcept;
+void asciiTable(int textSize) noexcept;
 #endif
 #endif //HITAGIMON_BENCHMARKS_H__

@@ -1841,8 +1841,22 @@ namespace microshell {
 },
 { "ascii_table",
     "print out the ascii table to the graphics console",
-    nullptr,
-    [](auto* self, auto const* file, int argc, char* argv[]) { asciiTable(); },
+    "usage: ascii_table [?text_size]",
+    [](auto* self, auto const* file, int argc, char* argv[]) { 
+        int textSize = 1;
+        if (argc >= 2) {
+            if (sscanf(argv[1], "%d", &textSize) == EOF) {
+                ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+                return;
+            }
+            if (textSize < 1) {
+                ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
+                return;
+            }
+        }
+
+        asciiTable(textSize);
+    },
     nullptr,
     nullptr,
     nullptr  

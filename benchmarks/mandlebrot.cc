@@ -131,12 +131,19 @@ constexpr uint8_t makeByte(int lo, int hi) noexcept {
     return static_cast<uint8_t>(lo) | (static_cast<uint8_t>(hi) << 4);
 }
 void
-asciiTable() noexcept {
+asciiTable(int textSize) noexcept {
     // hack test
     GraphicsInterface::resetCursor();
     GraphicsInterface::clearScreen();
-    GraphicsInterface::setTextSize(1);
+    GraphicsInterface::setTextSize(textSize);
+    // print a row column table layout
+    GraphicsInterface::println(" 0123456789ABCDEF");
+    static constexpr char ids[] { 
+        '0', '1', '2', '3', '4', '5', '6', '7',
+        '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
+    };
     for (int i = 0; i < 16; ++i) {
+        GraphicsInterface::print(ids[i]);
         for (int j = 0; j < 16; ++j) {
             auto character = makeByte(j, i);
             switch (character) {
