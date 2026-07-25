@@ -1839,12 +1839,10 @@ namespace microshell {
     nullptr,
     nullptr  
 },
-{ "gconsole_println_test",
-    "testing out println on the graphics console",
+{ "ascii_table",
+    "print out the ascii table to the graphics console",
     nullptr,
-    [](auto* self, auto const* file, int argc, char* argv[]) {
-        asciiTable();
-    },
+    [](auto* self, auto const* file, int argc, char* argv[]) { asciiTable(); },
     nullptr,
     nullptr,
     nullptr  
