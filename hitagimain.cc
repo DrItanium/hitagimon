@@ -1840,7 +1840,7 @@ namespace microshell {
     nullptr  
 },
 { "ascii_table",
-    "print out the ascii table to the graphics console",
+    "print out the ascii table to the graphics console (can specify the size of text too)",
     "usage: ascii_table [?text_size]",
     [](auto* self, auto const* file, int argc, char* argv[]) { 
         int textSize = 1;
