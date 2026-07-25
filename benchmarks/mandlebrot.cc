@@ -137,13 +137,16 @@ asciiTable(int textSize) noexcept {
     GraphicsInterface::clearScreen();
     GraphicsInterface::setTextSize(textSize);
     // print a row column table layout
+    GraphicsInterface::setTextColor(ILI9341_GREEN);
     GraphicsInterface::println(" 0123456789ABCDEF");
     static constexpr char ids[] { 
         '0', '1', '2', '3', '4', '5', '6', '7',
         '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
     };
     for (int i = 0; i < 16; ++i) {
+        GraphicsInterface::setTextColor(ILI9341_GREEN);
         GraphicsInterface::print(ids[i]);
+        GraphicsInterface::setTextColor(ILI9341_WHITE);
         for (int j = 0; j < 16; ++j) {
             auto character = makeByte(j, i);
             if (isspace(character)) {

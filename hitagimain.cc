@@ -1916,28 +1916,6 @@ uint32_t testRoundRects();
 uint32_t testFilledRoundRects();
 uint32_t testRotatedRects();
 uint32_t testFilledRotatedRects();
-// Color definitions (taken from https://github.com/adafruit/Adafruit_ILI9341/blob/master/Adafruit_ILI9341.h)
-#define X(title, r, g, b) constexpr auto ILI9341_ ## title = GraphicsInterface::computeColor(r, g, b)
-X(BLACK, 0, 0, 0);
-X(NAVY, 0, 0, 123);
-X(DARKGREEN, 0, 125, 0);
-X(DARKCYAN, 0, 125, 123);
-X(MAROON, 123, 0, 0);
-X(PURPLE, 123, 0, 123);
-X(OLIVE, 123, 125, 0);
-X(LIGHTGREY, 198, 195, 198);
-X(DARKGREY, 123, 125, 123);
-X(BLUE, 0, 0, 255);
-X(GREEN, 0, 255, 0);
-X(CYAN, 0, 255, 255);
-X(RED, 255, 0, 0);
-X(MAGENTA, 255, 0, 255);
-X(YELLOW, 255, 255, 0);
-X(WHITE, 255, 255, 255);
-X(ORANGE, 255, 165, 0);
-X(GREENYELLOW, 173, 255, 41);
-X(PINK, 255, 130, 198);
-#undef X
 void 
 doGraphicsTestIno() noexcept {
 #define F(x) x
