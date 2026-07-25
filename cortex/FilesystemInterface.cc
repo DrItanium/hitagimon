@@ -88,6 +88,12 @@ namespace cortex {
         return file;
     }
 
+    File&
+    getDisplayConsole() {
+        static GraphicsConsoleFile graphicsConsole;
+        return graphicsConsole;
+    }
+
     namespace Filesystem {
         File&
         getFile(int fd) {
@@ -96,6 +102,8 @@ namespace cortex {
                 case STDOUT_FILENO:
                 case STDERR_FILENO:
                     return getConsole();
+                case 3:
+                    return getDisplayConsole();
                 default:
                     return getNullFile();
             }
@@ -124,4 +132,5 @@ namespace cortex {
         ChipsetBasicFunctions::Display::print(buffer, nbyte);
         return nbyte;
     }
+    GraphicsConsoleFile::~GraphicsConsoleFile() { }
 }
