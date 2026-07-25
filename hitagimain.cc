@@ -1826,6 +1826,7 @@ namespace microshell {
         // hack test
         GraphicsInterface::resetCursor();
         GraphicsInterface::clearScreen();
+        GraphicsInterface::setTextSize(1);
         GraphicsInterface::println("I love pie\nOh yes! I do!!!\n");
         uint32_t x = GraphicsInterface::getCursorX();
         uint32_t y = GraphicsInterface::getCursorY();
