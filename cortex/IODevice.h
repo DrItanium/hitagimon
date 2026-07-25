@@ -144,6 +144,7 @@ namespace cortex {
             uint16_t getCursorY() noexcept;
             inline void clearScreen() noexcept { fillScreen(0); }
             void print(uint16_t value) noexcept;
+            inline void print(char c) noexcept { print(static_cast<uint16_t>(c)); }
             inline void print(const char* value, size_t nbyte) noexcept {
                 for (size_t i = 0; i < nbyte; ++i) {
                     print(value[i]);

@@ -127,3 +127,30 @@ foreachPixel(std::function<uint16_t(uint16_t, uint16_t)> fn) noexcept {
         }
     }
 }
+constexpr uint8_t makeByte(int lo, int hi) noexcept {
+    return static_cast<uint8_t>(lo) | (static_cast<uint8_t>(hi) << 4);
+}
+void
+asciiTable() noexcept {
+    // hack test
+    GraphicsInterface::resetCursor();
+    GraphicsInterface::clearScreen();
+    GraphicsInterface::setTextSize(1);
+    for (int i = 0; i < 16; ++i) {
+        for (int j = 0; j < 16; ++j) {
+            auto character = makeByte(j, i);
+            switch (character) {
+                case 0x00:
+                case 0x20:
+                case 0xFE:
+                case 0xFF:
+                    GraphicsInterface::print(' ');
+                    break;
+                default:
+                    GraphicsInterface::print(static_cast<uint16_t>(character));
+                    break;
+            }
+        }
+        GraphicsInterface::println();
+    }
+}
