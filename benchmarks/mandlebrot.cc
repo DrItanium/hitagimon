@@ -146,16 +146,10 @@ asciiTable(int textSize) noexcept {
         GraphicsInterface::print(ids[i]);
         for (int j = 0; j < 16; ++j) {
             auto character = makeByte(j, i);
-            switch (character) {
-                case 0x00:
-                case 0x20:
-                case 0xFE:
-                case 0xFF:
-                    GraphicsInterface::print(' ');
-                    break;
-                default:
-                    GraphicsInterface::print(static_cast<uint16_t>(character));
-                    break;
+            if (isspace(character)) {
+                GraphicsInterface::print(' ');
+            } else {
+                GraphicsInterface::print(static_cast<uint16_t>(character));
             }
         }
         GraphicsInterface::println();
