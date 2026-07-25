@@ -1751,7 +1751,7 @@ namespace microshell {
             if (lsb) { // if the output is zero, the xor can be skipped
                 randomValue ^= 0x00012000; 
             }
-            if (x < 320 && y < 200) {
+            if (x < 320 && y < 240) {
                 GraphicsInterface::drawPixel(x, y, color);
             }
         } while (randomValue != 1);
