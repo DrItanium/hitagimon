@@ -117,4 +117,11 @@ namespace cortex {
     bool File::canSeek() const noexcept { return false; }
     off_t File::seek(off_t offset, int whence) { return -1; }
     off_t ConsoleFile::seek(off_t offset, int whence) { return 0; }
+    void GraphicsConsoleFile::write(uint16_t value) {
+        ChipsetBasicFunctions::Display::print(value);
+    }
+    ssize_t GraphicsConsoleFile::write(const char* buffer, size_t nbyte) {
+        ChipsetBasicFunctions::Display::print(buffer, nbyte);
+        return nbyte;
+    }
 }

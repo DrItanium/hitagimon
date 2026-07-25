@@ -1818,6 +1818,7 @@ namespace microshell {
 { "greyscale_pixels0", nullptr, nullptr, [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) { foreachPixel([](uint16_t x, uint16_t y) -> uint16_t { return GraphicsInterface::color565(x, x, x); }); }, nullptr, nullptr, nullptr },
 { "greyscale_pixels1", nullptr, nullptr, [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) { foreachPixel([](uint16_t x, uint16_t y) -> uint16_t { return GraphicsInterface::color565(y, y, y); }); }, nullptr, nullptr, nullptr },
 { "color_pixels0", nullptr, nullptr, [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) { foreachPixel( [](uint16_t x, uint16_t y) -> uint16_t { return (x << 8) | y; }); }, nullptr, nullptr, nullptr },
+{ "color_pixels1", nullptr, nullptr, [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) { foreachPixel( [](uint16_t x, uint16_t y) -> uint16_t { return (y << 8) | x; }); }, nullptr, nullptr, nullptr },
 
 
 };

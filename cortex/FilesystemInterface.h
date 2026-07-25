@@ -55,13 +55,13 @@ class NullFile : public File {
     public:
         NullFile() : File() { }
         ~NullFile() override = default;
-        uint16_t read() { return 0; }
-        void write(uint16_t) { }
-        bool valid() const noexcept { return false; }
-        void flush() noexcept { }
-        ssize_t read(char*, size_t) { return 0; }
-        ssize_t write(const char*, size_t) { return 0; }
-        bool canSeek() const noexcept { return false; }
+        uint16_t read() override { return 0; }
+        void write(uint16_t) override { }
+        bool valid() const noexcept override { return false; }
+        void flush() noexcept override { }
+        ssize_t read(char*, size_t) override { return 0; }
+        ssize_t write(const char*, size_t) override { return 0; }
+        bool canSeek() const noexcept override { return false; }
 };
 /**
  * @brief A very thin wrapper around the IO space, useful for eliminating direct dependencies
@@ -70,38 +70,33 @@ class ConsoleFile : public File {
 public:
     ~ConsoleFile() override;
     ConsoleFile() : File(0) { }
-    uint16_t read();
-    void write(uint16_t value);
-    void flush();
-    bool matches(int id) const noexcept;
-    bool valid() const noexcept;
-    ssize_t read(char* buffer, size_t nbyte);
-    ssize_t write(const char* buffer, size_t nbyte);
-    bool canSeek() const noexcept { return true; }
-    off_t seek(off_t offset, int whence) noexcept;
-    bool isatty() const noexcept { return true; }
+    uint16_t read() override;
+    void write(uint16_t value) override;
+    void flush() override;
+    bool matches(int id) const noexcept override;
+    bool valid() const noexcept override;
+    ssize_t read(char* buffer, size_t nbyte) override;
+    ssize_t write(const char* buffer, size_t nbyte) override;
+    bool canSeek() const noexcept override { return true; }
+    off_t seek(off_t offset, int whence) noexcept override;
+    bool isatty() const noexcept override { return true; }
 };
 
-class SDCardFile : public File {
+class GraphicsConsoleFile : public File {
     public:
-        SDCardFile(int systemUid = -1, uint64_t chipsetUid = 0) : File(systemUid), _chipsetUid(chipsetUid) { }
-        ~SDCardFile() override;
-        uint16_t read() override;
+        ~GraphicsConsoleFile() override;
+        GraphicsConsoleFile() : File(3) { }
+        uint16_t read() override { return 0; }
+        void flush() override { }
+        ssize_t read(char* buffer, size_t nbyte) override { return 0; }
         void write(uint16_t value) override;
-        void flush() override;
-        bool matches(int id) const noexcept override;
-        bool valid() const noexcept override;
-        ssize_t read(char* buffer, size_t nbyte) override;
         ssize_t write(const char* buffer, size_t nbyte) override;
-        bool canSeek() const noexcept override;
-        off_t seek(off_t offset, int whence) noexcept override;
-        bool isatty() const noexcept override { return false; }
-    private:
-        uint64_t _chipsetUid = 0;
 };
+
 
 File& getConsole();
 File& getNullFile();
+File& getDisplayConsole();
 namespace Filesystem {
     File& getFile(int fd) noexcept;
     File& openFile(const char* path, int flags, int mode);
