@@ -763,6 +763,7 @@ doFlops(const std::string& msg) {
 extern "C" int coremark_main(int argc, char* argv[]);
 namespace microshell {
     void doCoremark(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
+        GraphicsInterface::clearScreen();
         (void)coremark_main(argc, argv);
     }
     void doFlops64Execution(ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
@@ -1733,7 +1734,11 @@ namespace microshell {
         // taken from https://fabiensanglard.net/fizzlefade/index.php
         std::cout << "Running fizzle_fade" << std::endl;
         uint32_t randomValue = 1;
-        auto randomSeed = RandomInterface::getHardwareRandomNumber();
+        auto randomSeedPart1 = RandomInterface::getHardwareRandomNumber();
+        auto randomSeedPart2 = millis();
+        auto randomSeedPart3 = micros();
+        auto randomSeedPart4 = unixtime();
+        auto randomSeed = randomSeedPart1 + randomSeedPart2 + randomSeedPart3 + randomSeedPart4;
         std::cout << "Setting seed to " << std::hex << randomSeed << std::endl;
         srand(RandomInterface::getHardwareRandomNumber());
         auto color = GraphicsInterface::computeColor(rand(), rand(), rand());

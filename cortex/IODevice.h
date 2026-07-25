@@ -259,6 +259,10 @@ inline void delay(uint32_t wait) noexcept {
     delayMilliseconds(wait);
 }
 
+inline int32_t unixtime() noexcept {
+    return cortex::ChipsetBasicFunctions::Timer::unixtime();
+}
+
 // Color definitions (taken from https://github.com/adafruit/Adafruit_ILI9341/blob/master/Adafruit_ILI9341.h)
 #define X(title, r, g, b) constexpr auto ILI9341_ ## title = cortex::ChipsetBasicFunctions::Display::computeColor(r, g, b)
 X(BLACK, 0, 0, 0);
