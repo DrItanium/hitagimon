@@ -69,6 +69,7 @@ add_library(hitagicortex
 )
 add_library(hitagibench
 	benchmarks/benchmarks.h
+    benchmarks/mandlebrot.cc
 	benchmarks/move0.s
 	benchmarks/transcendental.s
 	benchmarks/nullTime.s

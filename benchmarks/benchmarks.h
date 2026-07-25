@@ -193,4 +193,8 @@ void storeByteTest3(uint32_t count); // stob
 #ifdef __cplusplus
 }
 #endif
+#ifdef __cplusplus
+void mandlebrot(uint32_t iterations, uint32_t loops, uint32_t bits) noexcept;
+void mandlebrotBuffer(uint32_t iterations, uint32_t loops, uint32_t bits) noexcept;
+#endif
 #endif //HITAGIMON_BENCHMARKS_H__

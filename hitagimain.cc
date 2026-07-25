@@ -1780,80 +1780,9 @@ namespace microshell {
     }, nullptr, nullptr, nullptr 
 },
 { "mandlebrot", 
-    "run the adaption of examples/mandlebrot.ino for this target",
-    "usage: mandlebrot [?number_of_iterations] [?loops]",
+    "configurable version of examples/mandlebrot.ino",
+    "usage: mandlebrot [?number_of_iterations] [?loops] [?bits]",
     [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-        static const int16_t bits        = 20;   // Fractional resolution
-        static const int16_t pixelWidth  = GraphicsInterface::width();  // TFT dimensions
-        static const int16_t pixelHeight  = GraphicsInterface::height();  // TFT dimensions
-        float centerReal  = -0.6, // Image center point in complex plane
-              centerImag  =  0.0,
-              rangeReal   =  3.0, // Image coverage in complex plane
-              rangeImag   =  3.0; 
-        int64_t       n, a, b, a2, b2, posReal;
-        uint32_t iterations = 128;
-        uint32_t loops = 1;
-        switch (argc) {
-            case 3:
-                if (sscanf(argv[2], "%d", &loops) == EOF) {
-                    ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
-                    return;
-                }
-            case 2:
-                if (sscanf(argv[1], "%d", &iterations) == EOF) {
-                    ush_print_status(self, USH_STATUS_ERROR_COMMAND_SYNTAX_ERROR);
-                    return;
-                }
-                break;
-            default:
-                break;
-        }
-        for (uint32_t q = 0; q < loops; ++q) {
-            int32_t startReal   = (int64_t)((centerReal - rangeReal * 0.5)   * (float)(1 << bits)),
-                    startImag   = (int64_t)((centerImag + rangeImag * 0.5)   * (float)(1 << bits)),
-                    incReal     = (int64_t)((rangeReal / (float)pixelWidth)  * (float)(1 << bits)),
-                    incImag     = (int64_t)((rangeImag / (float)pixelHeight) * (float)(1 << bits));
-
-            uint32_t startTime = millis();
-            int64_t posImag = startImag;
-            for (int y = 0; y < pixelHeight; y++) {
-                posReal = startReal;
-                for (int x = 0; x < pixelWidth; x++) {
-                    a = posReal;
-                    b = posImag;
-                    for (n = iterations; n > 0 ; n--) {
-                        a2 = (a * a) >> bits;
-                        b2 = (b * b) >> bits;
-                        if ((a2 + b2) >= (4 << bits)) {
-                            break;
-                        }
-                        b  = posImag + ((a * b) >> (bits - 1));
-                        a  = posReal + a2 - b2;
-                    }
-                    GraphicsInterface::drawPixel(x, y, (n * 29)<<8 | (n * 67)); // takes 500ms with individual pixel writes
-                    posReal += incReal;
-                }
-                posImag -= incImag;
-            }
-            uint32_t elapsedTime = millis()-startTime;
-            std::cout << "Took " << std::dec << elapsedTime << " ms" << std::endl;
-
-            rangeReal *= 0.95;
-            rangeImag *= 0.95;
-        }
-    }, nullptr, nullptr, nullptr 
-},
-{ "mandlebrot2", 
-    "more configurable version of examples/mandlebrot.ino",
-    "usage: mandlebrot2 [?number_of_iterations] [?loops] [?bits]",
-    [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-        static const int16_t pixelWidth  = GraphicsInterface::width();  // TFT dimensions
-        static const int16_t pixelHeight  = GraphicsInterface::height();  // TFT dimensions
-        float centerReal  = -0.6, // Image center point in complex plane
-              centerImag  =  0.0,
-              rangeReal   =  3.0, // Image coverage in complex plane
-              rangeImag   =  3.0; 
-        int64_t       n, a, b, a2, b2, posReal;
         uint32_t iterations = 128;
         uint32_t loops = 1;
         uint32_t bits = 20; // fractional resolution
@@ -1877,50 +1806,13 @@ namespace microshell {
             default:
                 break;
         }
-        for (uint32_t q = 0; q < loops; ++q) {
-            auto startReal   = (int64_t)((centerReal - rangeReal * 0.5)   * (float)(1 << bits)),
-                 startImag   = (int64_t)((centerImag + rangeImag * 0.5)   * (float)(1 << bits)),
-                 incReal     = (int64_t)((rangeReal / (float)pixelWidth)  * (float)(1 << bits)),
-                 incImag     = (int64_t)((rangeImag / (float)pixelHeight) * (float)(1 << bits));
-
-            auto posImag = startImag;
-            for (int y = 0; y < pixelHeight; ++y) {
-                posReal = startReal;
-                for (int x = 0; x < pixelWidth; ++x) {
-                    a = posReal;
-                    b = posImag;
-                    for (n = iterations; n > 0 ; --n) {
-                        a2 = (a * a) >> bits;
-                        b2 = (b * b) >> bits;
-                        if ((a2 + b2) >= (4 << bits)) {
-                            break;
-                        }
-                        b  = posImag + ((a * b) >> (bits - 1));
-                        a  = posReal + a2 - b2;
-                    }
-                    GraphicsInterface::drawPixel(x, y, (n * 29)<<8 | (n * 67)); // takes 500ms with individual pixel writes
-                    posReal += incReal;
-                }
-                posImag -= incImag;
-            }
-
-            rangeReal *= 0.95;
-            rangeImag *= 0.95;
-        }
+        mandlebrot(iterations, loops, bits);
     }, nullptr, nullptr, nullptr 
 },
 { "mandlebrot_buffer", 
     "run the adaption of examples/mandlebrot.ino for this target",
     "usage: mandlebrot [?number_of_iterations] [?loops]",
     [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) {
-        static const int16_t bits        = 20;   // Fractional resolution
-        static const int16_t pixelWidth  = GraphicsInterface::width();  // TFT dimensions
-        static const int16_t pixelHeight  = GraphicsInterface::height();  // TFT dimensions
-        float centerReal  = -0.6, // Image center point in complex plane
-              centerImag  =  0.0,
-              rangeReal   =  3.0, // Image coverage in complex plane
-              rangeImag   =  3.0; 
-        int64_t       n, a, b, a2, b2, posReal;
         uint32_t iterations = 128;
         uint32_t loops = 1;
         switch (argc) {
@@ -1938,40 +1830,7 @@ namespace microshell {
             default:
                 break;
         }
-        auto& buffer = cortex::DisplayMemory();
-        for (uint32_t q = 0; q < loops; ++q) {
-            int32_t startReal   = (int64_t)((centerReal - rangeReal * 0.5)   * (float)(1 << bits)),
-                    startImag   = (int64_t)((centerImag + rangeImag * 0.5)   * (float)(1 << bits)),
-                    incReal     = (int64_t)((rangeReal / (float)pixelWidth)  * (float)(1 << bits)),
-                    incImag     = (int64_t)((rangeImag / (float)pixelHeight) * (float)(1 << bits));
-
-            uint32_t startTime = millis();
-            int64_t posImag = startImag;
-            for (int y = 0; y < pixelHeight; y++) {
-                posReal = startReal;
-                for (int x = 0; x < pixelWidth; x++) {
-                    a = posReal;
-                    b = posImag;
-                    for (n = iterations; n > 0 ; n--) {
-                        a2 = (a * a) >> bits;
-                        b2 = (b * b) >> bits;
-                        if ((a2 + b2) >= (4 << bits)) {
-                            break;
-                        }
-                        b  = posImag + ((a * b) >> (bits - 1));
-                        a  = posReal + a2 - b2;
-                    }
-                    buffer.shorts[y * pixelWidth + x] = (n * 29) << 8 | (n * 67);
-                    posReal += incReal;
-                }
-                posImag -= incImag;
-            }
-            uint32_t elapsedTime = millis()-startTime;
-            std::cout << "Took " << std::dec << elapsedTime << " ms" << std::endl;
-            GraphicsInterface::updateDisplay(0, 0, pixelWidth, pixelHeight);
-            rangeReal *= 0.95;
-            rangeImag *= 0.95;
-        }
+        mandlebrotBuffer(iterations, loops, bits);
     }, nullptr, nullptr, nullptr 
 }
 
