@@ -758,24 +758,6 @@ doFlops(const std::string& msg) {
 }
 /*------ End flops.c code, say good night Jan! (Sep 1992) ------*/
 
-uint32_t millis() noexcept { return cortex::ChipsetBasicFunctions::Timer::millis(); }
-uint32_t micros() noexcept { return cortex::ChipsetBasicFunctions::Timer::micros(); }
-void __attribute__((noinline)) delayMicroseconds(uint32_t wait) noexcept {
-    volatile uint32_t end = wait + micros();
-    while (end > micros()) { 
-
-    }
-}
-void __attribute__((noinline)) delayMilliseconds(uint32_t wait) noexcept {
-    volatile uint32_t end = wait + millis();
-    while (end > millis()) { 
-
-    }
-}
-
-void delay(uint32_t wait) noexcept {
-    delayMilliseconds(wait);
-}
 
 
 extern "C" int coremark_main(int argc, char* argv[]);
@@ -1830,7 +1812,7 @@ namespace microshell {
             default:
                 break;
         }
-        mandlebrotBuffer(iterations, loops, bits);
+        mandlebrotBuffer(iterations, loops, 20);
     }, nullptr, nullptr, nullptr 
 }
 

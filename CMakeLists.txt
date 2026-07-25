@@ -121,7 +121,10 @@ target_include_directories(hitagimon PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/libcommoncommunication/include
 )
-target_include_directories(hitagibench PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(hitagibench PUBLIC 
+    ${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/libcommoncommunication/include
+)
 target_include_directories(coremark PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(hitagimon

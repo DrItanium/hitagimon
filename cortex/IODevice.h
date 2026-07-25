@@ -238,4 +238,23 @@ namespace cortex {
     } // end namespace SDCard
 
 } // end namespace cortex
+
+inline uint32_t millis() noexcept { return cortex::ChipsetBasicFunctions::Timer::millis(); }
+inline uint32_t micros() noexcept { return cortex::ChipsetBasicFunctions::Timer::micros(); }
+inline void __attribute__((noinline)) delayMicroseconds(uint32_t wait) noexcept {
+    volatile uint32_t end = wait + micros();
+    while (end > micros()) { 
+
+    }
+}
+inline void __attribute__((noinline)) delayMilliseconds(uint32_t wait) noexcept {
+    volatile uint32_t end = wait + millis();
+    while (end > millis()) { 
+
+    }
+}
+
+inline void delay(uint32_t wait) noexcept {
+    delayMilliseconds(wait);
+}
 #endif //I960SXCHIPSET_IODEVICE_H
