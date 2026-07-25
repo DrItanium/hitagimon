@@ -1819,6 +1819,27 @@ namespace microshell {
 { "greyscale_pixels1", nullptr, nullptr, [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) { foreachPixel([](uint16_t x, uint16_t y) -> uint16_t { return GraphicsInterface::color565(y, y, y); }); }, nullptr, nullptr, nullptr },
 { "color_pixels0", nullptr, nullptr, [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) { foreachPixel( [](uint16_t x, uint16_t y) -> uint16_t { return (x << 8) | y; }); }, nullptr, nullptr, nullptr },
 { "color_pixels1", nullptr, nullptr, [](ush_object* self, ush_file_descriptor const* file, int argc, char* argv[]) { foreachPixel( [](uint16_t x, uint16_t y) -> uint16_t { return (y << 8) | x; }); }, nullptr, nullptr, nullptr },
+{ "gconsole_println_test",
+    "testing out println on the graphics console",
+    nullptr,
+    [](auto* self, auto const* file, int argc, char* argv[]) {
+        // hack test
+        GraphicsInterface::resetCursor();
+        GraphicsInterface::clearScreen();
+        GraphicsInterface::println("I love pie\nOh yes! I do!!!\n");
+        uint32_t x = GraphicsInterface::getCursorX();
+        uint32_t y = GraphicsInterface::getCursorY();
+        GraphicsInterface::print("x: ");
+        GraphicsInterface::print(x);
+        GraphicsInterface::print(", y: ");
+        GraphicsInterface::println(y);
+    },
+    nullptr,
+    nullptr,
+    nullptr  
+},
+
+
 
 
 };
