@@ -116,3 +116,14 @@ mandlebrotBuffer(uint32_t iterations, uint32_t loops, uint32_t bits) noexcept {
         rangeImag *= 0.95;
     }
 }
+
+void
+foreachPixel(std::function<uint16_t(uint16_t, uint16_t)> fn) noexcept {
+    static const int16_t pixelWidth  = GraphicsInterface::width();  // TFT dimensions
+    static const int16_t pixelHeight  = GraphicsInterface::height();  // TFT dimensions
+    for (int y = 0; y < pixelHeight; ++y) {
+        for (int x = 0; x < pixelWidth; ++x) {
+            GraphicsInterface::drawPixel(x, y, fn(x, y));
+        }
+    }
+}

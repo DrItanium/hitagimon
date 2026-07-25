@@ -28,6 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Interface to assembly routines to test aspects of different i960 concepts
 #include <cstdint>
 #ifdef __cplusplus
+#include <functional>
 extern "C" {
 #endif
 
@@ -196,5 +197,6 @@ void storeByteTest3(uint32_t count); // stob
 #ifdef __cplusplus
 void mandlebrot(uint32_t iterations, uint32_t loops, uint32_t bits) noexcept;
 void mandlebrotBuffer(uint32_t iterations, uint32_t loops, uint32_t bits) noexcept;
+void foreachPixel(std::function<uint16_t(uint16_t x, uint16_t y)> fn) noexcept;
 #endif
 #endif //HITAGIMON_BENCHMARKS_H__
