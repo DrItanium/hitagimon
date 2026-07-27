@@ -82,8 +82,6 @@ public:
     bool isatty() const noexcept override { return true; }
     void enableEcho() noexcept;
     void disableEcho() noexcept;
-private:
-    bool _echo = false;
 };
 
 class GraphicsConsoleFile : public File {

@@ -63,22 +63,13 @@ namespace cortex {
     }
 
     uint16_t ConsoleFile::read() { 
-        auto result = ChipsetBasicFunctions::Console::read(); 
-        if (_echo) {
-            write(result);
-        }
-        return result;
+        return ChipsetBasicFunctions::Console::read(); 
     }
     void ConsoleFile::write(uint16_t value) { ChipsetBasicFunctions::Console::write(value); }
     bool ConsoleFile::valid() const { return true; }
     void ConsoleFile::flush() { ChipsetBasicFunctions::Console::flush(); }
-    ssize_t ConsoleFile::read(char*buffer, size_t nbyte) { 
-        auto count = ChipsetBasicFunctions::Console::read(buffer, nbyte); 
-        if (_echo) {
-            // write out what was read in
-            write(buffer, count);
-        }
-        return count;
+    ssize_t ConsoleFile::read(char* buffer, size_t nbyte) { 
+        return ChipsetBasicFunctions::Console::read(buffer, nbyte); 
     }
 
     ssize_t ConsoleFile::write(const char*buffer, size_t nbyte) {
@@ -147,9 +138,9 @@ namespace cortex {
     }
     GraphicsConsoleFile::~GraphicsConsoleFile() { }
     void ConsoleFile::enableEcho() noexcept {
-        _echo = true;
+        ChipsetBasicFunctions::Console::enableEcho();
     }
     void ConsoleFile::disableEcho() noexcept {
-        _echo = false;
+        ChipsetBasicFunctions::Console::disableEcho();
     }
 }
