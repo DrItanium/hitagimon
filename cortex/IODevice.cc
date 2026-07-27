@@ -190,7 +190,7 @@ namespace cortex
     namespace ChipsetBasicFunctions {
         namespace Console {
             namespace {
-                bool _echo = false;
+                volatile bool _echo = false;
             }
 
             uint16_t
@@ -236,7 +236,8 @@ namespace cortex
             read(char *buffer, size_t nbyte) {
                 ssize_t numRead = 0;
                 for (size_t i = 0; i < nbyte; ++i) {
-                    if (auto result = static_cast<char>(waitForLegalCharacter()); _echo) {
+                    auto result = static_cast<char>(waitForLegalCharacter());
+                    if (_echo) {
                         // echo mode also supports some simple operations as well
                         switch (result) {
                             case '\r':
@@ -258,7 +259,7 @@ namespace cortex
                                 }
                                 continue;
                             default:
-                                write(buffer[i]);
+                                write(result);
                                 break;
                         }
                         buffer[i] = result;
@@ -266,7 +267,7 @@ namespace cortex
                     } else {
                         buffer[i] = result;
                         ++numRead;
-                        if ((buffer[i] == '\n') || (buffer[i] == '\r')) {
+                        if ((result == '\n') || (result == '\r')) {
                             return numRead;
                         }
                     }
