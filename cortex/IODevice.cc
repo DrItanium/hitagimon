@@ -189,6 +189,9 @@ namespace cortex
     }
     namespace ChipsetBasicFunctions {
         namespace Console {
+            namespace {
+                bool _echo = false;
+            }
 
             uint16_t
             read() {
@@ -210,7 +213,12 @@ namespace cortex
                 // unlike reading, we must be sequential in writing
                 ssize_t numWritten = 0;
                 for (size_t i = 0; i < nbyte; ++i) {
-                    write(buffer[i]);
+                    if (auto target = buffer[i]; target == '\n') {
+                        write('\r');
+                        write('\n');
+                    } else {
+                        write(buffer[i]);
+                    }
                     ++numWritten;
                 }
                 flush();
@@ -235,6 +243,15 @@ namespace cortex
                     }
                 }
                 return numRead;
+            }
+            bool echoStatus() noexcept {
+                return _echo;
+            }
+            void enableEcho() noexcept {
+                _echo = true;
+            }
+            void disableEcho() noexcept {
+                _echo = false;
             }
         } // end namespace Console
         namespace Timer {
