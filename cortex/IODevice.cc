@@ -224,29 +224,27 @@ namespace cortex
                 flush();
                 return numWritten;
             }
-            uint16_t
-            waitForLegalCharacter() {
-                uint16_t rawConsoleValue = read();
-                while (rawConsoleValue == 0xFFFF) {
-                    rawConsoleValue = read();
-                }
-                return rawConsoleValue;
-            }
             ssize_t
             read(char *buffer, size_t nbyte) {
                 ssize_t numRead = 0;
-                for (size_t i = 0; i < nbyte; ++i) {
-                    auto result = static_cast<char>(waitForLegalCharacter());
+                while (numRead < nbyte) {
+                    // do a raw read from the console channel
+                    auto rawResult = read();
+                    // 0xFFFF means that the read channel is empty so just keep
+                    // looping
+                    if (rawResult == 0xFFFF) {
+                        continue;
+                    }
+                    auto result = static_cast<char>(rawResult);
                     if (_echo) {
                         // echo mode also supports some simple operations as well
                         switch (result) {
-                            case '\r':
+                            case '\n':
                                 if (_echo) {
                                     write('\r');
                                     write('\n');
                                 }
-                                buffer[i] = '\n';
-                                ++numRead;
+                                buffer[numRead++] = '\n';
                                 return numRead;
                             case '\b':
                             case 0x7f:
@@ -257,16 +255,17 @@ namespace cortex
                                     write(' ');
                                     write('\b');
                                 }
+                            // gross fallthrough hack but continue on \r
+                            case '\r':
                                 continue;
+
                             default:
                                 write(result);
                                 break;
                         }
-                        buffer[i] = result;
-                        ++numRead;
+                        buffer[numRead++] = static_cast<char>(result);
                     } else {
-                        buffer[i] = result;
-                        ++numRead;
+                        buffer[numRead++] = result;
                         if ((result == '\n') || (result == '\r')) {
                             return numRead;
                         }
