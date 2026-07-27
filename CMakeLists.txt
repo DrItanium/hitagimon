@@ -75,6 +75,12 @@ add_library(hitagibench
 	benchmarks/nullTime.s
 	benchmarks/loadStore.s
 )
+add_library(tinyscheme
+    tinyscheme/scheme.c
+    tinyscheme/scheme.h
+    tinyscheme/scheme-private.h
+    tinyscheme/opdefines.h
+    )
 add_executable(hitagimon
 		boot/sx_init.s # this must ALWAYS be first!
 		boot/f_table.s
@@ -133,6 +139,7 @@ target_link_libraries(hitagimon
 		hitagisys
 		hitagiemul
 		hitagibench
+        tinyscheme
         microshell
 		coremark
         gcc

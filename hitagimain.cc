@@ -30,6 +30,7 @@ extern "C" {
 #include <math.h>
 #include <coremark/coremark.h>
 #include <stdarg.h>
+#include <tinyscheme/scheme.h>
 }
 namespace GraphicsInterface = cortex::ChipsetBasicFunctions::Display;
 namespace RandomInterface = cortex::ChipsetBasicFunctions::Random;
@@ -1866,7 +1867,16 @@ namespace microshell {
     nullptr,
     nullptr  
 },
-
+{ "tinyscheme",
+    nullptr,
+    nullptr,
+  [](auto* self, auto const* file, int argc, char* argv[]) {
+    (void)scheme_main(argc, argv);
+  }, 
+  nullptr,
+  nullptr,
+  nullptr
+},
 
 
 

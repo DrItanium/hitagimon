@@ -4960,7 +4960,7 @@ int main()
 }
 int MacTS_main(int argc, char **argv) {
 #else
-int main(int argc, char **argv) {
+int scheme_main(int argc, char **argv) {
 #endif
   scheme sc;
   FILE *fin;

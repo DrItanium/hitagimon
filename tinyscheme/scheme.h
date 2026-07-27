@@ -240,7 +240,7 @@ void scheme_register_foreign_func_list(scheme * sc,
                                        int n);
 
 #endif /* !STANDALONE */
-
+int scheme_main(int argc, char **argv);
 #ifdef __cplusplus
 }
 #endif
