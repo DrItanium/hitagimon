@@ -1868,7 +1868,7 @@ namespace microshell {
     nullptr  
 },
 { "tinyscheme",
-    nullptr,
+    "tinyscheme interpreter v1.42",
     nullptr,
   [](auto* self, auto const* file, int argc, char* argv[]) {
       auto& consoleConfiguration = cortex::getConsole();
