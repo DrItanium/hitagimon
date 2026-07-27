@@ -236,10 +236,39 @@ namespace cortex
             read(char *buffer, size_t nbyte) {
                 ssize_t numRead = 0;
                 for (size_t i = 0; i < nbyte; ++i) {
-                    buffer[i] = static_cast<char>(waitForLegalCharacter());
-                    ++numRead;
-                    if ((buffer[i] == '\n') || (buffer[i] == '\r')) {
-                        return numRead;
+                    if (auto result = static_cast<char>(waitForLegalCharacter()); _echo) {
+                        // echo mode also supports some simple operations as well
+                        switch (result) {
+                            case '\r':
+                                if (_echo) {
+                                    write('\r');
+                                    write('\n');
+                                }
+                                buffer[i] = '\n';
+                                ++numRead;
+                                return numRead;
+                            case '\b':
+                            case 0x7f:
+                                if (numRead > 0) {
+                                    // handle pressing the backspace key
+                                    --numRead;
+                                    write('\b');
+                                    write(' ');
+                                    write('\b');
+                                }
+                                continue;
+                            default:
+                                write(buffer[i]);
+                                break;
+                        }
+                        buffer[i] = result;
+                        ++numRead;
+                    } else {
+                        buffer[i] = result;
+                        ++numRead;
+                        if ((buffer[i] == '\n') || (buffer[i] == '\r')) {
+                            return numRead;
+                        }
                     }
                 }
                 return numRead;
