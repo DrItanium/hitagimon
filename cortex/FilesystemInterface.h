@@ -80,6 +80,10 @@ public:
     bool canSeek() const noexcept override { return true; }
     off_t seek(off_t offset, int whence) noexcept override;
     bool isatty() const noexcept override { return true; }
+    void enableEcho() noexcept;
+    void disableEcho() noexcept;
+private:
+    bool _echo = false;
 };
 
 class GraphicsConsoleFile : public File {
@@ -94,14 +98,15 @@ class GraphicsConsoleFile : public File {
 };
 
 
-File& getConsole();
+ConsoleFile& getConsole();
 File& getNullFile();
-File& getDisplayConsole();
+GraphicsConsoleFile& getDisplayConsole();
 namespace Filesystem {
     File& getFile(int fd) noexcept;
     File& openFile(const char* path, int flags, int mode);
     bool linkFile(const char* path1, const char* path2);
     bool unlinkFile(const char* path);
 }
+
 } // end namespace cortex
 #endif //HITAGIMON_FILESYSTEMINTERFACE_H

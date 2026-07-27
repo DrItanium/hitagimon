@@ -76,7 +76,7 @@ namespace cortex {
     File::operator bool() const { return valid(); }
 
 
-    File&
+    ConsoleFile&
     getConsole() {
         static ConsoleFile console;
         return console;
@@ -88,7 +88,7 @@ namespace cortex {
         return file;
     }
 
-    File&
+    GraphicsConsoleFile&
     getDisplayConsole() {
         static GraphicsConsoleFile graphicsConsole;
         return graphicsConsole;
@@ -133,4 +133,10 @@ namespace cortex {
         return nbyte;
     }
     GraphicsConsoleFile::~GraphicsConsoleFile() { }
+    void ConsoleFile::enableEcho() noexcept {
+        _echo = true;
+    }
+    void ConsoleFile::disableEcho() noexcept {
+        _echo = false;
+    }
 }

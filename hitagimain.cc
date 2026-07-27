@@ -1871,7 +1871,10 @@ namespace microshell {
     nullptr,
     nullptr,
   [](auto* self, auto const* file, int argc, char* argv[]) {
-    (void)scheme_main(argc, argv);
+      auto& consoleConfiguration = cortex::getConsole();
+      consoleConfiguration.enableEcho();
+      (void)scheme_main(argc, argv);
+      consoleConfiguration.disableEcho();
   }, 
   nullptr,
   nullptr,
