@@ -189,9 +189,6 @@ namespace cortex
     }
     namespace ChipsetBasicFunctions {
         namespace Console {
-            namespace {
-                bool _echo = false;
-            }
 
             uint16_t
             read() {
@@ -225,9 +222,6 @@ namespace cortex
                 while (rawConsoleValue == 0xFFFF) {
                     rawConsoleValue = read();
                 }
-                if (_echo) {
-                    write(rawConsoleValue);
-                }
                 return rawConsoleValue;
             }
             ssize_t
@@ -241,15 +235,6 @@ namespace cortex
                     }
                 }
                 return numRead;
-            }
-            bool echoStatus() noexcept {
-                return _echo;
-            }
-            void enableEcho() noexcept {
-                _echo = true;
-            }
-            void disableEcho() noexcept {
-                _echo = false;
             }
         } // end namespace Console
         namespace Timer {

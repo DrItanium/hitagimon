@@ -62,9 +62,6 @@ namespace cortex {
              * @return the number of bytes written
              */
             ssize_t write(const char *buffer, size_t nbyte);
-            void enableEcho() noexcept;
-            void disableEcho() noexcept;
-            bool echoStatus() noexcept;
         } // end namespace Console
         namespace Timer {
             /**
