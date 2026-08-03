@@ -58,7 +58,7 @@ namespace Machine {
                 Ordinal lo24 : 24;
                 uint8_t opcode;
             } generic;
-            constexpr uint8_t getOpcode() const noexcept {
+            constexpr uint8_t getPrimaryOpcode() const noexcept {
                 return generic.opcode;
             }
             struct {
@@ -113,7 +113,7 @@ namespace Machine {
                 Integer optionalDisplacement;
             } memb;
             constexpr InstructionKind getInstructionKind() const noexcept {
-                switch (getOpcode()) {
+                switch (getPrimaryOpcode()) {
                     case 0x00 ... 0x1F:
                         return InstructionKind::CTRL;
                     case 0x20 ... 0x3F:
@@ -129,6 +129,9 @@ namespace Machine {
             }
             constexpr bool isMEMA() const noexcept {
                 return getInstructionKind() == InstructionKind::MEM && mema.differentiation == 0;
+            }
+            constexpr bool isREG() const noexcept {
+                return getInstructionKind() == InstructionKind::REG;
             }
             constexpr bool usesOptionalDisplacement() const noexcept {
                 switch (getAddressingMode()) {
@@ -151,11 +154,18 @@ namespace Machine {
                     return AddressingMode::Invalid;
                 }
             }
+            constexpr uint16_t getOpcodeValue() const noexcept {
+                if (uint16_t primaryOpcode = getPrimaryOpcode(); isREG()) {
+                    uint16_t secondaryOpcode = reg.opcode2 & 0xF;
+                    primaryOpcode <<= 4;
+                    return primaryOpcode | secondaryOpcode;
+                } else {
+                    return primaryOpcode;
+                }
+            }
         };
-
     }
     bool needSecondWord(uint32_t lo) noexcept {
         return DecodedInstruction{lo}.usesOptionalDisplacement();
-        
     }
 }
