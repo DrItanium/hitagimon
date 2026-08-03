@@ -543,5 +543,8 @@ struct lua_Debug {
 * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************************************************************/
 
-
+/* }====================================================================== */
+/* Custom Functions for i960 interfacing */
+int lua_interpreter_main(int argc, char** argv);
+int lua_compiler_main(int argc, char** argv);
 #endif

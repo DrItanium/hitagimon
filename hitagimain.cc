@@ -21,6 +21,7 @@
 #include <benchmarks/benchmarks.h>
 #include <map>
 #include <tuple>
+#include <lua.hpp>
 
 extern "C" {
 #include <sys/time.h>
@@ -1880,7 +1881,19 @@ namespace microshell {
   nullptr,
   nullptr
 },
-
+{ "lua",
+    "lua 5.5.0 interpreter",
+    nullptr,
+  [](auto* self, auto const* file, int argc, char* argv[]) {
+      auto& consoleConfiguration = cortex::getConsole();
+      consoleConfiguration.enableEcho();
+      lua_interpreter_main(argc, argv);
+      consoleConfiguration.disableEcho();
+  }, 
+  nullptr,
+  nullptr,
+  nullptr
+},
 
 
 };

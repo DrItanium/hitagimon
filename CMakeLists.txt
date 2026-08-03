@@ -7,8 +7,8 @@ set(CMAKE_C_COMPILER i960-elf-gcc)
 set(CMAKE_CXX_COMPILER i960-elf-g++)
 set(CMAKE_ASM-ATT_COMPILER i960-elf-as)
 set(CMAKE_LINKER i960-elf-ld)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -DUSH_CONFIG_PLATFORM_POSIX -fno-exceptions -fno-use-cxa-atexit")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -DCONFIG_PLATFORM_POSIX --std=gnu99")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -DUSH_CONFIG_PLATFORM_POSIX -fno-exceptions -fno-use-cxa-atexit -DLUA_32BITS")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DBARE_METAL -DUSE_STRLWR=0 -DUSE_DL=0 -DCONFIG_PLATFORM_POSIX --std=gnu99 -DLUA_32BITS")
 set(CMAKE_OBJCOPY_COMPILER i960-elf-objcopy)
 set(CMAKE_OBJDUMP_COMPILER i960-elf-objdump)
 # gcc 3.4.6 doesn't support colorizing output
@@ -131,8 +131,8 @@ lua-5.5.0/src/ltable.h
 lua-5.5.0/src/ltablib.c
 lua-5.5.0/src/ltm.c
 lua-5.5.0/src/ltm.h
-#lua-5.5.0/src/lua.c
-#lua-5.5.0/src/luac.c
+lua-5.5.0/src/lua.c
+lua-5.5.0/src/luac.c
 lua-5.5.0/src/luaconf.h
 lua-5.5.0/src/lua.h
 lua-5.5.0/src/lua.hpp
@@ -190,6 +190,7 @@ target_include_directories(hitagisys PUBLIC
 )
 target_include_directories(hitagimon PUBLIC 
 	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/lua-5.5.0/src
 	${CMAKE_CURRENT_SOURCE_DIR}/libcommoncommunication/include
 )
 target_include_directories(hitagibench PUBLIC 
@@ -206,6 +207,7 @@ target_link_libraries(hitagimon
 		hitagibench
         tinyscheme
         microshell
+		lua
 		coremark
         gcc
         m
