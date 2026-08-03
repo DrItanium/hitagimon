@@ -29,9 +29,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 extern "C"
 clock_t
-hitagi__times(struct tms* buf) {
+hitagi_times(struct tms* buf) {
     errno = ENOSYS;
     return -1;
 }
-extern "C" clock_t _sys__times(struct tm* buf);
-extern "C" clock_t _times(struct tm* buf) { return _sys__times(buf); }
+extern "C" clock_t _sys_times(struct tms* buf);
+extern "C" clock_t times(struct tms* buf) { return _sys_times(buf); }

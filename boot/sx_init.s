@@ -536,7 +536,7 @@ sys_proc_table:
 	ReservedTableEntry # 239
 	ReservedTableEntry # 240
 	ReservedTableEntry # 241
-	DefTableEntry hitagi__times # 242
+	DefTableEntry hitagi_times # 242
 	DefTableEntry hitagi_access # 243
 	DefTableEntry hitagi_link # 244
 	DefTableEntry hitagi_isatty # 245
@@ -556,14 +556,7 @@ sys_proc_table:
 	DefTableEntry hitagi_exit # 259
 # up to a total of 260 entries
 # reserved entries
-#def_system_call 12, _sys_argvlen
-#def_system_call 13, _sys_argv
-#def_system_call 14, _sys_chdir
-#def_system_call 15, _sys_stat
-#def_system_call 16, _sys_chmod
-#def_system_call 17, _sys_utime
-#def_system_call 18, _sys_time
-def_system_call 242, _sys__times
+def_system_call 242, _sys_times
 def_system_call 243, _sys_access
 def_system_call 244, _sys_link
 def_system_call 245, _sys_isatty
