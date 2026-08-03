@@ -24,6 +24,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "features/disassembly.h"
+#include <string>
 
 namespace Machine {
     namespace {
@@ -163,9 +164,36 @@ namespace Machine {
                     return primaryOpcode;
                 }
             }
+            std::string getOpcodeMnemonic() const noexcept;
+
         };
+        
     }
     bool needSecondWord(uint32_t lo) noexcept {
         return DecodedInstruction{lo}.usesOptionalDisplacement();
+    }
+
+
+    namespace {
+        std::string
+        DecodedInstruction::getOpcodeMnemonic() const noexcept {
+            switch (getOpcodeValue()) {
+#define X(opcode, str) case opcode : return #str
+                X(0x08, b);
+                X(0x09, call);
+                X(0x0a, ret);
+                X(0x0b, bal);
+                X(0x10, bno);
+                X(0x11, bg);
+                X(0x12, be);
+                X(0x80, ldob);
+                X(0x81, ldvob);
+                X(0x82, stob);
+                X(0x83, stvob);
+#undef X
+                default:
+                    return "???";
+            }
+        }
     }
 }
