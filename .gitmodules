@@ -4,6 +4,3 @@
 [submodule "libcommoncommunication"]
 	path = libcommoncommunication
 	url = https://github.com/DrItanium/libcommoncommunication.git
-[submodule "maya"]
-	path = maya
-	url = https://github.com/DrItanium/maya

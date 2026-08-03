@@ -81,6 +81,7 @@ add_library(tinyscheme
     tinyscheme/scheme-private.h
     tinyscheme/opdefines.h
     )
+
 add_executable(hitagimon
 		boot/sx_init.s # this must ALWAYS be first!
 		boot/f_table.s
@@ -111,6 +112,8 @@ target_compile_definitions(
         USH_CONFIG_PLATFORM_POSIX
 )
 set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/start.ld)
+
+add_subdirectory(maya)
 
 target_include_directories(hitagicortex PUBLIC 
 	${CMAKE_CURRENT_SOURCE_DIR}
