@@ -155,7 +155,7 @@
    int                         genungetchar(Environment *,int);
    void                        InitializeSystemDependentData(Environment *);
    void                        InitializeNonportableFeatures(Environment *);
-
+   int                         TerminateExecution(Environment *);
 #endif /* _H_sysdep */
 
 

@@ -660,6 +660,11 @@ void CommandLoop(
 
    while (true)
      {
+         /* Check and see if we should return from this function */
+         if (TerminateExecution(theEnv)) {
+             /* we should leave at this point since exit was called */
+             return;
+         }
       /*===================================================*/
       /* If a batch file is active, grab the command input */
       /* directly from the batch file, otherwise call the  */

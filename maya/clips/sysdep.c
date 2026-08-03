@@ -191,6 +191,8 @@ struct systemDependentData
    int (*BeforeOpenFunction)(Environment *);
    int (*AfterOpenFunction)(Environment *);
    jmp_buf *jmpBuffer;
+   // i960 addon
+   int keepExecuting;
   };
 
 #define SystemDependentData(theEnv) ((struct systemDependentData *) GetEnvironmentData(theEnv,SYSTEM_DEPENDENT_DATA))
@@ -203,6 +205,7 @@ void InitializeSystemDependentData(
   Environment *theEnv)
   {
    AllocateEnvironmentData(theEnv,SYSTEM_DEPENDENT_DATA,sizeof(struct systemDependentData),NULL);
+   SystemDependentData(theEnv)->keepExecuting = 1;
   }
 
 /*********************************************************/
@@ -299,10 +302,14 @@ void genexit(
   Environment *theEnv,
   int num)
   {
+#if 0
    if (SystemDependentData(theEnv)->jmpBuffer != NULL)
      { longjmp(*SystemDependentData(theEnv)->jmpBuffer,1); }
 
    exit(num);
+#else
+    SystemDependentData(theEnv)->keepExecuting = 0;
+#endif
   }
 
 /**************************************/
@@ -895,3 +902,10 @@ size_t GenWrite(
 
    return size;
   }
+
+/***********************************************/
+/* TerminateExecution: checks to see if the command loop should be exited */
+/***********************************************/
+int TerminateExecution(Environment *theEnv) {
+    return SystemDependentData(theEnv)->keepExecuting == 0;
+}

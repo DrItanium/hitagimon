@@ -2,8 +2,8 @@ GROUP(-lgcc -lm -lc ) /* libraries to link in */
 
 MEMORY /* describe the partitioning of the memory space for the application */ 
 {
-    rom (!r) : ORIGIN = 0, l = 2M,
-    sram (!rx) : ORIGIN = 2M, l = 2M
+    rom (!r) : ORIGIN = 0, l = 3M,
+    sram (!rx) : ORIGIN = 3M, l = 1M
 }
 
 /* Define a symbol that your code can reference. The linker adds the symbol. */ 

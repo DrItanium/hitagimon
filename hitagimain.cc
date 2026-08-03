@@ -31,6 +31,7 @@ extern "C" {
 #include <coremark/coremark.h>
 #include <stdarg.h>
 #include <tinyscheme/scheme.h>
+#include <clips/clips.h>
 }
 namespace GraphicsInterface = cortex::ChipsetBasicFunctions::Display;
 namespace RandomInterface = cortex::ChipsetBasicFunctions::Random;
@@ -1880,7 +1881,23 @@ namespace microshell {
   nullptr,
   nullptr
 },
+{ "clips",
+    "clips interpreter with maya modifications",
+    nullptr,
+    [](auto* self, auto const* file, int argc, char* argv[]) {
+      auto& consoleConfiguration = cortex::getConsole();
+      consoleConfiguration.enableEcho();
+      auto* env = CreateEnvironment();
+      RerouteStdin(env, argc, argv);
+      CommandLoop(env);
+      DestroyEnvironment(env);
+      consoleConfiguration.disableEcho();
 
+    },
+    nullptr, 
+    nullptr, 
+    nullptr 
+},
 
 
 };
