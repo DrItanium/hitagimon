@@ -74,6 +74,6 @@ namespace Machine {
         bool isMEMB(uint32_t value) noexcept;
     }
     bool needSecondWord(uint32_t lo) noexcept {
-
+        return isMEMB(lo);
     }
 }
