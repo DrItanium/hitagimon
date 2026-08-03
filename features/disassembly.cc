@@ -308,6 +308,20 @@ namespace Machine {
                 X(0x648, cread);
                 X(0x649, ldtypedef);
                 X(0x64a, ldglobals);
+                
+                X(0x650, modify);
+                X(0x651, extract);
+                X(0x652, restrict);
+                X(0x653, amplify);
+                X(0x654, modtc);
+                X(0x655, modpc);
+                X(0x656, receive);
+                X(0x657, ldcsp);
+                X(0x658, intctl);
+                X(0x659, sysctl);
+                X(0x65b, icctl);
+                X(0x65c, dcctl);
+                X(0x65d, halt);
 
                 X(0x80, ldob);
                 X(0x81, ldvob);
@@ -321,6 +335,7 @@ namespace Machine {
                 X(0x8a, stos);
                 X(0x8b, stvos);
                 X(0x8c, lda);
+                // TODO continue here for the rest of the mem instructions
 #undef X
                 default:
                     return "???";
