@@ -455,78 +455,78 @@ maya/clips/userdata.h
 maya/clips/usrsetup.h
 maya/clips/utility.h
 maya/clips/watch.h)
-add_library(neutron
-	maya/error/Exception.cc
-	maya/error/Exception.h
-	maya/debug/here.h
-	maya/regex/regex.h
-	maya/features/dependent_false.h
-	maya/features/observer_ptr.h
-	maya/features/overloaded.h
-	maya/features/type_traits.h
-	maya/features/cpp17/optional.h
-	maya/string/aliases.h
-	maya/string/join.h
-	maya/string/predicate.h
-	maya/string/replace.h
-	maya/string/split.h
-	maya/string/tokenizer.h
-	maya/string/trim.h
-	maya/platform/types.h
-	maya/bugfix/fix_lhs_rhs_conflicts_begin.h
-	maya/bugfix/fix_lhs_rhs_conflicts_end.h
-	maya/platform/os.h
-		)
+# add_library(neutron
+# 	maya/error/Exception.cc
+# 	maya/error/Exception.h
+# 	maya/debug/here.h
+# 	maya/regex/regex.h
+# 	maya/features/dependent_false.h
+# 	maya/features/observer_ptr.h
+# 	maya/features/overloaded.h
+# 	maya/features/type_traits.h
+# 	maya/features/cpp17/optional.h
+# 	maya/string/aliases.h
+# 	maya/string/join.h
+# 	maya/string/predicate.h
+# 	maya/string/replace.h
+# 	maya/string/split.h
+# 	maya/string/tokenizer.h
+# 	maya/string/trim.h
+# 	maya/platform/types.h
+# 	maya/bugfix/fix_lhs_rhs_conflicts_begin.h
+# 	maya/bugfix/fix_lhs_rhs_conflicts_end.h
+# 	maya/platform/os.h
+# 		)
 
-add_library(electron
-	maya/electron/Aliases.h
-	maya/electron/api.h
-	maya/electron/DefglobalInspector.h
-	maya/electron/DefruleInspector.cc
-	maya/electron/DefruleInspector.h
-	maya/electron/DeftemplateInspector.cc
-	maya/electron/DeftemplateInspector.h
-	maya/electron/Environment.cc
-	maya/electron/Environment.h
-	maya/electron/FactBuilder.cc
-	maya/electron/FactBuilder.h
-	maya/electron/FactModifier.cc
-	maya/electron/FactModifier.h
-	maya/electron/FileSystemExtensions.cc
-	maya/electron/FileSystemExtensions.h
-	maya/electron/FunctionCallBuilder.cc
-	maya/electron/GCLocker.h
-	maya/electron/IncludePathCache.cc
-	maya/electron/InstanceBuilder.cc
-	maya/electron/InstanceBuilder.h
-	maya/electron/InstanceInspector.cc
-	maya/electron/InstanceInspector.h
-	maya/electron/InstanceModifier.cc
-	maya/electron/InstanceModifier.h
-	maya/electron/IORouter.cc
-	maya/electron/IORouter.h
-	maya/electron/StringExtensions.h
-	maya/electron/StringExtensions.cc
-	maya/electron/MultifieldBuilder.cc
-	maya/electron/MultifieldBuilder.h
-	maya/electron/ArgumentConstructor.h
-	maya/electron/ParsingExtensions.h
-	maya/electron/ParsingExtensions.cc
-        maya/electron/MultifieldExtensions.cc
-        maya/electron/MultifieldExtensions.h
-)
+		#add_library(electron
+		#	maya/electron/Aliases.h
+		#	maya/electron/api.h
+		#	maya/electron/DefglobalInspector.h
+		#	maya/electron/DefruleInspector.cc
+		#	maya/electron/DefruleInspector.h
+		#	maya/electron/DeftemplateInspector.cc
+		#	maya/electron/DeftemplateInspector.h
+		#	maya/electron/Environment.cc
+		#	maya/electron/Environment.h
+		#	maya/electron/FactBuilder.cc
+		#	maya/electron/FactBuilder.h
+		#	maya/electron/FactModifier.cc
+		#	maya/electron/FactModifier.h
+		#	maya/electron/FileSystemExtensions.cc
+		#	maya/electron/FileSystemExtensions.h
+		#	maya/electron/FunctionCallBuilder.cc
+		#	maya/electron/GCLocker.h
+		#	maya/electron/IncludePathCache.cc
+		#	maya/electron/InstanceBuilder.cc
+		#	maya/electron/InstanceBuilder.h
+		#	maya/electron/InstanceInspector.cc
+		#	maya/electron/InstanceInspector.h
+		#	maya/electron/InstanceModifier.cc
+		#	maya/electron/InstanceModifier.h
+		#	maya/electron/IORouter.cc
+		#	maya/electron/IORouter.h
+		#	maya/electron/StringExtensions.h
+		#	maya/electron/StringExtensions.cc
+		#	maya/electron/MultifieldBuilder.cc
+		#	maya/electron/MultifieldBuilder.h
+		#	maya/electron/ArgumentConstructor.h
+		#	maya/electron/ParsingExtensions.h
+		#	maya/electron/ParsingExtensions.cc
+		#        maya/electron/MultifieldExtensions.cc
+		#        maya/electron/MultifieldExtensions.h
+		#)
 target_include_directories(clips PUBLIC 
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/maya
 )
-target_include_directories(neutron PUBLIC 
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/maya
-)
-target_include_directories(electron PUBLIC 
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/maya
-)
+#target_include_directories(neutron PUBLIC 
+#	${CMAKE_CURRENT_SOURCE_DIR}
+#	${CMAKE_CURRENT_SOURCE_DIR}/maya
+#)
+# target_include_directories(electron PUBLIC 
+# 	${CMAKE_CURRENT_SOURCE_DIR}
+# 	${CMAKE_CURRENT_SOURCE_DIR}/maya
+# )
 
 target_include_directories(hitagicortex PUBLIC 
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -554,6 +554,7 @@ target_link_libraries(hitagimon
         tinyscheme
         microshell
 		coremark
+		clips
         gcc
         m
         c

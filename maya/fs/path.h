@@ -24,7 +24,7 @@
 #ifndef _LIBFILESYSTEM_PATH_H_ // {
 #define _LIBFILESYSTEM_PATH_H_
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <list>
 #include <vector>
 
@@ -41,23 +41,23 @@
  */
 namespace Neutron
 {
-    using CopyOption = boost::filesystem::copy_options;
-    using boost::filesystem::copy_file;
-    using boost::filesystem::copy;
-    using boost::filesystem::remove;
-    using Path = boost::filesystem::path;
-    using FilesystemError = boost::filesystem::filesystem_error;
-    using boost::filesystem::exists;
-    using boost::filesystem::is_regular_file;
-    using boost::filesystem::rename;
-    using DirectoryIterator = boost::filesystem::directory_iterator;
-    using boost::filesystem::is_directory;
-    using boost::filesystem::is_empty;
-    using boost::filesystem::unique_path;
-    using boost::filesystem::temp_directory_path;
-    using boost::filesystem::absolute;
-    using boost::filesystem::current_path;
-    using boost::filesystem::copy_options;
+    using CopyOption = std::filesystem::copy_options;
+    using std::filesystem::copy_file;
+    using std::filesystem::copy;
+    using std::filesystem::remove;
+    using Path = std::filesystem::path;
+    using FilesystemError = std::filesystem::filesystem_error;
+    using std::filesystem::exists;
+    using std::filesystem::is_regular_file;
+    using std::filesystem::rename;
+    using DirectoryIterator = std::filesystem::directory_iterator;
+    using std::filesystem::is_directory;
+    using std::filesystem::is_empty;
+    //using std::filesystem::unique_path;
+    using std::filesystem::temp_directory_path;
+    using std::filesystem::absolute;
+    using std::filesystem::current_path;
+    using std::filesystem::copy_options;
 
     using PathVector = std::vector<Path>;
     using PathList = std::list<Path>;
@@ -65,19 +65,19 @@ namespace Neutron
     /// Create a directory given the provided path
     inline bool createDirectory(const Path& p)
     {
-        return boost::filesystem::create_directories(p);
+        return std::filesystem::create_directories(p);
     }
 
     /// is the given path a regular file?
     inline bool isRegularFile(const Path& p)
     {
-        return boost::filesystem::is_regular_file(p);
+        return std::filesystem::is_regular_file(p);
     }
 
     /// is the given path a directory?
     inline bool isDirectory(const Path& p)
     {
-        return boost::filesystem::is_directory(p);
+        return std::filesystem::is_directory(p);
     }
 
 } // namespace Filesystem
