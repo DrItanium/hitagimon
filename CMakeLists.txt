@@ -110,10 +110,6 @@ target_compile_definitions(
         USH_CONFIG_PLATFORM_POSIX
 )
 set_target_properties(hitagimon PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/start.ld)
-add_library(hitagiemul
-        emulation/Segment.cc emulation/Segment.h emulation/Domain.cc emulation/Domain.h)
-
-target_include_directories(hitagiemul PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_include_directories(hitagicortex PUBLIC 
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -137,7 +133,6 @@ target_link_libraries(hitagimon
 		hitagisys
 		hitagicortex
 		hitagisys
-		hitagiemul
 		hitagibench
         tinyscheme
         microshell
