@@ -171,7 +171,7 @@ namespace Machine {
                     return Opcode::Unknown;
                 }
             }
-            std::string getOpcodeMnemonic() const noexcept;
+            std::string getOpcodeMnemonic() const noexcept { return toString(getOpcode()); }
 
         };
         
@@ -181,16 +181,14 @@ namespace Machine {
     }
 
 
-    namespace {
-        std::string
-        DecodedInstruction::getOpcodeMnemonic() const noexcept {
-            switch (getOpcodeValue()) {
-#define X(opcode, str) case opcode : return #str ;
+    std::string
+    toString(Opcode opcode) noexcept {
+        switch (opcode) {
+#define X(opcode, str) case Opcode:: Opcode_ ## str: return #str ;
 #include "features/opcodes.def"
 #undef X
-                default:
-                    return "???";
-            }
+            default:
+                return "???";
         }
     }
 }

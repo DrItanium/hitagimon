@@ -57,6 +57,7 @@ namespace Machine {
             return false;
         }
     }
+    std::string toString(Opcode value) noexcept;
 }
 
 #endif // end !defined HITAGIMON_FEATURES_DIASSEMBLY_H__
