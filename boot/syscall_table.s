@@ -270,7 +270,6 @@ sys_proc_table:
     ReservedTableEntry # 225
     ReservedTableEntry # 226
     ReservedTableEntry # 227
-	# mon960 registrations
 	ReservedTableEntry  # 228
 	ReservedTableEntry  # 229
 	ReservedTableEntry  # 230
@@ -286,11 +285,7 @@ sys_proc_table:
 	ReservedTableEntry # 240
 	ReservedTableEntry # 241
 	ReservedTableEntry # 242
-	#ReservedTableEntry # _hitagi_chdir
-	#ReservedTableEntry # _hitagi_stat
-    #ReservedTableEntry # _hitagi_chmod
-    #ReservedTableEntry # _hitagi_utime
-    #ReservedTableEntry # _hitagi_time
+# libc routines
 	DefTableEntry hitagi_access # 243
 	DefTableEntry hitagi_link # 244
 	DefTableEntry hitagi_isatty # 245
