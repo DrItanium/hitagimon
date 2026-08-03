@@ -1555,6 +1555,8 @@ namespace microshell {
                 foo2.input = 3.14;
                 printf("PI(forced_conversion): %x,%x\n", static_cast<uint32_t>(foo2.output >> 32), static_cast<uint32_t>(foo2.output));
                 printf("PI(FORCED ALIGNMENT %d): %f\n", 0, 3.14);
+                printf("---\n");
+                printf("64-bit number test\n\tout: %llx\n\texpect:ABCDEF0123456789\n", static_cast<uint64_t>(0xABCD'EF01'2345'6789));
             },
             nullptr,
             nullptr,
@@ -1570,7 +1572,13 @@ namespace microshell {
         std::cout << "E: " << 2.71 << std::endl;
         std::cout << "This is cool: " << true << std::endl;
         std::cout << "COUT TEST END" << std::endl;
-
+        std::cout << "64-bit number test" << std::endl 
+            << "\tout: " << std::hex << static_cast<uint64_t>(0xABCD'EF01'2345'6789) << std::endl
+            << "\texpect: ABCDEF0123456789" << std::endl
+            << std::endl
+            << std::endl
+            << "\tout: " << std::dec << static_cast<int64_t>(-1)
+            << "\texpect: -1" << std::endl;
     },
     nullptr,
     nullptr,
@@ -1885,6 +1893,8 @@ namespace microshell {
     "lua 5.5.0 interpreter",
     nullptr,
   [](auto* self, auto const* file, int argc, char* argv[]) {
+      // this currently will crash so don't run it!
+      // need to be able to disable it
       auto& consoleConfiguration = cortex::getConsole();
       consoleConfiguration.enableEcho();
       lua_interpreter_main(argc, argv);
