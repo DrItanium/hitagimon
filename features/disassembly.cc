@@ -36,12 +36,31 @@ namespace Machine {
             CTRL,
             MEM,
         };
+        enum class AddressingMode : uint8_t {
+            Offset = 0b0000,
+            AbasePlusOffset = 0b1000,
+            Abase = 0b0100,
+            IPPlusDisplacement = 0b0101, 
+            Invalid = 0b0110, // manual states it is "reserved"
+            AbasePlusScaledIndex = 0b0111,
+            Displacement = 0b1100,
+            AbasePlusDisplacement = 0b1101,
+            ScaledIndexPlusDisplacement = 0b1110,
+            AbasePlusScaledIndexPlusDisplacement = 0b1111,
+        };
         union DecodedInstruction {
             DecodedInstruction(Ordinal lo, Ordinal displacement = 0) : primary(lo), optionalDisplacement(displacement) { }
             struct {
                 Ordinal primary;
                 Integer optionalDisplacement;
             };
+            struct {
+                Ordinal lo24 : 24;
+                uint8_t opcode;
+            } generic;
+            constexpr uint8_t getOpcode() const noexcept {
+                return generic.opcode;
+            }
             struct {
                 Ordinal src1 : 5;
                 Ordinal unused0 : 2;
@@ -51,29 +70,92 @@ namespace Machine {
                 Ordinal m3 : 1;
                 Ordinal src2 : 5;
                 Ordinal srcDest : 5;
-                Ordinal opcode : 8;
+                uint8_t opcode; 
                 Integer getDisplacement() const noexcept { return 0; }
             } reg;
             struct {
-                union {
-                    Integer value : 12;
-                    struct {
-                        // lowest two bits are reserved
-                        Integer b0 : 1;
-                        Integer b1 : 1;
-                    } flags;
-                } rawDisplacement;
+                Integer b0 : 1;
+                Integer b1 : 1;
+                Integer displacement : 11;
                 Ordinal m1 : 1;
                 Ordinal src2 : 5;
                 Ordinal src1 : 5;
-                Ordinal opcode : 8;
-                Integer getDisplacement() const noexcept { return rawDisplacement.value & (~0b11); }
+                uint8_t opcode;
+                Integer getDisplacement() const noexcept { return displacement << 2; }
             } cobr;
+            struct {
+                union {
+                    Integer value : 24;
+                    struct {
+                        Integer b0 : 1;
+                        Integer b1 : 1;
+                    } flags;
+                } displacement;
+                uint8_t opcode;
+                Integer getDisplacement() const noexcept { return displacement.value & (~0b11); }
+            } ctrl;
+            struct {
+                Ordinal offset : 12;
+                Ordinal differentiation : 1;
+                Ordinal mode : 1;
+                Ordinal abase : 5;
+                Ordinal srcDest : 5;
+                uint8_t opcode;
+            } mema;
+            struct {
+                Ordinal index : 5;
+                Ordinal unused : 2;
+                Ordinal scale : 3;
+                Ordinal mode : 4;
+                Ordinal abase : 5;
+                Ordinal srcDest : 5;
+                uint8_t opcode;
+                Integer optionalDisplacement;
+            } memb;
+            constexpr InstructionKind getInstructionKind() const noexcept {
+                switch (getOpcode()) {
+                    case 0x00 ... 0x1F:
+                        return InstructionKind::CTRL;
+                    case 0x20 ... 0x3F:
+                        return InstructionKind::COBR;
+                    case 0x40 ... 0x7F:
+                        return InstructionKind::REG;
+                    case 0x80 ... 0xFF:
+                        return InstructionKind::MEM;
+                }
+            }
+            constexpr bool isMEMB() const noexcept {
+                return getInstructionKind() == InstructionKind::MEM && mema.differentiation == 1;
+            }
+            constexpr bool isMEMA() const noexcept {
+                return getInstructionKind() == InstructionKind::MEM && mema.differentiation == 0;
+            }
+            constexpr bool usesOptionalDisplacement() const noexcept {
+                switch (getAddressingMode()) {
+                    case AddressingMode::IPPlusDisplacement:
+                    case AddressingMode::Displacement:
+                    case AddressingMode::AbasePlusDisplacement:
+                    case AddressingMode::ScaledIndexPlusDisplacement:
+                    case AddressingMode::AbasePlusScaledIndexPlusDisplacement:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+            constexpr AddressingMode getAddressingMode() const noexcept {
+                if (isMEMB()) {
+                    return static_cast<AddressingMode>(memb.mode);
+                } else if (isMEMA()) {
+                    return mema.mode ? AddressingMode::AbasePlusOffset : AddressingMode::Offset;
+                } else {
+                    return AddressingMode::Invalid;
+                }
+            }
         };
 
-        bool isMEMB(uint32_t value) noexcept;
     }
     bool needSecondWord(uint32_t lo) noexcept {
-        return isMEMB(lo);
+        return DecodedInstruction{lo}.usesOptionalDisplacement();
+        
     }
 }

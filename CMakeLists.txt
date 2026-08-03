@@ -39,6 +39,10 @@ add_library(coremark
 	coremark/core_state.c
 	coremark/core_util.c
 )
+add_library(features
+	features/disassembly.h
+	features/disassembly.cc
+)
 add_library(hitagisys
 		# disabled entries are because mon960 provides the implementations for them
         sys/brk.cc
@@ -132,6 +136,7 @@ target_include_directories(hitagibench PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/libcommoncommunication/include
 )
 target_include_directories(coremark PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(features PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(hitagimon
 		hitagisys
