@@ -88,6 +88,7 @@ add_executable(hitagimon
 		boot/i_table.s
 		boot/f_handle.cc
 		boot/macros.s
+		boot/syscall_table.s
 		hitagimain.cc
 		start.ld
 )

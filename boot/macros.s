@@ -146,3 +146,9 @@ DeclareSegment 0, 0, \addr, 0x204000fb
 	bne \name
 	ret
 .endm
+.macro DefTableEntry name
+   .word (\name + 0x2)
+.endm
+.macro ReservedTableEntry
+.word 0
+.endm
