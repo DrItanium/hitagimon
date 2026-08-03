@@ -27,7 +27,7 @@
  * PAID TO INTEL FOR THE PRODUCT LICENSED HEREUNDER.
  * 
  ******************************************************************************/
-
+/* pulled in from newlib960 and modified for my purposes */
 /******************************************************************************/
 /*                                                                            */
 /*      setjmp(), longjmp()                                                   */
@@ -38,8 +38,8 @@
 	/* .link_pix */
 
 	.align	4
-	.globl	_setjmp
-_setjmp:
+	.globl	setjmp
+setjmp:
 	flushreg
 	andnot	0xf,pfp,g1	/* get pfp, mask out return status bits */
 	st	g1, 0x58(g0)	/* save fp of caller*/
@@ -64,8 +64,8 @@ _setjmp:
     * fake a return to the place that called the corresponding _setjmp
    */
 	.align	4
-	.globl	_longjmp
-_longjmp:
+	.globl	longjmp
+longjmp:
 	call	0f		/* ensure there is at least one stack frame */
 
 0:

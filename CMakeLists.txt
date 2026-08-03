@@ -41,6 +41,7 @@ add_library(coremark
 )
 add_library(hitagisys
 		# disabled entries are because mon960 provides the implementations for them
+		sys/setjmp.S
         sys/brk.cc
         sys/kill.cc
         sys/getpid.cc
@@ -202,13 +203,13 @@ target_include_directories(coremark PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(hitagimon
 		hitagisys
 		hitagicortex
-		hitagisys
 		hitagiemul
 		hitagibench
         tinyscheme
         microshell
 		lua
 		coremark
+		hitagisys
         gcc
         m
         c
