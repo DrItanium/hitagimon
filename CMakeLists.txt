@@ -42,6 +42,7 @@ add_library(coremark
 add_library(features
 	features/disassembly.h
 	features/disassembly.cc
+	features/opcodes.def
 )
 add_library(hitagisys
 		# disabled entries are because mon960 provides the implementations for them

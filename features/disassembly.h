@@ -40,6 +40,13 @@ namespace Machine {
      * @param hi The optional displacement
      */
     std::string disassemble(uint32_t lo, int32_t disp = 0) noexcept;
+
+    enum class Opcodes : uint16_t {
+#define X(code, representation) Opcode_ ## representation = code , 
+#include "features/opcodes.def"
+#undef X
+        Unknown = 0x0000,
+    };
 }
 
 #endif // end !defined HITAGIMON_FEATURES_DIASSEMBLY_H__
