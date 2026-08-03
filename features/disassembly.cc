@@ -164,6 +164,13 @@ namespace Machine {
                     return primaryOpcode;
                 }
             }
+            constexpr Opcode getOpcode() const noexcept {
+                if (auto result = static_cast<Opcode>(getOpcodeValue()); valid(result)) {
+                    return result;
+                } else {
+                    return Opcode::Unknown;
+                }
+            }
             std::string getOpcodeMnemonic() const noexcept;
 
         };

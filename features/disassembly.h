@@ -41,12 +41,22 @@ namespace Machine {
      */
     std::string disassemble(uint32_t lo, int32_t disp = 0) noexcept;
 
-    enum class Opcodes : uint16_t {
+    enum class Opcode : uint16_t {
 #define X(code, representation) Opcode_ ## representation = code , 
 #include "features/opcodes.def"
 #undef X
         Unknown = 0x0000,
     };
+    constexpr bool valid(Opcode value) noexcept {
+        switch (value) {
+#define X(code, representation) case Opcode:: Opcode_ ## representation :
+#include "features/opcodes.def"
+#undef X
+            return true;
+        default:
+            return false;
+        }
+    }
 }
 
 #endif // end !defined HITAGIMON_FEATURES_DIASSEMBLY_H__
