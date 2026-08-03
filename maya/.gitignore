@@ -1,0 +1,31 @@
+#ignore the electron executable and the object files
+*.a
+*.o
+*.swp
+.deps/
+obj/
+libs/
+*.class
+*.obj
+test_suite/Temp/*.tmp
+test_suite/Temp/*.bin
+test_suite/Temp/*.bins
+test_suite/Temp/*.fct
+test_suite/Temp/*.sav
+test_suite/Temp/*.dat
+test_suite/Temp/*.clp
+test_suite/Results/*.rsl
+test_suite/Actual/*.out
+exe/
+
+cmake-build-debug
+cmake-build-release
+
+# Entries below this point are managed by Please (DO NOT EDIT)
+plz-out
+.plzconfig.local
+
+cmd/embedded/bin
+cmd/embedded/lib
+cmd/embedded/lib64
+cmd/embedded/pyvenv.cfg
