@@ -140,6 +140,12 @@ namespace Machine {
                 void injectSrc2(std::ostream& stream) const noexcept {
                     injectRegister(src2, stream);
                 }
+                void disassemble(std::ostream& stream) const noexcept {
+                    injectSrc1(stream);
+                    stream << ", ";
+                    injectSrc2(stream);
+                    stream << ", " << std::dec << getDisplacement();
+                }
             } cobr;
             struct {
                 union {
@@ -239,10 +245,7 @@ namespace Machine {
                         out << std::dec << ctrl.getDisplacement();
                         break;
                     case InstructionKind::COBR:
-                        cobr.injectSrc1(out);
-                        out << ", ";
-                        cobr.injectSrc2(out);
-                        out << ", " << std::dec << cobr.getDisplacement();
+                        cobr.disassemble(out);
                         break;
                     default:
                         out << "TODO: FINISH";
