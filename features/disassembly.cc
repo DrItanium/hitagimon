@@ -52,6 +52,50 @@ namespace Machine {
             ScaledIndexPlusDisplacement = 0b1110,
             AbasePlusScaledIndexPlusDisplacement = 0b1111,
         };
+        void injectRegister(uint8_t index, std::ostream& out) noexcept {
+            switch (index) {
+#define X(index, name) case index : out << #name ; break
+#define R(index) X(index , r ## index)
+#define G(index) X(index + 16, g ## index)
+                X(0, pfp); 
+                X(1, sp); 
+                X(2, rip); 
+                R(3); 
+                R(4); 
+                R(5); 
+                R(6); 
+                R(7);
+                R(8); 
+                R(9); 
+                R(10); 
+                R(11); 
+                R(12); 
+                R(13); 
+                R(14);
+                R(15);
+                G(0);
+                G(1);
+                G(2);
+                G(3);
+                G(4);
+                G(5);
+                G(6);
+                G(7);
+                G(8);
+                G(9);
+                G(10);
+                G(11);
+                G(12);
+                G(13);
+                G(14);
+                X(31, fp);
+#undef G
+#undef R
+#undef X
+                default:
+                    break;
+            }
+        }
         union DecodedInstruction {
             DecodedInstruction(Ordinal lo, Integer displacement = 0) : primary(lo), optionalDisplacement(displacement) { }
             struct {
@@ -85,6 +129,17 @@ namespace Machine {
                 Ordinal src1 : 5;
                 uint8_t opcode;
                 Integer getDisplacement() const noexcept { return displacement << 2; }
+                bool treatSrc1AsLiteral() const noexcept { return m1 != 0; }
+                void injectSrc1(std::ostream& stream) const noexcept {
+                    if (treatSrc1AsLiteral()) {
+                        stream << std::dec << src1;
+                    } else {
+                        injectRegister(src1, stream);
+                    }
+                }
+                void injectSrc2(std::ostream& stream) const noexcept {
+                    injectRegister(src2, stream);
+                }
             } cobr;
             struct {
                 union {
@@ -177,6 +232,23 @@ namespace Machine {
             constexpr bool isFloatingPointInstruction() const noexcept {
                 return isREG() && (getArchitectureLevel(getOpcode()) == ArchitectureLevel::Numerics);
             }
+            void disassemble(std::ostream& out) const noexcept {
+                out << toString(getOpcode()) << " ";
+                switch (getInstructionKind()) {
+                    case InstructionKind::CTRL: 
+                        out << std::dec << ctrl.getDisplacement();
+                        break;
+                    case InstructionKind::COBR:
+                        cobr.injectSrc1(out);
+                        out << ", ";
+                        cobr.injectSrc2(out);
+                        out << ", " << std::dec << cobr.getDisplacement();
+                        break;
+                    default:
+                        out << "TODO: FINISH";
+                        break;
+                }
+            }
         };
         
     }
@@ -213,14 +285,7 @@ namespace Machine {
     disassemble(uint32_t lo, int32_t displacement) noexcept {
         DecodedInstruction inst{lo, displacement};
         std::stringstream ss;
-        ss << toString(inst.getOpcode()) << " ";
-        switch (inst.getInstructionKind()) {
-            case InstructionKind::REG:
-                disassembleREG(inst, ss);
-                break;
-            default:
-                break;
-        }
+        inst.disassemble(ss);
         std::string result = ss.str();
         return result;
     }
