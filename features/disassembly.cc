@@ -27,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <map>
 #include <tuple>
+#include <sstream>
 
 namespace Machine {
     namespace {
@@ -52,7 +53,7 @@ namespace Machine {
             AbasePlusScaledIndexPlusDisplacement = 0b1111,
         };
         union DecodedInstruction {
-            DecodedInstruction(Ordinal lo, Ordinal displacement = 0) : primary(lo), optionalDisplacement(displacement) { }
+            DecodedInstruction(Ordinal lo, Integer displacement = 0) : primary(lo), optionalDisplacement(displacement) { }
             struct {
                 Ordinal primary;
                 Integer optionalDisplacement;
@@ -74,7 +75,6 @@ namespace Machine {
                 Ordinal src2 : 5;
                 Ordinal srcDest : 5;
                 uint8_t opcode; 
-                Integer getDisplacement() const noexcept { return 0; }
             } reg;
             struct {
                 Integer b0 : 1;
@@ -174,7 +174,9 @@ namespace Machine {
                 }
             }
             std::string getOpcodeMnemonic() const noexcept { return toString(getOpcode()); }
-
+            constexpr bool isFloatingPointInstruction() const noexcept {
+                return isREG() && (getArchitectureLevel(getOpcode()) == ArchitectureLevel::Numerics);
+            }
         };
         
     }
@@ -203,5 +205,23 @@ namespace Machine {
         } else {
             return ArchitectureLevel::Invalid;
         }
+    }
+    void
+    disassembleREG(DecodedInstruction& inst, std::ostream& os) noexcept {
+    }
+    std::string
+    disassemble(uint32_t lo, int32_t displacement) noexcept {
+        DecodedInstruction inst{lo, displacement};
+        std::stringstream ss;
+        ss << toString(inst.getOpcode()) << " ";
+        switch (inst.getInstructionKind()) {
+            case InstructionKind::REG:
+                disassembleREG(inst, ss);
+                break;
+            default:
+                break;
+        }
+        std::string result = ss.str();
+        return result;
     }
 }

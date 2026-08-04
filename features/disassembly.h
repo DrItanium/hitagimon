@@ -50,6 +50,7 @@ namespace Machine {
         NewCore,
         IAC,
         Cx,
+        Decimal,
     };
 
     enum class Opcode : uint16_t {
