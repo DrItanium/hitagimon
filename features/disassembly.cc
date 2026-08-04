@@ -25,6 +25,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "features/disassembly.h"
 #include <string>
+#include <map>
+#include <tuple>
 
 namespace Machine {
     namespace {
@@ -179,16 +181,27 @@ namespace Machine {
     bool needSecondWord(uint32_t lo) noexcept {
         return DecodedInstruction{lo}.usesOptionalDisplacement();
     }
-
+    using InstructionInfo = std::tuple<Opcode, std::string, ArchitectureLevel>;
+    static const inline std::map<Opcode, InstructionInfo> opcodeData {
+#define X(opcode, str, arch) { Opcode:: Opcode_ ## str , { Opcode:: Opcode_ ## str , #str, ArchitectureLevel:: arch } },
+#include "features/opcodes.def"
+#undef X
+    };
 
     std::string
     toString(Opcode opcode) noexcept {
-        switch (opcode) {
-#define X(opcode, str) case Opcode:: Opcode_ ## str: return #str ;
-#include "features/opcodes.def"
-#undef X
-            default:
-                return "???";
+        if (auto data = opcodeData.find(opcode); data != opcodeData.end()) {
+            return std::get<std::string>(data->second);
+        } else {
+            return "???";
+        }
+    }
+    ArchitectureLevel
+    getArchitectureLevel(Opcode opcode) noexcept {
+        if (auto data = opcodeData.find(opcode); data != opcodeData.end()) {
+            return std::get<ArchitectureLevel>(data->second);
+        } else {
+            return ArchitectureLevel::Invalid;
         }
     }
 }

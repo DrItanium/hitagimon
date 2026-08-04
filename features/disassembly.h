@@ -41,15 +41,26 @@ namespace Machine {
      */
     std::string disassemble(uint32_t lo, int32_t disp = 0) noexcept;
 
+    enum class ArchitectureLevel {
+        Invalid,
+        Core,
+        Numerics,
+        Protected,
+        Extended,
+        NewCore,
+        IAC,
+        Cx,
+    };
+
     enum class Opcode : uint16_t {
-#define X(code, representation) Opcode_ ## representation = code , 
+#define X(code, representation, arch) Opcode_ ## representation = code , 
 #include "features/opcodes.def"
 #undef X
         Unknown = 0x0000,
     };
     constexpr bool valid(Opcode value) noexcept {
         switch (value) {
-#define X(code, representation) case Opcode:: Opcode_ ## representation :
+#define X(code, representation, arch) case Opcode:: Opcode_ ## representation :
 #include "features/opcodes.def"
 #undef X
             return true;
@@ -58,6 +69,21 @@ namespace Machine {
         }
     }
     std::string toString(Opcode value) noexcept;
+    ArchitectureLevel getArchitectureLevel(Opcode value) noexcept;
+    constexpr bool valid(ArchitectureLevel level) noexcept {
+        switch (level) {
+            case ArchitectureLevel::Core:
+            case ArchitectureLevel::Numerics:
+            case ArchitectureLevel::Protected:
+            case ArchitectureLevel::Extended:
+            case ArchitectureLevel::NewCore:
+            case ArchitectureLevel::IAC:
+            case ArchitectureLevel::Cx:
+                return true;
+            default:
+                return false;
+        }
+    }
 }
 
 #endif // end !defined HITAGIMON_FEATURES_DIASSEMBLY_H__
