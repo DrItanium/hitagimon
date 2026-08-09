@@ -43,25 +43,55 @@ namespace Machine {
 
     enum class ArchitectureLevel {
         Invalid,
-        Core,
-        Numerics,
-        Protected,
-        Extended,
-        NewCore,
-        IAC,
-        Cx,
-        Decimal,
+#define X(name, group) name ,
+#include "levels.def"
+#undef X
+
+    };
+    constexpr ArchitectureLevel translateToGroup(ArchitectureLevel level) noexcept {
+        switch (level) {
+#define X(name, group) case ArchitectureLevel :: name : return ArchitectureLevel :: group ;
+#include "levels.def"
+#undef X
+            default:
+                return ArchitectureLevel::Invalid;
+        }
+    }
+    constexpr bool isNewCore(ArchitectureLevel level) noexcept {
+        return translateToGroup(level) == ArchitectureLevel::NewCore;
+    }
+    constexpr bool isCore(ArchitectureLevel level) noexcept {
+        return translateToGroup(level) == ArchitectureLevel::Core;
+    }
+    constexpr bool isNumerics(ArchitectureLevel level) noexcept {
+        return translateToGroup(level) == ArchitectureLevel::Numerics;
+    }
+    constexpr bool valid(ArchitectureLevel level) noexcept {
+        switch (level) {
+#define X(name, group) case ArchitectureLevel :: name :
+#include "levels.def"
+#undef X
+            return true;
+            default: 
+            return false;
+        }
+    }
+    enum class TreatSrcDestAs {
+        NotApplicable,
+        Src,
+        Dest,
+        SrcDest,
     };
 
     enum class Opcode : uint16_t {
-#define X(code, representation, arch) Opcode_ ## representation = code , 
+#define X(code, representation, arch, group) Opcode_ ## representation = code , 
 #include "features/opcodes.def"
 #undef X
         Unknown = 0x0000,
     };
     constexpr bool valid(Opcode value) noexcept {
         switch (value) {
-#define X(code, representation, arch) case Opcode:: Opcode_ ## representation :
+#define X(code, representation, arch, group) case Opcode:: Opcode_ ## representation :
 #include "features/opcodes.def"
 #undef X
             return true;
@@ -72,18 +102,7 @@ namespace Machine {
     std::string toString(Opcode value) noexcept;
     ArchitectureLevel getArchitectureLevel(Opcode value) noexcept;
     constexpr bool valid(ArchitectureLevel level) noexcept {
-        switch (level) {
-            case ArchitectureLevel::Core:
-            case ArchitectureLevel::Numerics:
-            case ArchitectureLevel::Protected:
-            case ArchitectureLevel::Extended:
-            case ArchitectureLevel::NewCore:
-            case ArchitectureLevel::IAC:
-            case ArchitectureLevel::Cx:
-                return true;
-            default:
-                return false;
-        }
+        return Machine::valid(level);
     }
 }
 

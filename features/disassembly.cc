@@ -52,6 +52,37 @@ namespace Machine {
             ScaledIndexPlusDisplacement = 0b1110,
             AbasePlusScaledIndexPlusDisplacement = 0b1111,
         };
+        void injectFloatingPointValue(uint8_t index, std::ostream& out, bool isDestination = false) noexcept {
+            switch (index) {
+                case 0: 
+                    out << "fp0"; 
+                    break;
+                case 1: 
+                    out << "fp1"; 
+                    break;
+                case 2: 
+                    out << "fp2"; 
+                    break;
+                case 3: 
+                    out << "fp3"; 
+                    break;
+                case 0b10000: 
+                    out << "+0.0";
+                    if (isDestination) {
+                        out << "!!!";
+                    }
+                    break;
+                case 0b10110:
+                    out << "+1.0";
+                    if (isDestination) {
+                        out << "!!!";
+                    }
+                    break;
+                default:
+                    out << "reserved";
+                    break;
+            }
+        }
         void injectRegister(uint8_t index, std::ostream& out) noexcept {
             switch (index) {
 #define X(index, name) case index : out << #name ; break
@@ -119,6 +150,51 @@ namespace Machine {
                 Ordinal src2 : 5;
                 Ordinal srcDest : 5;
                 uint8_t opcode; 
+
+                constexpr uint16_t getOpcodeValue() const noexcept {
+                    uint16_t secondaryOpcode = opcode2 & 0xF;
+                    uint16_t primaryOpcode = (static_cast<uint16_t>(opcode) << 4) & 0x0FF0;
+                    return primaryOpcode | secondaryOpcode;
+                }
+                constexpr Opcode getOpcode() const noexcept {
+                    return static_cast<Opcode>(getOpcodeValue());
+                }
+                constexpr bool isFloatingPointOperation() const noexcept {
+                    return getArchitectureLevel(getOpcode()) == ArchitectureLevel::Numerics;
+                }
+                bool treatSrc1AsLiteral() const noexcept { return m1 != 0; }
+                bool treatSrc2AsLiteral() const noexcept { return m2 != 0; }
+                private:
+                void injectGenericRegister(std::ostream& stream, Ordinal regValue, bool treatAsLiteral, bool isDestination = false) const noexcept {
+                    if (treatAsLiteral) {
+                        if (isFloatingPointOperation()) {
+                            injectFloatingPointValue(regValue, stream, isDestination);
+                        } else {
+                            stream << std::dec << regValue;
+                            if (isDestination) {
+                                stream << "!!!";
+                            }
+                        }
+                    } else {
+                        injectRegister(regValue, stream);
+                    }
+                }
+                void injectSrc1(std::ostream& stream) const noexcept {
+                    injectGenericRegister(stream, src1, treatSrc1AsLiteral());
+                }
+                void injectSrc2(std::ostream& stream) const noexcept {
+                    injectGenericRegister(stream, src2, treatSrc2AsLiteral());
+                }
+                void injectSrcDest(std::ostream& stream) const noexcept {
+
+                }
+                public:
+                void disassemble(std::ostream& stream) const noexcept {
+                    injectSrc1(stream);
+                    stream << ", ";
+                    injectSrc2(stream);
+                    stream << ", ";
+                }
             } reg;
             struct {
                 Integer b0 : 1;
@@ -157,6 +233,9 @@ namespace Machine {
                 } displacement;
                 uint8_t opcode;
                 Integer getDisplacement() const noexcept { return displacement.value & (~0b11); }
+                void disassemble(std::ostream& stream) const noexcept {
+                    stream << std::dec << getDisplacement();
+                }
             } ctrl;
             struct {
                 Ordinal offset : 12;
@@ -219,12 +298,10 @@ namespace Machine {
                 }
             }
             constexpr uint16_t getOpcodeValue() const noexcept {
-                if (uint16_t primaryOpcode = getPrimaryOpcode(); isREG()) {
-                    uint16_t secondaryOpcode = reg.opcode2 & 0xF;
-                    primaryOpcode <<= 4;
-                    return primaryOpcode | secondaryOpcode;
+                if (isREG()) {
+                    return reg.getOpcodeValue();
                 } else {
-                    return primaryOpcode;
+                    return getPrimaryOpcode();
                 }
             }
             constexpr Opcode getOpcode() const noexcept {
@@ -242,10 +319,13 @@ namespace Machine {
                 out << toString(getOpcode()) << " ";
                 switch (getInstructionKind()) {
                     case InstructionKind::CTRL: 
-                        out << std::dec << ctrl.getDisplacement();
+                        ctrl.disassemble(out);
                         break;
                     case InstructionKind::COBR:
                         cobr.disassemble(out);
+                        break;
+                    case InstructionKind::REG:
+                        reg.disassemble(out);
                         break;
                     default:
                         out << "TODO: FINISH";
@@ -260,7 +340,7 @@ namespace Machine {
     }
     using InstructionInfo = std::tuple<Opcode, std::string, ArchitectureLevel>;
     static const inline std::map<Opcode, InstructionInfo> opcodeData {
-#define X(opcode, str, arch) { Opcode:: Opcode_ ## str , { Opcode:: Opcode_ ## str , #str, ArchitectureLevel:: arch } },
+#define X(opcode, str, arch, group) { Opcode:: Opcode_ ## str , { Opcode:: Opcode_ ## str , #str, ArchitectureLevel:: arch } },
 #include "features/opcodes.def"
 #undef X
     };
