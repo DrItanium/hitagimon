@@ -1905,6 +1905,20 @@ namespace microshell {
   nullptr
 },
 
+{ "indirect_tests",
+    nullptr,
+    nullptr,
+  [](auto* self, auto const* file, int argc, char* argv[]) {
+      IndirectFunctionCallTester t;
+      t.fc = getIndirectCFunction();
+      t.fcpp = getIndirectCPPFunction();
+      doIndirectFunctionCallTest(t);
+  }, 
+  nullptr,
+  nullptr,
+  nullptr
+},
+
 
 };
     void

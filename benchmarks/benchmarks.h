@@ -195,9 +195,18 @@ void storeByteTest3(uint32_t count); // stob
 }
 #endif
 #ifdef __cplusplus
+using IndirectFunctionCallPP = std::function<void()>;
+using IndirectFunctionCall = void(*)(void);
 void mandlebrot(uint32_t iterations, uint32_t loops, uint32_t bits) noexcept;
 void mandlebrotBuffer(uint32_t iterations, uint32_t loops, uint32_t bits) noexcept;
 void foreachPixel(std::function<uint16_t(uint16_t x, uint16_t y)> fn) noexcept;
 void asciiTable(int textSize) noexcept;
+IndirectFunctionCall getIndirectCFunction();
+IndirectFunctionCallPP getIndirectCPPFunction();
+struct IndirectFunctionCallTester {
+    IndirectFunctionCallPP fcpp;
+    IndirectFunctionCall fc;
+};
+void doIndirectFunctionCallTest(IndirectFunctionCallTester& tester);
 #endif
 #endif //HITAGIMON_BENCHMARKS_H__

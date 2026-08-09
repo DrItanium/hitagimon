@@ -81,6 +81,7 @@ add_library(hitagibench
 	benchmarks/transcendental.s
 	benchmarks/nullTime.s
 	benchmarks/loadStore.s
+    benchmarks/indirect_function_call_tests.cc
 )
 add_library(tinyscheme
     tinyscheme/scheme.c
