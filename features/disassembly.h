@@ -36,7 +36,6 @@ namespace Machine {
     enum class InstructionFormat {
         CTRL,
         COBR,
-        COJ,
         REG,
         MEM1,
         MEM2,
@@ -71,12 +70,14 @@ namespace Machine {
     }
     union OperandDescriptor {
     public:
-        constexpr OperandDescriptor(uint8_t align = 0, bool lit = false, bool fp = false, bool sfr = false) : _align(align), _lit(lit), _fp(fp), _sfr(sfr) {}
+        constexpr OperandDescriptor(uint8_t align = 0, bool lit = false, bool fp = false, bool sfr = false, bool enabled = true) : _align(align), _lit(lit), _fp(fp), _sfr(sfr), _enabled(enabled) {}
         constexpr auto getValue() const noexcept { return _raw; }
         constexpr auto getAlignment() const noexcept { return _align; }
         constexpr auto literalsAllowed() const noexcept { return _lit; }
         constexpr auto floatingPointRegistersAllowed() const noexcept { return _fp; }
         constexpr auto specialFunctionRegistersAllowed() const noexcept { return _sfr; }
+        constexpr auto enabled() const noexcept { return _enabled; }
+        explicit operator bool() const noexcept { return _enabled != 0; }
     private:
         uint8_t _raw;
         struct {
@@ -84,9 +85,10 @@ namespace Machine {
             uint8_t _lit : 1;
             uint8_t _fp : 1;
             uint8_t _sfr : 1;
+            uint8_t _enabled : 1;
         };
     };
-    constexpr OperandDescriptor UnusedField { 0, false, false, false };
+    constexpr OperandDescriptor UnusedField { 0, false, false, false, false };
     constexpr OperandDescriptor R { 0, false, false, false };
     constexpr OperandDescriptor RS { 0, false, false, true };
     constexpr OperandDescriptor RL { 0, true, false, true };
