@@ -22,6 +22,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+#if 0
 #define Operation(opcode, name, class) X(opcode, name, class, NotApplicable)
 #define REGOperation(opcode, name, class, srcDest) X(opcode, name, class, srcDest)
 #define NormalREGOperation(opcode, name, class) REGOperation(opcode, name, class, Dest)
@@ -324,5 +325,60 @@ REGOperation(0x673, ldtime, Protected)
 #undef FPOperation
 #undef REGOperation
 #undef Operation
+#else
+// X(opcode, name, str, class, format, argCount, src1, src2, src3)
+#define EncodeOpcode(opcode) ((static_cast<uint32_t>(opcode) << 24) & 0xFF000000)
+#define CTRL(opcode, name) X((EncodeOpcode(opcode)), name, #name, Base, CTRL, 1, 0, 0, 0)
+#define BaseCOBR(opcode, name, count, src1, src2) X((EncodeOpcode(opcode)), name, #name, Base, COBR, count, src1, src2, 0)
+#define TestOperation(opcode, name) 
+CTRL(0x08, b)
+CTRL(0x09, call)
+CTRL(0x0a, ret)
+CTRL(0x0b, bal)
+CTRL(0x10, bno)
+CTRL(0x11, bg)
+CTRL(0x12, be)
+CTRL(0x13, bge)
+CTRL(0x14, bl)
+CTRL(0x15, bne)
+CTRL(0x16, ble)
+CTRL(0x17, bo)
+CTRL(0x18, faultno)
+CTRL(0x19, faultg)
+CTRL(0x1a, faulte)
+CTRL(0x1b, faultge)
+CTRL(0x1c, faultl)
+CTRL(0x1d, faultne)
+CTRL(0x1e, faultle)
+CTRL(0x1f, faulto)
+X(0x20, testno)
+X(0x21, testg)
+X(0x22, teste)
+X(0x23, testge)
+X(0x24, testl)
+X(0x25, testne)
+X(0x26, testle)
+X(0x27, testo)
+X(0x30, bbc)
+X(0x31, cmpobg)
+X(0x32, cmpobe)
+X(0x33, cmpobge)
+X(0x34, cmpobl)
+X(0x35, cmpobne)
+X(0x36, cmpoble)
+X(0x37, bbs)
+X(0x38, cmpibno)
+X(0x39, cmpibg)
+X(0x3a, cmpibe)
+X(0x3b, cmpibge)
+X(0x3c, cmpibl)
+X(0x3d, cmpibne)
+X(0x3e, cmpible)
+X(0x3f, cmpibo)
+#undef TestOperation
+#undef BaseCOBR
+#undef CTRL
+#undef EncodeOpcode
+#endif
 
     // TODO continue here for the rest of the mem instructions

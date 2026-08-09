@@ -69,6 +69,20 @@ namespace Machine {
             return CoreInstructionKind::CTRL;
         }
     }
+    union OperandDescriptor {
+        constexpr OperandDescriptor(uint8_t align = 0, bool lit = false, bool fp = false, bool sfr = false) : _align(align), _lit(lit), _fp(fp), _sfr(sfr) {}
+        uint8_t _raw;
+        struct {
+            uint8_t _align : 2;
+            uint8_t _lit : 1;
+            uint8_t _fp : 1;
+            uint8_t _sfr : 1;
+        };
+    };
+    constexpr OperandDescriptor R { 0, false, false, false };
+    constexpr OperandDescriptor RS { 0, false, false, true };
+    constexpr OperandDescriptor RL { 0, true, false, true };
+    constexpr OperandDescriptor RSL { 0, true, false, true };
     struct Opcode {
     public:
         explicit Opcode(uint32_t opcode, const std::string& name, InstructionClass ic, InstructionFormat format, uint8_t operandCount, uint8_t src1 = 0, uint8_t src2 = 0, uint8_t srcDest = 0) noexcept : 
