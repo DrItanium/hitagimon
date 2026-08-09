@@ -33,6 +33,20 @@ namespace Machine {
 #include "classes.def"
 #undef X
     };
+    struct Opcode {
+    public:
+        explicit Opcode(uint16_t opcode, const std::string& name, InstructionClass ic) noexcept : 
+            _opcode(opcode), 
+            _name(name), 
+            _class(ic) { }
+        constexpr auto getOpcode() const noexcept { return _opcode; }
+        constexpr const std::string& getName() const noexcept { return _name; }
+        constexpr auto getClass() const noexcept { return _class; }
+    private:
+        uint16_t _opcode;
+        std::string _name;
+        InstructionClass _class;
+    };
 #if 0
     /**
      * @brief do we need the second word since this is a MEMB instruction and uses optional displacement?
