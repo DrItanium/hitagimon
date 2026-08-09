@@ -97,9 +97,16 @@ namespace Machine {
     constexpr OperandDescriptor RS { 0, false, false, true };
     constexpr OperandDescriptor RL { 0, true, false, true };
     constexpr OperandDescriptor RSL { 0, true, false, true };
-
+    constexpr OperandDescriptor F { 0, 0, true, 0 };
+    constexpr OperandDescriptor FL { 0, true, true, 0 };
     constexpr OperandDescriptor R2 { 1, false, false, false };
+    constexpr OperandDescriptor RL2 { 1, true, false, false };
+    constexpr OperandDescriptor F2 { 1, false, true, false };
+    constexpr OperandDescriptor FL2 { 1, true, true, false };
     constexpr OperandDescriptor R4 { 3, false, false, false };
+    constexpr OperandDescriptor RL4 { 3, true, false, false };
+    constexpr OperandDescriptor F4 { 3, false, true, false };
+    constexpr OperandDescriptor FL4 { 3, true, true, false };
     struct Opcode {
     public:
         explicit Opcode(uint32_t opcode, const std::string& name, InstructionClass ic, InstructionFormat format, uint8_t operandCount, OperandDescriptor src1 = R, OperandDescriptor src2 = R, OperandDescriptor srcDest = R) noexcept : 
