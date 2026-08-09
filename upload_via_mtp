@@ -1,0 +1,6 @@
+#!/bin/bash
+
+killall kiod6
+kioclient remove mtp:/Teensy/PROGRAM/prog.bin
+kioclient cp $1 mtp:/Teensy/PROGRAM/prog.bin
+

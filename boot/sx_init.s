@@ -255,10 +255,9 @@ _user_\()\name\()_core:
     flushreg # we want to flushreg so that we can inspect things
     save_globals # save globals to the stack
 	lda	-48(fp), g0	/* pass fault data as the first argument */
-	mov rip, g1     /* pass the return instruction pointer as the second argument */
     /* we need to denature the pfp before calling the handler */
-    ldconst 0xFFFFFFF0, g2 /* load the mask into g3 */
-    and pfp, g2, g2  /* clear out the lowest four bits of pfp to denature pfp */
+    ldconst 0xFFFFFFF0, g1 /* load the mask into g2 */
+    and pfp, g1, g1  /* clear out the lowest four bits of pfp to denature pfp */
     /* now that we have a denatured pfp, it is necessary to actually load the
      * corresponding stack pointer from this previous frame */
 	callx user_\()\name

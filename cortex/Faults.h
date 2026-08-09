@@ -45,7 +45,7 @@ namespace cortex
         }
     } __attribute__((packed));
 
-    typedef void (*FaultHandler)(FaultData *data, uint32_t rip, const StackFrame* previous);
+    typedef void (*FaultHandler)(FaultData *data, const StackFrame* previous);
 #define X(kind, index, locase, hicase) \
 FaultHandler getUser ## kind ## FaultHandler (); \
                 void setUser ## kind ## FaultHandler (FaultHandler);

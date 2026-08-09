@@ -31,35 +31,34 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 extern "C" void* getCallFrameAddress();
 extern "C" void* getStackPointerAddress();
 void
-basicDisplay(const std::string& kind, cortex::FaultData* record, uint32_t rip, const cortex::StackFrame* frame) {
+basicDisplay(const std::string& kind, cortex::FaultData* record, const cortex::StackFrame* frame) {
     cortex::File& console = cortex::getConsole();
     console.write(kind);
     console.writeLine(" FAULT RAISED!");
     record->display();
     //printf("Return instruction pointer: %lx\n", rip);
-    printf("Unwinding stack 8 frames\n");
-    printf("%d: RIP: %lx <- next instruction after fault causing instruction\n", 0, rip);
+    static constexpr auto StackFrameCount = 16;
+    printf("Unwinding stack %d frame(s)\n", StackFrameCount);
     auto* currentFrame = frame;
-    for (int i = 1; i < 9; ++i) {
-        printf("%d: RIP: %lx\n", currentFrame->rip);
-        currentFrame = currentFrame->next();
+    for (int i = 0; i < StackFrameCount; ++i, currentFrame = currentFrame->next()) {
+        printf("%d(@0x%lx): RIP: 0x%lx, SP: 0x%lx\n", i, currentFrame, currentFrame->rip, currentFrame->sp);
     }
     console.writeLine("Halting system now...");
     while (true) { };
 }
 void
-basicOperation(const std::string& kind, cortex::FaultData* record, cortex::FaultHandler handler, uint32_t rip, const cortex::StackFrame* frame) {
+basicOperation(const std::string& kind, cortex::FaultData* record, cortex::FaultHandler handler, const cortex::StackFrame* frame) {
     if (handler)  {
-        handler(record, rip, frame);
+        handler(record, frame);
     } else {
-        basicDisplay(kind, record, rip, frame);
+        basicDisplay(kind, record, frame);
     }
 }
 #define X(kind, code, locase, hicase) \
 extern "C"                      \
 void                            \
-user_ ## locase (cortex::FaultData* record, uint32_t rip, const cortex::StackFrame* frame) { \
-    basicOperation( "USER " #hicase , record, cortex::getUser ## kind ## FaultHandler (), rip, frame); \
+user_ ## locase (cortex::FaultData* record, const cortex::StackFrame* frame) { \
+    basicOperation( "USER " #hicase , record, cortex::getUser ## kind ## FaultHandler (), frame); \
 }
 #include "cortex/Faults.def"
 #undef X
