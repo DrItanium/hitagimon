@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sstream>
 
 namespace Machine {
+#if 0
     namespace {
         using Ordinal = uint32_t;
         using LongOrdinal = uint64_t;
@@ -372,4 +373,5 @@ namespace Machine {
         std::string result = ss.str();
         return result;
     }
+#endif
 }

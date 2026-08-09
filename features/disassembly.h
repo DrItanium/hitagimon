@@ -33,6 +33,7 @@ namespace Machine {
 #include "classes.def"
 #undef X
     };
+#if 0
     /**
      * @brief do we need the second word since this is a MEMB instruction and uses optional displacement?
      * @param lo The primary instruction
@@ -109,6 +110,7 @@ namespace Machine {
     constexpr bool valid(ArchitectureLevel level) noexcept {
         return Machine::valid(level);
     }
+#endif
 }
 
 #endif // end !defined HITAGIMON_FEATURES_DIASSEMBLY_H__
