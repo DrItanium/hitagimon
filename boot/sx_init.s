@@ -250,11 +250,19 @@ fault_proc_table:
 .macro DefFaultDispatcher name
 .text
 _user_\()\name\()_core:
-	# flushreg may be needed to be used if we want to do work with the stack
-	# currently, this design will trash the global registers as we are not going to be returning
+    # right now, we don't return but lets be careful and write the code
+    # assuming that we could return
+    flushreg # we want to flushreg so that we can inspect things
+    save_globals # save globals to the stack
 	lda	-48(fp), g0	/* pass fault data as the first argument */
 	mov rip, g1     /* pass the return instruction pointer as the second argument */
+    /* we need to denature the pfp before calling the handler */
+    ldconst 0xFFFFFFF0, g2 /* load the mask into g3 */
+    and pfp, g2, g2  /* clear out the lowest four bits of pfp to denature pfp */
+    /* now that we have a denatured pfp, it is necessary to actually load the
+     * corresponding stack pointer from this previous frame */
 	callx user_\()\name
+    restore_globals # restore globals from the stack once we are done
 	ret
 .endm
 # We pass the fault data by grabbing it and passing it via g0 to the function itself

@@ -28,29 +28,38 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cortex/Faults.h>
 #include <cortex/FilesystemInterface.h>
 #include <string>
+extern "C" void* getCallFrameAddress();
+extern "C" void* getStackPointerAddress();
 void
-basicDisplay(const std::string& kind, cortex::FaultData* record, uint32_t rip) {
+basicDisplay(const std::string& kind, cortex::FaultData* record, uint32_t rip, const cortex::StackFrame* frame) {
     cortex::File& console = cortex::getConsole();
     console.write(kind);
     console.writeLine(" FAULT RAISED!");
     record->display();
-    printf("Return instruction pointer: %lx\n", rip);
+    //printf("Return instruction pointer: %lx\n", rip);
+    printf("Unwinding stack 8 frames\n");
+    printf("%d: RIP: %lx <- next instruction after fault causing instruction\n", 0, rip);
+    auto* currentFrame = frame;
+    for (int i = 1; i < 9; ++i) {
+        printf("%d: RIP: %lx\n", currentFrame->rip);
+        currentFrame = currentFrame->next();
+    }
     console.writeLine("Halting system now...");
     while (true) { };
 }
 void
-basicOperation(const std::string& kind, cortex::FaultData* record, cortex::FaultHandler handler, uint32_t rip) {
+basicOperation(const std::string& kind, cortex::FaultData* record, cortex::FaultHandler handler, uint32_t rip, const cortex::StackFrame* frame) {
     if (handler)  {
-        handler(record);
+        handler(record, rip, frame);
     } else {
-        basicDisplay(kind, record, rip);
+        basicDisplay(kind, record, rip, frame);
     }
 }
 #define X(kind, code, locase, hicase) \
 extern "C"                      \
 void                            \
-user_ ## locase (cortex::FaultData* record, uint32_t rip) { \
-    basicOperation( "USER " #hicase , record, cortex::getUser ## kind ## FaultHandler (), rip); \
+user_ ## locase (cortex::FaultData* record, uint32_t rip, const cortex::StackFrame* frame) { \
+    basicOperation( "USER " #hicase , record, cortex::getUser ## kind ## FaultHandler (), rip, frame); \
 }
 #include "cortex/Faults.def"
 #undef X
