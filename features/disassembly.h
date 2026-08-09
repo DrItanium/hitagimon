@@ -86,6 +86,7 @@ namespace Machine {
             uint8_t _sfr : 1;
         };
     };
+    constexpr OperandDescriptor UnusedField { 0, false, false, false };
     constexpr OperandDescriptor R { 0, false, false, false };
     constexpr OperandDescriptor RS { 0, false, false, true };
     constexpr OperandDescriptor RL { 0, true, false, true };
@@ -120,6 +121,13 @@ namespace Machine {
         uint8_t _operandCount;
         OperandDescriptor _operands[3];
         CoreInstructionKind _kind;
+    };
+    enum class DecodedOpcode {
+        Invalid,
+// X(opcode, name, str, class, format, argCount, src1, src2, src3)
+#define X(opcode, name, str, c, format, argCount, src1, src2, src3) Opcode_ ## name , 
+#include "features/opcodes.def"
+#undef X
     };
 #if 0
     /**
