@@ -70,14 +70,16 @@ namespace Machine {
     }
     union OperandDescriptor {
     public:
-        constexpr OperandDescriptor(uint8_t align = 0, bool lit = false, bool fp = false, bool sfr = false, bool enabled = true) : _align(align), _lit(lit), _fp(fp), _sfr(sfr), _enabled(enabled) {}
+        constexpr OperandDescriptor(uint8_t align, bool lit, bool fp, bool sfr) : _align(align), _lit(lit), _fp(fp), _sfr(sfr), _unused(0), _treatAsFields(1) { }
+        constexpr OperandDescriptor(uint8_t value) : _raw(value) { }
         constexpr auto getValue() const noexcept { return _raw; }
         constexpr auto getAlignment() const noexcept { return _align; }
         constexpr auto literalsAllowed() const noexcept { return _lit; }
         constexpr auto floatingPointRegistersAllowed() const noexcept { return _fp; }
         constexpr auto specialFunctionRegistersAllowed() const noexcept { return _sfr; }
-        constexpr auto enabled() const noexcept { return _enabled; }
-        explicit operator bool() const noexcept { return _enabled != 0; }
+        constexpr auto fieldsAreMeaningful() const noexcept { return _treatAsFields; }
+        constexpr auto enabled() const noexcept { return fieldsAreMeaningful() || _raw != 0; }
+        explicit constexpr operator bool() const noexcept { return enabled(); }
     private:
         uint8_t _raw;
         struct {
@@ -85,14 +87,19 @@ namespace Machine {
             uint8_t _lit : 1;
             uint8_t _fp : 1;
             uint8_t _sfr : 1;
-            uint8_t _enabled : 1;
+            uint8_t _unused : 2;
+            uint8_t _treatAsFields : 1;
         };
     };
-    constexpr OperandDescriptor UnusedField { 0, false, false, false, false };
+    constexpr OperandDescriptor UnusedField { 0 };
+    constexpr OperandDescriptor Memory { 0x7f };
     constexpr OperandDescriptor R { 0, false, false, false };
     constexpr OperandDescriptor RS { 0, false, false, true };
     constexpr OperandDescriptor RL { 0, true, false, true };
     constexpr OperandDescriptor RSL { 0, true, false, true };
+
+    constexpr OperandDescriptor R2 { 1, false, false, false };
+    constexpr OperandDescriptor R4 { 3, false, false, false };
     struct Opcode {
     public:
         explicit Opcode(uint32_t opcode, const std::string& name, InstructionClass ic, InstructionFormat format, uint8_t operandCount, OperandDescriptor src1 = R, OperandDescriptor src2 = R, OperandDescriptor srcDest = R) noexcept : 
