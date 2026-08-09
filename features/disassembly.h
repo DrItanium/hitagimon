@@ -70,7 +70,14 @@ namespace Machine {
         }
     }
     union OperandDescriptor {
+    public:
         constexpr OperandDescriptor(uint8_t align = 0, bool lit = false, bool fp = false, bool sfr = false) : _align(align), _lit(lit), _fp(fp), _sfr(sfr) {}
+        constexpr auto getValue() const noexcept { return _raw; }
+        constexpr auto getAlignment() const noexcept { return _align; }
+        constexpr auto literalsAllowed() const noexcept { return _lit; }
+        constexpr auto floatingPointRegistersAllowed() const noexcept { return _fp; }
+        constexpr auto specialFunctionRegistersAllowed() const noexcept { return _sfr; }
+    private:
         uint8_t _raw;
         struct {
             uint8_t _align : 2;
@@ -85,7 +92,7 @@ namespace Machine {
     constexpr OperandDescriptor RSL { 0, true, false, true };
     struct Opcode {
     public:
-        explicit Opcode(uint32_t opcode, const std::string& name, InstructionClass ic, InstructionFormat format, uint8_t operandCount, uint8_t src1 = 0, uint8_t src2 = 0, uint8_t srcDest = 0) noexcept : 
+        explicit Opcode(uint32_t opcode, const std::string& name, InstructionClass ic, InstructionFormat format, uint8_t operandCount, OperandDescriptor src1 = R, OperandDescriptor src2 = R, OperandDescriptor srcDest = R) noexcept : 
             _opcode(opcode), 
             _name(name), 
             _class(ic),
@@ -111,7 +118,7 @@ namespace Machine {
         InstructionClass _class;
         InstructionFormat _format;
         uint8_t _operandCount;
-        uint8_t _operands[3];
+        OperandDescriptor _operands[3];
         CoreInstructionKind _kind;
     };
 #if 0
