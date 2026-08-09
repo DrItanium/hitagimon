@@ -29,45 +29,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define FPOperation(opcode, name) REGOperation(opcode, name, FloatingPoint, Dest)
 #define NewCoreOperation(opcode, name) REGOperation(opcode, name, NewCore, Dest)
 
-// No arguments
-NormalREGOperation(0x5cc, mov, CoreTwoArgument)
-NormalREGOperation(0x5dc, movl, CoreTwoArgument)
-NormalREGOperation(0x5ec, movt, CoreTwoArgument)
-NormalREGOperation(0x5fc, movq, CoreTwoArgument)
 REGOperation(0x600, synmov, IAC)
 REGOperation(0x601, synmovl, IAC)
 REGOperation(0x602, synmovq, IAC)
 REGOperation(0x615, synld, IAC)
-REGOperation(0x640, spanbit, Core)
-REGOperation(0x641, scanbit, Core)
-// Decimal instructions are part of the numerics architecture level but are not
-// the same as the other numerics operations relating to floating point
-// operations
+
 REGOperation(0x642, daddc, Decimal)
 REGOperation(0x643, dsubc, Decimal)
 REGOperation(0x644, dmovt, Decimal)
-REGOperation(0x645, modac, Core)
-REGOperation(0x650, modify, Core)
-REGOperation(0x651, extract, Core)
-REGOperation(0x654, modtc, Core)
-REGOperation(0x655, modpc, Core)
-
-REGOperation(0x660, calls, Core)
-REGOperation(0x66b, mark, Core)
-REGOperation(0x66c, fmark, Core)
-REGOperation(0x66d, flushreg, Core)
-REGOperation(0x66f, syncf, Core)
-
-REGOperation(0x670, emul, Core)
-REGOperation(0x671, ediv, Core)
-
-REGOperation(0x701, mulo, Core)
-REGOperation(0x708, remo, Core)
-REGOperation(0x70b, divo, Core)
-REGOperation(0x741, muli, Core)
-REGOperation(0x748, remi, Core)
-REGOperation(0x749, modi, Core)
-REGOperation(0x74b, divi, Core)
+// No arguments
 
 REGOperation(0x674, cvtir, Numerics)
 REGOperation(0x675, cvtilr, Numerics)
@@ -126,8 +96,6 @@ REGOperation(0x79e, addrl, Numerics)
 REGOperation(0x603, cmpstr, Protected)
 REGOperation(0x604, movqstr, Protected)
 REGOperation(0x605, movstr, Protected)
-REGOperation(0x610, atmod, Protected)
-REGOperation(0x612, atadd, Protected)
 REGOperation(0x613, inspacc, Protected)
 REGOperation(0x614, ldphy, Protected)
 REGOperation(0x617, fill, Protected)
@@ -307,6 +275,7 @@ MEM(0xca, stis, 2, 2, R, M)
 #define BaseREG(opcode, name, count, src1, src2, srcDest) CoreREG(opcode, name, Base, count, src1, src2, srcDest)
 #define BaseREG3(opcode, name) BaseREG(opcode, name, 3, RSL, RSL, RS)
 #define BaseREG2(opcode, name) BaseREG(opcode, name, 2, RSL, RS, UnusedField)
+#define BaseREG0(opcode, name) BaseREG(opcode, name, 0, UnusedField, UnusedField, UnusedField)
 BaseREG3(0x580, notbit)
 BaseREG3(0x581, and)
 BaseREG3(0x582, andnot)
@@ -344,6 +313,41 @@ BaseREG2(0x5ac, scanbyte)
 BaseREG2(0x5ae, chkbit)
 BaseREG3(0x5b0, addc)
 BaseREG3(0x5b2, subc)
+BaseREG(0x5cc, mov, 2, RSL, RS, UnusedField)
+BaseREG(0x5dc, movl, 2, RL2, R2, UnusedField)
+BaseREG(0x5ec, movt, 2, RL4, R4, UnusedField)
+BaseREG(0x5fc, movq, 2, RL4, R4, UnusedField)
+BaseREG(0x610, atmod, 3, RS, RSL, R)
+BaseREG(0x612, atadd, 3, RS, RSL, RS)
+BaseREG2(0x640, spanbit)
+BaseREG2(0x641, scanbit)
+// Decimal instructions are part of the numerics architecture level but are not
+// the same as the other numerics operations relating to floating point
+// operations
+BaseREG3(0x645, modac)
+BaseREG(0x650, modify, 3, RSL, RSL, R)
+BaseREG(0x651, extract, 3, RSL, RSL, R)
+BaseREG3(0x654, modtc)
+BaseREG(0x655, modpc, 3, RSL, RSL, R)
+
+BaseREG(0x660, calls, 1, RSL, UnusedField, UnusedField)
+BaseREG0(0x66b, mark)
+BaseREG0(0x66c, fmark)
+BaseREG0(0x66d, flushreg)
+BaseREG0(0x66f, syncf)
+
+BaseREG(0x670, emul, 3, RSL, RSL, R2)
+BaseREG(0x671, ediv, 3, RSL, RL2, RS)
+
+BaseREG3(0x701, mulo)
+BaseREG3(0x708, remo)
+BaseREG3(0x70b, divo)
+BaseREG3(0x741, muli)
+BaseREG3(0x748, remi)
+BaseREG3(0x749, modi)
+BaseREG3(0x74b, divi)
+
+#undef BaseREG0
 #undef BaseREG2
 #undef BaseREG3
 #undef BaseREG
