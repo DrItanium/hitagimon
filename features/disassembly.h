@@ -28,6 +28,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 namespace Machine {
+    enum InstructionClass {
+#define X(name, pattern) name = pattern ,
+#include "classes.def"
+#undef X
+    };
     /**
      * @brief do we need the second word since this is a MEMB instruction and uses optional displacement?
      * @param lo The primary instruction

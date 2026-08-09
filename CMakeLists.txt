@@ -43,6 +43,8 @@ add_library(features
 	features/disassembly.h
 	features/disassembly.cc
 	features/opcodes.def
+	features/levels.def
+	features/classes.def
 )
 add_library(hitagisys
 		# disabled entries are because mon960 provides the implementations for them
