@@ -71,10 +71,13 @@ namespace Machine {
     }
     struct Opcode {
     public:
-        explicit Opcode(uint32_t opcode, const std::string& name, InstructionClass ic) noexcept : 
+        explicit Opcode(uint32_t opcode, const std::string& name, InstructionClass ic, InstructionFormat format, uint8_t operandCount, uint8_t src1 = 0, uint8_t src2 = 0, uint8_t srcDest = 0) noexcept : 
             _opcode(opcode), 
             _name(name), 
             _class(ic),
+            _format(format),
+            _operandCount(operandCount),
+            _operands{src1, src2, srcDest},
             _kind(decode(getPrimaryOpcode()))
             {
             }
@@ -82,11 +85,19 @@ namespace Machine {
         constexpr auto getPrimaryOpcode() const noexcept -> uint8_t { return static_cast<uint8_t>(_opcode >> 24); }
         constexpr const std::string& getName() const noexcept { return _name; }
         constexpr auto getClass() const noexcept { return _class; }
-        constexpr auto instructionKind() const noexcept { return _kind; }
+        constexpr auto getInstructionKind() const noexcept { return _kind; }
+        constexpr auto getInstructionFormat() const noexcept { return _format; }
+        constexpr auto getOperandCount() const noexcept { return _operandCount; }
+        constexpr auto getSrc1Configuration() const noexcept { return _operands[0]; }
+        constexpr auto getSrc2Configuration() const noexcept { return _operands[1]; }
+        constexpr auto getSrcDestConfiguration() const noexcept { return _operands[2]; }
     private:
         uint32_t _opcode;
         std::string _name;
         InstructionClass _class;
+        InstructionFormat _format;
+        uint8_t _operandCount;
+        uint8_t _operands[3];
         CoreInstructionKind _kind;
     };
 #if 0
