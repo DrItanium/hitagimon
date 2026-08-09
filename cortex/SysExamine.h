@@ -428,8 +428,8 @@ namespace cortex {
         uint32_t rip;
         uint32_t locals[13];
 
-        inline volatile const StackFrame* next() const noexcept {
-            return reinterpret_cast<volatile const StackFrame*>(pfp & 0xFFFFFFF0);
+        inline const StackFrame* next() const noexcept {
+            return reinterpret_cast<const StackFrame*>(pfp & 0xFFFFFFF0);
         }
     };
 }
