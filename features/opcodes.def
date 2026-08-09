@@ -29,14 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define FPOperation(opcode, name) REGOperation(opcode, name, FloatingPoint, Dest)
 #define NewCoreOperation(opcode, name) REGOperation(opcode, name, NewCore, Dest)
 
-REGOperation(0x600, synmov, IAC)
-REGOperation(0x601, synmovl, IAC)
-REGOperation(0x602, synmovq, IAC)
-REGOperation(0x615, synld, IAC)
 
-REGOperation(0x642, daddc, Decimal)
-REGOperation(0x643, dsubc, Decimal)
-REGOperation(0x644, dmovt, Decimal)
 // No arguments
 
 REGOperation(0x674, cvtir, Numerics)
@@ -346,6 +339,18 @@ BaseREG3(0x741, muli)
 BaseREG3(0x748, remi)
 BaseREG3(0x749, modi)
 BaseREG3(0x74b, divi)
+
+#define DecimalREG(opcode, name, count, src1, src2, srcDest) CoreREG(opcode, name, Decimal, count, src1, src2, srcDest)
+DecimalREG(0x642, daddc, 3, RSL, RSL, RS)
+DecimalREG(0x643, dsubc, 3, RSL, RSL, RS)
+DecimalREG(0x644, dmovt, 2, RSL, RS, UnusedField)
+#undef DecimalREG
+#define KxOperation(opcode, name) CoreREG(opcode, name, Kx, 2, R, R, UnusedField)
+KxOperation(0x600, synmov)
+KxOperation(0x601, synmovl)
+KxOperation(0x602, synmovq)
+KxOperation(0x615, synld)
+#undef KxOperation
 
 #undef BaseREG0
 #undef BaseREG2
