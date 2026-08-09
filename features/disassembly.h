@@ -28,24 +28,66 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 namespace Machine {
-    enum InstructionClass {
+    enum class InstructionClass {
 #define X(name, pattern) name = pattern ,
 #include "classes.def"
 #undef X
     };
+    enum class InstructionFormat {
+        CTRL,
+        COBR,
+        COJ,
+        REG,
+        MEM1,
+        MEM2,
+        MEM4,
+        MEM8,
+        MEM12,
+        MEM16,
+        FBRA,
+        CALLJ,
+    };
+    enum ModeMasks {
+        M1 = 0x0800,
+        M2 = 0x1000,
+        M3 = 0x2000,
+    };
+    enum class CoreInstructionKind {
+        CTRL,
+        COBR,
+        REG,
+        MEM,
+    };
+    constexpr auto decode(uint8_t value) noexcept {
+        if (value >= 0x80) {
+            return CoreInstructionKind::MEM;
+        } else if (value >= 0x40) {
+            return CoreInstructionKind::REG;
+        } else if (value >= 0x20) {
+            return CoreInstructionKind::COBR;
+        } else {
+            return CoreInstructionKind::CTRL;
+        }
+    }
     struct Opcode {
     public:
-        explicit Opcode(uint16_t opcode, const std::string& name, InstructionClass ic) noexcept : 
+        explicit Opcode(uint32_t opcode, const std::string& name, InstructionClass ic) noexcept : 
             _opcode(opcode), 
             _name(name), 
-            _class(ic) { }
+            _class(ic),
+            _kind(decode(getPrimaryOpcode()))
+            {
+            }
         constexpr auto getOpcode() const noexcept { return _opcode; }
+        constexpr auto getPrimaryOpcode() const noexcept -> uint8_t { return static_cast<uint8_t>(_opcode >> 24); }
         constexpr const std::string& getName() const noexcept { return _name; }
         constexpr auto getClass() const noexcept { return _class; }
+        constexpr auto instructionKind() const noexcept { return _kind; }
     private:
-        uint16_t _opcode;
+        uint32_t _opcode;
         std::string _name;
         InstructionClass _class;
+        CoreInstructionKind _kind;
     };
 #if 0
     /**
