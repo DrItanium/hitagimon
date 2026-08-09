@@ -429,7 +429,7 @@ namespace cortex {
         uint32_t locals[13];
 
         inline volatile const StackFrame* next() const noexcept {
-            return reinterpret_cast<volatile const*>(pfp & 0xFFFFFFF0);
+            return reinterpret_cast<volatile const StackFrame*>(pfp & 0xFFFFFFF0);
         }
     };
 }
