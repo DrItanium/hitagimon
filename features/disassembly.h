@@ -193,7 +193,10 @@ namespace Machine {
                 return DecodedOpcode::Invalid;
         }
     }
-    static_assert(translate(0x08'000000) == DecodedOpcode::Opcode_b);
+#define X(opcode, encodedOpcode, name, str, c, format, argCount, src1, src2, src3) \
+    static_assert(translate(encodedOpcode) == DecodedOpcode:: Opcode_ ## name );
+#include "features/opcodes.def"
+#undef X
 }
 
 #endif // end !defined HITAGIMON_FEATURES_DIASSEMBLY_H__
