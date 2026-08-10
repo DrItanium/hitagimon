@@ -22,54 +22,6 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#if 0
-#define Operation(opcode, name, class) X(opcode, name, class, NotApplicable)
-#define REGOperation(opcode, name, class, srcDest) X(opcode, name, class, srcDest)
-#define NormalREGOperation(opcode, name, class) REGOperation(opcode, name, class, Dest)
-#define FPOperation(opcode, name) REGOperation(opcode, name, FloatingPoint, Dest)
-#define NewCoreOperation(opcode, name) REGOperation(opcode, name, NewCore, Dest)
-
-
-// No arguments
-
-
-
-
-
-// REGOperation(0x594, cmpob, NewCore, NotApplicable)
-// REGOperation(0x595, cmpib, NewCore, NotApplicable)
-// REGOperation(0x596, cmpos, NewCore, NotApplicable)
-// REGOperation(0x597, cmpis, NewCore, NotApplicable)
-//REGOperation(0x630, sdma, Cx)
-//REGOperation(0x631, udma, Cx)
-//REGOperation(0x5ad, bswap, NewCore, NotApplicable)
-//REGOperation(0x5b4, intdis, NewCore)
-//REGOperation(0x5b5, inten, NewCore)
-//NormalREGOperation(0x5d8, eshro, Cx)
-
-//REGOperation(0x658, intctl, NewCore)
-//REGOperation(0x659, sysctl, NewCore)
-//REGOperation(0x65b, icctl, NewCore)
-//REGOperation(0x65c, dcctl, NewCore)
-//REGOperation(0x65d, halt, NewCore)
-
-//NewCoreOperation(0x780, addono) NewCoreOperation(0x781, addino) NewCoreOperation(0x782, subono) NewCoreOperation(0x783, subino) NewCoreOperation(0x784, selno)
-//NewCoreOperation(0x790, addog)  NewCoreOperation(0x791, addig)  NewCoreOperation(0x792, subog)  NewCoreOperation(0x793, subig)  NewCoreOperation(0x794, selg)
-//NewCoreOperation(0x7a0, addoe)  NewCoreOperation(0x7a1, addie)  NewCoreOperation(0x7a2, suboe)  NewCoreOperation(0x7a3, subie)  NewCoreOperation(0x7a4, sele)
-//NewCoreOperation(0x7b0, addoge)  NewCoreOperation(0x7b1, addige)  NewCoreOperation(0x7b2, suboge)  NewCoreOperation(0x7b3, subige) NewCoreOperation(0x7b4, selge)
-//NewCoreOperation(0x7c0, addol)  NewCoreOperation(0x7c1, addil)  NewCoreOperation(0x7c2, subol)  NewCoreOperation(0x7c3, subil) NewCoreOperation(0x7c4, sell)
-//NewCoreOperation(0x7d0, addone)  NewCoreOperation(0x7d1, addine)  NewCoreOperation(0x7d2, subone)  NewCoreOperation(0x7d3, subine) NewCoreOperation(0x7d4, selne)
-//NewCoreOperation(0x7e0, addole)  NewCoreOperation(0x7e1, addile)  NewCoreOperation(0x7e2, subole)  NewCoreOperation(0x7e3, subile) NewCoreOperation(0x7e4, selle)
-//NewCoreOperation(0x7f0, addoo)  NewCoreOperation(0x7f1, addio)  NewCoreOperation(0x7f2, suboo)  NewCoreOperation(0x7f3, subio) NewCoreOperation(0x7f4, selo)
-
-
-// Operation(0xad, dcinva, NewCore)
-#undef NormalREGOperation
-#undef NewCoreOperation
-#undef FPOperation
-#undef REGOperation
-#undef Operation
-#else
 // X(opcode, encodedValue, name, str, class, format, argCount, src1, src2, src3)
 #define EncodeOpcode(opcode) ((static_cast<uint32_t>(opcode) << 24) & 0xFF000000)
 #define CTRL(opcode, name) X(opcode, (EncodeOpcode(opcode)), name, #name, Base, CTRL, 1, UnusedField, UnusedField, UnusedField)
@@ -349,10 +301,40 @@ ProtectedREG(0x673, ldtime, 1, UnusedField, UnusedField, R2)
 #undef ProtectedREG2
 #undef ProtectedREG1
 #undef ProtectedREG0
+// @todo add support for the newer instructions that I unable to actually test
+#if 0
+// REGOperation(0x594, cmpob, NewCore, NotApplicable)
+// REGOperation(0x595, cmpib, NewCore, NotApplicable)
+// REGOperation(0x596, cmpos, NewCore, NotApplicable)
+// REGOperation(0x597, cmpis, NewCore, NotApplicable)
+//REGOperation(0x630, sdma, Cx)
+//REGOperation(0x631, udma, Cx)
+//REGOperation(0x5ad, bswap, NewCore, NotApplicable)
+//REGOperation(0x5b4, intdis, NewCore)
+//REGOperation(0x5b5, inten, NewCore)
+//NormalREGOperation(0x5d8, eshro, Cx)
+
+//REGOperation(0x658, intctl, NewCore)
+//REGOperation(0x659, sysctl, NewCore)
+//REGOperation(0x65b, icctl, NewCore)
+//REGOperation(0x65c, dcctl, NewCore)
+//REGOperation(0x65d, halt, NewCore)
+
+//NewCoreOperation(0x780, addono) NewCoreOperation(0x781, addino) NewCoreOperation(0x782, subono) NewCoreOperation(0x783, subino) NewCoreOperation(0x784, selno)
+//NewCoreOperation(0x790, addog)  NewCoreOperation(0x791, addig)  NewCoreOperation(0x792, subog)  NewCoreOperation(0x793, subig)  NewCoreOperation(0x794, selg)
+//NewCoreOperation(0x7a0, addoe)  NewCoreOperation(0x7a1, addie)  NewCoreOperation(0x7a2, suboe)  NewCoreOperation(0x7a3, subie)  NewCoreOperation(0x7a4, sele)
+//NewCoreOperation(0x7b0, addoge)  NewCoreOperation(0x7b1, addige)  NewCoreOperation(0x7b2, suboge)  NewCoreOperation(0x7b3, subige) NewCoreOperation(0x7b4, selge)
+//NewCoreOperation(0x7c0, addol)  NewCoreOperation(0x7c1, addil)  NewCoreOperation(0x7c2, subol)  NewCoreOperation(0x7c3, subil) NewCoreOperation(0x7c4, sell)
+//NewCoreOperation(0x7d0, addone)  NewCoreOperation(0x7d1, addine)  NewCoreOperation(0x7d2, subone)  NewCoreOperation(0x7d3, subine) NewCoreOperation(0x7d4, selne)
+//NewCoreOperation(0x7e0, addole)  NewCoreOperation(0x7e1, addile)  NewCoreOperation(0x7e2, subole)  NewCoreOperation(0x7e3, subile) NewCoreOperation(0x7e4, selle)
+//NewCoreOperation(0x7f0, addoo)  NewCoreOperation(0x7f1, addio)  NewCoreOperation(0x7f2, suboo)  NewCoreOperation(0x7f3, subio) NewCoreOperation(0x7f4, selo)
+
+
+// Operation(0xad, dcinva, NewCore)
+#endif
 #undef CoreREG
 #undef EncodeREGOpcode 
 #undef EncodeOpcode
 
-#endif
 
     // TODO continue here for the rest of the mem instructions
