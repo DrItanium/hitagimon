@@ -72,6 +72,9 @@ namespace Machine {
     constexpr auto decodeKind(uint32_t value) noexcept {
         return decodeKind(static_cast<uint8_t>(value >> 24));
     }
+    constexpr uint16_t getSecondaryOpcode(uint32_t value) noexcept {
+        return (value >> 7) & 0x0F;
+    }
     union OperandDescriptor {
     public:
         constexpr OperandDescriptor(uint8_t align, bool lit, bool fp, bool sfr) : _align(align), _lit(lit), _fp(fp), _sfr(sfr), _unused(0), _treatAsFields(1) { }
@@ -178,7 +181,18 @@ namespace Machine {
     }
     std::optional<Opcode> translate(EncodedOpcode opcode) noexcept;
     std::optional<Opcode> translate(DecodedOpcode opcode) noexcept;
-    std::optional<Opcode> translate(uint32_t value) noexcept;
+    constexpr DecodedOpcode translate(uint32_t value) noexcept {
+        switch (decodeKind(value)) {
+            case CoreInstructionKind::REG:
+                return static_cast<DecodedOpcode>((static_cast<uint16_t>(value >> 20) & 0x0FF0) | getSecondaryOpcode(value));
+            case CoreInstructionKind::COBR:
+            case CoreInstructionKind::CTRL:
+            case CoreInstructionKind::MEM:
+                return static_cast<DecodedOpcode>((value >> 24) & 0xFF);
+            default:
+                return DecodedOpcode::Invalid;
+        }
+    }
 }
 
 #endif // end !defined HITAGIMON_FEATURES_DIASSEMBLY_H__
