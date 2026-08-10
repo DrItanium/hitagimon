@@ -193,6 +193,7 @@ namespace Machine {
                 return DecodedOpcode::Invalid;
         }
     }
+    int disassemble(uint64_t full, std::ostream& stream) noexcept;
     // sanity check EVERYTHING
 #define X(opcode, encodedOpcode, name, str, c, format, argCount, src1, src2, src3) \
     static_assert(static_cast<DecodedOpcode>(opcode) == DecodedOpcode:: Opcode_ ## name ); \

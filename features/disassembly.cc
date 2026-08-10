@@ -63,11 +63,8 @@ namespace Machine {
             return std::nullopt;
         }
     }
-    void
-    begin() noexcept {
-        static bool initialized = false;
-        if (!initialized) {
-            initialized = true;
-        }
+    int 
+    disassemble(uint64_t full, std::ostream& stream) noexcept {
+        return 4;
     }
 }
