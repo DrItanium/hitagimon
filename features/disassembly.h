@@ -27,6 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define HITAGIMON_FEATURES_DIASSEMBLY_H__
 
 #include <string>
+#include <optional>
 namespace Machine {
     enum class InstructionClass {
 #define X(name, pattern) name = pattern ,
@@ -57,7 +58,7 @@ namespace Machine {
         REG,
         MEM,
     };
-    constexpr auto decode(uint8_t value) noexcept {
+    constexpr auto decodeKind(uint8_t value) noexcept {
         if (value >= 0x80) {
             return CoreInstructionKind::MEM;
         } else if (value >= 0x40) {
@@ -67,6 +68,9 @@ namespace Machine {
         } else {
             return CoreInstructionKind::CTRL;
         }
+    }
+    constexpr auto decodeKind(uint32_t value) noexcept {
+        return decodeKind(static_cast<uint8_t>(value >> 24));
     }
     union OperandDescriptor {
     public:
@@ -92,7 +96,7 @@ namespace Machine {
         };
     };
     constexpr OperandDescriptor UnusedField { 0 };
-    constexpr OperandDescriptor Memory { 0x7f };
+    constexpr OperandDescriptor M { 0x7f };
     constexpr OperandDescriptor R { 0, false, false, false };
     constexpr OperandDescriptor RS { 0, false, false, true };
     constexpr OperandDescriptor RL { 0, true, false, true };
@@ -116,7 +120,7 @@ namespace Machine {
             _format(format),
             _operandCount(operandCount),
             _operands{src1, src2, srcDest},
-            _kind(decode(getPrimaryOpcode()))
+            _kind(decodeKind(getPrimaryOpcode()))
             {
             }
         constexpr auto getOpcode() const noexcept { return _opcode; }
@@ -172,7 +176,9 @@ namespace Machine {
                 return EncodedOpcode::Invalid;
         }
     }
-    int disassemble(uint64_t full, std::ostream& stream) noexcept;
+    std::optional<Opcode> translate(EncodedOpcode opcode) noexcept;
+    std::optional<Opcode> translate(DecodedOpcode opcode) noexcept;
+    std::optional<Opcode> translate(uint32_t value) noexcept;
 }
 
 #endif // end !defined HITAGIMON_FEATURES_DIASSEMBLY_H__

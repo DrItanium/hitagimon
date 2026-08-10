@@ -7,6 +7,7 @@
 #include "ChipsetInteract.h"
 #include <stdio.h>
 #include <stdint.h>
+#include <features/disassembly.h>
 namespace cortex
 {
     void
