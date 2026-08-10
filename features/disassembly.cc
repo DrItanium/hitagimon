@@ -64,6 +64,47 @@ namespace Machine {
             return std::nullopt;
         }
     }
+    enum class MEMMode {
+        AbsoluteOffset = 0b0000,
+        RegisterIndirectWithOffset = 0b1000,
+        RegisterIndirect = 0b0100,
+        IPWithDisplacement = 0b0101,
+        Invalid = 0b0110,
+        RegisterIndirectWithIndex = 0b0111,
+        AbsoluteDisplacement = 0b1100,
+        RegisterIndirectWithDisplacement = 0b1101,
+        IndexWithDisplacement = 0b1110,
+        RegisterIndirectWithIndexAndDisplacement = 0b1111,
+    };
+    static constexpr bool valid(MEMMode mode) noexcept {
+        switch(mode) {
+            case MEMMode :: AbsoluteOffset: 
+            case MEMMode :: RegisterIndirectWithOffset:
+            case MEMMode :: RegisterIndirect:
+            case MEMMode :: IPWithDisplacement:
+            case MEMMode :: RegisterIndirectWithIndex:
+            case MEMMode :: AbsoluteDisplacement:
+            case MEMMode :: RegisterIndirectWithDisplacement:
+            case MEMMode :: IndexWithDisplacement:
+            case MEMMode :: RegisterIndirectWithIndexAndDisplacement:
+                return true;
+            default:
+                return false;
+        }
+    }
+    static constexpr bool usesDisplacement(MEMMode mode) noexcept {
+        switch (mode) {
+            case MEMMode :: IPWithDisplacement:
+            case MEMMode :: AbsoluteDisplacement:
+            case MEMMode :: RegisterIndirectWithDisplacement:
+            case MEMMode :: IndexWithDisplacement:
+            case MEMMode :: RegisterIndirectWithIndexAndDisplacement:
+                return true;
+            default:
+                return false;
+
+        }
+    }
     struct TemporaryInstruction {
         uint64_t full;
         uint32_t halves[2];
@@ -110,34 +151,6 @@ namespace Machine {
         } ctrl;
         struct {
             union {
-                enum class Mode {
-                    AbsoluteOffset = 0b0000,
-                    RegisterIndirectWithOffset = 0b1000,
-                    RegisterIndirect = 0b0100,
-                    IPWithDisplacement = 0b0101,
-                    Invalid = 0b0110,
-                    RegisterIndirectWithIndex = 0b0111,
-                    AbsoluteDisplacement = 0b1100,
-                    RegisterIndirectWithDisplacement = 0b1101,
-                    IndexWithDisplacement = 0b1110,
-                    RegisterIndirectWithIndexAndDisplacement = 0b1111,
-                };
-                static constexpr bool valid(Mode mode) noexcept {
-                    switch(mode) {
-                        case Mode :: AbsoluteOffset: 
-                        case Mode :: RegisterIndirectWithOffset:
-                        case Mode :: RegisterIndirect:
-                        case Mode :: IPWithDisplacement:
-                        case Mode :: RegisterIndirectWithIndex:
-                        case Mode :: AbsoluteDisplacement:
-                        case Mode :: RegisterIndirectWithDisplacement:
-                        case Mode :: IndexWithDisplacement:
-                        case Mode :: RegisterIndirectWithIndexAndDisplacement:
-                            return true;
-                        default:
-                            return false;
-                    }
-                }
                 uint32_t value : 14;
                 struct {
                     uint32_t : 12;
@@ -161,18 +174,18 @@ namespace Machine {
                 constexpr bool isBType() const noexcept {
                     return discriminator.modeChoice == 1;
                 }
-                constexpr Mode getMode() const noexcept {
+                constexpr MEMMode getMode() const noexcept {
                     if (isAType()) {
                         if (atype.mode) {
-                            return Mode::RegisterIndirectWithOffset;
+                            return MEMMode::RegisterIndirectWithOffset;
                         } else {
-                            return Mode::AbsoluteOffset;
+                            return MEMMode::AbsoluteOffset;
                         }
                     } else {
-                        if (Mode m = static_cast<Mode>(btype.mode); valid(m)) {
+                        if (auto m = static_cast<MEMMode>(btype.mode); valid(m)) {
                             return m;
                         } else {
-                            return Mode::Invalid;
+                            return MEMMode::Invalid;
                         }
                     }
                 }
@@ -180,8 +193,12 @@ namespace Machine {
             uint32_t abase : 5;
             uint32_t srcDest : 5;
             uint32_t opcode : 8;
+            int32_t displacement;
             constexpr uint16_t getOpcodeValue() const noexcept {
                 return opcode;
+            }
+            constexpr bool usesDisplacement() const noexcept {
+                return encoding.isBType() && Machine::usesDisplacement(encoding.getMode());
             }
         } mem;
 
