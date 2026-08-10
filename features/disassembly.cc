@@ -93,6 +93,7 @@ namespace Machine {
     struct TemporaryInstruction {
         uint64_t full;
         uint32_t halves[2];
+        TemporaryInstruction(uint64_t value) : full(value) { }
         struct {
             uint32_t instruction;
             int32_t displacement;
@@ -217,8 +218,7 @@ namespace Machine {
     };
     int 
     disassemble(uint64_t full, std::ostream& stream) noexcept {
-        TemporaryInstruction tmp;
-        tmp.full = full;
+        TemporaryInstruction tmp(full);
         return 4;
     }
     const Opcode& getInvalidState() noexcept {
