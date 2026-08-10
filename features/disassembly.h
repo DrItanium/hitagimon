@@ -172,6 +172,7 @@ namespace Machine {
                 return EncodedOpcode::Invalid;
         }
     }
+    int disassemble(uint64_t full, std::ostream& stream) noexcept;
 }
 
 #endif // end !defined HITAGIMON_FEATURES_DIASSEMBLY_H__
