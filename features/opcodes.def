@@ -310,20 +310,22 @@ Q(0x69d, cosrl)
 Q(0x69e, tanrl)
 #undef Q
 FloatingPointREG1(0x69f, classrl, FL2)
-#if 0
-REGOperation(0x6c0, cvtri, Numerics)
-REGOperation(0x6c1, cvtril, Numerics)
-REGOperation(0x6c2, cvtzri, Numerics)
-REGOperation(0x6c3, cvtzril, Numerics)
-REGOperation(0x6d9, movrl, Numerics)
-REGOperation(0x6e1, movre, Numerics)
-REGOperation(0x6e2, cpysre, Numerics)
-REGOperation(0x6e3, cpyrsre, Numerics)
-REGOperation(0x79b, divrl, Numerics)
-REGOperation(0x79c, mulrl, Numerics)
-REGOperation(0x79d, subrl, Numerics)
-REGOperation(0x79f, addrl, Numerics)
-#endif
+FloatingPointREG2(0x6c0, cvtri, FL, R)
+FloatingPointREG2(0x6c1, cvtril, FL, R2)
+FloatingPointREG2(0x6c2, cvtzri, FL, R)
+FloatingPointREG2(0x6c3, cvtzril, FL, R2)
+FloatingPointREG2(0x6d9, movrl, FL2, F2)
+// This instruction is noted to be 0x6e9 in the manual when it should be 0x6e1
+// If you use 0x6e9 then the i960 will fault
+FloatingPointREG2(0x6e1, movre, FL4, F4)
+FloatingPointREG3(0x6e2, cpysre, FL4, FL4, F4)
+FloatingPointREG3(0x6e3, cpyrsre, FL4, FL4, F4)
+#define Q(opcode, name) FloatingPointREG3(opcode, name, FL2, FL2, F2)
+Q(0x79b, divrl)
+Q(0x79c, mulrl)
+Q(0x79d, subrl)
+Q(0x79f, addrl)
+#undef Q
 #undef FloatingPointREG0
 #undef FloatingPointREG1
 #undef FloatingPointREG2
