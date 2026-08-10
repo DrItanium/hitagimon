@@ -193,10 +193,13 @@ namespace Machine {
                 return DecodedOpcode::Invalid;
         }
     }
+    // sanity check EVERYTHING
 #define X(opcode, encodedOpcode, name, str, c, format, argCount, src1, src2, src3) \
     static_assert(static_cast<DecodedOpcode>(opcode) == DecodedOpcode:: Opcode_ ## name ); \
     static_assert(static_cast<EncodedOpcode>(encodedOpcode) == EncodedOpcode:: Opcode_ ## name ); \
-    static_assert(translate(encodedOpcode) == DecodedOpcode:: Opcode_ ## name ); 
+    static_assert(translate(encodedOpcode) == DecodedOpcode:: Opcode_ ## name ); \
+    static_assert(decode(static_cast<EncodedOpcode>(encodedOpcode)) == DecodedOpcode:: Opcode_ ## name); \
+    static_assert(decode(static_cast<DecodedOpcode>(opcode)) == EncodedOpcode:: Opcode_ ## name); 
 #include "features/opcodes.def"
 #undef X
 }
