@@ -194,7 +194,9 @@ namespace Machine {
         }
     }
 #define X(opcode, encodedOpcode, name, str, c, format, argCount, src1, src2, src3) \
-    static_assert(translate(encodedOpcode) == DecodedOpcode:: Opcode_ ## name );
+    static_assert(static_cast<DecodedOpcode>(opcode) == DecodedOpcode:: Opcode_ ## name ); \
+    static_assert(static_cast<EncodedOpcode>(encodedOpcode) == EncodedOpcode:: Opcode_ ## name ); \
+    static_assert(translate(encodedOpcode) == DecodedOpcode:: Opcode_ ## name ); 
 #include "features/opcodes.def"
 #undef X
 }
