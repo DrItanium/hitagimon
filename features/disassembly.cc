@@ -201,13 +201,41 @@ namespace Machine {
                 return encoding.isBType() && Machine::usesDisplacement(encoding.getMode());
             }
         } mem;
+        struct {
+            uint32_t unused0 : 24;
+            uint32_t opcode : 8;
+        } generic;
+        constexpr uint16_t getOpcodeValue() const noexcept {
+            switch (decodeKind(generic.opcode)) {
+                case CoreInstructionKind::REG: 
+                    return reg.getOpcodeValue();
+                case CoreInstructionKind::MEM: 
+                    return mem.getOpcodeValue();
+                case CoreInstructionKind::COBR: 
+                    return cobr.getOpcodeValue();
+                case CoreInstructionKind::CTRL: 
+                    return ctrl.getOpcodeValue();
+                default:
+                    return 0;
+            }
+        }
+        constexpr DecodedOpcode getDecodedOpcode() const noexcept {
+            if (auto opcode = static_cast<DecodedOpcode>(getOpcodeValue()); valid(opcode)) {
+                return opcode;
+            } else {
+                return DecodedOpcode::Invalid;
+            }
 
-
+        }
     };
     int 
     disassemble(uint64_t full, std::ostream& stream) noexcept {
         TemporaryInstruction tmp;
         tmp.full = full;
         return 4;
+    }
+    const Opcode& getInvalidState() noexcept {
+        static Opcode invalid(0, "err", InstructionClass::Invalid, InstructionFormat::Invalid, 0, UnusedField, UnusedField, UnusedField);
+        return invalid;
     }
 }

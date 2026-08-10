@@ -30,11 +30,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <optional>
 namespace Machine {
     enum class InstructionClass {
+        Invalid = 0,
 #define X(name, pattern) name = pattern ,
 #include "classes.def"
 #undef X
     };
     enum class InstructionFormat {
+        Invalid = 0,
         CTRL,
         COBR,
         REG,
@@ -116,14 +118,9 @@ namespace Machine {
     constexpr OperandDescriptor FL4 { 3, true, true, false };
     struct Opcode {
     public:
-        explicit Opcode(uint32_t opcode, const std::string& name, InstructionClass ic, InstructionFormat format, uint8_t operandCount, OperandDescriptor src1 = R, OperandDescriptor src2 = R, OperandDescriptor srcDest = R) noexcept : 
-            _opcode(opcode), 
-            _name(name), 
-            _class(ic),
-            _format(format),
-            _operandCount(operandCount),
-            _operands{src1, src2, srcDest},
-            _kind(decodeKind(getPrimaryOpcode()))
+        explicit Opcode(uint32_t opcode, const std::string& name, InstructionClass ic, InstructionFormat format, uint8_t operandCount, OperandDescriptor src1 = UnusedField, OperandDescriptor src2 = UnusedField, OperandDescriptor srcDest = UnusedField) noexcept : 
+            _opcode(opcode), _name(name), _class(ic), _format(format),
+            _operandCount(operandCount), _operands{src1, src2, srcDest}, _kind(decodeKind(getPrimaryOpcode()))
             {
             }
         constexpr auto getOpcode() const noexcept { return _opcode; }
@@ -145,6 +142,7 @@ namespace Machine {
         OperandDescriptor _operands[3];
         CoreInstructionKind _kind;
     };
+    const Opcode& getInvalidState() noexcept;
     enum class DecodedOpcode : uint32_t {
         Invalid,
 // X(opcode, name, str, class, format, argCount, src1, src2, src3)
@@ -159,6 +157,16 @@ namespace Machine {
 #include "features/opcodes.def"
 #undef X
     };
+    constexpr bool valid(DecodedOpcode opcode) noexcept {
+        switch (opcode) {
+#define X(opcode, encodedOpcode, name, str, c, format, argCount, src1, src2, src3) case DecodedOpcode :: Opcode_ ## name :
+#include "features/opcodes.def"
+#undef X
+                return true;
+            default:
+                return false;
+        }
+    }
     constexpr DecodedOpcode decode(EncodedOpcode opcode) noexcept {
         switch (opcode) {
 #define X(opcode, encodedOpcode, name, str, c, format, argCount, src1, src2, src3) \
@@ -167,6 +175,16 @@ namespace Machine {
 #undef X
             default:
                 return DecodedOpcode::Invalid;
+        }
+    }
+    constexpr bool valid(EncodedOpcode opcode) noexcept {
+        switch (opcode) {
+#define X(opcode, encodedOpcode, name, str, c, format, argCount, src1, src2, src3) case EncodedOpcode :: Opcode_ ## name :
+#include "features/opcodes.def"
+#undef X
+                return true;
+            default:
+                return false;
         }
     }
     constexpr EncodedOpcode decode(DecodedOpcode opcode) noexcept {
