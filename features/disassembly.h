@@ -138,13 +138,40 @@ namespace Machine {
         OperandDescriptor _operands[3];
         CoreInstructionKind _kind;
     };
-    enum class DecodedOpcode {
+    enum class DecodedOpcode : uint32_t {
         Invalid,
 // X(opcode, name, str, class, format, argCount, src1, src2, src3)
-#define X(opcode, name, str, c, format, argCount, src1, src2, src3) Opcode_ ## name , 
+#define X(opcode, encodedOpcode, name, str, c, format, argCount, src1, src2, src3) Opcode_ ## name = opcode, 
 #include "features/opcodes.def"
 #undef X
     };
+    enum class EncodedOpcode : uint32_t {
+        Invalid,
+// X(opcode, name, str, class, format, argCount, src1, src2, src3)
+#define X(opcode, encodedOpcode, name, str, c, format, argCount, src1, src2, src3) Opcode_ ## name = encodedOpcode , 
+#include "features/opcodes.def"
+#undef X
+    };
+    constexpr DecodedOpcode decode(EncodedOpcode opcode) noexcept {
+        switch (opcode) {
+#define X(opcode, encodedOpcode, name, str, c, format, argCount, src1, src2, src3) \
+            case EncodedOpcode :: Opcode_ ## name : return DecodedOpcode :: Opcode_ ## name ;
+#include "features/opcodes.def"
+#undef X
+            default:
+                return DecodedOpcode::Invalid;
+        }
+    }
+    constexpr EncodedOpcode decode(DecodedOpcode opcode) noexcept {
+        switch (opcode) {
+#define X(opcode, encodedOpcode, name, str, c, format, argCount, src1, src2, src3) \
+            case DecodedOpcode :: Opcode_ ## name : return EncodedOpcode :: Opcode_ ## name ;
+#include "features/opcodes.def"
+#undef X
+            default:
+                return EncodedOpcode::Invalid;
+        }
+    }
 #if 0
     /**
      * @brief do we need the second word since this is a MEMB instruction and uses optional displacement?

@@ -87,9 +87,9 @@ REGOperation(0x673, ldtime, Protected)
 #undef REGOperation
 #undef Operation
 #else
-// X(opcode, name, str, class, format, argCount, src1, src2, src3)
+// X(opcode, encodedValue, name, str, class, format, argCount, src1, src2, src3)
 #define EncodeOpcode(opcode) ((static_cast<uint32_t>(opcode) << 24) & 0xFF000000)
-#define CTRL(opcode, name) X((EncodeOpcode(opcode)), name, #name, Base, CTRL, 1, UnusedField, UnusedField, UnusedField)
+#define CTRL(opcode, name) X(opcode, (EncodeOpcode(opcode)), name, #name, Base, CTRL, 1, UnusedField, UnusedField, UnusedField)
 CTRL(0x08, b)
 CTRL(0x09, call)
 CTRL(0x0a, ret)
@@ -111,7 +111,7 @@ CTRL(0x1d, faultne)
 CTRL(0x1e, faultle)
 CTRL(0x1f, faulto)
 #undef CTRL
-#define BaseCOBR(opcode, name, count, src1, src2) X((EncodeOpcode(opcode)), name, #name, Base, COBR, count, src1, src2, UnusedField)
+#define BaseCOBR(opcode, name, count, src1, src2) X(opcode, (EncodeOpcode(opcode)), name, #name, Base, COBR, count, src1, src2, UnusedField)
 #define TestOperation(opcode, name) BaseCOBR(opcode, name, 1, R, UnusedField)
 #define NormalCOBR(opcode, name) BaseCOBR(opcode, name, 3, RL, RS)
 TestOperation(0x20, testno)
@@ -142,7 +142,7 @@ NormalCOBR(0x3f, cmpibo)
 #undef TestOperation
 #undef BaseCOBR
 
-#define MEM(opcode, name, size, count, src1, src2) X((EncodeOpcode(opcode)), name, #name, Base, MEM ## size, count, src1, src2, UnusedField)
+#define MEM(opcode, name, size, count, src1, src2) X(opcode, (EncodeOpcode(opcode)), name, #name, Base, MEM ## size, count, src1, src2, UnusedField)
 MEM(0x80, ldob, 1, 2, M, R)
 MEM(0x82, stob, 1, 2, R, M)
 MEM(0x84, bx, 1, 1, M, UnusedField)
@@ -168,7 +168,7 @@ MEM(0xc8, ldis, 2, 2, M, R)
 MEM(0xca, stis, 2, 2, R, M)
 #undef MEM
 #define EncodeREGOpcode(v) (((v & 0xff0) << 20) | ((v & 0xf) << 7))
-#define CoreREG(opcode, name, class, count, src1, src2, srcDest) X((EncodeREGOpcode(opcode)), name, #name, class, REG, count, src1, src2, srcDest)
+#define CoreREG(opcode, name, class, count, src1, src2, srcDest) X(opcode, (EncodeREGOpcode(opcode)), name, #name, class, REG, count, src1, src2, srcDest)
 #define BaseREG(opcode, name, count, src1, src2, srcDest) CoreREG(opcode, name, Base, count, src1, src2, srcDest)
 #define BaseREG3(opcode, name) BaseREG(opcode, name, 3, RSL, RSL, RS)
 #define BaseREG2(opcode, name) BaseREG(opcode, name, 2, RSL, RS, UnusedField)
@@ -232,7 +232,7 @@ BaseREG0(0x66b, mark)
 BaseREG0(0x66c, fmark)
 BaseREG0(0x66d, flushreg)
 BaseREG0(0x66f, syncf)
-
+ 
 BaseREG(0x670, emul, 3, RSL, RSL, R2)
 BaseREG(0x671, ediv, 3, RSL, RL2, RS)
 
