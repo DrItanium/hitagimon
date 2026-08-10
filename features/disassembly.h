@@ -181,24 +181,11 @@ namespace Machine {
     }
     std::optional<Opcode> translate(EncodedOpcode opcode) noexcept;
     std::optional<Opcode> translate(DecodedOpcode opcode) noexcept;
-    constexpr DecodedOpcode translate(uint32_t value) noexcept {
-        switch (decodeKind(value)) {
-            case CoreInstructionKind::REG:
-                return static_cast<DecodedOpcode>((static_cast<uint16_t>(value >> 20) & 0x0FF0) | getSecondaryOpcode(value));
-            case CoreInstructionKind::COBR:
-            case CoreInstructionKind::CTRL:
-            case CoreInstructionKind::MEM:
-                return static_cast<DecodedOpcode>((value >> 24) & 0xFF);
-            default:
-                return DecodedOpcode::Invalid;
-        }
-    }
     int disassemble(uint64_t full, std::ostream& stream) noexcept;
     // sanity check EVERYTHING
 #define X(opcode, encodedOpcode, name, str, c, format, argCount, src1, src2, src3) \
     static_assert(static_cast<DecodedOpcode>(opcode) == DecodedOpcode:: Opcode_ ## name ); \
     static_assert(static_cast<EncodedOpcode>(encodedOpcode) == EncodedOpcode:: Opcode_ ## name ); \
-    static_assert(translate(encodedOpcode) == DecodedOpcode:: Opcode_ ## name ); \
     static_assert(decode(static_cast<EncodedOpcode>(encodedOpcode)) == DecodedOpcode:: Opcode_ ## name); \
     static_assert(decode(static_cast<DecodedOpcode>(opcode)) == EncodedOpcode:: Opcode_ ## name); 
 #include "features/opcodes.def"
