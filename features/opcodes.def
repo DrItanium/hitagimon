@@ -35,23 +35,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
-REGOperation(0x603, cmpstr, Protected)
-REGOperation(0x604, movqstr, Protected)
-REGOperation(0x605, movstr, Protected)
-REGOperation(0x613, inspacc, Protected)
-REGOperation(0x614, ldphy, Protected)
-REGOperation(0x617, fill, Protected)
-REGOperation(0x646, condrec, Protected)
-REGOperation(0x656, receive, Protected)
-REGOperation(0x662, send, Protected)
-REGOperation(0x663, sendserv, Protected)
-REGOperation(0x664, resumprcs, Protected)
-REGOperation(0x665, schedprcs, Protected)
-REGOperation(0x666, saveprcs, Protected)
-REGOperation(0x668, condwait, Protected)
-REGOperation(0x669, wait, Protected)
-REGOperation(0x66a, signal, Protected)
-REGOperation(0x673, ldtime, Protected)
 
 // REGOperation(0x594, cmpob, NewCore, NotApplicable)
 // REGOperation(0x595, cmpib, NewCore, NotApplicable)
@@ -332,13 +315,45 @@ Q(0x79f, addrl)
 #undef FloatingPointREG3
 #undef FloatingPointREG
 
+
 #undef BaseREG0
 #undef BaseREG2
 #undef BaseREG3
 #undef BaseREG
+
+#define ProtectedREG(opcode, name, count, src1, src2, srcDest) CoreREG(opcode, name, Protected, count, src1, src2, srcDest)
+#define ProtectedREG3(opcode, name, src1, src2, srcDest) ProtectedREG(opcode, name, 3, src1, src2, srcDest)
+#define ProtectedREG2(opcode, name, src1, src2) ProtectedREG(opcode, name, 2, src1, src2, UnusedField)
+#define ProtectedREG1(opcode, name, src1) ProtectedREG(opcode, name, 1, src1, UnusedField, UnusedField)
+#define ProtectedREG0(opcode, name) ProtectedREG(opcode, name, 0, UnusedField, UnusedField, UnusedField)
+#if 0
+REGOperation(0x603, cmpstr, Protected)
+REGOperation(0x604, movqstr, Protected)
+REGOperation(0x605, movstr, Protected)
+REGOperation(0x613, inspacc, Protected)
+REGOperation(0x614, ldphy, Protected)
+REGOperation(0x617, fill, Protected)
+REGOperation(0x646, condrec, Protected)
+REGOperation(0x656, receive, Protected)
+REGOperation(0x662, send, Protected)
+REGOperation(0x663, sendserv, Protected)
+REGOperation(0x664, resumprcs, Protected)
+REGOperation(0x665, schedprcs, Protected)
+REGOperation(0x666, saveprcs, Protected)
+REGOperation(0x668, condwait, Protected)
+REGOperation(0x669, wait, Protected)
+REGOperation(0x66a, signal, Protected)
+REGOperation(0x673, ldtime, Protected)
+#endif
+#undef ProtectedREG
+#undef ProtectedREG3
+#undef ProtectedREG2
+#undef ProtectedREG1
+#undef ProtectedREG0
 #undef CoreREG
 #undef EncodeREGOpcode 
 #undef EncodeOpcode
+
 #endif
 
     // TODO continue here for the rest of the mem instructions
