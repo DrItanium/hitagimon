@@ -33,12 +33,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace Machine {
     namespace {
         //explicit Opcode(uint32_t opcode, const std::string& name, InstructionClass ic, InstructionFormat format, uint8_t operandCount, OperandDescriptor src1 = R, OperandDescriptor src2 = R, OperandDescriptor srcDest = R) noexcept : 
-        static inline const std::map<EncodedOpcode, Opcode> encodedOpcodes {
-#define X(opcode, encodedOpcode, name, str, c, format, argCount, src1, src2, src3) \
-            { EncodedOpcode :: Opcode_ ## name , Opcode { encodedOpcode, str, InstructionClass :: c, InstructionFormat :: format, argCount, src1, src2, src3 } },
-#include "features/opcodes.def"
-#undef X
-        };
         static inline const std::map<DecodedOpcode, Opcode> decodedOpcodes {
 #define X(opcode, encodedOpcode, name, str, c, format, argCount, src1, src2, src3) \
             { DecodedOpcode :: Opcode_ ## name , Opcode { encodedOpcode, str, InstructionClass :: c, InstructionFormat :: format, argCount, src1, src2, src3 } },
@@ -47,21 +41,12 @@ namespace Machine {
         };
     }
     [[gnu::used]]
-    std::optional<Opcode>
-    translate(EncodedOpcode opcode) noexcept {
-        if (auto result = encodedOpcodes.find(opcode); result != encodedOpcodes.end()) {
-            return std::make_optional(result->second);
-        } else {
-            return std::nullopt;
-        }
-    }
-    [[gnu::used]]
-    std::optional<Opcode>
+    const Opcode&
     translate(DecodedOpcode opcode) noexcept {
         if (auto result = decodedOpcodes.find(opcode); result != decodedOpcodes.end()) {
-            return std::make_optional(result->second);
+            return result->second;
         } else {
-            return std::nullopt;
+            return getInvalidState();
         }
     }
     enum class MEMMode {
@@ -225,7 +210,9 @@ namespace Machine {
             } else {
                 return DecodedOpcode::Invalid;
             }
-
+        }
+        const Opcode& getOpcodeData() const noexcept {
+            return translate(getDecodedOpcode());
         }
     };
     int 

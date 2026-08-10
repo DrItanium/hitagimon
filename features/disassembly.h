@@ -197,8 +197,7 @@ namespace Machine {
                 return EncodedOpcode::Invalid;
         }
     }
-    std::optional<Opcode> translate(EncodedOpcode opcode) noexcept;
-    std::optional<Opcode> translate(DecodedOpcode opcode) noexcept;
+    const Opcode& translate(DecodedOpcode opcode) noexcept;
     int disassemble(uint64_t full, std::ostream& stream) noexcept;
     // sanity check EVERYTHING
 #define X(opcode, encodedOpcode, name, str, c, format, argCount, src1, src2, src3) \
