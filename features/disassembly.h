@@ -193,6 +193,7 @@ namespace Machine {
                 return DecodedOpcode::Invalid;
         }
     }
+    static_assert(translate(0x08'000000) == DecodedOpcode::Opcode_b);
 }
 
 #endif // end !defined HITAGIMON_FEATURES_DIASSEMBLY_H__
